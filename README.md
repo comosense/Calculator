@@ -22,9 +22,7 @@ The calculator supports expressions such as:
 
 ```text
 1 + 2 × 3
-
 (1 + 2) × 3
-
 -10 ÷ 4
 ```
 
