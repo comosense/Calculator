@@ -1,15 +1,34 @@
 package com.gmail.comosense.calculator.presentation
 
+import android.content.Context
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
+import com.gmail.comosense.calculator.data.HistoryRepository
+import kotlinx.coroutines.launch
 
-class AppViewModel : ViewModel() {
+class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel() {
+    class Factory(private val context: Context) : ViewModelProvider.Factory {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            if (modelClass.isAssignableFrom(AppViewModel::class.java)) {
+                @Suppress("UNCHECKED_CAST")
+                return AppViewModel(
+                    historyRepository = HistoryRepository(context),
+                ) as T
+            }
+
+            throw IllegalArgumentException(
+                "Unknown ViewModel class: ${modelClass.name}"
+            )
+        }
+    }
+
     companion object {
         private const val PRECISION = 50
         private const val DISPLAY_SCALE = 20
-        private const val HISTORY_SIZE = 50
     }
 
     private val calculatorService = CalculatorService(
@@ -18,6 +37,16 @@ class AppViewModel : ViewModel() {
     )
     private val _appState: MutableState<AppState> = mutableStateOf(AppState())
     val appState: State<AppState> = _appState
+
+    init {
+        viewModelScope.launch {
+            historyRepository.history.collect { history ->
+                _appState.value = _appState.value.copy(
+                    history = history,
+                )
+            }
+        }
+    }
 
     fun onClick(key: Key) {
         when (key) {
@@ -48,17 +77,15 @@ class AppViewModel : ViewModel() {
     }
 
     fun onHistoryDelete(index: Int) {
-        val state: AppState = _appState.value
-        if (index !in state.history.indices) return
-        _appState.value = state.copy(
-            history = state.history.filterIndexed { i, _ -> i != index }
-        )
+        viewModelScope.launch {
+            historyRepository.deleteHistory(index)
+        }
     }
 
     fun onHistoryDeleteAll() {
-        _appState.value = _appState.value.copy(
-            history = emptyList()
-        )
+        viewModelScope.launch {
+            historyRepository.deleteAllHistory()
+        }
     }
 
     private fun updateState(key: CommandKey) {
@@ -70,13 +97,19 @@ class AppViewModel : ViewModel() {
 
                 val result: List<Symbol> = calculatorService.calculate(state.expression)
 
-                val calculation = Calculation(state.expression, result)
+                val calculation = Calculation(
+                    expression = state.expression,
+                    result = result,
+                )
 
                 _appState.value = state.copy(
                     result = result,
                     entering = emptyList(),
-                    history = (listOf(calculation) + state.history).take(HISTORY_SIZE),
                 )
+
+                viewModelScope.launch {
+                    historyRepository.addHistory(calculation)
+                }
             }
 
             is CommandKey.Clear -> {
