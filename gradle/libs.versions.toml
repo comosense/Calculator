@@ -7,7 +7,9 @@ composeBom = "2026.08.00"
 composeMaterial3 = "1.6.2"
 composeFoundation = "1.6.2"
 composeUiTooling = "1.6.2"
+protobufKotlin = "..."
 protobufKotlinLite = "4.36.1"
+protobufKotlinLiteVersion = "3.21.11"
 wearToolingPreview = "1.0.0"
 activityCompose = "1.13.0"
 coreSplashscreen = "1.2.0"
@@ -18,7 +20,10 @@ uiText = "1.12.0"
 datastore = { module = "androidx.datastore:datastore", version.ref = "datastore" }
 play-services-wearable = { group = "com.google.android.gms", name = "play-services-wearable", version.ref = "playServicesWearable" }
 compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
+protobuf-javalite = { module = "com.google.protobuf:protobuf-javalite", version.ref = "protobufKotlinLite" }
+protobuf-kotlin = { module = "com.google.protobuf:protobuf-kotlin", version.ref = "protobufKotlin" }
 protobuf-kotlin-lite = { module = "com.google.protobuf:protobuf-kotlin-lite", version.ref = "protobufKotlinLite" }
+protobuf-kotlin-lite-v32111 = { module = "com.google.protobuf:protobuf-kotlin-lite", version.ref = "protobufKotlinLiteVersion" }
 ui = { group = "androidx.compose.ui", name = "ui" }
 ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
 ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }

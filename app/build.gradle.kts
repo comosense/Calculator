@@ -54,6 +54,7 @@ dependencies {
     implementation(libs.ui.tooling.preview)
     implementation(libs.wear.tooling.preview)
     implementation(libs.datastore)
+    implementation(libs.protobuf.javalite)
     implementation(libs.protobuf.kotlin.lite)
     androidTestImplementation(platform(libs.compose.bom))
     androidTestImplementation(libs.ui.test.junit4)
@@ -72,7 +73,9 @@ protobuf {
                 create("java") {
                     option("lite")
                 }
-                create("kotlin")
+                create("kotlin") {
+                    option("lite")
+                }
             }
         }
     }

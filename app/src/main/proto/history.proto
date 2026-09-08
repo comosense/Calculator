@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+option java_package = "com.gmail.comosense.calculator.data.proto";
+option java_multiple_files = true;
+
+message HistoryStore {
+  repeated Calculation calculations = 1;
+}
+
+message Calculation {
+  repeated Symbol expression = 1;
+  repeated Symbol result = 2;
+}
+
+message Symbol {
+  reserved 3 to 64;
+  reserved 67 to 128;
+  reserved 130 to 192;
+  reserved 194 to 256;
+  reserved 261 to 1024;
+  reserved 1026 to max;
+
+  oneof value {
+    bool positive = 1;
+    bool negative = 2;
+
+    int32 digit = 65;
+    bool point = 66;
+
+    bool open_parenthesis = 129;
+    bool close_parenthesis = 193;
+
+    bool add = 257;
+    bool subtract = 258;
+    bool multiply = 259;
+    bool divide = 260;
+
+    string error = 1025;
+  }
+}
