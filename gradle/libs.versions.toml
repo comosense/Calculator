@@ -1,11 +1,13 @@
 [versions]
 agp = "9.4.0"
+datastore = "1.2.1"
 playServicesWearable = "20.0.1"
 kotlin = "2.4.10"
 composeBom = "2026.08.00"
 composeMaterial3 = "1.6.2"
 composeFoundation = "1.6.2"
 composeUiTooling = "1.6.2"
+protobufKotlinLite = "4.36.1"
 wearToolingPreview = "1.0.0"
 activityCompose = "1.13.0"
 coreSplashscreen = "1.2.0"
@@ -13,8 +15,10 @@ runtime = "1.12.0"
 uiText = "1.12.0"
 
 [libraries]
+datastore = { module = "androidx.datastore:datastore", version.ref = "datastore" }
 play-services-wearable = { group = "com.google.android.gms", name = "play-services-wearable", version.ref = "playServicesWearable" }
 compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
+protobuf-kotlin-lite = { module = "com.google.protobuf:protobuf-kotlin-lite", version.ref = "protobufKotlinLite" }
 ui = { group = "androidx.compose.ui", name = "ui" }
 ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
 ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
