@@ -21,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalLocale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
@@ -30,6 +31,7 @@ import androidx.wear.compose.material3.Button
 import androidx.wear.compose.material3.ButtonDefaults
 import androidx.wear.compose.material3.MaterialTheme
 import androidx.wear.compose.material3.Text
+import java.util.Locale
 
 @Composable
 fun CalculatorScreen(
@@ -38,6 +40,7 @@ fun CalculatorScreen(
     onLongClick: (Key?) -> Unit,
     onShowHistory: () -> Unit
 ) {
+    val locale: Locale = LocalLocale.current.platformLocale
     val expressionMaxFontSize: TextUnit = 36.sp
     val expressionMinFontSize: TextUnit = 12.sp
     val expressionFontStepSize: TextUnit = 2.sp
@@ -143,7 +146,7 @@ fun CalculatorScreen(
                 .background(containerColor)
                 .padding(horizontal = 48.dp)
                 .wrapContentHeight(Alignment.CenterVertically),
-            text = appState.displayExpression,
+            text = appState.displayExpression(locale),
             autoSize = TextAutoSize.StepBased(
                 minFontSize = expressionMinFontSize,
                 maxFontSize = expressionMaxFontSize,
@@ -161,6 +164,7 @@ fun CalculatorScreen(
                 .fillMaxWidth(),
             fontSize = keyFontSize,
             keyGrid = keyGrid,
+            locale = locale,
             onClick = onClick,
             onLongClick = onLongClick,
         )
@@ -183,6 +187,7 @@ fun KeyGrid(
     modifier: Modifier = Modifier,
     fontSize: TextUnit,
     keyGrid: List<List<Key?>>,
+    locale: Locale,
     onClick: (Key) -> Unit,
     onLongClick: (Key?) -> Unit,
 ) {
@@ -212,7 +217,7 @@ fun KeyGrid(
                             ) {
                                 Text(
                                     modifier = Modifier.fillMaxWidth(),
-                                    text = key.text,
+                                    text = key.displayText(locale),
                                     fontSize = fontSize,
                                     textAlign = TextAlign.Center,
                                 )

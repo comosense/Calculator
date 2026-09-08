@@ -49,6 +49,7 @@ dependencies {
     implementation(libs.runtime)
     implementation(libs.ui)
     implementation(libs.ui.graphics)
+    implementation(libs.ui.text)
     implementation(libs.ui.tooling.preview)
     implementation(libs.wear.tooling.preview)
     androidTestImplementation(platform(libs.compose.bom))

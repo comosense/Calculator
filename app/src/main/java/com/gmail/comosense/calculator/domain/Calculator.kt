@@ -5,14 +5,14 @@ import java.math.BigDecimal
 import java.math.MathContext
 import java.math.RoundingMode
 
-enum class CalculateError {
+enum class CalculatorError {
     InvalidExpression,
     DivisionByZero,
 }
 
-fun calculate(expression: List<Token>, precision: Int): Result<BigDecimal, CalculateError> {
+fun calculate(expression: List<Token>, precision: Int): Result<BigDecimal, CalculatorError> {
     if (expression.isEmpty()) {
-        return Result.Err(CalculateError.InvalidExpression)
+        return Result.Err(CalculatorError.InvalidExpression)
     }
 
     val parser = Parser(expression, precision)
@@ -22,12 +22,12 @@ fun calculate(expression: List<Token>, precision: Int): Result<BigDecimal, Calcu
         if (parser.isEnd()) {
             Result.Ok(result)
         } else {
-            Result.Err(CalculateError.InvalidExpression)
+            Result.Err(CalculatorError.InvalidExpression)
         }
     } catch (_: ArithmeticException) {
-        Result.Err(CalculateError.DivisionByZero)
+        Result.Err(CalculatorError.DivisionByZero)
     } catch (_: IllegalArgumentException) {
-        Result.Err(CalculateError.InvalidExpression)
+        Result.Err(CalculatorError.InvalidExpression)
     }
 }
 

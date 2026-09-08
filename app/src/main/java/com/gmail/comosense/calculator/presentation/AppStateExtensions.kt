@@ -1,15 +1,17 @@
 package com.gmail.comosense.calculator.presentation
 
-import com.gmail.comosense.calculator.common.formatNumericString
+import java.util.Locale
 
 val AppState.expression: List<Symbol>
     get() = result + entering
-val AppState.displayExpression: String
-    get() = expression.formatSymbols().ifEmpty { "0" }
 val AppState.isEntering: Boolean
     get() = entering.isNotEmpty()
 val AppState.lastSymbol: Symbol?
     get() = expression.lastOrNull()
+
+fun AppState.displayExpression(locale: Locale): String {
+    return expression.formatSymbols(locale).ifEmpty { "0" }
+}
 
 fun AppState.canAppend(symbol: Symbol): Boolean = when (symbol) {
     is Symbol.Numeric.Point -> {
@@ -28,30 +30,5 @@ fun AppState.canAppend(symbol: Symbol): Boolean = when (symbol) {
 
     else -> {
         symbol.isAppendableAfter(lastSymbol)
-    }
-}
-
-private fun List<Symbol>.formatSymbols(): String {
-    return buildString {
-        val numericBuffer: StringBuilder = StringBuilder()
-
-        fun flushNumeric() {
-            if (numericBuffer.isNotEmpty()) {
-                append(formatNumericString(numericBuffer.toString()))
-                numericBuffer.clear()
-            }
-        }
-
-        for (symbol in this@formatSymbols) {
-            when (symbol) {
-                is Symbol.Numeric.Digit, Symbol.Numeric.Point -> numericBuffer.append(symbol.text)
-                else -> {
-                    flushNumeric()
-                    append(symbol.text)
-                }
-            }
-        }
-
-        flushNumeric()
     }
 }

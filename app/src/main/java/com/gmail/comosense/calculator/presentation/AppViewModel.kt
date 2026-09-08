@@ -1,21 +1,21 @@
 package com.gmail.comosense.calculator.presentation
 
-import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import com.gmail.comosense.calculator.common.Result
-import com.gmail.comosense.calculator.domain.CalculateError
-import com.gmail.comosense.calculator.domain.calculate
 
 class AppViewModel : ViewModel() {
     companion object {
-        private const val DISPLAY_SCALE = 20
         private const val PRECISION = 50
+        private const val DISPLAY_SCALE = 20
         private const val HISTORY_SIZE = 50
     }
 
+    private val calculatorService = CalculatorService(
+        precision = PRECISION,
+        displayScale = DISPLAY_SCALE
+    )
     private val _appState: MutableState<AppState> = mutableStateOf(AppState())
     val appState: State<AppState> = _appState
 
@@ -68,18 +68,14 @@ class AppViewModel : ViewModel() {
             is CommandKey.Equals -> {
                 if (!state.isEntering) return
 
-                val result: List<Symbol> = calculateSymbols(state.expression)
-                val history: List<Calculation> = (listOf(
-                    Calculation(
-                        expression = state.expression,
-                        result = result
-                    )
-                ) + state.history).take(HISTORY_SIZE)
+                val result: List<Symbol> = calculatorService.calculate(state.expression)
+
+                val calculation = Calculation(state.expression, result)
 
                 _appState.value = state.copy(
                     result = result,
                     entering = emptyList(),
-                    history = history,
+                    history = (listOf(calculation) + state.history).take(HISTORY_SIZE),
                 )
             }
 
@@ -117,39 +113,6 @@ class AppViewModel : ViewModel() {
                     entering = state.entering + symbol,
                 )
             }
-        }
-    }
-
-    private fun calculateSymbols(expression: List<Symbol>): List<Symbol> {
-        return when (val r = tokensFrom(expression)) {
-            is Result.Ok -> {
-                when (val r = calculate(r.value, PRECISION).toSymbols(DISPLAY_SCALE)) {
-                    is Result.Ok -> r.value
-                    is Result.Err -> listOf(Symbol.Error(errorMessage(r.error)))
-                }
-            }
-
-            is Result.Err -> {
-                Log.e("AppViewModel", "[calculate]${r.error}")
-                listOf(Symbol.Error(errorMessage(r.error)))
-            }
-        }
-    }
-
-    private fun errorMessage(error: SymbolConverterError): String = when (error) {
-        is SymbolConverterError.UnsupportedSymbol,
-        is SymbolConverterError.IllegalNumeric
-            -> "Invalid expression"
-
-        is SymbolConverterError.UnsupportedCharacter
-            -> "Invalid result"
-
-        is SymbolConverterError.Calculation -> when (error.error) {
-            CalculateError.InvalidExpression
-                -> "Invalid expression"
-
-            CalculateError.DivisionByZero
-                -> "Division by zero"
         }
     }
 }

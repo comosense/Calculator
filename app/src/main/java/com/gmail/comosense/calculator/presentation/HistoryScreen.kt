@@ -17,6 +17,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalLocale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
@@ -34,7 +35,7 @@ import androidx.wear.compose.material3.Text
 import androidx.wear.compose.material3.lazy.TransformationSpec
 import androidx.wear.compose.material3.lazy.rememberTransformationSpec
 import androidx.wear.compose.material3.lazy.transformedHeight
-import com.gmail.comosense.calculator.common.formatNumericString
+import java.util.Locale
 
 @Composable
 fun HistoryScreen(
@@ -48,6 +49,7 @@ fun HistoryScreen(
     val listState: TransformingLazyColumnState = rememberTransformingLazyColumnState()
     val transformationSpec: TransformationSpec = rememberTransformationSpec()
 
+    val locale: Locale = LocalLocale.current.platformLocale
     val expressionFontSize: TextUnit = 16.sp
     val resultFontSize: TextUnit = 18.sp
     val backgroundColor: Color = MaterialTheme.colorScheme.background
@@ -147,7 +149,7 @@ fun HistoryScreen(
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .horizontalScroll(expressionScrollState),
-                                    text = calculation.expression.joinToString("") { it.text },
+                                    text = calculation.expression.formatSymbols(locale),
                                     fontSize = expressionFontSize,
                                     maxLines = 1,
                                     softWrap = false,
@@ -156,7 +158,7 @@ fun HistoryScreen(
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .horizontalScroll(resultScrollState),
-                                    text = formatNumericString(calculation.result.joinToString("") { it.text }),
+                                    text = calculation.result.formatSymbols(locale),
                                     fontSize = resultFontSize,
                                     maxLines = 1,
                                     softWrap = false,
