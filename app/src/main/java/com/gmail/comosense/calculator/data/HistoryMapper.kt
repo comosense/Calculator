@@ -7,18 +7,41 @@ import com.gmail.comosense.calculator.data.proto.Symbol as ProtoSymbol
 
 fun ProtoSymbol.toSymbol(): Symbol {
     return when (valueCase) {
-        ProtoSymbol.ValueCase.POSITIVE -> Symbol.Sign.Positive
-        ProtoSymbol.ValueCase.NEGATIVE -> Symbol.Sign.Negative
-        ProtoSymbol.ValueCase.DIGIT -> Symbol.Numeric.Digit(digit)
-        ProtoSymbol.ValueCase.POINT -> Symbol.Numeric.Point
-        ProtoSymbol.ValueCase.OPEN_PARENTHESIS -> Symbol.FactorStart.OpenParenthesis
-        ProtoSymbol.ValueCase.CLOSE_PARENTHESIS -> Symbol.FactorEnd.CloseParenthesis
-        ProtoSymbol.ValueCase.ADD -> Symbol.Operator.Add
-        ProtoSymbol.ValueCase.SUBTRACT -> Symbol.Operator.Subtract
-        ProtoSymbol.ValueCase.MULTIPLY -> Symbol.Operator.Multiply
-        ProtoSymbol.ValueCase.DIVIDE -> Symbol.Operator.Divide
-        ProtoSymbol.ValueCase.ERROR -> Symbol.Error(error)
-        ProtoSymbol.ValueCase.VALUE_NOT_SET -> error("Invalid stored Symbol")
+        ProtoSymbol.ValueCase.POSITIVE
+            -> Symbol.Sign.Positive
+
+        ProtoSymbol.ValueCase.NEGATIVE
+            -> Symbol.Sign.Negative
+
+        ProtoSymbol.ValueCase.DIGIT
+            -> Symbol.Numeric.Digit(digit)
+
+        ProtoSymbol.ValueCase.POINT
+            -> Symbol.Numeric.Point
+
+        ProtoSymbol.ValueCase.OPEN_PARENTHESIS
+            -> Symbol.FactorStart.OpenParenthesis
+
+        ProtoSymbol.ValueCase.CLOSE_PARENTHESIS
+            -> Symbol.FactorEnd.CloseParenthesis
+
+        ProtoSymbol.ValueCase.ADD
+            -> Symbol.Operator.Add
+
+        ProtoSymbol.ValueCase.SUBTRACT
+            -> Symbol.Operator.Subtract
+
+        ProtoSymbol.ValueCase.MULTIPLY
+            -> Symbol.Operator.Multiply
+
+        ProtoSymbol.ValueCase.DIVIDE
+            -> Symbol.Operator.Divide
+
+        ProtoSymbol.ValueCase.ERROR
+            -> Symbol.Error(error)
+
+        ProtoSymbol.ValueCase.VALUE_NOT_SET
+            -> error("Invalid stored Symbol")
     }
 }
 
@@ -88,8 +111,7 @@ fun ProtoCalculation.toCalculation(): Calculation {
     )
 }
 
-fun Calculation.toProto():
-        ProtoCalculation {
+fun Calculation.toProto(): ProtoCalculation {
     return ProtoCalculation
         .newBuilder()
         .addAllExpression(expression.map { it.toProto() })

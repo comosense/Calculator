@@ -13,11 +13,11 @@ sealed interface Key {
 }
 
 sealed class SymbolKey : Key {
+    abstract val symbol: Symbol
+
     override val text: String
         get() = symbol.text
     override val longClickKey: Key? = null
-
-    abstract val symbol: Symbol
 
     data object Positive : SymbolKey() {
         override val style: Style = Style.Operator

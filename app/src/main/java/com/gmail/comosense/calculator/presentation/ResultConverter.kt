@@ -36,5 +36,6 @@ private fun BigDecimal.toDisplaySymbol(scale: Int): Result<List<Symbol>, ResultC
             )
         }
     }
+
     return Result.Ok(symbols)
 }
