@@ -1,6 +1,5 @@
 package com.gmail.comosense.calculator.presentation
 
-import android.util.Log
 import com.gmail.comosense.calculator.common.Result
 import com.gmail.comosense.calculator.domain.Token
 import java.math.BigDecimal
@@ -24,20 +23,14 @@ fun parseTokens(symbols: List<Symbol>): Result<List<Token>, SymbolParserError> {
                 add(Token.Numeric(BigDecimal(numericString)))
                 Result.Ok(Unit)
             } catch (e: NumberFormatException) {
-                Log.e(
-                    "SymbolParser",
-                    "[parseTokens::flushNumeric] invalid numeric: ${e.toString()}"
-                )
                 Result.Err(SymbolParserError.IllegalNumeric)
             }
         }
 
         for (symbol in symbols) {
             when (symbol) {
-                is Symbol.Numeric.Digit,
-                Symbol.Numeric.Point -> {
-                    numericBuffer.append(symbol.text)
-                }
+                is Symbol.Numeric
+                    -> numericBuffer.append(symbol.text)
 
                 else -> {
                     when (val r: Result<Unit, SymbolParserError> = flushNumeric()) {
@@ -87,8 +80,6 @@ private fun Symbol.toToken(): Result<Token, SymbolParserError> = when (this) {
     is Symbol.Operator.Divide ->
         Result.Ok(Token.Operator.Divide)
 
-    else -> {
-        Log.e("SymbolConverter", "[Symbol.toToken()]$this")
+    else ->
         Result.Err(SymbolParserError.UnsupportedSymbol)
-    }
 }

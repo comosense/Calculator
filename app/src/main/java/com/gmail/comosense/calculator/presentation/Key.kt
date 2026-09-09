@@ -7,7 +7,6 @@ enum class Style {
 }
 
 sealed interface Key {
-    val text: String
     val longClickKey: Key?
     val style: Style
 }
@@ -15,8 +14,6 @@ sealed interface Key {
 sealed class SymbolKey : Key {
     abstract val symbol: Symbol
 
-    override val text: String
-        get() = symbol.text
     override val longClickKey: Key? = null
 
     data object Positive : SymbolKey() {
@@ -72,19 +69,16 @@ sealed class SymbolKey : Key {
 
 sealed class CommandKey : Key {
     data object Equals : CommandKey() {
-        override val text: String = "="
         override val longClickKey: Key? = null
         override val style: Style = Style.Command
     }
 
     data object Clear : CommandKey() {
-        override val text: String = "C"
         override val longClickKey: Key? = null
         override val style: Style = Style.Command
     }
 
     data object Delete : CommandKey() {
-        override val text: String = "←"
         override val longClickKey: Key = Clear
         override val style: Style = Style.Command
     }

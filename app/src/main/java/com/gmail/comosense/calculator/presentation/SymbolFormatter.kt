@@ -21,10 +21,8 @@ fun List<Symbol>.formatSymbols(locale: Locale): String {
 
         for (symbol in this@formatSymbols) {
             when (symbol) {
-                is Symbol.Numeric.Digit,
-                Symbol.Numeric.Point -> {
-                    numericBuffer.append(symbol.text)
-                }
+                is Symbol.Numeric
+                    -> numericBuffer.append(symbol.text)
 
                 else -> {
                     flushNumeric()

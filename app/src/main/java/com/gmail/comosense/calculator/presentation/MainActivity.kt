@@ -10,7 +10,7 @@ import androidx.wear.compose.ui.tooling.preview.WearPreviewDevices
 import androidx.wear.compose.ui.tooling.preview.WearPreviewFontScales
 
 class MainActivity : ComponentActivity() {
-    private val viewModel: AppViewModel by viewModels() {
+    private val viewModel: AppViewModel by viewModels {
         AppViewModel.Factory(applicationContext)
     }
 
