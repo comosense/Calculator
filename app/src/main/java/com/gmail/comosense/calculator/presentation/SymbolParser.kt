@@ -22,7 +22,7 @@ fun parseTokens(symbols: List<Symbol>): Result<List<Token>, SymbolParserError> {
             return try {
                 add(Token.Numeric(BigDecimal(numericString)))
                 Result.Ok(Unit)
-            } catch (e: NumberFormatException) {
+            } catch (_: NumberFormatException) {
                 Result.Err(SymbolParserError.IllegalNumeric)
             }
         }
