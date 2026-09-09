@@ -7,7 +7,7 @@ import java.text.NumberFormat
 import java.util.Locale
 
 fun formatNumericString(value: String, locale: Locale): String {
-    val pointIndex: Int = value.indexOf(SymbolText.POINT)
+    val pointIndex: Int = value.indexOf(MathCharacter.POINT)
     val integerPart: String = if (pointIndex >= 0) {
         value.substring(0, pointIndex)
     } else {

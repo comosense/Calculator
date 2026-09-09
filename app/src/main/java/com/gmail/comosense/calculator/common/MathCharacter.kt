@@ -1,6 +1,6 @@
 package com.gmail.comosense.calculator.common
 
-object SymbolText {
+object MathCharacter {
     const val POSITIVE: String = "+"
     const val NEGATIVE: String = "-"
     const val POINT: String = "."

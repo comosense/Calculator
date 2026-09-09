@@ -1,17 +1,17 @@
 package com.gmail.comosense.calculator.presentation
 
-import com.gmail.comosense.calculator.common.SymbolText
+import com.gmail.comosense.calculator.common.MathCharacter
 
 sealed interface Symbol {
     val text: String
 
     sealed interface Sign : Symbol {
         data object Positive : Sign {
-            override val text: String = SymbolText.POSITIVE
+            override val text: String = MathCharacter.POSITIVE
         }
 
         data object Negative : Sign {
-            override val text: String = SymbolText.NEGATIVE
+            override val text: String = MathCharacter.NEGATIVE
         }
     }
 
@@ -21,37 +21,37 @@ sealed interface Symbol {
         }
 
         data object Point : Numeric {
-            override val text: String = SymbolText.POINT
+            override val text: String = MathCharacter.POINT
         }
     }
 
     sealed interface FactorStart : Symbol {
         data object OpenParenthesis : FactorStart {
-            override val text: String = SymbolText.OPEN_PARENTHESIS
+            override val text: String = MathCharacter.OPEN_PARENTHESIS
         }
     }
 
     sealed interface FactorEnd : Symbol {
         data object CloseParenthesis : FactorEnd {
-            override val text: String = SymbolText.CLOSE_PARENTHESIS
+            override val text: String = MathCharacter.CLOSE_PARENTHESIS
         }
     }
 
     sealed interface Operator : Symbol {
         data object Add : Operator {
-            override val text: String = SymbolText.ADD
+            override val text: String = MathCharacter.ADD
         }
 
         data object Subtract : Operator {
-            override val text: String = SymbolText.SUBTRACT
+            override val text: String = MathCharacter.SUBTRACT
         }
 
         data object Multiply : Operator {
-            override val text: String = SymbolText.MULTIPLY
+            override val text: String = MathCharacter.MULTIPLY
         }
 
         data object Divide : Operator {
-            override val text: String = SymbolText.DIVIDE
+            override val text: String = MathCharacter.DIVIDE
         }
     }
 
