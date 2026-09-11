@@ -12,680 +12,622 @@
   <defs
      id="defs1">
     <filter
-       style="color-interpolation-filters:sRGB"
-       id="filter91"
-       x="-0.12148482"
-       y="-0.24296961"
-       width="1.2429696"
-       height="1.4859392">
-      <feFlood
-         result="flood"
-         in="SourceGraphic"
-         flood-opacity="0.498039"
-         flood-color="rgb(0,0,0)"
-         id="feFlood90" />
-      <feGaussianBlur
-         result="blur"
-         in="SourceGraphic"
-         stdDeviation="3.000000"
-         id="feGaussianBlur90" />
-      <feOffset
-         result="offset"
-         in="blur"
-         dx="0.000000"
-         dy="0.000000"
-         id="feOffset90" />
-      <feComposite
-         result="comp1"
-         operator="in"
-         in="flood"
-         in2="offset"
-         id="feComposite90" />
-      <feComposite
-         result="comp2"
-         operator="over"
-         in="SourceGraphic"
-         in2="comp1"
-         id="feComposite91" />
-    </filter>
-    <filter
-       style="color-interpolation-filters:sRGB"
-       id="filter93"
-       x="-0.070866143"
-       y="-0.070866143"
-       width="1.1417323"
-       height="1.1417323">
-      <feFlood
-         result="flood"
-         in="SourceGraphic"
-         flood-opacity="0.498039"
-         flood-color="rgb(0,0,0)"
-         id="feFlood91" />
-      <feGaussianBlur
-         result="blur"
-         in="SourceGraphic"
-         stdDeviation="3.000000"
-         id="feGaussianBlur91" />
-      <feOffset
-         result="offset"
-         in="blur"
-         dx="0.000000"
-         dy="0.000000"
-         id="feOffset91" />
-      <feComposite
-         result="comp1"
-         operator="in"
-         in="flood"
-         in2="offset"
-         id="feComposite92" />
-      <feComposite
-         result="comp2"
-         operator="over"
-         in="SourceGraphic"
-         in2="comp1"
-         id="feComposite93" />
-    </filter>
-    <filter
-       style="color-interpolation-filters:sRGB"
-       id="filter95"
-       x="-0.12148482"
-       y="-0.12148482"
-       width="1.2429696"
-       height="1.2429696">
-      <feFlood
-         result="flood"
-         in="SourceGraphic"
-         flood-opacity="0.498039"
-         flood-color="rgb(0,0,0)"
-         id="feFlood93" />
-      <feGaussianBlur
-         result="blur"
-         in="SourceGraphic"
-         stdDeviation="3.000000"
-         id="feGaussianBlur93" />
-      <feOffset
-         result="offset"
-         in="blur"
-         dx="0.000000"
-         dy="0.000000"
-         id="feOffset93" />
-      <feComposite
-         result="comp1"
-         operator="in"
-         in="flood"
-         in2="offset"
-         id="feComposite94" />
-      <feComposite
-         result="comp2"
-         operator="over"
-         in="SourceGraphic"
-         in2="comp1"
-         id="feComposite95" />
-    </filter>
-    <filter
-       style="color-interpolation-filters:sRGB"
-       id="filter97"
-       x="-0.070866143"
-       y="-0.070866143"
-       width="1.1417323"
-       height="1.1417323">
-      <feFlood
-         result="flood"
-         in="SourceGraphic"
-         flood-opacity="0.498039"
-         flood-color="rgb(0,0,0)"
-         id="feFlood95" />
-      <feGaussianBlur
-         result="blur"
-         in="SourceGraphic"
-         stdDeviation="3.000000"
-         id="feGaussianBlur95" />
-      <feOffset
-         result="offset"
-         in="blur"
-         dx="0.000000"
-         dy="0.000000"
-         id="feOffset95" />
-      <feComposite
-         result="comp1"
-         operator="in"
-         in="flood"
-         in2="offset"
-         id="feComposite96" />
-      <feComposite
-         result="comp2"
-         operator="over"
-         in="SourceGraphic"
-         in2="comp1"
-         id="feComposite97" />
-    </filter>
-    <filter
-       style="color-interpolation-filters:sRGB"
-       id="filter99"
-       x="-0.12148482"
+       style="color-interpolation-filters:sRGB;"
+       id="filter22"
+       x="-0.14173228"
        y="-0.17007873"
-       width="1.2429696"
+       width="1.2834646"
        height="1.3401575">
       <feFlood
          result="flood"
          in="SourceGraphic"
          flood-opacity="0.498039"
          flood-color="rgb(0,0,0)"
-         id="feFlood97" />
+         id="feFlood20" />
       <feGaussianBlur
          result="blur"
          in="SourceGraphic"
          stdDeviation="3.000000"
-         id="feGaussianBlur97" />
+         id="feGaussianBlur20" />
       <feOffset
          result="offset"
          in="blur"
          dx="0.000000"
          dy="0.000000"
-         id="feOffset97" />
+         id="feOffset20" />
       <feComposite
          result="comp1"
          operator="in"
          in="flood"
          in2="offset"
-         id="feComposite98" />
+         id="feComposite21" />
       <feComposite
          result="comp2"
          operator="over"
          in="SourceGraphic"
          in2="comp1"
-         id="feComposite99" />
+         id="feComposite22" />
     </filter>
     <filter
-       style="color-interpolation-filters:sRGB"
-       id="filter101"
-       x="-0.070866143"
-       y="-0.070866143"
-       width="1.1417323"
-       height="1.1417323">
+       style="color-interpolation-filters:sRGB;"
+       id="filter24"
+       x="-0.14173228"
+       y="-0.85039355"
+       width="1.2834646"
+       height="2.7007871">
       <feFlood
          result="flood"
          in="SourceGraphic"
          flood-opacity="0.498039"
          flood-color="rgb(0,0,0)"
-         id="feFlood99" />
+         id="feFlood22" />
       <feGaussianBlur
          result="blur"
          in="SourceGraphic"
          stdDeviation="3.000000"
-         id="feGaussianBlur99" />
+         id="feGaussianBlur22" />
       <feOffset
          result="offset"
          in="blur"
          dx="0.000000"
          dy="0.000000"
-         id="feOffset99" />
+         id="feOffset22" />
       <feComposite
          result="comp1"
          operator="in"
          in="flood"
          in2="offset"
-         id="feComposite100" />
+         id="feComposite23" />
       <feComposite
          result="comp2"
          operator="over"
          in="SourceGraphic"
          in2="comp1"
-         id="feComposite101" />
+         id="feComposite24" />
     </filter>
     <filter
-       style="color-interpolation-filters:sRGB"
-       id="filter103"
-       x="-0.12148482"
-       y="-0.85039298"
-       width="1.2429696"
-       height="2.700786">
+       style="color-interpolation-filters:sRGB;"
+       id="filter26"
+       x="-0.14173225"
+       y="-0.28346459"
+       width="1.2834645"
+       height="1.5669292">
       <feFlood
          result="flood"
          in="SourceGraphic"
          flood-opacity="0.498039"
          flood-color="rgb(0,0,0)"
-         id="feFlood101" />
+         id="feFlood24" />
       <feGaussianBlur
          result="blur"
          in="SourceGraphic"
          stdDeviation="3.000000"
-         id="feGaussianBlur101" />
+         id="feGaussianBlur24" />
       <feOffset
          result="offset"
          in="blur"
          dx="0.000000"
          dy="0.000000"
-         id="feOffset101" />
+         id="feOffset24" />
       <feComposite
          result="comp1"
          operator="in"
          in="flood"
          in2="offset"
-         id="feComposite102" />
+         id="feComposite25" />
       <feComposite
          result="comp2"
          operator="over"
          in="SourceGraphic"
          in2="comp1"
-         id="feComposite103" />
+         id="feComposite26" />
     </filter>
     <filter
-       style="color-interpolation-filters:sRGB"
-       id="filter105"
-       x="-0.070866143"
-       y="-0.070866143"
-       width="1.1417323"
-       height="1.1417323">
+       style="color-interpolation-filters:sRGB;"
+       id="filter28"
+       x="-0.14173228"
+       y="-0.14173228"
+       width="1.2834646"
+       height="1.2834646">
       <feFlood
          result="flood"
          in="SourceGraphic"
          flood-opacity="0.498039"
          flood-color="rgb(0,0,0)"
-         id="feFlood103" />
+         id="feFlood26" />
       <feGaussianBlur
          result="blur"
          in="SourceGraphic"
          stdDeviation="3.000000"
-         id="feGaussianBlur103" />
+         id="feGaussianBlur26" />
       <feOffset
          result="offset"
          in="blur"
          dx="0.000000"
          dy="0.000000"
-         id="feOffset103" />
+         id="feOffset26" />
       <feComposite
          result="comp1"
          operator="in"
          in="flood"
          in2="offset"
-         id="feComposite104" />
+         id="feComposite27" />
       <feComposite
          result="comp2"
          operator="over"
          in="SourceGraphic"
          in2="comp1"
-         id="feComposite105" />
+         id="feComposite28" />
     </filter>
     <filter
-       style="color-interpolation-filters:sRGB"
-       id="filter107"
-       x="-0.12148482"
-       y="-0.12148482"
-       width="1.2429696"
-       height="1.2429696">
+       style="color-interpolation-filters:sRGB;"
+       id="filter30"
+       x="-0.14173228"
+       y="-0.14173228"
+       width="1.2834646"
+       height="1.2834646">
       <feFlood
          result="flood"
          in="SourceGraphic"
          flood-opacity="0.498039"
          flood-color="rgb(0,0,0)"
-         id="feFlood105" />
+         id="feFlood28" />
       <feGaussianBlur
          result="blur"
          in="SourceGraphic"
          stdDeviation="3.000000"
-         id="feGaussianBlur105" />
+         id="feGaussianBlur28" />
       <feOffset
          result="offset"
          in="blur"
          dx="0.000000"
          dy="0.000000"
-         id="feOffset105" />
+         id="feOffset28" />
       <feComposite
          result="comp1"
          operator="in"
          in="flood"
          in2="offset"
-         id="feComposite106" />
+         id="feComposite29" />
       <feComposite
          result="comp2"
          operator="over"
          in="SourceGraphic"
          in2="comp1"
-         id="feComposite107" />
+         id="feComposite30" />
     </filter>
     <filter
-       style="color-interpolation-filters:sRGB"
-       id="filter109"
-       x="-0.070866143"
-       y="-0.070866143"
-       width="1.1417323"
-       height="1.1417323">
+       style="color-interpolation-filters:sRGB;"
+       id="filter32"
+       x="-0.085039373"
+       y="-0.085039373"
+       width="1.1700787"
+       height="1.1700787">
       <feFlood
          result="flood"
          in="SourceGraphic"
          flood-opacity="0.498039"
          flood-color="rgb(0,0,0)"
-         id="feFlood107" />
+         id="feFlood30" />
       <feGaussianBlur
          result="blur"
          in="SourceGraphic"
          stdDeviation="3.000000"
-         id="feGaussianBlur107" />
+         id="feGaussianBlur30" />
       <feOffset
          result="offset"
          in="blur"
          dx="0.000000"
          dy="0.000000"
-         id="feOffset107" />
+         id="feOffset30" />
       <feComposite
          result="comp1"
          operator="in"
          in="flood"
          in2="offset"
-         id="feComposite108" />
+         id="feComposite31" />
       <feComposite
          result="comp2"
          operator="over"
          in="SourceGraphic"
          in2="comp1"
-         id="feComposite109" />
+         id="feComposite32" />
+    </filter>
+    <filter
+       style="color-interpolation-filters:sRGB;"
+       id="filter34"
+       x="-0.058681682"
+       y="-0.058681682"
+       width="1.1173634"
+       height="1.1173634">
+      <feFlood
+         result="flood"
+         in="SourceGraphic"
+         flood-opacity="0.498039"
+         flood-color="rgb(0,0,0)"
+         id="feFlood32" />
+      <feGaussianBlur
+         result="blur"
+         in="SourceGraphic"
+         stdDeviation="3.000000"
+         id="feGaussianBlur32" />
+      <feOffset
+         result="offset"
+         in="blur"
+         dx="0.000000"
+         dy="0.000000"
+         id="feOffset32" />
+      <feComposite
+         result="comp1"
+         operator="in"
+         in="flood"
+         in2="offset"
+         id="feComposite33" />
+      <feComposite
+         result="comp2"
+         operator="over"
+         in="SourceGraphic"
+         in2="comp1"
+         id="feComposite34" />
+    </filter>
+    <filter
+       style="color-interpolation-filters:sRGB;"
+       id="filter36"
+       x="-0.058681683"
+       y="-0.058681682"
+       width="1.1173634"
+       height="1.1173634">
+      <feFlood
+         result="flood"
+         in="SourceGraphic"
+         flood-opacity="0.498039"
+         flood-color="rgb(0,0,0)"
+         id="feFlood34" />
+      <feGaussianBlur
+         result="blur"
+         in="SourceGraphic"
+         stdDeviation="3.000000"
+         id="feGaussianBlur34" />
+      <feOffset
+         result="offset"
+         in="blur"
+         dx="0.000000"
+         dy="0.000000"
+         id="feOffset34" />
+      <feComposite
+         result="comp1"
+         operator="in"
+         in="flood"
+         in2="offset"
+         id="feComposite35" />
+      <feComposite
+         result="comp2"
+         operator="over"
+         in="SourceGraphic"
+         in2="comp1"
+         id="feComposite36" />
+    </filter>
+    <filter
+       style="color-interpolation-filters:sRGB;"
+       id="filter38"
+       x="-0.058681682"
+       y="-0.058681683"
+       width="1.1173634"
+       height="1.1173634">
+      <feFlood
+         result="flood"
+         in="SourceGraphic"
+         flood-opacity="0.498039"
+         flood-color="rgb(0,0,0)"
+         id="feFlood36" />
+      <feGaussianBlur
+         result="blur"
+         in="SourceGraphic"
+         stdDeviation="3.000000"
+         id="feGaussianBlur36" />
+      <feOffset
+         result="offset"
+         in="blur"
+         dx="0.000000"
+         dy="0.000000"
+         id="feOffset36" />
+      <feComposite
+         result="comp1"
+         operator="in"
+         in="flood"
+         in2="offset"
+         id="feComposite37" />
+      <feComposite
+         result="comp2"
+         operator="over"
+         in="SourceGraphic"
+         in2="comp1"
+         id="feComposite38" />
+    </filter>
+    <filter
+       style="color-interpolation-filters:sRGB;"
+       id="filter40"
+       x="-0.058681683"
+       y="-0.058681683"
+       width="1.1173634"
+       height="1.1173634">
+      <feFlood
+         result="flood"
+         in="SourceGraphic"
+         flood-opacity="0.498039"
+         flood-color="rgb(0,0,0)"
+         id="feFlood38" />
+      <feGaussianBlur
+         result="blur"
+         in="SourceGraphic"
+         stdDeviation="3.000000"
+         id="feGaussianBlur38" />
+      <feOffset
+         result="offset"
+         in="blur"
+         dx="0.000000"
+         dy="0.000000"
+         id="feOffset38" />
+      <feComposite
+         result="comp1"
+         operator="in"
+         in="flood"
+         in2="offset"
+         id="feComposite39" />
+      <feComposite
+         result="comp2"
+         operator="over"
+         in="SourceGraphic"
+         in2="comp1"
+         id="feComposite40" />
     </filter>
   </defs>
   <g
      id="layer1">
+    <path
+       d="M 8.5374633,131.23333 H 84.843399 A 50.799999,50.799999 0 0 1 131.23333,84.843399 V 8.5374633 A 127,127 0 0 0 8.5374633,131.23333 Z"
+       style="fill:#001d36;stroke-width:0.316285;stroke-linecap:round;stroke-linejoin:bevel;fill-opacity:1;filter:url(#filter40)"
+       id="path49" />
+    <path
+       d="m 139.7,84.843399 a 50.799999,50.799999 0 0 1 46.38993,46.389931 h 76.30594 A 127,127 0 0 0 139.7,8.5374633 Z"
+       style="fill:#003355;stroke-width:0.316285;stroke-linecap:round;stroke-linejoin:bevel;fill-opacity:1;filter:url(#filter38)"
+       id="path32" />
+    <path
+       d="M 131.23333,262.39587 V 186.08993 A 50.799999,50.799999 0 0 1 84.843399,139.7 H 8.5374633 A 127,127 0 0 0 131.23333,262.39587 Z"
+       style="fill:#003355;stroke-width:0.316285;stroke-linecap:round;stroke-linejoin:bevel;fill-opacity:1;filter:url(#filter36)"
+       id="path44" />
+    <path
+       d="M 262.39587,139.7 H 186.08993 A 50.799999,50.799999 0 0 1 139.7,186.08993 v 76.30594 A 127,127 0 0 0 262.39587,139.7 Z"
+       style="fill:#001d36;stroke-width:0.316285;stroke-linecap:round;stroke-linejoin:bevel;fill-opacity:1;filter:url(#filter34)"
+       id="path39" />
+    <circle
+       style="fill:#4c8ee2;fill-opacity:1;stroke:none;stroke-width:6.13655;stroke-linecap:round;stroke-linejoin:bevel;filter:url(#filter32)"
+       id="path2-9"
+       cx="135.46666"
+       cy="135.46666"
+       r="42.333332" />
     <g
-       id="g2"
-       transform="translate(-4.2333319,12.700002)"
-       style="fill:#ff5c5c;fill-opacity:1;filter:url(#filter109)">
-      <circle
-         style="fill:#ff5c5c;fill-opacity:1;stroke-width:6.27174;stroke-linecap:round;stroke-linejoin:bevel"
-         id="path1"
-         cx="84.666664"
-         cy="67.73333"
-         r="50.799999" />
-      <rect
-         style="fill:#ff5c5c;fill-opacity:1;stroke-width:6.28809;stroke-linecap:round;stroke-linejoin:bevel"
-         id="rect2"
-         width="50.799995"
-         height="50.799999"
-         x="84.666664"
-         y="67.73333" />
-    </g>
-    <g
-       id="g4"
-       style="fill:#f0f0f0;fill-opacity:1;filter:url(#filter107)"
-       transform="translate(118.53333,16.933329)">
+       id="g7"
+       transform="translate(-21.166668,101.6)"
+       style="fill:#d1e4ff;fill-opacity:1;filter:url(#filter30)">
       <g
-         id="g3"
-         transform="translate(-12.700002,-4.2333335)"
-         style="fill:#f0f0f0;fill-opacity:1">
-        <circle
-           style="fill:#f0f0f0;fill-opacity:1;stroke-width:3.14404;stroke-linecap:round;stroke-linejoin:bevel"
-           id="path2"
-           cx="-46.566666"
-           cy="71.966667"
-           r="4.2333331" />
-        <circle
-           style="fill:#f0f0f0;fill-opacity:1;stroke-width:3.14404;stroke-linecap:round;stroke-linejoin:bevel"
-           id="path2-8"
-           cx="4.2333331"
-           cy="71.96666"
-           r="4.2333331" />
+         id="g6"
+         style="fill:#d1e4ff;fill-opacity:1">
         <rect
-           style="fill:#f0f0f0;fill-opacity:1;stroke-width:5.03047;stroke-linecap:round;stroke-linejoin:bevel"
-           id="rect3"
-           width="50.799999"
+           style="fill:#d1e4ff;fill-opacity:1;stroke:none;stroke-width:4.82274;stroke-linecap:round;stroke-linejoin:bevel"
+           id="rect2"
+           width="42.333332"
            height="8.4666662"
-           x="-46.566666"
-           y="67.73333" />
+           x="71.96666"
+           y="-33.866665" />
+        <circle
+           style="fill:#d1e4ff;fill-opacity:1;stroke:none;stroke-width:1.62358;stroke-linecap:round;stroke-linejoin:bevel"
+           id="path5"
+           cx="71.966667"
+           cy="-29.633333"
+           r="4.2333331" />
+        <circle
+           style="fill:#d1e4ff;fill-opacity:1;stroke:none;stroke-width:1.62358;stroke-linecap:round;stroke-linejoin:bevel"
+           id="path5-5"
+           cx="114.3"
+           cy="-29.633331"
+           r="4.2333331" />
       </g>
       <g
-         id="g3-8"
-         transform="rotate(90,-25.399994,63.500007)"
-         style="fill:#f0f0f0;fill-opacity:1">
-        <circle
-           style="fill:#f0f0f0;fill-opacity:1;stroke-width:3.14404;stroke-linecap:round;stroke-linejoin:bevel"
-           id="path2-9"
-           cx="-46.566666"
-           cy="71.966667"
-           r="4.2333331" />
-        <circle
-           style="fill:#f0f0f0;fill-opacity:1;stroke-width:3.14404;stroke-linecap:round;stroke-linejoin:bevel"
-           id="path2-8-2"
-           cx="4.2333331"
-           cy="71.96666"
-           r="4.2333331" />
+         id="g6-0"
+         transform="rotate(90,93.133332,-29.633335)"
+         style="fill:#d1e4ff;fill-opacity:1">
         <rect
-           style="fill:#f0f0f0;fill-opacity:1;stroke-width:5.03047;stroke-linecap:round;stroke-linejoin:bevel"
-           id="rect3-7"
-           width="50.799999"
+           style="fill:#d1e4ff;fill-opacity:1;stroke:none;stroke-width:4.82274;stroke-linecap:round;stroke-linejoin:bevel"
+           id="rect2-24"
+           width="42.333332"
            height="8.4666662"
-           x="-46.566666"
-           y="67.73333" />
+           x="71.96666"
+           y="-33.866665" />
+        <circle
+           style="fill:#d1e4ff;fill-opacity:1;stroke:none;stroke-width:1.62358;stroke-linecap:round;stroke-linejoin:bevel"
+           id="path5-8"
+           cx="71.966667"
+           cy="-29.633333"
+           r="4.2333331" />
+        <circle
+           style="fill:#d1e4ff;fill-opacity:1;stroke:none;stroke-width:1.62358;stroke-linecap:round;stroke-linejoin:bevel"
+           id="path5-5-6"
+           cx="114.3"
+           cy="-29.633331"
+           r="4.2333331" />
       </g>
     </g>
     <g
-       id="g2-8"
-       transform="matrix(-1,0,0,1,275.16666,12.700002)"
-       style="fill:#ff9f43;fill-opacity:1;filter:url(#filter105)">
-      <circle
-         style="fill:#ff9f43;fill-opacity:1;stroke-width:6.27174;stroke-linecap:round;stroke-linejoin:bevel"
-         id="path1-2"
-         cx="84.666664"
-         cy="67.73333"
-         r="50.799999" />
-      <rect
-         style="fill:#ff9f43;fill-opacity:1;stroke-width:6.28809;stroke-linecap:round;stroke-linejoin:bevel"
-         id="rect2-4"
-         width="50.799995"
-         height="50.799999"
-         x="84.666664"
-         y="67.73333" />
+       id="g7-0"
+       transform="rotate(45,-193.39447,59.116171)"
+       style="fill:#d1e4ff;fill-opacity:1;filter:url(#filter28)">
+      <g
+         id="g6-61"
+         style="fill:#d1e4ff;fill-opacity:1">
+        <rect
+           style="fill:#d1e4ff;fill-opacity:1;stroke:none;stroke-width:4.82274;stroke-linecap:round;stroke-linejoin:bevel"
+           id="rect2-8"
+           width="42.333332"
+           height="8.4666662"
+           x="71.96666"
+           y="-33.866665" />
+        <circle
+           style="fill:#d1e4ff;fill-opacity:1;stroke:none;stroke-width:1.62358;stroke-linecap:round;stroke-linejoin:bevel"
+           id="path5-9"
+           cx="71.966667"
+           cy="-29.633333"
+           r="4.2333331" />
+        <circle
+           style="fill:#d1e4ff;fill-opacity:1;stroke:none;stroke-width:1.62358;stroke-linecap:round;stroke-linejoin:bevel"
+           id="path5-5-84"
+           cx="114.3"
+           cy="-29.633331"
+           r="4.2333331" />
+      </g>
+      <g
+         id="g6-0-1"
+         transform="rotate(90,93.133332,-29.633335)"
+         style="fill:#d1e4ff;fill-opacity:1">
+        <rect
+           style="fill:#d1e4ff;fill-opacity:1;stroke:none;stroke-width:4.82274;stroke-linecap:round;stroke-linejoin:bevel"
+           id="rect2-24-4"
+           width="42.333332"
+           height="8.4666662"
+           x="71.96666"
+           y="-33.866665" />
+        <circle
+           style="fill:#d1e4ff;fill-opacity:1;stroke:none;stroke-width:1.62358;stroke-linecap:round;stroke-linejoin:bevel"
+           id="path5-8-3"
+           cx="71.966667"
+           cy="-29.633333"
+           r="4.2333331" />
+        <circle
+           style="fill:#d1e4ff;fill-opacity:1;stroke:none;stroke-width:1.62358;stroke-linecap:round;stroke-linejoin:bevel"
+           id="path5-5-6-9"
+           cx="114.3"
+           cy="-29.633331"
+           r="4.2333331" />
+      </g>
     </g>
     <g
-       id="g3-2"
-       transform="translate(207.43331,12.699992)"
-       style="fill:#f0f0f0;fill-opacity:1;filter:url(#filter103)">
-      <circle
-         style="fill:#f0f0f0;fill-opacity:1;stroke-width:3.14404;stroke-linecap:round;stroke-linejoin:bevel"
-         id="path2-3"
-         cx="-46.566666"
-         cy="71.966667"
-         r="4.2333331" />
-      <circle
-         style="fill:#f0f0f0;fill-opacity:1;stroke-width:3.14404;stroke-linecap:round;stroke-linejoin:bevel"
-         id="path2-8-3"
-         cx="4.2333331"
-         cy="71.96666"
-         r="4.2333331" />
+       id="g9"
+       style="fill:#001323;fill-opacity:1;filter:url(#filter26)">
+      <g
+         id="g6-66"
+         transform="translate(42.333322,156.63333)"
+         style="fill:#001323;fill-opacity:1">
+        <rect
+           style="fill:#001323;fill-opacity:1;stroke:none;stroke-width:4.82274;stroke-linecap:round;stroke-linejoin:bevel"
+           id="rect2-0"
+           width="42.333332"
+           height="8.4666662"
+           x="71.96666"
+           y="-33.866665" />
+        <circle
+           style="fill:#001323;fill-opacity:1;stroke:none;stroke-width:1.62358;stroke-linecap:round;stroke-linejoin:bevel"
+           id="path5-38"
+           cx="71.966667"
+           cy="-29.633333"
+           r="4.2333331" />
+        <circle
+           style="fill:#001323;fill-opacity:1;stroke:none;stroke-width:1.62358;stroke-linecap:round;stroke-linejoin:bevel"
+           id="path5-5-0"
+           cx="114.3"
+           cy="-29.633331"
+           r="4.2333331" />
+      </g>
+      <g
+         id="g6-66-3"
+         transform="translate(42.333331,173.56666)"
+         style="fill:#001323;fill-opacity:1">
+        <rect
+           style="fill:#001323;fill-opacity:1;stroke:none;stroke-width:4.82274;stroke-linecap:round;stroke-linejoin:bevel"
+           id="rect2-0-5"
+           width="42.333332"
+           height="8.4666662"
+           x="71.96666"
+           y="-33.866665" />
+        <circle
+           style="fill:#001323;fill-opacity:1;stroke:none;stroke-width:1.62358;stroke-linecap:round;stroke-linejoin:bevel"
+           id="path5-38-1"
+           cx="71.966667"
+           cy="-29.633333"
+           r="4.2333331" />
+        <circle
+           style="fill:#001323;fill-opacity:1;stroke:none;stroke-width:1.62358;stroke-linecap:round;stroke-linejoin:bevel"
+           id="path5-5-0-2"
+           cx="114.3"
+           cy="-29.633331"
+           r="4.2333331" />
+      </g>
+    </g>
+    <g
+       id="g6-6"
+       transform="translate(105.83333,101.6)"
+       style="fill:#d1e4ff;fill-opacity:1;filter:url(#filter24)">
       <rect
-         style="fill:#f0f0f0;fill-opacity:1;stroke-width:5.03047;stroke-linecap:round;stroke-linejoin:bevel"
-         id="rect3-4"
-         width="50.799999"
+         style="fill:#d1e4ff;fill-opacity:1;stroke:none;stroke-width:4.82274;stroke-linecap:round;stroke-linejoin:bevel"
+         id="rect2-1"
+         width="42.333332"
          height="8.4666662"
-         x="-46.566666"
-         y="67.73333" />
-    </g>
-    <g
-       id="g2-8-1"
-       transform="rotate(180,137.58333,129.11666)"
-       style="fill:#7ed957;fill-opacity:1;filter:url(#filter101)">
+         x="71.96666"
+         y="-33.866665" />
       <circle
-         style="fill:#7ed957;fill-opacity:1;stroke-width:6.27174;stroke-linecap:round;stroke-linejoin:bevel"
-         id="path1-2-1"
-         cx="84.666664"
-         cy="67.73333"
-         r="50.799999" />
-      <rect
-         style="fill:#7ed957;fill-opacity:1;stroke-width:6.28809;stroke-linecap:round;stroke-linejoin:bevel"
-         id="rect2-4-5"
-         width="50.799995"
-         height="50.799999"
-         x="84.666664"
-         y="67.73333" />
+         style="fill:#d1e4ff;fill-opacity:1;stroke:none;stroke-width:1.62358;stroke-linecap:round;stroke-linejoin:bevel"
+         id="path5-3"
+         cx="71.966667"
+         cy="-29.633333"
+         r="4.2333331" />
+      <circle
+         style="fill:#d1e4ff;fill-opacity:1;stroke:none;stroke-width:1.62358;stroke-linecap:round;stroke-linejoin:bevel"
+         id="path5-5-8"
+         cx="114.3"
+         cy="-29.633331"
+         r="4.2333331" />
     </g>
     <g
        id="g8"
-       transform="translate(4.2333416,4.2333273)"
-       style="fill:#f0f0f0;fill-opacity:1;filter:url(#filter99)">
+       transform="translate(-4.2333295,-4.2333317)"
+       style="fill:#d1e4ff;fill-opacity:1;filter:url(#filter22)">
       <g
-         id="g3-2-4"
-         transform="translate(203.19997,110.06666)"
-         style="fill:#f0f0f0;fill-opacity:1">
-        <circle
-           style="fill:#f0f0f0;fill-opacity:1;stroke-width:3.14404;stroke-linecap:round;stroke-linejoin:bevel"
-           id="path2-3-8"
-           cx="-46.566666"
-           cy="71.966667"
-           r="4.2333331" />
-        <circle
-           style="fill:#f0f0f0;fill-opacity:1;stroke-width:3.14404;stroke-linecap:round;stroke-linejoin:bevel"
-           id="path2-8-3-6"
-           cx="4.2333331"
-           cy="71.96666"
-           r="4.2333331" />
+         id="g6-6-7"
+         transform="translate(110.06666,232.83332)"
+         style="fill:#d1e4ff;fill-opacity:1">
         <rect
-           style="fill:#f0f0f0;fill-opacity:1;stroke-width:5.03047;stroke-linecap:round;stroke-linejoin:bevel"
-           id="rect3-4-5"
-           width="50.799999"
+           style="fill:#d1e4ff;fill-opacity:1;stroke:none;stroke-width:4.82274;stroke-linecap:round;stroke-linejoin:bevel"
+           id="rect2-1-7"
+           width="42.333332"
            height="8.4666662"
-           x="-46.566666"
-           y="67.73333" />
+           x="71.96666"
+           y="-33.866665" />
+        <circle
+           style="fill:#d1e4ff;fill-opacity:1;stroke:none;stroke-width:1.62358;stroke-linecap:round;stroke-linejoin:bevel"
+           id="path5-3-7"
+           cx="71.966667"
+           cy="-29.633333"
+           r="4.2333331" />
+        <circle
+           style="fill:#d1e4ff;fill-opacity:1;stroke:none;stroke-width:1.62358;stroke-linecap:round;stroke-linejoin:bevel"
+           id="path5-5-8-7"
+           cx="114.3"
+           cy="-29.633331"
+           r="4.2333331" />
       </g>
       <circle
-         style="fill:#f0f0f0;fill-opacity:1;stroke-width:3.14404;stroke-linecap:round;stroke-linejoin:bevel"
-         id="path2-9-1-9"
-         cx="165.09999"
-         cy="-182.03333"
+         style="fill:#d1e4ff;fill-opacity:1;stroke:none;stroke-width:1.62358;stroke-linecap:round;stroke-linejoin:bevel"
+         id="path5-8-4-5"
+         cx="186.26666"
+         cy="-203.19998"
          r="4.2333331"
          transform="rotate(90)" />
       <circle
-         style="fill:#f0f0f0;fill-opacity:1;stroke-width:3.14404;stroke-linecap:round;stroke-linejoin:bevel"
-         id="path2-8-2-3-0"
-         cx="198.96666"
-         cy="-182.03333"
+         style="fill:#d1e4ff;fill-opacity:1;stroke:none;stroke-width:1.62358;stroke-linecap:round;stroke-linejoin:bevel"
+         id="path5-5-6-4-9"
+         cx="220.13333"
+         cy="-203.19998"
          r="4.2333331"
          transform="rotate(90)" />
-    </g>
-    <g
-       id="g2-8-1-4"
-       transform="matrix(1,0,0,-1,-4.2333319,258.23333)"
-       style="fill:#4da6ff;fill-opacity:1;filter:url(#filter97)">
-      <circle
-         style="fill:#4da6ff;fill-opacity:1;stroke-width:6.27174;stroke-linecap:round;stroke-linejoin:bevel"
-         id="path1-2-1-2"
-         cx="84.666664"
-         cy="67.73333"
-         r="50.799999" />
-      <rect
-         style="fill:#4da6ff;fill-opacity:1;stroke-width:6.28809;stroke-linecap:round;stroke-linejoin:bevel"
-         id="rect2-4-5-3"
-         width="50.799995"
-         height="50.799999"
-         x="84.666664"
-         y="67.73333" />
-    </g>
-    <g
-       id="g4-1-7"
-       style="fill:#f0f0f0;fill-opacity:1;filter:url(#filter95)"
-       transform="rotate(45,-117.68239,270.08239)">
-      <g
-         id="g3-2-9"
-         transform="translate(-12.700002,-4.2333335)"
-         style="fill:#f0f0f0;fill-opacity:1">
-        <circle
-           style="fill:#f0f0f0;fill-opacity:1;stroke-width:3.14404;stroke-linecap:round;stroke-linejoin:bevel"
-           id="path2-3-3"
-           cx="-46.566666"
-           cy="71.966667"
-           r="4.2333331" />
-        <circle
-           style="fill:#f0f0f0;fill-opacity:1;stroke-width:3.14404;stroke-linecap:round;stroke-linejoin:bevel"
-           id="path2-8-3-1"
-           cx="4.2333331"
-           cy="71.96666"
-           r="4.2333331" />
-        <rect
-           style="fill:#f0f0f0;fill-opacity:1;stroke-width:5.03047;stroke-linecap:round;stroke-linejoin:bevel"
-           id="rect3-4-9"
-           width="50.799999"
-           height="8.4666662"
-           x="-46.566666"
-           y="67.73333" />
-      </g>
-      <g
-         id="g3-8-1-8"
-         transform="rotate(90,-25.399994,63.500007)"
-         style="fill:#f0f0f0;fill-opacity:1">
-        <circle
-           style="fill:#f0f0f0;fill-opacity:1;stroke-width:3.14404;stroke-linecap:round;stroke-linejoin:bevel"
-           id="path2-9-1-6"
-           cx="-46.566666"
-           cy="71.966667"
-           r="4.2333331" />
-        <circle
-           style="fill:#f0f0f0;fill-opacity:1;stroke-width:3.14404;stroke-linecap:round;stroke-linejoin:bevel"
-           id="path2-8-2-3-5"
-           cx="4.2333331"
-           cy="71.96666"
-           r="4.2333331" />
-        <rect
-           style="fill:#f0f0f0;fill-opacity:1;stroke-width:5.03047;stroke-linecap:round;stroke-linejoin:bevel"
-           id="rect3-7-8-0"
-           width="50.799999"
-           height="8.4666662"
-           x="-46.566666"
-           y="67.73333" />
-      </g>
-    </g>
-    <circle
-       style="fill:#a66cff;fill-opacity:0.752941;stroke-width:6.44633;stroke-linecap:round;stroke-linejoin:bevel;filter:url(#filter93)"
-       id="path3"
-       cx="135.46666"
-       cy="135.46666"
-       r="50.799999" />
-    <g
-       id="g48"
-       style="filter:url(#filter91)">
-      <g
-         id="g3-2-1"
-         transform="translate(156.63333,52.916667)"
-         style="fill:#f0f0f0;fill-opacity:1">
-        <circle
-           style="fill:#f0f0f0;fill-opacity:1;stroke-width:3.14404;stroke-linecap:round;stroke-linejoin:bevel"
-           id="path2-3-38"
-           cx="-46.566666"
-           cy="71.966667"
-           r="4.2333331" />
-        <circle
-           style="fill:#f0f0f0;fill-opacity:1;stroke-width:3.14404;stroke-linecap:round;stroke-linejoin:bevel"
-           id="path2-8-3-7"
-           cx="4.2333331"
-           cy="71.96666"
-           r="4.2333331" />
-        <rect
-           style="fill:#f0f0f0;fill-opacity:1;stroke-width:5.03047;stroke-linecap:round;stroke-linejoin:bevel"
-           id="rect3-4-4"
-           width="50.799999"
-           height="8.4666662"
-           x="-46.566666"
-           y="67.73333" />
-      </g>
-      <g
-         id="g3-2-1-3"
-         transform="translate(156.63333,74.083329)"
-         style="fill:#f0f0f0;fill-opacity:1">
-        <circle
-           style="fill:#f0f0f0;fill-opacity:1;stroke-width:3.14404;stroke-linecap:round;stroke-linejoin:bevel"
-           id="path2-3-38-1"
-           cx="-46.566666"
-           cy="71.966667"
-           r="4.2333331" />
-        <circle
-           style="fill:#f0f0f0;fill-opacity:1;stroke-width:3.14404;stroke-linecap:round;stroke-linejoin:bevel"
-           id="path2-8-3-7-9"
-           cx="4.2333331"
-           cy="71.96666"
-           r="4.2333331" />
-        <rect
-           style="fill:#f0f0f0;fill-opacity:1;stroke-width:5.03047;stroke-linecap:round;stroke-linejoin:bevel"
-           id="rect3-4-4-8"
-           width="50.799999"
-           height="8.4666662"
-           x="-46.566666"
-           y="67.73333" />
-      </g>
     </g>
   </g>
 </svg>
