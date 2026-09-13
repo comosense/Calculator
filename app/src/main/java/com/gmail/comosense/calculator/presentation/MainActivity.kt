@@ -24,7 +24,6 @@ class MainActivity : ComponentActivity() {
             WearApp(
                 appState = appState,
                 onClick = viewModel::onClick,
-                onLongClick = viewModel::onLongClick,
                 onHistoryClick = viewModel::onHistoryClick,
                 onHistoryDelete = viewModel::onHistoryDelete,
                 onHistoryDeleteAll = viewModel::onHistoryDeleteAll,
@@ -42,7 +41,6 @@ fun DefaultPreview() {
             entering = listOf(Symbol.Error("01234567890123456789")),
         ),
         onClick = {},
-        onLongClick = {},
         onHistoryClick = {},
         onHistoryDelete = {},
         onHistoryDeleteAll = {},

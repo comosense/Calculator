@@ -1,0 +1,1 @@
+-keep class com.gmail.comosense.calculator.data.proto.** { *; }

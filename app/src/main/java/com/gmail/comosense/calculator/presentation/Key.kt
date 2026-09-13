@@ -4,6 +4,7 @@ enum class Style {
     Numeric,
     Operator,
     Command,
+    Action,
 }
 
 sealed interface Key {
@@ -18,32 +19,32 @@ sealed class SymbolKey : Key {
 
     data object Positive : SymbolKey() {
         override val style: Style = Style.Operator
-        override val symbol = Symbol.Sign.Positive
+        override val symbol: Symbol = Symbol.Sign.Positive
     }
 
     data object Negative : SymbolKey() {
         override val style: Style = Style.Operator
-        override val symbol = Symbol.Sign.Negative
+        override val symbol: Symbol = Symbol.Sign.Negative
     }
 
     data class Digit(val value: Int) : SymbolKey() {
         override val style: Style = Style.Numeric
-        override val symbol = Symbol.Numeric.Digit(value)
+        override val symbol: Symbol = Symbol.Numeric.Digit(value)
     }
 
     data object Point : SymbolKey() {
         override val style: Style = Style.Numeric
-        override val symbol = Symbol.Numeric.Point
+        override val symbol: Symbol = Symbol.Numeric.Point
     }
 
     data object OpenParenthesis : SymbolKey() {
         override val style: Style = Style.Numeric
-        override val symbol = Symbol.FactorStart.OpenParenthesis
+        override val symbol: Symbol = Symbol.FactorStart.OpenParenthesis
     }
 
     data object CloseParenthesis : SymbolKey() {
         override val style: Style = Style.Numeric
-        override val symbol = Symbol.FactorEnd.CloseParenthesis
+        override val symbol: Symbol = Symbol.FactorEnd.CloseParenthesis
     }
 
     data object Add : SymbolKey() {
@@ -81,5 +82,12 @@ sealed class CommandKey : Key {
     data object Delete : CommandKey() {
         override val longClickKey: Key = Clear
         override val style: Style = Style.Command
+    }
+}
+
+sealed class ActionKey : Key {
+    data object OperatorBox : ActionKey() {
+        override val longClickKey: Key? = null
+        override val style: Style = Style.Action
     }
 }

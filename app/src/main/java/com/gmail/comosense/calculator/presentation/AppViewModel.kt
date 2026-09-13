@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.gmail.comosense.calculator.data.HistoryRepository
+import com.gmail.comosense.calculator.data.historyDataStore
 import kotlinx.coroutines.launch
 
 class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel() {
@@ -16,10 +17,9 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
             if (modelClass.isAssignableFrom(AppViewModel::class.java)) {
                 @Suppress("UNCHECKED_CAST")
                 return AppViewModel(
-                    historyRepository = HistoryRepository(context),
+                    historyRepository = HistoryRepository(context.historyDataStore),
                 ) as T
             }
-
             throw IllegalArgumentException(
                 "Unknown ViewModel class: ${modelClass.name}"
             )
@@ -50,14 +50,9 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
 
     fun onClick(key: Key) {
         when (key) {
-            is CommandKey -> updateState(key)
-            is SymbolKey -> updateState(key)
-        }
-    }
-
-    fun onLongClick(key: Key?) {
-        if (key != null) {
-            onClick(key)
+            is SymbolKey -> handleSymbolKey(key)
+            is CommandKey -> handleCommandKey(key)
+            else -> {}
         }
     }
 
@@ -88,7 +83,29 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
         }
     }
 
-    private fun updateState(key: CommandKey) {
+    private fun handleSymbolKey(key: SymbolKey) {
+        val state: AppState = _appState.value
+        val symbol: Symbol = key.symbol
+
+        if (!state.canAppend(symbol)) return
+
+        when (symbol) {
+            is Symbol.Operator -> {
+                _appState.value = state.copy(
+                    entering = state.entering + symbol,
+                )
+            }
+
+            else -> {
+                _appState.value = state.copy(
+                    result = if (state.entering.isEmpty()) emptyList() else state.result,
+                    entering = state.entering + symbol,
+                )
+            }
+        }
+    }
+
+    private fun handleCommandKey(key: CommandKey) {
         val state: AppState = _appState.value
 
         when (key) {
@@ -122,28 +139,6 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
             is CommandKey.Delete -> {
                 _appState.value = state.copy(
                     entering = state.entering.dropLast(1),
-                )
-            }
-        }
-    }
-
-    private fun updateState(key: SymbolKey) {
-        val state: AppState = _appState.value
-        val symbol: Symbol = key.symbol
-
-        if (!state.canAppend(symbol)) return
-
-        when (symbol) {
-            is Symbol.Operator -> {
-                _appState.value = state.copy(
-                    entering = state.entering + symbol,
-                )
-            }
-
-            else -> {
-                _appState.value = state.copy(
-                    result = if (state.entering.isEmpty()) emptyList() else state.result,
-                    entering = state.entering + symbol,
                 )
             }
         }

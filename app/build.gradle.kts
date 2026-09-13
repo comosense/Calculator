@@ -24,6 +24,10 @@ android {
             signingConfig = signingConfigs.getByName("debug")
             isMinifyEnabled = true
             isShrinkResources = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro",
+            )
             optimization {
                 enable = false
             }
@@ -42,10 +46,17 @@ android {
 dependencies {
     implementation(platform(libs.compose.bom))
     implementation(libs.activity.compose)
+    implementation(libs.androidx.animation)
+    implementation(libs.androidx.foundation)
+    implementation(libs.androidx.foundation.layout)
+    implementation(libs.androidx.ui)
+    implementation(libs.androidx.ui.text)
+    implementation(libs.androidx.ui.unit)
     implementation(libs.compose.foundation)
     implementation(libs.compose.material3)
     implementation(libs.compose.ui.tooling)
     implementation(libs.core.splashscreen)
+    implementation(libs.material3)
     implementation(libs.play.services.wearable)
     implementation(libs.runtime)
     implementation(libs.ui)

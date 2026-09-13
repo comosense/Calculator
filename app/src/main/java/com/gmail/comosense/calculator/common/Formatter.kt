@@ -20,7 +20,7 @@ fun formatNumericString(value: String, locale: Locale): String {
         null
     }
 
-    val formattedIntegerPart = formatIntegerPart(
+    val formattedIntegerPart: String = formatIntegerPart(
         integerPart = integerPart,
         locale = locale,
     )
@@ -39,8 +39,11 @@ fun formatNumericString(value: String, locale: Locale): String {
 private fun formatIntegerPart(integerPart: String, locale: Locale): String {
     if (integerPart.isEmpty()) return integerPart
 
-    val formatter: DecimalFormat =
-        NumberFormat.getNumberInstance(locale).let { it as DecimalFormat }
+    val formatter: NumberFormat = NumberFormat.getNumberInstance(locale)
+    if (formatter !is DecimalFormat) {
+        return integerPart
+    }
+
     formatter.isGroupingUsed = true
     formatter.maximumIntegerDigits = integerPart.length
     formatter.minimumFractionDigits = 0

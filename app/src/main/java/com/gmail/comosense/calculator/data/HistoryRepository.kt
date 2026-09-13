@@ -1,22 +1,23 @@
 package com.gmail.comosense.calculator.data
 
-import android.content.Context
+import androidx.datastore.core.DataStore
+import com.gmail.comosense.calculator.data.proto.HistoryStore
 import com.gmail.comosense.calculator.presentation.Calculation
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-class HistoryRepository(private val context: Context) {
+class HistoryRepository(private val dataStore: DataStore<HistoryStore>) {
     companion object {
         private const val HISTORY_SIZE = 50
     }
 
     val history: Flow<List<Calculation>> =
-        context.historyDataStore.data.map { store ->
+        dataStore.data.map { store ->
             store.calculationsList.map { it.toCalculation() }
         }
 
     suspend fun addHistory(calculation: Calculation) {
-        context.historyDataStore.updateData { store ->
+        dataStore.updateData { store ->
             store.toBuilder()
                 .clearCalculations()
                 .addAllCalculations(
@@ -28,7 +29,7 @@ class HistoryRepository(private val context: Context) {
     }
 
     suspend fun deleteHistory(index: Int) {
-        context.historyDataStore.updateData { store ->
+        dataStore.updateData { store ->
             if (index !in store.calculationsList.indices) {
                 return@updateData store
             }
@@ -41,7 +42,7 @@ class HistoryRepository(private val context: Context) {
     }
 
     suspend fun deleteAllHistory() {
-        context.historyDataStore.updateData { store ->
+        dataStore.updateData { store ->
             store.toBuilder()
                 .clearCalculations()
                 .build()
