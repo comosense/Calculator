@@ -4,18 +4,18 @@ datastore = "1.2.1"
 horologistComposeLayout = "0.7.15"
 playServicesWearable = "20.0.1"
 kotlin = "2.4.10"
-composeBom = "2026.08.00"
+composeBom = "2026.09.00"
 composeMaterial3 = "1.6.2"
 composeFoundation = "1.6.2"
 composeUiTooling = "1.6.2"
 protobufKotlin = "..."
 protobufKotlinLite = "4.36.1"
-protobufKotlinLiteVersion = "3.21.11"
+protobufKotlinLiteVersion = "4.36.1"
 wearToolingPreview = "1.0.0"
 activityCompose = "1.13.0"
 coreSplashscreen = "1.2.0"
-runtime = "1.12.0"
-uiText = "1.12.0"
+runtime = "1.12.1"
+uiText = "1.12.1"
 material3 = "1.4.0"
 ui = "1.12.1"
 uiTextVersion = "1.12.1"
@@ -32,7 +32,9 @@ play-services-wearable = { group = "com.google.android.gms", name = "play-servic
 compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
 protobuf-javalite = { module = "com.google.protobuf:protobuf-javalite", version.ref = "protobufKotlinLite" }
 protobuf-kotlin = { module = "com.google.protobuf:protobuf-kotlin", version.ref = "protobufKotlin" }
+#noinspection SimilarGradleDependency
 protobuf-kotlin-lite = { module = "com.google.protobuf:protobuf-kotlin-lite", version.ref = "protobufKotlinLite" }
+#noinspection SimilarGradleDependency
 protobuf-kotlin-lite-v32111 = { module = "com.google.protobuf:protobuf-kotlin-lite", version.ref = "protobufKotlinLiteVersion" }
 ui = { group = "androidx.compose.ui", name = "ui" }
 ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
@@ -47,9 +49,11 @@ wear-tooling-preview = { group = "androidx.wear", name = "wear-tooling-preview",
 activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 core-splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "coreSplashscreen" }
 runtime = { group = "androidx.compose.runtime", name = "runtime", version.ref = "runtime" }
+#noinspection SimilarGradleDependency
 ui-text = { group = "androidx.compose.ui", name = "ui-text", version.ref = "uiText" }
 material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
 androidx-ui = { group = "androidx.compose.ui", name = "ui", version.ref = "ui" }
+#noinspection SimilarGradleDependency
 androidx-ui-text = { group = "androidx.compose.ui", name = "ui-text", version.ref = "uiTextVersion" }
 androidx-ui-unit = { group = "androidx.compose.ui", name = "ui-unit", version.ref = "uiUnit" }
 androidx-animation = { group = "androidx.compose.animation", name = "animation", version.ref = "animation" }
