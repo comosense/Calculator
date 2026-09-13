@@ -32,7 +32,7 @@ fun Key.drawable(): Int? = when (this) {
         -> R.drawable.ic_backspace
 
     is ActionKey.OperatorBox
-        -> R.drawable.ic_operatorkeybox
+        -> R.drawable.ic_operator_key_box
 
     else
         -> null
