@@ -414,19 +414,19 @@ private fun KeyButton(
                 onClick = { onClick(key) },
                 onLongClick = { key.longClickKey?.let { onClick(it) } },
             ) {
-                val text: String? = key.displayText(locale)
-                if (text != null) {
-                    Text(
-                        text = text,
-                        fontSize = keyTextSize,
-                        textAlign = TextAlign.Center,
-                    )
-                } else {
-                    val drawable: Int? = key.drawable()
-                    if (drawable != null) {
+                when (val display: Display = key.display(locale)) {
+                    is Display.Text -> {
+                        Text(
+                            text = display.text,
+                            fontSize = keyTextSize,
+                            textAlign = TextAlign.Center,
+                        )
+                    }
+
+                    is Display.Drawable -> {
                         Icon(
                             modifier = Modifier.padding(6.dp),
-                            painter = painterResource(drawable),
+                            painter = painterResource(display.id),
                             contentDescription = "",
                             tint = key.colors().contentColor,
                         )
