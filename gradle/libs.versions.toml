@@ -2,6 +2,7 @@
 agp = "9.4.0"
 datastore = "1.2.1"
 horologistComposeLayout = "0.7.15"
+horologistComposeLaytou = "0.6.1"
 playServicesWearable = "20.0.1"
 kotlin = "2.4.10"
 composeBom = "2026.09.00"
@@ -28,6 +29,7 @@ foundation = "1.12.1"
 datastore = { module = "androidx.datastore:datastore", version.ref = "datastore" }
 google-horologist-compose-layout = { module = "com.google.android.horologist:horologist-compose-layout", version.ref = "horologistComposeLayout" }
 horologist-compose-layout = { module = "com.google.android.horologist:horologist-compose-layout" }
+horologist-compose-laytou = { module = "com.google.android.horologist:horologist-compose-laytou", version.ref = "horologistComposeLaytou" }
 play-services-wearable = { group = "com.google.android.gms", name = "play-services-wearable", version.ref = "playServicesWearable" }
 compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
 protobuf-javalite = { module = "com.google.protobuf:protobuf-javalite", version.ref = "protobufKotlinLite" }

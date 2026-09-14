@@ -117,6 +117,14 @@ fun HistoryScreen(
                     Box(
                         modifier = Modifier.fillMaxWidth(),
                     ) {
+                        if (deleteMode) {
+                            Icon(
+                                modifier = Modifier.fillMaxSize(),
+                                painter = painterResource(R.drawable.ic_delete),
+                                contentDescription = "",
+                                tint = deleteHistoryIconColor,
+                            )
+                        }
                         Column(
                             modifier = Modifier.fillMaxSize(),
                             horizontalAlignment = Alignment.CenterHorizontally,
@@ -142,14 +150,6 @@ fun HistoryScreen(
                                 maxLines = 1,
                                 softWrap = false,
                                 textAlign = TextAlign.End
-                            )
-                        }
-                        if (deleteMode) {
-                            Icon(
-                                modifier = Modifier.fillMaxSize(),
-                                painter = painterResource(R.drawable.ic_delete),
-                                contentDescription = "",
-                                tint = deleteHistoryIconColor,
                             )
                         }
                     }
