@@ -19,13 +19,13 @@ fun Key.display(locale: Locale): Display = when (this) {
         Display.Text(symbol.toString)
 
     is CommandKey.Equals ->
-        Display.Text("=")
+        Display.Drawable(R.drawable.ic_equal)
 
     is CommandKey.Clear ->
-        Display.Drawable(R.drawable.ic_cancel)
+        Display.Drawable(R.drawable.ic_refresh)
 
     is CommandKey.Delete ->
-        Display.Drawable(R.drawable.ic_backspace)
+        Display.Drawable(R.drawable.ic_keyboard_backspace)
 
     is ActionKey.OperatorBox ->
         Display.Drawable(R.drawable.ic_operator_key_box)
