@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.gmail.comosense.calculator.data.HistoryRepository
 import com.gmail.comosense.calculator.data.historyDataStore
+import com.gmail.comosense.calculator.domain.Symbol
 import kotlinx.coroutines.launch
 
 class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel() {

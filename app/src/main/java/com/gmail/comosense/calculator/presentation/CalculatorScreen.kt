@@ -51,6 +51,7 @@ import androidx.wear.compose.material3.IconButton
 import androidx.wear.compose.material3.MaterialTheme
 import androidx.wear.compose.material3.ScreenScaffold
 import androidx.wear.compose.material3.Text
+import com.gmail.comosense.calculator.domain.Symbol
 import java.util.Locale
 import kotlin.math.sqrt
 

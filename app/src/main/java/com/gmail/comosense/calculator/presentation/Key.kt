@@ -1,5 +1,7 @@
 package com.gmail.comosense.calculator.presentation
 
+import com.gmail.comosense.calculator.domain.Symbol
+
 enum class Style {
     Numeric,
     Operator,

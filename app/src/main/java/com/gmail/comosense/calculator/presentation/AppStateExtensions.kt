@@ -1,5 +1,7 @@
 package com.gmail.comosense.calculator.presentation
 
+import com.gmail.comosense.calculator.domain.Symbol
+import com.gmail.comosense.calculator.domain.isAppendableAfter
 import java.util.Locale
 
 val AppState.expression: List<Symbol>

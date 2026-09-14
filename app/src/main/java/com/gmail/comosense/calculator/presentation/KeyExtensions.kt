@@ -16,7 +16,7 @@ fun Key.display(locale: Locale): Display = when (this) {
         )
 
     is SymbolKey ->
-        Display.Text(symbol.text)
+        Display.Text(symbol.toString)
 
     is CommandKey.Equals ->
         Display.Text("=")

@@ -9,6 +9,7 @@ import androidx.compose.runtime.getValue
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.wear.compose.ui.tooling.preview.WearPreviewDevices
 import androidx.wear.compose.ui.tooling.preview.WearPreviewFontScales
+import com.gmail.comosense.calculator.domain.Symbol
 
 class MainActivity : ComponentActivity() {
     private val viewModel: AppViewModel by viewModels {
