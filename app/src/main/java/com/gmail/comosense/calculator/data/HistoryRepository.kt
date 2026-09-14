@@ -20,10 +20,8 @@ class HistoryRepository(private val dataStore: DataStore<HistoryStore>) {
         dataStore.updateData { store ->
             store.toBuilder()
                 .clearCalculations()
-                .addAllCalculations(
-                    (listOf(calculation) + store.calculationsList.map { it.toCalculation() })
-                        .take(HISTORY_SIZE)
-                        .map { it.toProto() })
+                .addCalculations(calculation.toProto())
+                .addAllCalculations(store.calculationsList.take(HISTORY_SIZE - 1))
                 .build()
         }
     }
@@ -31,13 +29,12 @@ class HistoryRepository(private val dataStore: DataStore<HistoryStore>) {
     suspend fun deleteHistory(index: Int) {
         dataStore.updateData { store ->
             if (index !in store.calculationsList.indices) {
-                return@updateData store
+                store
+            } else {
+                store.toBuilder()
+                    .removeCalculations(index)
+                    .build()
             }
-
-            store.toBuilder()
-                .clearCalculations()
-                .addAllCalculations(store.calculationsList.filterIndexed { i, _ -> i != index })
-                .build()
         }
     }
 
