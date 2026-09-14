@@ -16,7 +16,7 @@ fun Key.display(locale: Locale): Display = when (this) {
         )
 
     is SymbolKey ->
-        Display.Text(symbol.toString)
+        Display.Text(symbol.text)
 
     is CommandKey.Equals ->
         Display.Drawable(R.drawable.ic_equal)

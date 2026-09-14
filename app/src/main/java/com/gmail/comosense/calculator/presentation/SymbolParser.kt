@@ -17,7 +17,7 @@ fun parseTokens(symbols: List<Symbol>): Result<List<Token>, SymbolParserError> {
         fun flushNumeric(): Result<Unit, SymbolParserError> {
             if (numericBuffer.isEmpty()) return Result.Ok(Unit)
 
-            val numericString = numericBuffer.toString()
+            val numericString: String = numericBuffer.toString()
             numericBuffer.clear()
 
             return try {
@@ -30,8 +30,8 @@ fun parseTokens(symbols: List<Symbol>): Result<List<Token>, SymbolParserError> {
 
         for (symbol in symbols) {
             when (symbol) {
-                is Symbol.Numeric
-                    -> numericBuffer.append(symbol.toString)
+                is Symbol.Numeric ->
+                    numericBuffer.append(symbol.text)
 
                 else -> {
                     when (val r: Result<Unit, SymbolParserError> = flushNumeric()) {

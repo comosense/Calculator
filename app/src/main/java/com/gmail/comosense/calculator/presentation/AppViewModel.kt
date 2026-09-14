@@ -28,8 +28,8 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
     }
 
     companion object {
-        private const val PRECISION = 50
-        private const val DISPLAY_SCALE = 20
+        private const val PRECISION: Int = 50
+        private const val DISPLAY_SCALE: Int = 20
     }
 
     private val calculatorService = CalculatorService(

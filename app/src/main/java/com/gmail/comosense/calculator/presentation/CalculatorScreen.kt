@@ -1,5 +1,6 @@
 package com.gmail.comosense.calculator.presentation
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
@@ -72,7 +73,7 @@ fun CalculatorScreen(
                     .background(MaterialTheme.colorScheme.surfaceContainer),
                 contentAlignment = Alignment.Center,
             ) {
-                val mainBoxSize = minOf(maxWidth, maxHeight) * mainBoxSizeRatio
+                val mainBoxSize: Dp = minOf(maxWidth, maxHeight) * mainBoxSizeRatio
                 Box(
                     modifier = Modifier.size(mainBoxSize),
                 ) {
@@ -100,11 +101,12 @@ private fun MainBox(
     val expressionMaxFontSize: TextUnit = 32.sp
     val expressionMinFontSize: TextUnit = 16.sp
     val keyTextSize: TextUnit = 18.sp
-    val deleteKey: CommandKey = if (appState.isEntering) {
-        CommandKey.Delete
-    } else {
-        CommandKey.Clear
-    }
+    val deleteKey: CommandKey =
+        if (appState.isEntering) {
+            CommandKey.Delete
+        } else {
+            CommandKey.Clear
+        }
     val parenthesisKey: SymbolKey =
         if (appState.canAppend(Symbol.FactorEnd.CloseParenthesis)) {
             SymbolKey.CloseParenthesis
@@ -188,54 +190,45 @@ private fun MainBox(
         }
     }
 
-    androidx.compose.animation.AnimatedVisibility(
-        visible = showOperatorKeyBox,
-        modifier = Modifier
-            .fillMaxSize()
-            .zIndex(5f),
-        enter = fadeIn(),
-        exit = fadeOut(),
-    ) {
-        Box(
-            modifier = Modifier
-                .background(
-                    color = MaterialTheme.colorScheme.tertiaryDim.copy(alpha = 0.32f),
-                    shape = RoundedCornerShape(16.dp)
-                )
-                .clickable { showOperatorKeyBox = false },
-        )
-    }
-
-    androidx.compose.animation.AnimatedVisibility(
+    AnimatedVisibility(
         visible = showOperatorKeyBox,
         modifier = Modifier
             .fillMaxSize()
             .zIndex(10f),
-        enter = fadeIn() + scaleIn(initialScale = 0.85f),
-        exit = fadeOut() + scaleOut(targetScale = 0.85f),
+        enter = fadeIn() + scaleIn(initialScale = 0.25f),
+        exit = fadeOut() + scaleOut(targetScale = 0.25f),
     ) {
-        OperatorKeyBox(
+        Box(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(32.dp),
-            arrangementSpace = 8.dp,
-            keyTextSize = keyTextSize,
-            keyGrid = listOf(
-                listOf(
-                    plusKey,
-                    minusKey,
+                .background(
+                    color = MaterialTheme.colorScheme.tertiaryDim.copy(alpha = 0.75f),
+                    shape = RoundedCornerShape(16.dp)
+                )
+                .clickable { showOperatorKeyBox = false },
+        ) {
+            OperatorKeyBox(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(32.dp),
+                arrangementSpace = 8.dp,
+                keyTextSize = keyTextSize,
+                keyGrid = listOf(
+                    listOf(
+                        plusKey,
+                        minusKey,
+                    ),
+                    listOf(
+                        SymbolKey.Multiply,
+                        SymbolKey.Divide,
+                    ),
                 ),
-                listOf(
-                    SymbolKey.Multiply,
-                    SymbolKey.Divide,
-                ),
-            ),
-            onClick = { key ->
-                showOperatorKeyBox = false
-                onClick(key)
-            },
-            locale = locale,
-        )
+                onClick = { key ->
+                    showOperatorKeyBox = false
+                    onClick(key)
+                },
+                locale = locale,
+            )
+        }
     }
 }
 

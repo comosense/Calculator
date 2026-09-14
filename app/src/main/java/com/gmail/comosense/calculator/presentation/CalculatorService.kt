@@ -27,21 +27,21 @@ class CalculatorService(
     }
 
     private fun errorMessage(error: ResultConverterError): String = when (error) {
-        is ResultConverterError.UnsupportedCharacter
-            -> "Invalid result"
+        is ResultConverterError.UnsupportedCharacter ->
+            "Invalid result"
 
         is ResultConverterError.Calculation -> when (error.error) {
-            CalculatorError.InvalidExpression
-                -> "Invalid expression"
+            CalculatorError.InvalidExpression ->
+                "Invalid expression"
 
-            CalculatorError.DivisionByZero
-                -> "Division by zero"
+            CalculatorError.DivisionByZero ->
+                "Division by zero"
         }
     }
 
     private fun errorMessage(error: SymbolParserError): String = when (error) {
         is SymbolParserError.UnsupportedSymbol,
-        is SymbolParserError.IllegalNumeric
-            -> "Invalid expression"
+        is SymbolParserError.IllegalNumeric ->
+            "Invalid expression"
     }
 }

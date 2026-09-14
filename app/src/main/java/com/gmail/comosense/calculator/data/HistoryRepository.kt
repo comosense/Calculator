@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.map
 
 class HistoryRepository(private val dataStore: DataStore<HistoryStore>) {
     companion object {
-        private const val HISTORY_SIZE = 50
+        private const val HISTORY_SIZE: Int = 50
     }
 
     val history: Flow<List<Calculation>> =

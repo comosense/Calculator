@@ -18,7 +18,7 @@ fun calculate(expression: List<Token>, precision: Int): Result<BigDecimal, Calcu
     val parser = Parser(expression, precision)
 
     return try {
-        val result = parser.parseExpression()
+        val result: BigDecimal = parser.parseExpression()
         if (parser.isEnd()) {
             Result.Ok(result)
         } else {
@@ -42,7 +42,7 @@ private class Parser(private val tokens: List<Token>, precision: Int) {
     fun isEnd(): Boolean = (position >= tokens.size)
 
     fun parseExpression(): BigDecimal {
-        var value = parseTerm()
+        var value: BigDecimal = parseTerm()
 
         while (!isEnd()) {
             value = when (tokens[position]) {
@@ -63,7 +63,7 @@ private class Parser(private val tokens: List<Token>, precision: Int) {
     }
 
     private fun parseTerm(): BigDecimal {
-        var value = parseFactor()
+        var value: BigDecimal = parseFactor()
 
         while (!isEnd()) {
             value = when (tokens[position]) {
@@ -74,7 +74,7 @@ private class Parser(private val tokens: List<Token>, precision: Int) {
 
                 is Token.Operator.Divide -> {
                     position++
-                    val divisor = parseFactor()
+                    val divisor: BigDecimal = parseFactor()
                     if (divisor.compareTo(BigDecimal.ZERO) == 0) {
                         throw ArithmeticException("Division by zero")
                     }
@@ -92,7 +92,7 @@ private class Parser(private val tokens: List<Token>, precision: Int) {
             throw IllegalArgumentException("Expected factor")
         }
 
-        return when (val token = tokens[position]) {
+        return when (val token: Token = tokens[position]) {
             is Token.Sign.Positive -> {
                 position++
                 parseFactor()
@@ -110,7 +110,7 @@ private class Parser(private val tokens: List<Token>, precision: Int) {
 
             is Token.FactorStart -> {
                 position++
-                val value = parseExpression()
+                val value: BigDecimal = parseExpression()
                 if (isEnd() || tokens[position] !is Token.FactorEnd) {
                     throw IllegalArgumentException("Missing FactorEnd")
                 }
