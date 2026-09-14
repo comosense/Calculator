@@ -261,7 +261,6 @@ private fun ExpressionBox(
         val measured: TextLayoutResult = remember(
             expression,
             minFontSize,
-            color,
         ) {
             textMeasurer.measure(
                 text = expression,
