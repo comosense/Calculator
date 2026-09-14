@@ -31,6 +31,9 @@ android {
             optimization {
                 enable = false
             }
+            ndk {
+                debugSymbolLevel = "FULL"
+            }
         }
     }
     compileOptions {
