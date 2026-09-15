@@ -451,18 +451,18 @@ private fun KeyButton(
                 when (val display: Display = key.display(locale)) {
                     is Display.Text -> {
                         Text(
-                            text = display.text,
                             fontSize = keyTextSize,
                             textAlign = TextAlign.Center,
+                            text = display.text,
                         )
                     }
 
                     is Display.Drawable -> {
                         Icon(
                             modifier = Modifier.padding(6.dp),
+                            tint = key.colors().contentColor,
                             painter = painterResource(display.painterResource),
                             contentDescription = stringResource(display.stringResource),
-                            tint = key.colors().contentColor,
                         )
                     }
                 }
