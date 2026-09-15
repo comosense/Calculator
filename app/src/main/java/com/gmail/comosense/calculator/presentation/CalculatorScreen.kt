@@ -37,6 +37,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLocale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextMeasurer
 import androidx.compose.ui.text.TextStyle
@@ -459,8 +460,8 @@ private fun KeyButton(
                     is Display.Drawable -> {
                         Icon(
                             modifier = Modifier.padding(6.dp),
-                            painter = painterResource(display.id),
-                            contentDescription = "",
+                            painter = painterResource(display.painterResource),
+                            contentDescription = stringResource(display.stringResource),
                             tint = key.colors().contentColor,
                         )
                     }
