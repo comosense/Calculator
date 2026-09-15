@@ -13,9 +13,45 @@ interface Display {
 }
 
 fun Key.display(locale: Locale): Display = when (this) {
+    is SymbolKey.Positive ->
+        Display.Drawable(
+            painterResource = R.drawable.ic_add,
+            stringResource = R.string.positive,
+        )
+
+    is SymbolKey.Negative ->
+        Display.Drawable(
+            painterResource = R.drawable.ic_subtract,
+            stringResource = R.string.negative,
+        )
+
     is SymbolKey.Point ->
         Display.Text(
             DecimalFormatSymbols.getInstance(locale).decimalSeparator.toString()
+        )
+
+    is SymbolKey.Add ->
+        Display.Drawable(
+            painterResource = R.drawable.ic_add,
+            stringResource = R.string.add,
+        )
+
+    is SymbolKey.Subtract ->
+        Display.Drawable(
+            painterResource = R.drawable.ic_subtract,
+            stringResource = R.string.subtract,
+        )
+
+    is SymbolKey.Multiply ->
+        Display.Drawable(
+            painterResource = R.drawable.ic_multiply,
+            stringResource = R.string.multiply,
+        )
+
+    is SymbolKey.Divide ->
+        Display.Drawable(
+            painterResource = R.drawable.ic_divide,
+            stringResource = R.string.divide,
         )
 
     is SymbolKey ->
@@ -29,7 +65,7 @@ fun Key.display(locale: Locale): Display = when (this) {
 
     is CommandKey.Clear ->
         Display.Drawable(
-            painterResource = R.drawable.ic_refresh,
+            painterResource = R.drawable.ic_clear,
             stringResource = R.string.clear,
         )
 
