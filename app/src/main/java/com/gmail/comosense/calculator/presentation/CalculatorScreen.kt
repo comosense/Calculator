@@ -1,10 +1,12 @@
 package com.gmail.comosense.calculator.presentation
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -53,8 +55,10 @@ import androidx.wear.compose.material3.MaterialTheme
 import androidx.wear.compose.material3.ScreenScaffold
 import androidx.wear.compose.material3.Text
 import com.gmail.comosense.calculator.domain.Symbol
+import kotlinx.coroutines.delay
 import java.util.Locale
 import kotlin.math.sqrt
+import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
 fun CalculatorScreen(
@@ -96,7 +100,9 @@ private fun MainBox(
     onShowHistory: () -> Unit,
     locale: Locale,
 ) {
-    var showOperatorKeyBox by remember { mutableStateOf(false) }
+    var showOperatorKeyBox: Boolean by remember { mutableStateOf(false) }
+    var clearAnimationToggler: Boolean by remember { mutableStateOf(false) }
+
     val expressionTextColor: Color = MaterialTheme.colorScheme.onBackground
     val expressionMaxFontSize: TextUnit = 32.sp
     val expressionMinFontSize: TextUnit = 16.sp
@@ -140,6 +146,7 @@ private fun MainBox(
             minFontSize = expressionMinFontSize,
             onShowHistory = onShowHistory,
             locale = locale,
+            clearAnimationToggler = clearAnimationToggler,
         )
 
         Box(
@@ -181,6 +188,9 @@ private fun MainBox(
                     if (key == ActionKey.OperatorBox) {
                         showOperatorKeyBox = true
                     } else {
+                        if (key == CommandKey.Clear) {
+                            clearAnimationToggler = !clearAnimationToggler
+                        }
                         onClick(key)
                     }
                 },
@@ -195,13 +205,13 @@ private fun MainBox(
         modifier = Modifier
             .fillMaxSize()
             .zIndex(10f),
-        enter = fadeIn() + scaleIn(initialScale = 0.25f),
-        exit = fadeOut() + scaleOut(targetScale = 0.25f),
+        enter = fadeIn() + scaleIn(initialScale = 0.75f),
+        exit = fadeOut() + scaleOut(targetScale = 0.75f),
     ) {
         Box(
             modifier = Modifier
                 .background(
-                    color = MaterialTheme.colorScheme.tertiaryDim.copy(alpha = 0.75f),
+                    color = Color.Black.copy(alpha = 0.9f),
                     shape = RoundedCornerShape(16.dp)
                 )
                 .clickable { showOperatorKeyBox = false },
@@ -241,10 +251,26 @@ private fun ExpressionBox(
     minFontSize: TextUnit,
     onShowHistory: () -> Unit,
     locale: Locale,
+    clearAnimationToggler: Boolean,
 ) {
     val expression: String = appState.displayExpression(locale)
     val scrollState: ScrollState = rememberScrollState()
     val textMeasurer: TextMeasurer = rememberTextMeasurer()
+    val clearAnimationDuration = 180
+
+    var displayedExpression: String by remember { mutableStateOf(expression) }
+    var visible: Boolean by remember { mutableStateOf(false) }
+    LaunchedEffect(clearAnimationToggler) {
+        visible = false
+        delay(clearAnimationDuration.milliseconds)
+        displayedExpression = expression
+        visible = true
+    }
+    LaunchedEffect(expression) {
+        if (visible) {
+            displayedExpression = expression
+        }
+    }
 
     BoxWithConstraints(
         modifier = modifier
@@ -253,11 +279,11 @@ private fun ExpressionBox(
     ) {
         val density: Density = LocalDensity.current
         val measured: TextLayoutResult = remember(
-            expression,
+            displayedExpression,
             minFontSize,
         ) {
             textMeasurer.measure(
-                text = expression,
+                text = displayedExpression,
                 style = TextStyle(
                     color = color,
                     fontSize = minFontSize,
@@ -270,7 +296,7 @@ private fun ExpressionBox(
         }
 
         LaunchedEffect(
-            expression,
+            displayedExpression,
             needScroll,
             scrollState.maxValue,
         ) {
@@ -279,33 +305,46 @@ private fun ExpressionBox(
             }
         }
 
-        if (needScroll) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .horizontalScroll(scrollState),
-            ) {
+        AnimatedVisibility(
+            visible = visible,
+            enter = fadeIn(),
+            exit =
+                fadeOut(
+                    animationSpec = tween(clearAnimationDuration)
+                ) + slideOutVertically(
+                    targetOffsetY = { it / 3 },
+                    animationSpec = tween(clearAnimationDuration),
+                ),
+        ) {
+            if (needScroll) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .horizontalScroll(scrollState),
+                ) {
+                    BasicText(
+                        text = displayedExpression,
+                        maxLines = 1,
+                        style = TextStyle(
+                            color = color,
+                            fontSize = minFontSize,
+                        ),
+                    )
+                }
+            } else {
                 BasicText(
-                    text = expression,
+                    text = displayedExpression,
+                    autoSize = TextAutoSize.StepBased(
+                        maxFontSize = maxFontSize,
+                        minFontSize = minFontSize,
+                    ),
                     maxLines = 1,
                     style = TextStyle(
                         color = color,
-                        fontSize = minFontSize,
                     ),
                 )
             }
-        } else {
-            BasicText(
-                text = expression,
-                autoSize = TextAutoSize.StepBased(
-                    maxFontSize = maxFontSize,
-                    minFontSize = minFontSize,
-                ),
-                maxLines = 1,
-                style = TextStyle(
-                    color = color,
-                ),
-            )
+
         }
     }
 }
