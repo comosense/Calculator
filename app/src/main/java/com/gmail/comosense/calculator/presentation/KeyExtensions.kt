@@ -35,7 +35,7 @@ fun Key.display(locale: Locale): Display = when (this) {
 
     is CommandKey.Delete ->
         Display.Drawable(
-            painterResource = R.drawable.ic_keyboard_backspace,
+            painterResource = R.drawable.ic_backspace,
             stringResource = R.string.delete,
         )
 

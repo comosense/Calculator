@@ -250,12 +250,12 @@ private fun MainBox(
                 keyTextSize = keyTextSize,
                 keyGrid = listOf(
                     listOf(
-                        plusKey,
-                        minusKey,
-                    ),
-                    listOf(
                         SymbolKey.Multiply,
                         SymbolKey.Divide,
+                    ),
+                    listOf(
+                        plusKey,
+                        minusKey,
                     ),
                 ),
                 onClick = { key ->
