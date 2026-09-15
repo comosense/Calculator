@@ -88,7 +88,7 @@ sealed class CommandKey : Key {
 }
 
 sealed class ActionKey : Key {
-    data object OperatorBox : ActionKey() {
+    data object OperatorKeyBox : ActionKey() {
         override val longClickKey: Key? = null
         override val style: Style = Style.Action
     }

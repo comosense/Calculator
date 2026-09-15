@@ -39,9 +39,9 @@ fun Key.display(locale: Locale): Display = when (this) {
             stringResource = R.string.delete,
         )
 
-    is ActionKey.OperatorBox ->
+    is ActionKey.OperatorKeyBox ->
         Display.Drawable(
             painterResource = R.drawable.ic_operator_key_box,
-            stringResource = R.string.operator_box,
+            stringResource = R.string.operator_key_box,
         )
 }

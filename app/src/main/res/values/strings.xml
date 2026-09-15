@@ -3,5 +3,5 @@
     <string name="equals">Equals</string>
     <string name="clear">Clear</string>
     <string name="delete">Delete</string>
-    <string name="operator_box">Operators</string>
+    <string name="operator_key_box">Operators</string>
 </resources>

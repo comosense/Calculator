@@ -176,7 +176,7 @@ private fun MainBox(
                         SymbolKey.Digit(1),
                         SymbolKey.Digit(2),
                         SymbolKey.Digit(3),
-                        ActionKey.OperatorBox,
+                        ActionKey.OperatorKeyBox,
                     ),
                     listOf(
                         SymbolKey.Digit(0),
@@ -186,7 +186,7 @@ private fun MainBox(
                     ),
                 ),
                 onClick = { key ->
-                    if (key == ActionKey.OperatorBox) {
+                    if (key == ActionKey.OperatorKeyBox) {
                         showOperatorKeyBox = true
                     } else {
                         if (key == CommandKey.Clear) {
