@@ -123,7 +123,7 @@ private fun MainBox(
 
     val deleteKey: CommandKey =
         if (appState.isEntering) {
-            CommandKey.Delete
+            CommandKey.Backspace
         } else {
             CommandKey.Clear
         }

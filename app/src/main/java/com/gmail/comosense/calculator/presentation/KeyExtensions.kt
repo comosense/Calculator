@@ -69,10 +69,10 @@ fun Key.display(locale: Locale): Display = when (this) {
             stringResource = R.string.clear,
         )
 
-    is CommandKey.Delete ->
+    is CommandKey.Backspace ->
         Display.Drawable(
             painterResource = R.drawable.ic_backspace,
-            stringResource = R.string.delete,
+            stringResource = R.string.backspace,
         )
 
     is ActionKey.OperatorKeyBox ->

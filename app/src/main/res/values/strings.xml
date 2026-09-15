@@ -8,6 +8,9 @@
     <string name="divide">Divide</string>
     <string name="equals">Equals</string>
     <string name="clear">Clear</string>
-    <string name="delete">Delete</string>
+    <string name="backspace">Backspace</string>
     <string name="operator_key_box">Operators</string>
+    <string name="delete">Delete</string>
+    <string name="delete_all">Delete All</string>
+    <string name="back">Back</string>
 </resources>

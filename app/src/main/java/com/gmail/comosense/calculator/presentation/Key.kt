@@ -81,7 +81,7 @@ sealed class CommandKey : Key {
         override val style: Style = Style.Command
     }
 
-    data object Delete : CommandKey() {
+    data object Backspace : CommandKey() {
         override val longClickKey: Key = Clear
         override val style: Style = Style.Command
     }

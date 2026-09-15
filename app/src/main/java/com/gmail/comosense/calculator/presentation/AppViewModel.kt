@@ -137,7 +137,7 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
                 )
             }
 
-            is CommandKey.Delete -> {
+            is CommandKey.Backspace -> {
                 _appState.value = state.copy(
                     entering = state.entering.dropLast(1),
                 )
