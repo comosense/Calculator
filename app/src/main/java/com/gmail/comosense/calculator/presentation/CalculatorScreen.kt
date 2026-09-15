@@ -61,6 +61,11 @@ import java.util.Locale
 import kotlin.math.sqrt
 import kotlin.time.Duration.Companion.milliseconds
 
+enum class AnimationDirection {
+    Up,
+    Down,
+}
+
 @Composable
 fun CalculatorScreen(
     appState: AppState,
@@ -101,13 +106,21 @@ private fun MainBox(
     onShowHistory: () -> Unit,
     locale: Locale,
 ) {
-    var showOperatorKeyBox: Boolean by remember { mutableStateOf(false) }
-    var clearAnimationToggler: Boolean by remember { mutableStateOf(false) }
+    var showOperatorKeyBox: Boolean by remember {
+        mutableStateOf(false)
+    }
+    var expressionAnimationDirection: AnimationDirection by remember {
+        mutableStateOf(AnimationDirection.Up)
+    }
+    var expressionAnimationToggler: Boolean by remember {
+        mutableStateOf(false)
+    }
 
     val expressionTextColor: Color = MaterialTheme.colorScheme.onBackground
     val expressionMaxFontSize: TextUnit = 32.sp
     val expressionMinFontSize: TextUnit = 16.sp
     val keyTextSize: TextUnit = 18.sp
+
     val deleteKey: CommandKey =
         if (appState.isEntering) {
             CommandKey.Delete
@@ -147,7 +160,8 @@ private fun MainBox(
             minFontSize = expressionMinFontSize,
             onShowHistory = onShowHistory,
             locale = locale,
-            clearAnimationToggler = clearAnimationToggler,
+            animationDirection = expressionAnimationDirection,
+            animationToggler = expressionAnimationToggler,
         )
 
         Box(
@@ -189,9 +203,20 @@ private fun MainBox(
                     if (key == ActionKey.OperatorKeyBox) {
                         showOperatorKeyBox = true
                     } else {
-                        if (key == CommandKey.Clear) {
-                            clearAnimationToggler = !clearAnimationToggler
+                        when (key) {
+                            CommandKey.Equals -> {
+                                expressionAnimationDirection = AnimationDirection.Up
+                                expressionAnimationToggler = !expressionAnimationToggler
+                            }
+
+                            CommandKey.Clear -> {
+                                expressionAnimationDirection = AnimationDirection.Down
+                                expressionAnimationToggler = !expressionAnimationToggler
+                            }
+
+                            else -> Unit
                         }
+
                         onClick(key)
                     }
                 },
@@ -252,18 +277,24 @@ private fun ExpressionBox(
     minFontSize: TextUnit,
     onShowHistory: () -> Unit,
     locale: Locale,
-    clearAnimationToggler: Boolean,
+    animationDirection: AnimationDirection,
+    animationToggler: Boolean,
 ) {
     val expression: String = appState.displayExpression(locale)
     val scrollState: ScrollState = rememberScrollState()
     val textMeasurer: TextMeasurer = rememberTextMeasurer()
-    val clearAnimationDuration = 180
+    val animationDuration = 180
 
-    var displayedExpression: String by remember { mutableStateOf(expression) }
-    var visible: Boolean by remember { mutableStateOf(false) }
-    LaunchedEffect(clearAnimationToggler) {
+    var displayedExpression: String by remember {
+        mutableStateOf(expression)
+    }
+    var visible: Boolean by remember {
+        mutableStateOf(false)
+    }
+
+    LaunchedEffect(animationToggler) {
         visible = false
-        delay(clearAnimationDuration.milliseconds)
+        delay(animationDuration.milliseconds)
         displayedExpression = expression
         visible = true
     }
@@ -309,13 +340,17 @@ private fun ExpressionBox(
         AnimatedVisibility(
             visible = visible,
             enter = fadeIn(),
-            exit =
-                fadeOut(
-                    animationSpec = tween(clearAnimationDuration)
-                ) + slideOutVertically(
-                    targetOffsetY = { it / 3 },
-                    animationSpec = tween(clearAnimationDuration),
-                ),
+            exit = fadeOut(
+                animationSpec = tween(animationDuration)
+            ) + slideOutVertically(
+                targetOffsetY = { height ->
+                    when (animationDirection) {
+                        AnimationDirection.Up -> -height
+                        AnimationDirection.Down -> height
+                    }
+                },
+                animationSpec = tween(animationDuration),
+            ),
         ) {
             if (needScroll) {
                 Row(
