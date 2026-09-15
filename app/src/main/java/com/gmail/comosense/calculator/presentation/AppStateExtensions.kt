@@ -27,7 +27,7 @@ fun AppState.canAppend(symbol: Symbol): Boolean = when (symbol) {
     is Symbol.FactorEnd -> {
         entering.isNotEmpty() &&
                 symbol.isAppendableAfter(lastSymbol) &&
-                (entering.count { it is Symbol.FactorStart } > entering.count { it is Symbol.FactorEnd })
+                (expression.count { it is Symbol.FactorStart } > expression.count { it is Symbol.FactorEnd })
     }
 
     else -> {
