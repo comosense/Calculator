@@ -31,11 +31,14 @@ class CalculatorService(
             "Invalid result"
 
         is ResultConverterError.Calculation -> when (error.error) {
+            CalculatorError.DivisionByZero ->
+                "Division by zero"
+
             CalculatorError.InvalidExpression ->
                 "Invalid expression"
 
-            CalculatorError.DivisionByZero ->
-                "Division by zero"
+            CalculatorError.Arithmetic ->
+                "Arithmetic error"
         }
     }
 

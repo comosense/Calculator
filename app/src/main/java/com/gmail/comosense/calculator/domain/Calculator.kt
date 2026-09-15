@@ -6,9 +6,12 @@ import java.math.MathContext
 import java.math.RoundingMode
 
 enum class CalculatorError {
-    InvalidExpression,
     DivisionByZero,
+    InvalidExpression,
+    Arithmetic,
 }
+
+private class DivisionByZeroException : ArithmeticException()
 
 fun calculate(expression: List<Token>, precision: Int): Result<BigDecimal, CalculatorError> {
     if (expression.isEmpty()) {
@@ -24,10 +27,12 @@ fun calculate(expression: List<Token>, precision: Int): Result<BigDecimal, Calcu
         } else {
             Result.Err(CalculatorError.InvalidExpression)
         }
-    } catch (_: ArithmeticException) {
+    } catch (_: DivisionByZeroException) {
         Result.Err(CalculatorError.DivisionByZero)
     } catch (_: IllegalArgumentException) {
         Result.Err(CalculatorError.InvalidExpression)
+    } catch (_: ArithmeticException) {
+        Result.Err(CalculatorError.Arithmetic)
     }
 }
 
@@ -76,7 +81,7 @@ private class Parser(private val tokens: List<Token>, precision: Int) {
                     position++
                     val divisor: BigDecimal = parseFactor()
                     if (divisor.compareTo(BigDecimal.ZERO) == 0) {
-                        throw ArithmeticException("Division by zero")
+                        throw DivisionByZeroException()
                     }
                     value.divide(divisor, mathContext)
                 }
