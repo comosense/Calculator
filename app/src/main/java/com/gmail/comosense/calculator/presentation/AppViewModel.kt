@@ -34,7 +34,7 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
 
     private val calculatorService = CalculatorService(
         precision = PRECISION,
-        displayScale = DISPLAY_SCALE
+        displayScale = DISPLAY_SCALE,
     )
     private val _appState: MutableState<AppState> = mutableStateOf(AppState())
     val appState: State<AppState> = _appState
@@ -62,12 +62,12 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
         if (state.isEntering) {
             if (state.lastSymbol !is Symbol.Numeric) {
                 _appState.value = state.copy(
-                    entering = state.entering + historyResult
+                    entering = state.entering + historyResult,
                 )
             }
         } else {
             _appState.value = state.copy(
-                result = historyResult
+                result = historyResult,
             )
         }
     }
