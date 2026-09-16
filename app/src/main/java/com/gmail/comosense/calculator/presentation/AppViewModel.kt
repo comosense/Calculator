@@ -53,7 +53,7 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
         when (key) {
             is SymbolKey -> handleSymbolKey(key)
             is CommandKey -> handleCommandKey(key)
-            else -> {}
+            else -> Unit
         }
     }
 
@@ -99,7 +99,11 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
 
             else -> {
                 _appState.value = state.copy(
-                    result = if (state.entering.isEmpty()) emptyList() else state.result,
+                    result = if (state.entering.isEmpty()) {
+                        emptyList()
+                    } else {
+                        state.result
+                    },
                     entering = state.entering + symbol,
                 )
             }
