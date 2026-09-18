@@ -1,5 +1,9 @@
 package com.gmail.comosense.calculator.presentation
 
+import androidx.compose.runtime.Composable
+import androidx.wear.compose.material3.IconButtonColors
+import androidx.wear.compose.material3.IconButtonDefaults
+import androidx.wear.compose.material3.MaterialTheme
 import com.gmail.comosense.calculator.R
 import java.text.DecimalFormatSymbols
 import java.util.Locale
@@ -81,3 +85,46 @@ fun Key.display(locale: Locale): Display = when (this) {
             stringResource = R.string.operator_key_box,
         )
 }
+
+val Key.longClickKey: Key?
+    get() = when (this) {
+        is CommandKey.Backspace -> CommandKey.Clear
+        else -> null
+    }
+
+val Key.colors: IconButtonColors
+    @Composable
+    get() = when (this) {
+        is SymbolKey.Digit,
+        is SymbolKey.Point,
+        is SymbolKey.OpenParenthesis,
+        is SymbolKey.CloseParenthesis ->
+            IconButtonDefaults.iconButtonColors(
+                containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                contentColor = MaterialTheme.colorScheme.onSurface,
+            )
+
+        is SymbolKey.Positive,
+        is SymbolKey.Negative,
+        is SymbolKey.Add,
+        is SymbolKey.Subtract,
+        is SymbolKey.Multiply,
+        is SymbolKey.Divide ->
+            IconButtonDefaults.iconButtonColors(
+                containerColor = MaterialTheme.colorScheme.tertiary,
+                contentColor = MaterialTheme.colorScheme.onTertiary,
+            )
+
+        is CommandKey.Equals,
+        is CommandKey.Clear,
+        is CommandKey.Backspace ->
+            IconButtonDefaults.iconButtonColors(
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary,
+            )
+
+        is ActionKey.OperatorKeyBox -> IconButtonDefaults.iconButtonColors(
+            containerColor = MaterialTheme.colorScheme.tertiary,
+            contentColor = MaterialTheme.colorScheme.onTertiary,
+        )
+    }

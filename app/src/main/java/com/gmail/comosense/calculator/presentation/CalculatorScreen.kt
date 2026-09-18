@@ -406,7 +406,7 @@ private fun KeyButton(
         if (key != null) {
             IconButton(
                 modifier = Modifier.fillMaxSize(),
-                colors = key.colors(),
+                colors = key.colors,
                 onClick = { onClick(key) },
                 onLongClick = { key.longClickKey?.let { onClick(it) } },
             ) {
@@ -422,7 +422,7 @@ private fun KeyButton(
                     is Display.Drawable -> {
                         Icon(
                             modifier = Modifier.padding(6.dp),
-                            tint = key.colors().contentColor,
+                            tint = key.colors.contentColor,
                             painter = painterResource(display.painterResource),
                             contentDescription = stringResource(display.stringResource),
                         )
