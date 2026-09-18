@@ -1,5 +1,6 @@
 package com.gmail.comosense.calculator.presentation
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,10 +29,9 @@ import androidx.wear.compose.foundation.lazy.TransformingLazyColumnState
 import androidx.wear.compose.foundation.lazy.rememberTransformingLazyColumnState
 import androidx.wear.compose.material3.Button
 import androidx.wear.compose.material3.ButtonDefaults
-import androidx.wear.compose.material3.EdgeButton
-import androidx.wear.compose.material3.EdgeButtonSize
 import androidx.wear.compose.material3.Icon
 import androidx.wear.compose.material3.MaterialTheme
+import androidx.wear.compose.material3.ScreenScaffold
 import androidx.wear.compose.material3.SurfaceTransformation
 import androidx.wear.compose.material3.Text
 import androidx.wear.compose.material3.lazy.TransformationSpec
@@ -58,22 +58,28 @@ fun HistoryScreen(
     val resultFontSize: TextUnit = 18.sp
     val errorContainerColor: Color = MaterialTheme.colorScheme.errorContainer
     val errorContentColor: Color = MaterialTheme.colorScheme.onErrorContainer
-    val edgeButtonContainerColor: Color = MaterialTheme.colorScheme.primaryContainer
-    val edgeButtonContentColor: Color = MaterialTheme.colorScheme.onPrimaryContainer
     val historyContainerColor: Color = MaterialTheme.colorScheme.background
     val historyContentColor: Color = MaterialTheme.colorScheme.onBackground
     val deleteHistoryContainerColor: Color = MaterialTheme.colorScheme.tertiaryContainer
     val deleteHistoryContentColor: Color = MaterialTheme.colorScheme.onTertiaryContainer
     val deleteHistoryIconColor: Color = MaterialTheme.colorScheme.tertiaryDim
 
-    Box(
-        modifier = Modifier.fillMaxSize()
-    ) {
+    BackHandler {
+        if (deleteMode) {
+            deleteMode = false
+        } else {
+            onBack()
+        }
+    }
+
+    ScreenScaffold(
+        scrollState = listState
+    ) { contentPadding ->
         TransformingLazyColumn(
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(
-                top = 52.dp,
-                bottom = 52.dp,
+                top = contentPadding.calculateTopPadding() + 48.dp,
+                bottom = contentPadding.calculateBottomPadding() + 48.dp,
             ),
             state = listState,
         ) {
@@ -143,6 +149,7 @@ fun HistoryScreen(
                                 maxLines = 1,
                                 softWrap = false,
                             )
+
                             Text(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -176,33 +183,6 @@ fun HistoryScreen(
                     }
                 }
             }
-        }
-    }
-
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.BottomCenter,
-    ) {
-        EdgeButton(
-            modifier = Modifier.align(Alignment.BottomCenter),
-            buttonSize = EdgeButtonSize.ExtraSmall,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = edgeButtonContainerColor,
-                contentColor = edgeButtonContentColor,
-            ),
-            onClick = {
-                if (deleteMode) {
-                    deleteMode = false
-                } else {
-                    onBack()
-                }
-            },
-        ) {
-            Icon(
-                painter = painterResource(R.drawable.ic_undo),
-                contentDescription = stringResource(R.string.back),
-                tint = edgeButtonContentColor,
-            )
         }
     }
 }
