@@ -60,7 +60,7 @@ import kotlin.math.sqrt
 @Composable
 fun CalculatorScreen(
     appState: AppState,
-    onClick: (Key) -> Unit,
+    onAction: (AppAction) -> Unit,
     onShowHistory: () -> Unit,
 ) {
     val locale: Locale = LocalLocale.current.platformLocale
@@ -80,7 +80,7 @@ fun CalculatorScreen(
                 ) {
                     MainBox(
                         appState = appState,
-                        onClick = onClick,
+                        onAction = onAction,
                         onShowHistory = onShowHistory,
                         locale = locale,
                     )
@@ -93,7 +93,7 @@ fun CalculatorScreen(
 @Composable
 private fun MainBox(
     appState: AppState,
-    onClick: (Key) -> Unit,
+    onAction: (AppAction) -> Unit,
     onShowHistory: () -> Unit,
     locale: Locale,
 ) {
@@ -170,7 +170,7 @@ private fun MainBox(
                         SymbolKey.Digit(1),
                         SymbolKey.Digit(2),
                         SymbolKey.Digit(3),
-                        ActionKey.OperatorKeyBox,
+                        UiKey.OperatorKeyBox,
                     ),
                     listOf(
                         SymbolKey.Digit(0),
@@ -180,10 +180,12 @@ private fun MainBox(
                     ),
                 ),
                 onClick = { key ->
-                    if (key == ActionKey.OperatorKeyBox) {
-                        showOperatorKeyBox = true
-                    } else {
-                        onClick(key)
+                    when (key) {
+                        is UiKey.OperatorKeyBox ->
+                            showOperatorKeyBox = true
+
+                        else ->
+                            key.toAppAction?.let(onAction)
                     }
                 },
                 locale = locale,
@@ -226,7 +228,7 @@ private fun MainBox(
                 ),
                 onClick = { key ->
                     showOperatorKeyBox = false
-                    onClick(key)
+                    key.toAppAction?.let(onAction)
                 },
                 locale = locale,
             )

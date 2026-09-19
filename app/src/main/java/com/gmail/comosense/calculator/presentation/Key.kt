@@ -53,6 +53,6 @@ sealed class CommandKey : Key {
     data object Backspace : CommandKey()
 }
 
-sealed class ActionKey : Key {
-    data object OperatorKeyBox : ActionKey()
+sealed class UiKey : Key {
+    data object OperatorKeyBox : UiKey()
 }

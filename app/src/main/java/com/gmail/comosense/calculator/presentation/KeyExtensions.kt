@@ -79,7 +79,7 @@ fun Key.display(locale: Locale): Display = when (this) {
             stringResource = R.string.backspace,
         )
 
-    is ActionKey.OperatorKeyBox ->
+    is UiKey.OperatorKeyBox ->
         Display.Drawable(
             painterResource = R.drawable.ic_operator_key_box,
             stringResource = R.string.operator_key_box,
@@ -123,8 +123,17 @@ val Key.colors: IconButtonColors
                 contentColor = MaterialTheme.colorScheme.onPrimary,
             )
 
-        is ActionKey.OperatorKeyBox -> IconButtonDefaults.iconButtonColors(
+        is UiKey.OperatorKeyBox -> IconButtonDefaults.iconButtonColors(
             containerColor = MaterialTheme.colorScheme.tertiary,
             contentColor = MaterialTheme.colorScheme.onTertiary,
         )
+    }
+
+val Key.toAppAction: AppAction?
+    get() = when (this) {
+        is SymbolKey -> AppAction.Input(symbol)
+        is CommandKey.Equals -> AppAction.Calculate
+        is CommandKey.Clear -> AppAction.Clear
+        is CommandKey.Backspace -> AppAction.Backspace
+        else -> null
     }

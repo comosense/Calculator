@@ -9,15 +9,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import com.gmail.comosense.calculator.domain.Symbol
 
 @Composable
 fun WearApp(
     appState: AppState,
-    onClick: (Key) -> Unit,
-    onHistoryClick: (List<Symbol>) -> Unit,
-    onHistoryDelete: (Int) -> Unit,
-    onHistoryDeleteAll: () -> Unit,
+    onAction: (AppAction) -> Unit,
 ) {
     var showHistory: Boolean by remember { mutableStateOf(false) }
 
@@ -42,15 +38,13 @@ fun WearApp(
         if (isShowHistory) {
             HistoryScreen(
                 history = appState.history,
-                onHistoryClick = onHistoryClick,
-                onHistoryDelete = onHistoryDelete,
-                onHistoryDeleteAll = onHistoryDeleteAll,
+                onAction = onAction,
                 onBack = { showHistory = false },
             )
         } else {
             CalculatorScreen(
                 appState = appState,
-                onClick = onClick,
+                onAction = onAction,
                 onShowHistory = { showHistory = true },
             )
         }

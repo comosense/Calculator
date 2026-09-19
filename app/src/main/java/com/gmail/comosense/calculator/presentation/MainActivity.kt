@@ -7,6 +7,7 @@ import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.wear.compose.ui.tooling.preview.WearPreviewDevices
 import androidx.wear.compose.ui.tooling.preview.WearPreviewFontScales
 import com.gmail.comosense.calculator.domain.Symbol
@@ -21,13 +22,10 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            val appState: AppState by viewModel.appState
+            val appState: AppState by viewModel.appState.collectAsStateWithLifecycle()
             WearApp(
                 appState = appState,
-                onClick = viewModel::onClick,
-                onHistoryClick = viewModel::onHistoryClick,
-                onHistoryDelete = viewModel::onHistoryDelete,
-                onHistoryDeleteAll = viewModel::onHistoryDeleteAll,
+                onAction = viewModel::onAction,
             )
         }
     }
@@ -41,9 +39,6 @@ fun DefaultPreview() {
         appState = AppState(
             entering = listOf(Symbol.Error("01234567890123456789")),
         ),
-        onClick = {},
-        onHistoryClick = {},
-        onHistoryDelete = {},
-        onHistoryDeleteAll = {},
+        onAction = {},
     )
 }

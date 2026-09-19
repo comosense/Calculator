@@ -39,15 +39,12 @@ import androidx.wear.compose.material3.lazy.TransformationSpec
 import androidx.wear.compose.material3.lazy.rememberTransformationSpec
 import androidx.wear.compose.material3.lazy.transformedHeight
 import com.gmail.comosense.calculator.R
-import com.gmail.comosense.calculator.domain.Symbol
 import java.util.Locale
 
 @Composable
 fun HistoryScreen(
     history: List<Calculation>,
-    onHistoryClick: (List<Symbol>) -> Unit,
-    onHistoryDelete: (Int) -> Unit,
-    onHistoryDeleteAll: () -> Unit,
+    onAction: (AppAction) -> Unit,
     onBack: () -> Unit,
 ) {
     var deleteMode: Boolean by remember { mutableStateOf(false) }
@@ -94,12 +91,12 @@ fun HistoryScreen(
                     Button(
                         onClick = {
                             if (deleteMode) {
-                                onHistoryDelete(index)
+                                onAction(AppAction.DeleteHistory(index))
                                 if (history.size == 1) {
                                     deleteMode = false
                                 }
                             } else {
-                                onHistoryClick(calculation.result)
+                                onAction(AppAction.SelectHistory(calculation.result))
                                 onBack()
                             }
                         },
@@ -170,7 +167,7 @@ fun HistoryScreen(
                     item {
                         Button(
                             onClick = {
-                                onHistoryDeleteAll()
+                                onAction(AppAction.DeleteHistoryAll)
                                 deleteMode = false
                             },
                             modifier = Modifier
