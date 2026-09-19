@@ -86,7 +86,7 @@ fun HistoryScreen(
                     count = history.size,
                     key = { index -> index },
                 ) { index ->
-                    val calculation = history[index]
+                    val calculation: Calculation = history[index]
 
                     Button(
                         onClick = {

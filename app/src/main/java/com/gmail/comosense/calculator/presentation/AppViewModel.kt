@@ -164,7 +164,7 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
 
     fun deleteHistoryAll() {
         viewModelScope.launch {
-            historyRepository.deleteAllHistory()
+            historyRepository.deleteHistoryAll()
         }
     }
 }

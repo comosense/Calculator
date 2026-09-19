@@ -38,7 +38,7 @@ class HistoryRepository(private val dataStore: DataStore<HistoryStore>) {
         }
     }
 
-    suspend fun deleteAllHistory() {
+    suspend fun deleteHistoryAll() {
         dataStore.updateData { store ->
             store.toBuilder()
                 .clearCalculations()
