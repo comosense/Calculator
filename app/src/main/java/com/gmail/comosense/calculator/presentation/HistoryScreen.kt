@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.sp
 import androidx.wear.compose.foundation.lazy.TransformingLazyColumn
 import androidx.wear.compose.foundation.lazy.TransformingLazyColumnState
 import androidx.wear.compose.foundation.lazy.rememberTransformingLazyColumnState
+import androidx.wear.compose.material3.AppScaffold
 import androidx.wear.compose.material3.Button
 import androidx.wear.compose.material3.ButtonDefaults
 import androidx.wear.compose.material3.Icon
@@ -72,114 +73,116 @@ fun HistoryScreen(
         }
     }
 
-    ScreenScaffold(
-        scrollState = listState
-    ) { contentPadding ->
-        TransformingLazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(
-                top = contentPadding.calculateTopPadding() + 48.dp,
-                bottom = contentPadding.calculateBottomPadding() + 48.dp,
-            ),
-            state = listState,
-        ) {
-            items(
-                count = history.size,
-                key = { index -> index },
-            ) { index ->
-                val calculation = history[index]
+    AppScaffold {
+        ScreenScaffold(
+            scrollState = listState
+        ) { contentPadding ->
+            TransformingLazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(
+                    top = contentPadding.calculateTopPadding() + 48.dp,
+                    bottom = contentPadding.calculateBottomPadding() + 48.dp,
+                ),
+                state = listState,
+            ) {
+                items(
+                    count = history.size,
+                    key = { index -> index },
+                ) { index ->
+                    val calculation = history[index]
 
-                Button(
-                    onClick = {
-                        if (deleteMode) {
-                            onHistoryDelete(index)
-                            if (history.size == 1) {
-                                deleteMode = false
-                            }
-                        } else {
-                            onHistoryClick(calculation.result)
-                            onBack()
-                        }
-                    },
-                    onLongClick = {
-                        deleteMode = true
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .transformedHeight(this, transformationSpec)
-                        .padding(horizontal = 8.dp),
-                    transformation = SurfaceTransformation(transformationSpec),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = if (deleteMode) {
-                            deleteHistoryContainerColor
-                        } else {
-                            historyContainerColor
-                        },
-                        contentColor = if (deleteMode) {
-                            deleteHistoryContentColor
-                        } else {
-                            historyContentColor
-                        },
-                    ),
-                ) {
-                    Box(
-                        modifier = Modifier.fillMaxWidth(),
-                    ) {
-                        if (deleteMode) {
-                            Icon(
-                                modifier = Modifier.fillMaxSize(),
-                                painter = painterResource(R.drawable.ic_delete),
-                                contentDescription = stringResource(R.string.delete),
-                                tint = deleteHistoryIconColor,
-                            )
-                        }
-                        Column(
-                            modifier = Modifier.fillMaxSize(),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                        ) {
-                            val expressionScrollState = rememberScrollState()
-                            val resultScrollState = rememberScrollState()
-
-                            Text(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .horizontalScroll(expressionScrollState),
-                                text = calculation.expression.formatSymbols(locale),
-                                fontSize = expressionFontSize,
-                                maxLines = 1,
-                                softWrap = false,
-                            )
-
-                            Text(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .horizontalScroll(resultScrollState),
-                                text = calculation.result.formatSymbols(locale),
-                                fontSize = resultFontSize,
-                                maxLines = 1,
-                                softWrap = false,
-                                textAlign = TextAlign.End
-                            )
-                        }
-                    }
-                }
-            }
-            if (deleteMode) {
-                item {
                     Button(
                         onClick = {
-                            onHistoryDeleteAll()
-                            deleteMode = false
+                            if (deleteMode) {
+                                onHistoryDelete(index)
+                                if (history.size == 1) {
+                                    deleteMode = false
+                                }
+                            } else {
+                                onHistoryClick(calculation.result)
+                                onBack()
+                            }
+                        },
+                        onLongClick = {
+                            deleteMode = true
                         },
                         modifier = Modifier
                             .fillMaxWidth()
+                            .transformedHeight(this, transformationSpec)
                             .padding(horizontal = 8.dp),
+                        transformation = SurfaceTransformation(transformationSpec),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = errorContainerColor,
-                            contentColor = errorContentColor,
-                        )
+                            containerColor = if (deleteMode) {
+                                deleteHistoryContainerColor
+                            } else {
+                                historyContainerColor
+                            },
+                            contentColor = if (deleteMode) {
+                                deleteHistoryContentColor
+                            } else {
+                                historyContentColor
+                            },
+                        ),
                     ) {
-                        Text(stringResource(R.string.delete_all))
+                        Box(
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            if (deleteMode) {
+                                Icon(
+                                    modifier = Modifier.fillMaxSize(),
+                                    painter = painterResource(R.drawable.ic_delete),
+                                    contentDescription = stringResource(R.string.delete),
+                                    tint = deleteHistoryIconColor,
+                                )
+                            }
+                            Column(
+                                modifier = Modifier.fillMaxSize(),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                            ) {
+                                val expressionScrollState = rememberScrollState()
+                                val resultScrollState = rememberScrollState()
+
+                                Text(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .horizontalScroll(expressionScrollState),
+                                    text = calculation.expression.formatSymbols(locale),
+                                    fontSize = expressionFontSize,
+                                    maxLines = 1,
+                                    softWrap = false,
+                                )
+
+                                Text(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .horizontalScroll(resultScrollState),
+                                    text = calculation.result.formatSymbols(locale),
+                                    fontSize = resultFontSize,
+                                    maxLines = 1,
+                                    softWrap = false,
+                                    textAlign = TextAlign.End
+                                )
+                            }
+                        }
+                    }
+                }
+                if (deleteMode) {
+                    item {
+                        Button(
+                            onClick = {
+                                onHistoryDeleteAll()
+                                deleteMode = false
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 8.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = errorContainerColor,
+                                contentColor = errorContentColor,
+                            )
+                        ) {
+                            Text(stringResource(R.string.delete_all))
+                        }
                     }
                 }
             }
