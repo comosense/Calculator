@@ -17,7 +17,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalLocale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -52,7 +51,6 @@ fun HistoryScreen(
     val listState: TransformingLazyColumnState = rememberTransformingLazyColumnState()
     val transformationSpec: TransformationSpec = rememberTransformationSpec()
 
-    val locale: Locale = LocalLocale.current.platformLocale
     val errorContainerColor: Color = MaterialTheme.colorScheme.errorContainer
     val errorContentColor: Color = MaterialTheme.colorScheme.onErrorContainer
 

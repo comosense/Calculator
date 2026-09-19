@@ -63,7 +63,6 @@ fun CalculatorScreen(
     onShowHistory: () -> Unit,
     locale: Locale,
 ) {
-//    val locale: Locale = LocalLocale.current.platformLocale
     val mainBoxSizeRatio: Float = 1f / sqrt(2f)
 
     AppScaffold {
