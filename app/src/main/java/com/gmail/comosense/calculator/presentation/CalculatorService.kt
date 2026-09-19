@@ -11,12 +11,13 @@ class CalculatorService(
     private val displayScale: Int = 20,
 ) {
     fun calculate(expression: List<Symbol>): List<Symbol> {
-        return when (val r: Result<List<Token>, SymbolParserError> = parseTokens(expression)) {
+        return when (val r: Result<List<Token>, SymbolParserError> =
+            parseTokens(expression)) {
             is Result.Ok -> {
-                when (val r =
+                when (val res: Result<List<Symbol>, ResultConverterError> =
                     calculate(r.value, precision).toDisplaySymbols(displayScale)) {
-                    is Result.Ok -> r.value
-                    is Result.Err -> listOf(Symbol.Error(errorMessage(r.error)))
+                    is Result.Ok -> res.value
+                    is Result.Err -> listOf(Symbol.Error(errorMessage(res.error)))
                 }
             }
 
