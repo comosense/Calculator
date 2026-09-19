@@ -19,10 +19,12 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
+
         super.onCreate(savedInstanceState)
 
         setContent {
             val appState: AppState by viewModel.appState.collectAsStateWithLifecycle()
+
             WearApp(
                 appState = appState,
                 onAction = viewModel::onAction,
