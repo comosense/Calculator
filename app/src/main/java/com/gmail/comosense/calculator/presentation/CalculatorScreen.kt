@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,8 +22,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.TextAutoSize
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -52,7 +53,6 @@ import androidx.wear.compose.material3.Icon
 import androidx.wear.compose.material3.IconButton
 import androidx.wear.compose.material3.MaterialTheme
 import androidx.wear.compose.material3.ScreenScaffold
-import androidx.wear.compose.material3.Text
 import com.gmail.comosense.calculator.domain.Symbol
 import java.util.Locale
 import kotlin.math.sqrt
@@ -97,7 +97,8 @@ private fun MainBox(
     onShowHistory: () -> Unit,
     locale: Locale,
 ) {
-    var showOperatorKeyBox: Boolean by remember { mutableStateOf(false) }
+    var showOperatorKeyGrid: Boolean by remember { mutableStateOf(false) }
+
     val expressionTextColor: Color = MaterialTheme.colorScheme.onBackground
     val expressionMaxFontSize: TextUnit = 32.sp
     val expressionMinFontSize: TextUnit = 16.sp
@@ -127,6 +128,42 @@ private fun MainBox(
         } else {
             SymbolKey.Negative
         }
+    val keyGrid: List<List<Key?>> = listOf(
+        listOf(
+            SymbolKey.Digit(7),
+            SymbolKey.Digit(8),
+            SymbolKey.Digit(9),
+            deleteKey,
+        ),
+        listOf(
+            SymbolKey.Digit(4),
+            SymbolKey.Digit(5),
+            SymbolKey.Digit(6),
+            CommandKey.Equals,
+        ),
+        listOf(
+            SymbolKey.Digit(1),
+            SymbolKey.Digit(2),
+            SymbolKey.Digit(3),
+            UiKey.OperatorKey,
+        ),
+        listOf(
+            SymbolKey.Digit(0),
+            SymbolKey.Point,
+            parenthesisKey,
+            null,
+        ),
+    )
+    val operatorKeyGrid: List<List<Key?>> = listOf(
+        listOf(
+            SymbolKey.Multiply,
+            SymbolKey.Divide,
+        ),
+        listOf(
+            plusKey,
+            minusKey,
+        ),
+    )
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -144,58 +181,29 @@ private fun MainBox(
             locale = locale,
         )
 
-        Box(
+        KeyBox(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(4f),
-        ) {
-            KeyBox(
-                modifier = Modifier.fillMaxSize(),
-                arrangementSpace = 2.dp,
-                keyTextSize = keyTextSize,
-                keyGrid = listOf(
-                    listOf(
-                        SymbolKey.Digit(7),
-                        SymbolKey.Digit(8),
-                        SymbolKey.Digit(9),
-                        deleteKey,
-                    ),
-                    listOf(
-                        SymbolKey.Digit(4),
-                        SymbolKey.Digit(5),
-                        SymbolKey.Digit(6),
-                        CommandKey.Equals,
-                    ),
-                    listOf(
-                        SymbolKey.Digit(1),
-                        SymbolKey.Digit(2),
-                        SymbolKey.Digit(3),
-                        UiKey.OperatorKeyBox,
-                    ),
-                    listOf(
-                        SymbolKey.Digit(0),
-                        SymbolKey.Point,
-                        parenthesisKey,
-                        null,
-                    ),
-                ),
-                onClick = { key ->
-                    when (key) {
-                        is UiKey.OperatorKeyBox ->
-                            showOperatorKeyBox = true
+            arrangementSpace = 2.dp,
+            keyTextSize = keyTextSize,
+            keyGrid = keyGrid,
+            onClick = { key ->
+                when (key) {
+                    is UiKey.OperatorKey ->
+                        showOperatorKeyGrid = true
 
-                        else ->
-                            key.toAppAction?.let(onAction)
-                    }
-                },
-                locale = locale,
-            )
+                    else ->
+                        key.toAppAction?.let(onAction)
+                }
+            },
+            locale = locale,
+        )
 
-        }
     }
 
     AnimatedVisibility(
-        visible = showOperatorKeyBox,
+        visible = showOperatorKeyGrid,
         modifier = Modifier
             .fillMaxSize()
             .zIndex(10f),
@@ -208,26 +216,17 @@ private fun MainBox(
                     color = Color.Black.copy(alpha = 0.9f),
                     shape = RoundedCornerShape(16.dp)
                 )
-                .clickable { showOperatorKeyBox = false },
+                .clickable { showOperatorKeyGrid = false },
         ) {
-            OperatorKeyBox(
+            KeyBox(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(32.dp),
                 arrangementSpace = 8.dp,
                 keyTextSize = keyTextSize,
-                keyGrid = listOf(
-                    listOf(
-                        SymbolKey.Multiply,
-                        SymbolKey.Divide,
-                    ),
-                    listOf(
-                        plusKey,
-                        minusKey,
-                    ),
-                ),
+                keyGrid = operatorKeyGrid,
                 onClick = { key ->
-                    showOperatorKeyBox = false
+                    showOperatorKeyGrid = false
                     key.toAppAction?.let(onAction)
                 },
                 locale = locale,
@@ -263,7 +262,6 @@ private fun ExpressionBox(
             textMeasurer.measure(
                 text = expression,
                 style = TextStyle(
-                    color = color,
                     fontSize = minFontSize,
                 ),
             )
@@ -289,51 +287,24 @@ private fun ExpressionBox(
                     .fillMaxWidth()
                     .horizontalScroll(scrollState),
             ) {
-                BasicText(
+                Text(
                     text = expression,
                     maxLines = 1,
-                    style = TextStyle(
-                        color = color,
-                        fontSize = minFontSize,
-                    ),
+                    color = color,
+                    fontSize = minFontSize,
                 )
             }
         } else {
-            BasicText(
+            Text(
                 text = expression,
                 autoSize = TextAutoSize.StepBased(
                     maxFontSize = maxFontSize,
                     minFontSize = minFontSize,
                 ),
                 maxLines = 1,
-                style = TextStyle(
-                    color = color,
-                ),
+                color = color,
             )
         }
-    }
-}
-
-@Composable
-private fun OperatorKeyBox(
-    modifier: Modifier,
-    arrangementSpace: Dp,
-    keyTextSize: TextUnit,
-    keyGrid: List<List<Key?>>,
-    onClick: (Key) -> Unit,
-    locale: Locale,
-) {
-    Box(
-        modifier = modifier,
-    ) {
-        KeyBox(
-            modifier = Modifier.fillMaxSize(),
-            arrangementSpace = arrangementSpace,
-            keyTextSize = keyTextSize,
-            keyGrid = keyGrid,
-            onClick = onClick,
-            locale = locale,
-        )
     }
 }
 
@@ -380,15 +351,23 @@ private fun KeyRow(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         keys.forEach { key ->
-            KeyButton(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .weight(1f),
-                keyTextSize = keyTextSize,
-                key = key,
-                onClick = onClick,
-                locale = locale,
-            )
+            if (key != null) {
+                KeyButton(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .weight(1f),
+                    keyTextSize = keyTextSize,
+                    key = key,
+                    onClick = onClick,
+                    locale = locale,
+                )
+            } else {
+                Spacer(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .weight(1f),
+                )
+            }
         }
     }
 }
@@ -397,39 +376,33 @@ private fun KeyRow(
 private fun KeyButton(
     modifier: Modifier,
     keyTextSize: TextUnit,
-    key: Key?,
+    key: Key,
     onClick: (Key) -> Unit,
     locale: Locale,
 ) {
-    Box(
+    IconButton(
         modifier = modifier,
-        contentAlignment = Alignment.Center,
+        onClick = { onClick(key) },
+        onLongClick = { key.longClickKey?.let { onClick(it) } },
+        colors = key.colors,
     ) {
-        if (key != null) {
-            IconButton(
-                modifier = Modifier.fillMaxSize(),
-                colors = key.colors,
-                onClick = { onClick(key) },
-                onLongClick = { key.longClickKey?.let { onClick(it) } },
-            ) {
-                when (val display: Display = key.display(locale)) {
-                    is Display.Text -> {
-                        Text(
-                            fontSize = keyTextSize,
-                            textAlign = TextAlign.Center,
-                            text = display.text,
-                        )
-                    }
+        when (val display: Display = key.display(locale)) {
+            is Display.Text -> {
+                Text(
+                    text = display.text,
+                    color = key.colors.contentColor,
+                    fontSize = keyTextSize,
+                    textAlign = TextAlign.Center,
+                )
+            }
 
-                    is Display.Drawable -> {
-                        Icon(
-                            modifier = Modifier.padding(6.dp),
-                            tint = key.colors.contentColor,
-                            painter = painterResource(display.painterResource),
-                            contentDescription = stringResource(display.stringResource),
-                        )
-                    }
-                }
+            is Display.Drawable -> {
+                Icon(
+                    painter = painterResource(display.painterResource),
+                    contentDescription = stringResource(display.stringResource),
+                    modifier = Modifier.padding(6.dp),
+                    tint = key.colors.contentColor,
+                )
             }
         }
     }

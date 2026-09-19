@@ -54,5 +54,5 @@ sealed class CommandKey : Key {
 }
 
 sealed class UiKey : Key {
-    data object OperatorKeyBox : UiKey()
+    data object OperatorKey : UiKey()
 }
