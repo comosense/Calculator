@@ -9,11 +9,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import java.util.Locale
 
 @Composable
 fun WearApp(
     appState: AppState,
     onAction: (AppAction) -> Unit,
+    locale: Locale,
 ) {
     var showHistory: Boolean by remember { mutableStateOf(false) }
 
@@ -40,12 +42,14 @@ fun WearApp(
                 history = appState.history,
                 onAction = onAction,
                 onBack = { showHistory = false },
+                locale = locale,
             )
         } else {
             CalculatorScreen(
                 appState = appState,
                 onAction = onAction,
                 onShowHistory = { showHistory = true },
+                locale = locale,
             )
         }
     }

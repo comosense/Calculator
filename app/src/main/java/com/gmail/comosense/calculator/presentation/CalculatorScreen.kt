@@ -34,7 +34,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalLocale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextLayoutResult
@@ -62,8 +61,9 @@ fun CalculatorScreen(
     appState: AppState,
     onAction: (AppAction) -> Unit,
     onShowHistory: () -> Unit,
+    locale: Locale,
 ) {
-    val locale: Locale = LocalLocale.current.platformLocale
+//    val locale: Locale = LocalLocale.current.platformLocale
     val mainBoxSizeRatio: Float = 1f / sqrt(2f)
 
     AppScaffold {

@@ -46,6 +46,7 @@ fun HistoryScreen(
     history: List<Calculation>,
     onAction: (AppAction) -> Unit,
     onBack: () -> Unit,
+    locale: Locale,
 ) {
     var deleteMode: Boolean by remember { mutableStateOf(false) }
     val listState: TransformingLazyColumnState = rememberTransformingLazyColumnState()
