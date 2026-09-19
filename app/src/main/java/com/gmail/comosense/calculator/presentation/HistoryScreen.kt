@@ -90,7 +90,7 @@ fun HistoryScreen(
                         onClick = {
                             if (deleteMode) {
                                 onAction(AppAction.DeleteHistory(index))
-                                if (history.size <= 1) {
+                                if (history.size == 1) {
                                     onBack()
                                 }
                             } else {
