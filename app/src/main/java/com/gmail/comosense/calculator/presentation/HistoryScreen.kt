@@ -52,15 +52,8 @@ fun HistoryScreen(
     val transformationSpec: TransformationSpec = rememberTransformationSpec()
 
     val locale: Locale = LocalLocale.current.platformLocale
-    val expressionFontSize: TextUnit = 16.sp
-    val resultFontSize: TextUnit = 18.sp
     val errorContainerColor: Color = MaterialTheme.colorScheme.errorContainer
     val errorContentColor: Color = MaterialTheme.colorScheme.onErrorContainer
-    val historyContainerColor: Color = MaterialTheme.colorScheme.background
-    val historyContentColor: Color = MaterialTheme.colorScheme.onBackground
-    val deleteHistoryContainerColor: Color = MaterialTheme.colorScheme.tertiaryContainer
-    val deleteHistoryContentColor: Color = MaterialTheme.colorScheme.onTertiaryContainer
-    val deleteHistoryIconColor: Color = MaterialTheme.colorScheme.tertiaryDim
 
     BackHandler {
         if (deleteMode) {
@@ -87,13 +80,19 @@ fun HistoryScreen(
                     key = { index -> index },
                 ) { index ->
                     val calculation: Calculation = history[index]
-
-                    Button(
+                    HistoryItem(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .transformedHeight(this, transformationSpec)
+                            .padding(horizontal = 8.dp),
+                        transformation = SurfaceTransformation(transformationSpec),
+                        calculation = calculation,
+                        deleteMode = deleteMode,
                         onClick = {
                             if (deleteMode) {
                                 onAction(AppAction.DeleteHistory(index))
-                                if (history.size == 1) {
-                                    deleteMode = false
+                                if (history.size <= 1) {
+                                    onBack()
                                 }
                             } else {
                                 onAction(AppAction.SelectHistory(calculation.result))
@@ -103,72 +102,15 @@ fun HistoryScreen(
                         onLongClick = {
                             deleteMode = true
                         },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .transformedHeight(this, transformationSpec)
-                            .padding(horizontal = 8.dp),
-                        transformation = SurfaceTransformation(transformationSpec),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = if (deleteMode) {
-                                deleteHistoryContainerColor
-                            } else {
-                                historyContainerColor
-                            },
-                            contentColor = if (deleteMode) {
-                                deleteHistoryContentColor
-                            } else {
-                                historyContentColor
-                            },
-                        ),
-                    ) {
-                        Box(
-                            modifier = Modifier.fillMaxWidth(),
-                        ) {
-                            if (deleteMode) {
-                                Icon(
-                                    modifier = Modifier.fillMaxSize(),
-                                    painter = painterResource(R.drawable.ic_delete),
-                                    contentDescription = stringResource(R.string.delete),
-                                    tint = deleteHistoryIconColor,
-                                )
-                            }
-                            Column(
-                                modifier = Modifier.fillMaxSize(),
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                            ) {
-                                val expressionScrollState = rememberScrollState()
-                                val resultScrollState = rememberScrollState()
-
-                                Text(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .horizontalScroll(expressionScrollState),
-                                    text = calculation.expression.formatSymbols(locale),
-                                    fontSize = expressionFontSize,
-                                    maxLines = 1,
-                                    softWrap = false,
-                                )
-
-                                Text(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .horizontalScroll(resultScrollState),
-                                    text = calculation.result.formatSymbols(locale),
-                                    fontSize = resultFontSize,
-                                    maxLines = 1,
-                                    softWrap = false,
-                                    textAlign = TextAlign.End
-                                )
-                            }
-                        }
-                    }
+                        locale = locale
+                    )
                 }
                 if (deleteMode) {
                     item {
                         Button(
                             onClick = {
                                 onAction(AppAction.DeleteHistoryAll)
-                                deleteMode = false
+                                onBack()
                             },
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -182,6 +124,86 @@ fun HistoryScreen(
                         }
                     }
                 }
+            }
+        }
+    }
+}
+
+
+@Composable
+fun HistoryItem(
+    modifier: Modifier,
+    transformation: SurfaceTransformation,
+    calculation: Calculation,
+    deleteMode: Boolean,
+    onClick: () -> Unit,
+    onLongClick: () -> Unit,
+    locale: Locale,
+) {
+    val expressionFontSize: TextUnit = 16.sp
+    val resultFontSize: TextUnit = 18.sp
+    val historyContainerColor: Color = MaterialTheme.colorScheme.background
+    val historyContentColor: Color = MaterialTheme.colorScheme.onBackground
+    val deleteHistoryContainerColor: Color = MaterialTheme.colorScheme.tertiaryContainer
+    val deleteHistoryContentColor: Color = MaterialTheme.colorScheme.onTertiaryContainer
+    val deleteHistoryIconColor: Color = MaterialTheme.colorScheme.tertiaryDim
+
+    Button(
+        onClick = onClick,
+        onLongClick = onLongClick,
+        modifier = modifier,
+        transformation = transformation,
+        colors = ButtonDefaults.buttonColors(
+            containerColor = if (deleteMode) {
+                deleteHistoryContainerColor
+            } else {
+                historyContainerColor
+            },
+            contentColor = if (deleteMode) {
+                deleteHistoryContentColor
+            } else {
+                historyContentColor
+            },
+        ),
+    ) {
+        Box(
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            if (deleteMode) {
+                Icon(
+                    modifier = Modifier.align(Alignment.Center),
+                    painter = painterResource(R.drawable.ic_delete),
+                    contentDescription = stringResource(R.string.delete),
+                    tint = deleteHistoryIconColor,
+                )
+            }
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                val expressionScrollState = rememberScrollState()
+                val resultScrollState = rememberScrollState()
+
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .horizontalScroll(expressionScrollState),
+                    text = calculation.expression.formatSymbols(locale),
+                    fontSize = expressionFontSize,
+                    maxLines = 1,
+                    softWrap = false,
+                )
+
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .horizontalScroll(resultScrollState),
+                    text = calculation.result.formatSymbols(locale),
+                    fontSize = resultFontSize,
+                    maxLines = 1,
+                    softWrap = false,
+                    textAlign = TextAlign.End
+                )
             }
         }
     }
