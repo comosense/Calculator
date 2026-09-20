@@ -38,6 +38,7 @@ import androidx.wear.compose.material3.lazy.TransformationSpec
 import androidx.wear.compose.material3.lazy.rememberTransformationSpec
 import androidx.wear.compose.material3.lazy.transformedHeight
 import com.gmail.comosense.calculator.R
+import com.gmail.comosense.calculator.domain.Calculation
 import com.gmail.comosense.calculator.domain.Symbol
 import java.util.Locale
 

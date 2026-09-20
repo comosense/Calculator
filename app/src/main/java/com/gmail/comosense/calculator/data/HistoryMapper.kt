@@ -1,7 +1,7 @@
 package com.gmail.comosense.calculator.data
 
+import com.gmail.comosense.calculator.domain.Calculation
 import com.gmail.comosense.calculator.domain.Symbol
-import com.gmail.comosense.calculator.presentation.Calculation
 import com.gmail.comosense.calculator.data.proto.Calculation as ProtoCalculation
 import com.gmail.comosense.calculator.data.proto.Symbol as ProtoSymbol
 

@@ -2,7 +2,7 @@ package com.gmail.comosense.calculator.data
 
 import androidx.datastore.core.DataStore
 import com.gmail.comosense.calculator.data.proto.HistoryStore
-import com.gmail.comosense.calculator.presentation.Calculation
+import com.gmail.comosense.calculator.domain.Calculation
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
