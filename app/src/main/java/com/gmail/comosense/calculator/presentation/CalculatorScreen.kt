@@ -96,7 +96,7 @@ private fun MainBox(
     onShowHistory: () -> Unit,
     locale: Locale,
 ) {
-    var showOperatorKeyGrid: Boolean by remember { mutableStateOf(false) }
+    var showOperatorsKeyGrid: Boolean by remember { mutableStateOf(false) }
 
     val expressionTextColor: Color = MaterialTheme.colorScheme.onBackground
     val expressionMaxFontSize: TextUnit = 32.sp
@@ -127,7 +127,7 @@ private fun MainBox(
         } else {
             SymbolKey.Negative
         }
-    val mainKeysList: List<List<Key?>> = listOf(
+    val mainKeysGrid: List<List<Key?>> = listOf(
         listOf(
             SymbolKey.Digit(7),
             SymbolKey.Digit(8),
@@ -153,7 +153,7 @@ private fun MainBox(
             null,
         ),
     )
-    val operatorsKeysList: List<List<Key?>> = listOf(
+    val operatorsKeysGrid: List<List<Key?>> = listOf(
         listOf(
             SymbolKey.Multiply,
             SymbolKey.Divide,
@@ -180,17 +180,17 @@ private fun MainBox(
             locale = locale,
         )
 
-        KeyGrid(
+        KeysGrid(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(4f),
             arrangementSpace = 2.dp,
             keyTextSize = keyTextSize,
-            keysList = mainKeysList,
+            keysGrid = mainKeysGrid,
             onClick = { key ->
                 when (key) {
                     is UiKey.Operators ->
-                        showOperatorKeyGrid = true
+                        showOperatorsKeyGrid = true
 
                     else ->
                         key.toAppAction?.let(onAction)
@@ -202,7 +202,7 @@ private fun MainBox(
     }
 
     AnimatedVisibility(
-        visible = showOperatorKeyGrid,
+        visible = showOperatorsKeyGrid,
         modifier = Modifier
             .fillMaxSize()
             .zIndex(10f),
@@ -215,17 +215,17 @@ private fun MainBox(
                     color = Color.Black.copy(alpha = 0.9f),
                     shape = RoundedCornerShape(16.dp)
                 )
-                .clickable { showOperatorKeyGrid = false },
+                .clickable { showOperatorsKeyGrid = false },
         ) {
-            KeyGrid(
+            KeysGrid(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(32.dp),
                 arrangementSpace = 8.dp,
                 keyTextSize = keyTextSize,
-                keysList = operatorsKeysList,
+                keysGrid = operatorsKeysGrid,
                 onClick = { key ->
-                    showOperatorKeyGrid = false
+                    showOperatorsKeyGrid = false
                     key.toAppAction?.let(onAction)
                 },
                 locale = locale,
@@ -308,11 +308,11 @@ private fun ExpressionBox(
 }
 
 @Composable
-private fun KeyGrid(
+private fun KeysGrid(
     modifier: Modifier,
     arrangementSpace: Dp,
     keyTextSize: TextUnit,
-    keysList: List<List<Key?>>,
+    keysGrid: List<List<Key?>>,
     onClick: (Key) -> Unit,
     locale: Locale,
 ) {
@@ -320,8 +320,8 @@ private fun KeyGrid(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(arrangementSpace)
     ) {
-        keysList.forEach { keys ->
-            KeyRow(
+        keysGrid.forEach { keys ->
+            KeysRow(
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f),
@@ -336,7 +336,7 @@ private fun KeyGrid(
 }
 
 @Composable
-private fun KeyRow(
+private fun KeysRow(
     modifier: Modifier,
     arrangementSpace: Dp,
     keyTextSize: TextUnit,
