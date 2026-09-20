@@ -18,10 +18,10 @@ fun calculate(expression: List<Token>, precision: Int): Result<BigDecimal, Calcu
         return Result.Err(CalculatorError.InvalidExpression)
     }
 
-    val parser = Parser(expression, precision)
-
     return try {
+        val parser = Parser(expression, precision)
         val result: BigDecimal = parser.parseExpression()
+
         if (parser.isEnd()) {
             Result.Ok(result)
         } else {
