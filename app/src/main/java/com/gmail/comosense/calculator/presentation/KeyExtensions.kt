@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.wear.compose.material3.ButtonColors
 import androidx.wear.compose.material3.ButtonDefaults
 import com.gmail.comosense.calculator.R
+import com.gmail.comosense.calculator.presentation.theme.CalculatorScreenColors
 import com.gmail.comosense.calculator.presentation.theme.CalculatorTheme
 import java.text.DecimalFormatSymbols
 import java.util.Locale
@@ -94,40 +95,44 @@ val Key.longClickKey: Key?
 
 val Key.colors: ButtonColors
     @Composable
-    get() = when (this) {
-        is SymbolKey.Digit,
-        is SymbolKey.Point,
-        is SymbolKey.OpenParenthesis,
-        is SymbolKey.CloseParenthesis ->
-            ButtonDefaults.buttonColors(
-                containerColor = CalculatorTheme.calculatorScreenColors.digitKeyContainer,
-                contentColor = CalculatorTheme.calculatorScreenColors.digitKeyContent,
-            )
+    get() {
+        val colors: CalculatorScreenColors = CalculatorTheme.calculatorScreenColors
 
-        is SymbolKey.Positive,
-        is SymbolKey.Negative,
-        is SymbolKey.Add,
-        is SymbolKey.Subtract,
-        is SymbolKey.Multiply,
-        is SymbolKey.Divide ->
-            ButtonDefaults.buttonColors(
-                containerColor = CalculatorTheme.calculatorScreenColors.operatorKeyContainer,
-                contentColor = CalculatorTheme.calculatorScreenColors.operatorKeyContent,
-            )
+        return when (this) {
+            is SymbolKey.Digit,
+            is SymbolKey.Point,
+            is SymbolKey.OpenParenthesis,
+            is SymbolKey.CloseParenthesis ->
+                ButtonDefaults.buttonColors(
+                    containerColor = colors.digitKeyContainer,
+                    contentColor = colors.digitKeyContent,
+                )
 
-        is CommandKey.Equal,
-        is CommandKey.Clear,
-        is CommandKey.Backspace ->
-            ButtonDefaults.buttonColors(
-                containerColor = CalculatorTheme.calculatorScreenColors.commandKeyContainer,
-                contentColor = CalculatorTheme.calculatorScreenColors.commandKeyContent,
-            )
+            is SymbolKey.Positive,
+            is SymbolKey.Negative,
+            is SymbolKey.Add,
+            is SymbolKey.Subtract,
+            is SymbolKey.Multiply,
+            is SymbolKey.Divide ->
+                ButtonDefaults.buttonColors(
+                    containerColor = colors.operatorKeyContainer,
+                    contentColor = colors.operatorKeyContent,
+                )
 
-        is UiKey.Operators ->
-            ButtonDefaults.buttonColors(
-                containerColor = CalculatorTheme.calculatorScreenColors.uiKeyContainer,
-                contentColor = CalculatorTheme.calculatorScreenColors.uiKeyContent,
-            )
+            is CommandKey.Equal,
+            is CommandKey.Clear,
+            is CommandKey.Backspace ->
+                ButtonDefaults.buttonColors(
+                    containerColor = colors.commandKeyContainer,
+                    contentColor = colors.commandKeyContent,
+                )
+
+            is UiKey.Operators ->
+                ButtonDefaults.buttonColors(
+                    containerColor = colors.uiKeyContainer,
+                    contentColor = colors.uiKeyContent,
+                )
+        }
     }
 
 val Key.toAppAction: AppAction?
