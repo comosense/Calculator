@@ -48,11 +48,11 @@ sealed class SymbolKey : Key {
 }
 
 sealed class CommandKey : Key {
-    data object Equals : CommandKey()
+    data object Equal : CommandKey()
     data object Clear : CommandKey()
     data object Backspace : CommandKey()
 }
 
 sealed class UiKey : Key {
-    data object OperatorKey : UiKey()
+    data object Operators : UiKey()
 }

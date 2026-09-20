@@ -3,24 +3,7 @@
     android:height="24dp"
     android:viewportWidth="960"
     android:viewportHeight="960">
-  <path
-      android:pathData="M560,320h240v80h-240z"
-      android:strokeLineJoin="bevel"
-      android:strokeWidth="23.7114"
-      android:fillColor="#e3e3e3"
-      android:strokeColor="#00000000"
-      android:strokeLineCap="round"/>
-  <path
-      android:pathData="M800,160l-0,240l-80,0l-0,-240z"
-      android:strokeLineJoin="bevel"
-      android:strokeWidth="23.7114"
-      android:fillColor="#e3e3e3"
-      android:strokeColor="#00000000"
-      android:strokeLineCap="round"/>
-  <path
-      android:pathData="M480,160A320,320 0,0 0,160 480A320,320 0,0 0,480 800A320,320 0,0 0,800 480L720,480A240,240 0,0 1,480 720A240,240 0,0 1,240 480A240,240 0,0 1,480 240A240,240 0,0 1,706.25 400L789.84,400A320,320 0,0 0,480 160z"
-      android:strokeLineJoin="bevel"
-      android:strokeWidth="38.8667"
-      android:fillColor="#e3e3e3"
-      android:strokeLineCap="round"/>
+    <path
+        android:pathData="m480,160a320,320 0,0 0,-320 320,320 320,0 0,0 320,320 320,320 0,0 0,320 -320h-80a240,240 0,0 1,-240 240,240 240,0 0,1 -240,-240 240,240 0,0 1,240 -240,240 240,0 0,1 178.83,80h-98.83v80h146.25,93.75v-80,-160h-80v108.36a320,320 0,0 0,-240 -108.36z"
+        android:fillColor="#e3e3e3" />
 </vector>

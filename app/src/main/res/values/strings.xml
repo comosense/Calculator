@@ -6,10 +6,10 @@
     <string name="subtract">Subtract</string>
     <string name="multiply">Multiply</string>
     <string name="divide">Divide</string>
-    <string name="equals">Equals</string>
+    <string name="equal">Equal</string>
     <string name="clear">Clear</string>
     <string name="backspace">Backspace</string>
-    <string name="operator_key">Operator key</string>
+    <string name="operators">Operators</string>
     <string name="delete">Delete</string>
     <string name="delete_all">Delete All</string>
 </resources>

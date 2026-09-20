@@ -1,8 +1,8 @@
 package com.gmail.comosense.calculator.presentation
 
 import androidx.compose.runtime.Composable
-import androidx.wear.compose.material3.IconButtonColors
-import androidx.wear.compose.material3.IconButtonDefaults
+import androidx.wear.compose.material3.ButtonColors
+import androidx.wear.compose.material3.ButtonDefaults
 import androidx.wear.compose.material3.MaterialTheme
 import com.gmail.comosense.calculator.R
 import java.text.DecimalFormatSymbols
@@ -61,10 +61,10 @@ fun Key.display(locale: Locale): Display = when (this) {
     is SymbolKey ->
         Display.Text(symbol.text)
 
-    is CommandKey.Equals ->
+    is CommandKey.Equal ->
         Display.Drawable(
             painterResource = R.drawable.ic_equal,
-            stringResource = R.string.equals,
+            stringResource = R.string.equal,
         )
 
     is CommandKey.Clear ->
@@ -79,10 +79,10 @@ fun Key.display(locale: Locale): Display = when (this) {
             stringResource = R.string.backspace,
         )
 
-    is UiKey.OperatorKey ->
+    is UiKey.Operators ->
         Display.Drawable(
-            painterResource = R.drawable.ic_operator_key,
-            stringResource = R.string.operator_key,
+            painterResource = R.drawable.ic_operators,
+            stringResource = R.string.operators,
         )
 }
 
@@ -92,14 +92,14 @@ val Key.longClickKey: Key?
         else -> null
     }
 
-val Key.colors: IconButtonColors
+val Key.colors: ButtonColors
     @Composable
     get() = when (this) {
         is SymbolKey.Digit,
         is SymbolKey.Point,
         is SymbolKey.OpenParenthesis,
         is SymbolKey.CloseParenthesis ->
-            IconButtonDefaults.iconButtonColors(
+            ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.surfaceContainer,
                 contentColor = MaterialTheme.colorScheme.onSurface,
             )
@@ -110,29 +110,30 @@ val Key.colors: IconButtonColors
         is SymbolKey.Subtract,
         is SymbolKey.Multiply,
         is SymbolKey.Divide ->
-            IconButtonDefaults.iconButtonColors(
+            ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.tertiary,
                 contentColor = MaterialTheme.colorScheme.onTertiary,
             )
 
-        is CommandKey.Equals,
+        is CommandKey.Equal,
         is CommandKey.Clear,
         is CommandKey.Backspace ->
-            IconButtonDefaults.iconButtonColors(
+            ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary,
             )
 
-        is UiKey.OperatorKey -> IconButtonDefaults.iconButtonColors(
-            containerColor = MaterialTheme.colorScheme.tertiary,
-            contentColor = MaterialTheme.colorScheme.onTertiary,
-        )
+        is UiKey.Operators ->
+            ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.tertiary,
+                contentColor = MaterialTheme.colorScheme.onTertiary,
+            )
     }
 
 val Key.toAppAction: AppAction?
     get() = when (this) {
         is SymbolKey -> AppAction.Input(symbol)
-        is CommandKey.Equals -> AppAction.Calculate
+        is CommandKey.Equal -> AppAction.Calculate
         is CommandKey.Clear -> AppAction.Clear
         is CommandKey.Backspace -> AppAction.Backspace
         else -> null

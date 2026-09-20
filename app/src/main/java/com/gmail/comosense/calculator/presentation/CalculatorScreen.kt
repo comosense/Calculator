@@ -48,8 +48,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.wear.compose.material3.AppScaffold
+import androidx.wear.compose.material3.Button
 import androidx.wear.compose.material3.Icon
-import androidx.wear.compose.material3.IconButton
 import androidx.wear.compose.material3.MaterialTheme
 import androidx.wear.compose.material3.ScreenScaffold
 import com.gmail.comosense.calculator.domain.Symbol
@@ -127,7 +127,7 @@ private fun MainBox(
         } else {
             SymbolKey.Negative
         }
-    val keyGrid: List<List<Key?>> = listOf(
+    val mainKeysList: List<List<Key?>> = listOf(
         listOf(
             SymbolKey.Digit(7),
             SymbolKey.Digit(8),
@@ -138,13 +138,13 @@ private fun MainBox(
             SymbolKey.Digit(4),
             SymbolKey.Digit(5),
             SymbolKey.Digit(6),
-            CommandKey.Equals,
+            CommandKey.Equal,
         ),
         listOf(
             SymbolKey.Digit(1),
             SymbolKey.Digit(2),
             SymbolKey.Digit(3),
-            UiKey.OperatorKey,
+            UiKey.Operators,
         ),
         listOf(
             SymbolKey.Digit(0),
@@ -153,7 +153,7 @@ private fun MainBox(
             null,
         ),
     )
-    val operatorKeyGrid: List<List<Key?>> = listOf(
+    val operatorsKeysList: List<List<Key?>> = listOf(
         listOf(
             SymbolKey.Multiply,
             SymbolKey.Divide,
@@ -180,16 +180,16 @@ private fun MainBox(
             locale = locale,
         )
 
-        KeyBox(
+        KeyGrid(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(4f),
             arrangementSpace = 2.dp,
             keyTextSize = keyTextSize,
-            keyGrid = keyGrid,
+            keysList = mainKeysList,
             onClick = { key ->
                 when (key) {
-                    is UiKey.OperatorKey ->
+                    is UiKey.Operators ->
                         showOperatorKeyGrid = true
 
                     else ->
@@ -217,13 +217,13 @@ private fun MainBox(
                 )
                 .clickable { showOperatorKeyGrid = false },
         ) {
-            KeyBox(
+            KeyGrid(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(32.dp),
                 arrangementSpace = 8.dp,
                 keyTextSize = keyTextSize,
-                keyGrid = operatorKeyGrid,
+                keysList = operatorsKeysList,
                 onClick = { key ->
                     showOperatorKeyGrid = false
                     key.toAppAction?.let(onAction)
@@ -308,11 +308,11 @@ private fun ExpressionBox(
 }
 
 @Composable
-private fun KeyBox(
+private fun KeyGrid(
     modifier: Modifier,
     arrangementSpace: Dp,
     keyTextSize: TextUnit,
-    keyGrid: List<List<Key?>>,
+    keysList: List<List<Key?>>,
     onClick: (Key) -> Unit,
     locale: Locale,
 ) {
@@ -320,7 +320,7 @@ private fun KeyBox(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(arrangementSpace)
     ) {
-        keyGrid.forEach { keys ->
+        keysList.forEach { keys ->
             KeyRow(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -379,7 +379,7 @@ private fun KeyButton(
     onClick: (Key) -> Unit,
     locale: Locale,
 ) {
-    IconButton(
+    Button(
         modifier = modifier,
         onClick = { onClick(key) },
         onLongClick = { key.longClickKey?.let { onClick(it) } },
@@ -399,7 +399,6 @@ private fun KeyButton(
                 Icon(
                     painter = painterResource(display.painterResource),
                     contentDescription = stringResource(display.stringResource),
-                    modifier = Modifier.padding(6.dp),
                     tint = key.colors.contentColor,
                 )
             }
