@@ -68,11 +68,11 @@ fun HistoryScreen(
         ) { contentPadding ->
             TransformingLazyColumn(
                 modifier = Modifier.fillMaxSize(),
+                state = listState,
                 contentPadding = PaddingValues(
                     top = contentPadding.calculateTopPadding() + 48.dp,
                     bottom = contentPadding.calculateBottomPadding() + 48.dp,
                 ),
-                state = listState,
             ) {
                 items(
                     count = history.size,
@@ -80,11 +80,6 @@ fun HistoryScreen(
                 ) { index ->
                     val calculation: Calculation = history[index]
                     HistoryItem(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .transformedHeight(this, transformationSpec)
-                            .padding(horizontal = 8.dp),
-                        transformation = SurfaceTransformation(transformationSpec),
                         calculation = calculation,
                         deleteMode = deleteMode,
                         onClick = {
@@ -101,6 +96,11 @@ fun HistoryScreen(
                         onLongClick = {
                             deleteMode = true
                         },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .transformedHeight(this, transformationSpec)
+                            .padding(horizontal = 8.dp),
+                        transformation = SurfaceTransformation(transformationSpec),
                         locale = locale
                     )
                 }
@@ -131,12 +131,12 @@ fun HistoryScreen(
 
 @Composable
 fun HistoryItem(
-    modifier: Modifier,
-    transformation: SurfaceTransformation,
     calculation: Calculation,
     deleteMode: Boolean,
     onClick: () -> Unit,
     onLongClick: () -> Unit,
+    modifier: Modifier,
+    transformation: SurfaceTransformation,
     locale: Locale,
 ) {
     val expressionFontSize: TextUnit = 16.sp
@@ -151,7 +151,6 @@ fun HistoryItem(
         onClick = onClick,
         onLongClick = onLongClick,
         modifier = modifier,
-        transformation = transformation,
         colors = ButtonDefaults.buttonColors(
             containerColor = if (deleteMode) {
                 deleteHistoryContainerColor
@@ -164,15 +163,16 @@ fun HistoryItem(
                 historyContentColor
             },
         ),
+        transformation = transformation,
     ) {
         Box(
             modifier = Modifier.fillMaxWidth(),
         ) {
             if (deleteMode) {
                 Icon(
-                    modifier = Modifier.align(Alignment.Center),
                     painter = painterResource(R.drawable.ic_delete),
                     contentDescription = stringResource(R.string.delete),
+                    modifier = Modifier.align(Alignment.Center),
                     tint = deleteHistoryIconColor,
                 )
             }
@@ -184,24 +184,24 @@ fun HistoryItem(
                 val resultScrollState = rememberScrollState()
 
                 Text(
+                    text = calculation.expression.formatSymbols(locale),
                     modifier = Modifier
                         .fillMaxWidth()
                         .horizontalScroll(expressionScrollState),
-                    text = calculation.expression.formatSymbols(locale),
                     fontSize = expressionFontSize,
-                    maxLines = 1,
                     softWrap = false,
+                    maxLines = 1,
                 )
 
                 Text(
+                    text = calculation.result.formatSymbols(locale),
                     modifier = Modifier
                         .fillMaxWidth()
                         .horizontalScroll(resultScrollState),
-                    text = calculation.result.formatSymbols(locale),
                     fontSize = resultFontSize,
-                    maxLines = 1,
+                    textAlign = TextAlign.End,
                     softWrap = false,
-                    textAlign = TextAlign.End
+                    maxLines = 1,
                 )
             }
         }

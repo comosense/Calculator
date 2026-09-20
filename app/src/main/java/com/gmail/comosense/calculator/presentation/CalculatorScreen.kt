@@ -73,27 +73,26 @@ fun CalculatorScreen(
                     .background(MaterialTheme.colorScheme.surfaceContainer),
                 contentAlignment = Alignment.Center,
             ) {
-                val mainBoxSize: Dp = minOf(maxWidth, maxHeight) * mainBoxSizeRatio
-                Box(
-                    modifier = Modifier.size(mainBoxSize),
-                ) {
-                    MainBox(
-                        appState = appState,
-                        onAction = onAction,
-                        onShowHistory = onShowHistory,
-                        locale = locale,
-                    )
-                }
+                MainPanel(
+                    appState = appState,
+                    onAction = onAction,
+                    onShowHistory = onShowHistory,
+                    modifier = Modifier.size(
+                        minOf(maxWidth, maxHeight) * mainBoxSizeRatio
+                    ),
+                    locale = locale,
+                )
             }
         }
     }
 }
 
 @Composable
-private fun MainBox(
+private fun MainPanel(
     appState: AppState,
     onAction: (AppAction) -> Unit,
     onShowHistory: () -> Unit,
+    modifier: Modifier,
     locale: Locale,
 ) {
     var showOperatorsKeyGrid: Boolean by remember { mutableStateOf(false) }
@@ -164,84 +163,86 @@ private fun MainBox(
         ),
     )
 
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        ExpressionBox(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f),
-            appState = appState,
-            color = expressionTextColor,
-            maxFontSize = expressionMaxFontSize,
-            minFontSize = expressionMinFontSize,
-            onShowHistory = onShowHistory,
-            locale = locale,
-        )
-
-        KeysGrid(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(4f),
-            arrangementSpace = 2.dp,
-            keyTextSize = keyTextSize,
-            keysGrid = mainKeysGrid,
-            onClick = { key ->
-                when (key) {
-                    is UiKey.Operators ->
-                        showOperatorsKeyGrid = true
-
-                    else ->
-                        key.toAppAction?.let(onAction)
-                }
-            },
-            locale = locale,
-        )
-
-    }
-
-    AnimatedVisibility(
-        visible = showOperatorsKeyGrid,
-        modifier = Modifier
-            .fillMaxSize()
-            .zIndex(10f),
-        enter = fadeIn() + scaleIn(initialScale = 0.75f),
-        exit = fadeOut() + scaleOut(targetScale = 0.75f),
-    ) {
-        Box(
-            modifier = Modifier
-                .background(
-                    color = Color.Black.copy(alpha = 0.9f),
-                    shape = RoundedCornerShape(16.dp)
-                )
-                .clickable { showOperatorsKeyGrid = false },
+    Box(modifier = modifier) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            KeysGrid(
+            ExpressionBox(
+                appState = appState,
+                onShowHistory = onShowHistory,
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(32.dp),
-                arrangementSpace = 8.dp,
-                keyTextSize = keyTextSize,
-                keysGrid = operatorsKeysGrid,
-                onClick = { key ->
-                    showOperatorsKeyGrid = false
-                    key.toAppAction?.let(onAction)
-                },
+                    .fillMaxWidth()
+                    .weight(1f),
+                color = expressionTextColor,
+                maxFontSize = expressionMaxFontSize,
+                minFontSize = expressionMinFontSize,
                 locale = locale,
             )
+
+            KeysGrid(
+                keysGrid = mainKeysGrid,
+                onClick = { key ->
+                    when (key) {
+                        is UiKey.Operators ->
+                            showOperatorsKeyGrid = true
+
+                        else ->
+                            key.toAppAction?.let(onAction)
+                    }
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(4f),
+                keyTextSize = keyTextSize,
+                arrangementSpace = 2.dp,
+                locale = locale,
+            )
+
+        }
+
+        AnimatedVisibility(
+            visible = showOperatorsKeyGrid,
+            modifier = Modifier
+                .fillMaxSize()
+                .zIndex(10f),
+            enter = fadeIn() + scaleIn(initialScale = 0.75f),
+            exit = fadeOut() + scaleOut(targetScale = 0.75f),
+        ) {
+            Box(
+                modifier = Modifier
+                    .background(
+                        color = Color.Black.copy(alpha = 0.9f),
+                        shape = RoundedCornerShape(16.dp)
+                    )
+                    .clickable { showOperatorsKeyGrid = false },
+            ) {
+                KeysGrid(
+                    keysGrid = operatorsKeysGrid,
+                    onClick = { key ->
+                        showOperatorsKeyGrid = false
+                        key.toAppAction?.let(onAction)
+                    },
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(32.dp),
+                    keyTextSize = keyTextSize,
+                    arrangementSpace = 8.dp,
+                    locale = locale,
+                )
+            }
         }
     }
 }
 
 @Composable
 private fun ExpressionBox(
-    modifier: Modifier,
     appState: AppState,
+    onShowHistory: () -> Unit,
+    modifier: Modifier,
     color: Color,
     maxFontSize: TextUnit,
     minFontSize: TextUnit,
-    onShowHistory: () -> Unit,
     locale: Locale,
 ) {
     val expression: String = appState.displayExpression(locale)
@@ -309,11 +310,11 @@ private fun ExpressionBox(
 
 @Composable
 private fun KeysGrid(
-    modifier: Modifier,
-    arrangementSpace: Dp,
-    keyTextSize: TextUnit,
     keysGrid: List<List<Key?>>,
     onClick: (Key) -> Unit,
+    modifier: Modifier,
+    keyTextSize: TextUnit,
+    arrangementSpace: Dp,
     locale: Locale,
 ) {
     Column(
@@ -322,13 +323,13 @@ private fun KeysGrid(
     ) {
         keysGrid.forEach { keys ->
             KeysRow(
+                keys = keys,
+                onClick = onClick,
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f),
-                arrangementSpace = arrangementSpace,
                 keyTextSize = keyTextSize,
-                keys = keys,
-                onClick = onClick,
+                arrangementSpace = arrangementSpace,
                 locale = locale,
             )
         }
@@ -337,11 +338,11 @@ private fun KeysGrid(
 
 @Composable
 private fun KeysRow(
-    modifier: Modifier,
-    arrangementSpace: Dp,
-    keyTextSize: TextUnit,
     keys: List<Key?>,
     onClick: (Key) -> Unit,
+    modifier: Modifier,
+    keyTextSize: TextUnit,
+    arrangementSpace: Dp,
     locale: Locale,
 ) {
     Row(
@@ -352,12 +353,12 @@ private fun KeysRow(
         keys.forEach { key ->
             if (key != null) {
                 KeyButton(
+                    key = key,
+                    onClick = onClick,
                     modifier = Modifier
                         .fillMaxHeight()
                         .weight(1f),
                     keyTextSize = keyTextSize,
-                    key = key,
-                    onClick = onClick,
                     locale = locale,
                 )
             } else {
@@ -373,16 +374,16 @@ private fun KeysRow(
 
 @Composable
 private fun KeyButton(
-    modifier: Modifier,
-    keyTextSize: TextUnit,
     key: Key,
     onClick: (Key) -> Unit,
+    modifier: Modifier,
+    keyTextSize: TextUnit,
     locale: Locale,
 ) {
     Button(
-        modifier = modifier,
         onClick = { onClick(key) },
         onLongClick = { key.longClickKey?.let { onClick(it) } },
+        modifier = modifier,
         colors = key.colors,
     ) {
         when (val display: Display = key.display(locale)) {
