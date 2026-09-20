@@ -50,9 +50,9 @@ import androidx.compose.ui.zIndex
 import androidx.wear.compose.material3.AppScaffold
 import androidx.wear.compose.material3.Button
 import androidx.wear.compose.material3.Icon
-import androidx.wear.compose.material3.MaterialTheme
 import androidx.wear.compose.material3.ScreenScaffold
 import com.gmail.comosense.calculator.domain.Symbol
+import com.gmail.comosense.calculator.presentation.theme.CalculatorTheme
 import java.util.Locale
 import kotlin.math.sqrt
 
@@ -70,7 +70,7 @@ fun CalculatorScreen(
             BoxWithConstraints(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.surfaceContainer),
+                    .background(CalculatorTheme.calculatorScreenColors.background),
                 contentAlignment = Alignment.Center,
             ) {
                 MainPanel(
@@ -97,7 +97,6 @@ private fun MainPanel(
 ) {
     var showOperatorsKeyGrid: Boolean by remember { mutableStateOf(false) }
 
-    val expressionTextColor: Color = MaterialTheme.colorScheme.onBackground
     val expressionMaxFontSize: TextUnit = 32.sp
     val expressionMinFontSize: TextUnit = 16.sp
     val keyTextSize: TextUnit = 18.sp
@@ -174,7 +173,6 @@ private fun MainPanel(
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f),
-                color = expressionTextColor,
                 maxFontSize = expressionMaxFontSize,
                 minFontSize = expressionMinFontSize,
                 locale = locale,
@@ -240,7 +238,6 @@ private fun ExpressionBox(
     appState: AppState,
     onShowHistory: () -> Unit,
     modifier: Modifier,
-    color: Color,
     maxFontSize: TextUnit,
     minFontSize: TextUnit,
     locale: Locale,
@@ -290,7 +287,7 @@ private fun ExpressionBox(
                 Text(
                     text = expression,
                     maxLines = 1,
-                    color = color,
+                    color = CalculatorTheme.calculatorScreenColors.expression,
                     fontSize = minFontSize,
                 )
             }
@@ -302,7 +299,7 @@ private fun ExpressionBox(
                     minFontSize = minFontSize,
                 ),
                 maxLines = 1,
-                color = color,
+                color = CalculatorTheme.calculatorScreenColors.expression,
             )
         }
     }

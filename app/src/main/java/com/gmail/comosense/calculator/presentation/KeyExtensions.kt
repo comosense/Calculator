@@ -3,8 +3,8 @@ package com.gmail.comosense.calculator.presentation
 import androidx.compose.runtime.Composable
 import androidx.wear.compose.material3.ButtonColors
 import androidx.wear.compose.material3.ButtonDefaults
-import androidx.wear.compose.material3.MaterialTheme
 import com.gmail.comosense.calculator.R
+import com.gmail.comosense.calculator.presentation.theme.CalculatorTheme
 import java.text.DecimalFormatSymbols
 import java.util.Locale
 
@@ -100,8 +100,8 @@ val Key.colors: ButtonColors
         is SymbolKey.OpenParenthesis,
         is SymbolKey.CloseParenthesis ->
             ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.surfaceContainer,
-                contentColor = MaterialTheme.colorScheme.onSurface,
+                containerColor = CalculatorTheme.calculatorScreenColors.digitKeyContainer,
+                contentColor = CalculatorTheme.calculatorScreenColors.digitKeyContent,
             )
 
         is SymbolKey.Positive,
@@ -111,22 +111,22 @@ val Key.colors: ButtonColors
         is SymbolKey.Multiply,
         is SymbolKey.Divide ->
             ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.tertiary,
-                contentColor = MaterialTheme.colorScheme.onTertiary,
+                containerColor = CalculatorTheme.calculatorScreenColors.operatorKeyContainer,
+                contentColor = CalculatorTheme.calculatorScreenColors.operatorKeyContent,
             )
 
         is CommandKey.Equal,
         is CommandKey.Clear,
         is CommandKey.Backspace ->
             ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = MaterialTheme.colorScheme.onPrimary,
+                containerColor = CalculatorTheme.calculatorScreenColors.commandKeyContainer,
+                contentColor = CalculatorTheme.calculatorScreenColors.commandKeyContent,
             )
 
         is UiKey.Operators ->
             ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.tertiary,
-                contentColor = MaterialTheme.colorScheme.onTertiary,
+                containerColor = CalculatorTheme.calculatorScreenColors.uiKeyContainer,
+                contentColor = CalculatorTheme.calculatorScreenColors.uiKeyContent,
             )
     }
 

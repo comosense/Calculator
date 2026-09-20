@@ -16,7 +16,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -30,7 +29,6 @@ import androidx.wear.compose.material3.AppScaffold
 import androidx.wear.compose.material3.Button
 import androidx.wear.compose.material3.ButtonDefaults
 import androidx.wear.compose.material3.Icon
-import androidx.wear.compose.material3.MaterialTheme
 import androidx.wear.compose.material3.ScreenScaffold
 import androidx.wear.compose.material3.SurfaceTransformation
 import androidx.wear.compose.material3.Text
@@ -40,6 +38,8 @@ import androidx.wear.compose.material3.lazy.transformedHeight
 import com.gmail.comosense.calculator.R
 import com.gmail.comosense.calculator.domain.Calculation
 import com.gmail.comosense.calculator.domain.Symbol
+import com.gmail.comosense.calculator.presentation.theme.CalculatorTheme
+import com.gmail.comosense.calculator.presentation.theme.HistoryScreenColors
 import java.util.Locale
 
 @Composable
@@ -157,11 +157,7 @@ fun HistoryItem(
 ) {
     val expressionFontSize: TextUnit = 16.sp
     val resultFontSize: TextUnit = 18.sp
-    val historyContainerColor: Color = MaterialTheme.colorScheme.background
-    val historyContentColor: Color = MaterialTheme.colorScheme.onBackground
-    val deleteHistoryContainerColor: Color = MaterialTheme.colorScheme.tertiaryContainer
-    val deleteHistoryContentColor: Color = MaterialTheme.colorScheme.onTertiaryContainer
-    val deleteHistoryIconColor: Color = MaterialTheme.colorScheme.tertiaryDim
+    val colors: HistoryScreenColors = CalculatorTheme.historyScreenColors
 
     Button(
         onClick = onClick,
@@ -169,14 +165,14 @@ fun HistoryItem(
         modifier = modifier,
         colors = ButtonDefaults.buttonColors(
             containerColor = if (deleteMode) {
-                deleteHistoryContainerColor
+                colors.deleteContainer
             } else {
-                historyContainerColor
+                colors.container
             },
             contentColor = if (deleteMode) {
-                deleteHistoryContentColor
+                colors.deleteContent
             } else {
-                historyContentColor
+                colors.content
             },
         ),
         transformation = transformation,
@@ -189,7 +185,7 @@ fun HistoryItem(
                     painter = painterResource(R.drawable.ic_delete),
                     contentDescription = stringResource(R.string.delete),
                     modifier = Modifier.align(Alignment.Center),
-                    tint = deleteHistoryIconColor,
+                    tint = colors.deleteIcon,
                 )
             }
             Column(
@@ -228,8 +224,7 @@ fun HistoryItem(
 private fun DeleteAllButton(
     onClick: () -> Unit,
 ) {
-    val errorContainerColor: Color = MaterialTheme.colorScheme.errorContainer
-    val errorContentColor: Color = MaterialTheme.colorScheme.onErrorContainer
+    val colors: HistoryScreenColors = CalculatorTheme.historyScreenColors
 
     Button(
         onClick = onClick,
@@ -237,8 +232,8 @@ private fun DeleteAllButton(
             .fillMaxWidth()
             .padding(horizontal = 8.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = errorContainerColor,
-            contentColor = errorContentColor,
+            containerColor = colors.deleteAllContainer,
+            contentColor = colors.deleteAllContent,
         )
     ) {
         Text(stringResource(R.string.delete_all))

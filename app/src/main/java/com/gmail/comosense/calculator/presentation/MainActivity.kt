@@ -12,6 +12,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.wear.compose.ui.tooling.preview.WearPreviewDevices
 import androidx.wear.compose.ui.tooling.preview.WearPreviewFontScales
 import com.gmail.comosense.calculator.domain.Symbol
+import com.gmail.comosense.calculator.presentation.theme.CalculatorTheme
 
 class MainActivity : ComponentActivity() {
     private val viewModel: AppViewModel by viewModels {
@@ -24,13 +25,15 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            val appState: AppState by viewModel.appState.collectAsStateWithLifecycle()
+            CalculatorTheme {
+                val appState: AppState by viewModel.appState.collectAsStateWithLifecycle()
 
-            WearApp(
-                appState = appState,
-                onAction = viewModel::onAction,
-                locale = LocalLocale.current.platformLocale,
-            )
+                WearApp(
+                    appState = appState,
+                    onAction = viewModel::onAction,
+                    locale = LocalLocale.current.platformLocale,
+                )
+            }
         }
     }
 }
