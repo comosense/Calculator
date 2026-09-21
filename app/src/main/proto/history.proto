@@ -27,7 +27,5 @@ message Symbol {
     bool subtract = 12;
     bool multiply = 13;
     bool divide = 14;
-
-    string error = 15;
   }
 }

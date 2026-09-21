@@ -30,6 +30,4 @@ sealed interface Symbol {
         data object Multiply : Operator
         data object Divide : Operator
     }
-
-    data class Error(val value: String) : Symbol
 }

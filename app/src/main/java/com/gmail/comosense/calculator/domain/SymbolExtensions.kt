@@ -25,7 +25,4 @@ fun Symbol.isAppendableAfter(previous: Symbol?): Boolean = when (this) {
     is Symbol.Operator ->
         previous is Symbol.Numeric.Digit ||
                 previous is Symbol.FactorEnd
-
-    is Symbol.Error ->
-        false
 }

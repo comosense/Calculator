@@ -41,9 +41,6 @@ fun ProtoSymbol.toSymbolOrNull(): Symbol? {
         ProtoSymbol.ValueCase.DIVIDE ->
             Symbol.Operator.Divide
 
-        ProtoSymbol.ValueCase.ERROR ->
-            Symbol.Error(error)
-
         ProtoSymbol.ValueCase.VALUE_NOT_SET ->
             null
     }
@@ -99,11 +96,6 @@ fun Symbol.toProto(): ProtoSymbol {
         Symbol.Operator.Divide ->
             ProtoSymbol.newBuilder()
                 .setDivide(true)
-                .build()
-
-        is Symbol.Error ->
-            ProtoSymbol.newBuilder()
-                .setError(value)
                 .build()
     }
 }

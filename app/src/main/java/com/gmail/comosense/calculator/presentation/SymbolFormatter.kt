@@ -19,7 +19,6 @@ val Symbol.text: String
         is Symbol.Operator.Subtract -> "-"
         is Symbol.Operator.Multiply -> "×"
         is Symbol.Operator.Divide -> "÷"
-        is Symbol.Error -> value
     }
 
 fun List<Symbol>.formatSymbols(locale: Locale): String {

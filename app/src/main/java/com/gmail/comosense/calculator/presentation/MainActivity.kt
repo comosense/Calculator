@@ -13,6 +13,7 @@ import androidx.wear.compose.ui.tooling.preview.WearPreviewDevices
 import androidx.wear.compose.ui.tooling.preview.WearPreviewFontScales
 import com.gmail.comosense.calculator.domain.Symbol
 import com.gmail.comosense.calculator.presentation.theme.CalculatorTheme
+import kotlinx.coroutines.flow.emptyFlow
 
 class MainActivity : ComponentActivity() {
     private val viewModel: AppViewModel by viewModels {
@@ -31,6 +32,7 @@ class MainActivity : ComponentActivity() {
                 WearApp(
                     appState = appState,
                     onAction = viewModel::onAction,
+                    errorEvent = viewModel.errorEvent,
                     locale = LocalLocale.current.platformLocale,
                 )
             }
@@ -44,9 +46,14 @@ class MainActivity : ComponentActivity() {
 fun DefaultPreview() {
     WearApp(
         appState = AppState(
-            entering = listOf(Symbol.Error("01234567890123456789")),
+            entering = listOf(
+                Symbol.Numeric.Digit(1),
+                Symbol.Operator.Add,
+                Symbol.Numeric.Digit(2),
+                ),
         ),
         onAction = {},
+        errorEvent = emptyFlow(),
         locale = LocalLocale.current.platformLocale,
     )
 }

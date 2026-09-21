@@ -6,8 +6,8 @@ import java.math.MathContext
 import java.math.RoundingMode
 
 enum class CalculatorError {
-    DivisionByZero,
     InvalidExpression,
+    DivisionByZero,
     Arithmetic,
 }
 

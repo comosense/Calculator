@@ -12,4 +12,8 @@
     <string name="operators">Operators</string>
     <string name="delete">Delete</string>
     <string name="delete_all">Delete All</string>
+    <string name="invalid_result">Invalid result</string>
+    <string name="invalid_expression">Invalid expression</string>
+    <string name="division_by_zero">Division by zero</string>
+    <string name="arithmetic">Arithmetic error</string>
 </resources>

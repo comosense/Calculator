@@ -4,12 +4,15 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.gmail.comosense.calculator.common.Result
 import com.gmail.comosense.calculator.data.HistoryRepository
 import com.gmail.comosense.calculator.data.historyDataStore
 import com.gmail.comosense.calculator.domain.Calculation
 import com.gmail.comosense.calculator.domain.Symbol
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -50,6 +53,11 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
     )
     private val _appState: MutableStateFlow<AppState> = MutableStateFlow(AppState())
     val appState: StateFlow<AppState> = _appState.asStateFlow()
+
+    private val _errorEvent = MutableSharedFlow<CalculatorServiceError>(
+        extraBufferCapacity = 1,
+    )
+    val errorEvent = _errorEvent.asSharedFlow()
 
     init {
         viewModelScope.launch {
@@ -103,22 +111,29 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
 
         if (!state.isEntering) return
 
-        val result: List<Symbol> = calculatorService.calculate(state.expression)
+        when (val r: Result<List<Symbol>, CalculatorServiceError> =
+            calculatorService.calculate(state.expression)) {
+            is Result.Ok -> {
+                _appState.update {
+                    it.copy(
+                        result = r.value,
+                        entering = emptyList(),
+                    )
+                }
 
-        _appState.update {
-            it.copy(
-                result = result,
-                entering = emptyList(),
-            )
-        }
+                viewModelScope.launch {
+                    historyRepository.addHistory(
+                        Calculation(
+                            expression = state.expression,
+                            result = r.value,
+                        )
+                    )
+                }
+            }
 
-        viewModelScope.launch {
-            historyRepository.addHistory(
-                Calculation(
-                    expression = state.expression,
-                    result = result,
-                )
-            )
+            is Result.Err -> {
+                _errorEvent.tryEmit(r.error)
+            }
         }
     }
 

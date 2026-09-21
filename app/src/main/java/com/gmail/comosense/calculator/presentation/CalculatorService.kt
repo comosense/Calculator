@@ -8,46 +8,53 @@ import com.gmail.comosense.calculator.domain.Token
 import com.gmail.comosense.calculator.domain.calculate
 import com.gmail.comosense.calculator.domain.parseTokens
 
+enum class CalculatorServiceError {
+    InvalidResult,
+    InvalidExpression,
+    DivisionByZero,
+    Arithmetic,
+}
+
 class CalculatorService(
     private val precision: Int = 50,
     private val displayScale: Int = 20,
 ) {
-    fun calculate(expression: List<Symbol>): List<Symbol> {
+    fun calculate(expression: List<Symbol>): Result<List<Symbol>, CalculatorServiceError> {
         return when (val r: Result<List<Token>, SymbolParserError> =
             parseTokens(expression)) {
             is Result.Ok -> {
                 when (val res: Result<List<Symbol>, ResultConverterError> =
                     calculate(r.value, precision).toDisplaySymbols(displayScale)) {
-                    is Result.Ok -> res.value
-                    is Result.Err -> listOf(Symbol.Error(errorMessage(res.error)))
+                    is Result.Ok -> Result.Ok(res.value)
+                    is Result.Err -> Result.Err(error(res.error))
                 }
             }
 
             is Result.Err -> {
-                listOf(Symbol.Error(errorMessage(r.error)))
+                Result.Err(error(r.error))
             }
         }
     }
 
-    private fun errorMessage(error: ResultConverterError): String = when (error) {
+    private fun error(error: ResultConverterError): CalculatorServiceError = when (error) {
         is ResultConverterError.UnsupportedCharacter ->
-            "Invalid result"
+            CalculatorServiceError.InvalidResult
 
         is ResultConverterError.Calculation -> when (error.error) {
-            CalculatorError.DivisionByZero ->
-                "Division by zero"
-
             CalculatorError.InvalidExpression ->
-                "Invalid expression"
+                CalculatorServiceError.InvalidExpression
+
+            CalculatorError.DivisionByZero ->
+                CalculatorServiceError.DivisionByZero
 
             CalculatorError.Arithmetic ->
-                "Arithmetic error"
+                CalculatorServiceError.Arithmetic
         }
     }
 
-    private fun errorMessage(error: SymbolParserError): String = when (error) {
+    private fun error(error: SymbolParserError): CalculatorServiceError = when (error) {
         is SymbolParserError.UnsupportedSymbol,
         is SymbolParserError.IllegalNumeric ->
-            "Invalid expression"
+            CalculatorServiceError.InvalidExpression
     }
 }
