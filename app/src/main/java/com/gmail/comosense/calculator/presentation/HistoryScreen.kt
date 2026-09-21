@@ -19,9 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.wear.compose.foundation.lazy.TransformingLazyColumn
 import androidx.wear.compose.foundation.lazy.TransformingLazyColumnState
 import androidx.wear.compose.foundation.lazy.rememberTransformingLazyColumnState
@@ -155,8 +153,6 @@ fun HistoryItem(
     transformation: SurfaceTransformation,
     locale: Locale,
 ) {
-    val expressionFontSize: TextUnit = 16.sp
-    val resultFontSize: TextUnit = 18.sp
     val colors: HistoryScreenColors = CalculatorTheme.historyScreenColors
 
     Button(
@@ -200,7 +196,7 @@ fun HistoryItem(
                     modifier = Modifier
                         .fillMaxWidth()
                         .horizontalScroll(expressionScrollState),
-                    fontSize = expressionFontSize,
+                    fontSize = CalculatorTheme.historyScreenDimensions.expressionFontSize,
                     softWrap = false,
                     maxLines = 1,
                 )
@@ -210,7 +206,7 @@ fun HistoryItem(
                     modifier = Modifier
                         .fillMaxWidth()
                         .horizontalScroll(resultScrollState),
-                    fontSize = resultFontSize,
+                    fontSize = CalculatorTheme.historyScreenDimensions.resultFontSize,
                     textAlign = TextAlign.End,
                     softWrap = false,
                     maxLines = 1,
@@ -229,13 +225,17 @@ private fun DeleteAllButton(
     Button(
         onClick = onClick,
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 8.dp),
+            .fillMaxWidth(),
         colors = ButtonDefaults.buttonColors(
             containerColor = colors.deleteAllContainer,
             contentColor = colors.deleteAllContent,
         )
     ) {
-        Text(stringResource(R.string.delete_all))
+        Text(
+            text = stringResource(R.string.delete_all),
+            modifier = Modifier.fillMaxWidth(),
+            fontSize = CalculatorTheme.historyScreenDimensions.deleteAllFontSize,
+            textAlign = TextAlign.Center,
+        )
     }
 }

@@ -45,7 +45,6 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.wear.compose.material3.AppScaffold
 import androidx.wear.compose.material3.Button
@@ -96,10 +95,6 @@ private fun MainPanel(
     locale: Locale,
 ) {
     var showOperatorsKeyGrid: Boolean by remember { mutableStateOf(false) }
-
-    val expressionMaxFontSize: TextUnit = 32.sp
-    val expressionMinFontSize: TextUnit = 16.sp
-    val keyTextSize: TextUnit = 18.sp
 
     val deleteKey: CommandKey =
         if (appState.isEntering) {
@@ -173,8 +168,8 @@ private fun MainPanel(
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f),
-                maxFontSize = expressionMaxFontSize,
-                minFontSize = expressionMinFontSize,
+                maxFontSize = CalculatorTheme.calculatorScreenDimensions.expressionMaxFontSize,
+                minFontSize = CalculatorTheme.calculatorScreenDimensions.expressionMinFontSize,
                 locale = locale,
             )
 
@@ -192,7 +187,7 @@ private fun MainPanel(
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(4f),
-                keyTextSize = keyTextSize,
+                keyTextSize = CalculatorTheme.calculatorScreenDimensions.keyTextSize,
                 arrangementSpace = 2.dp,
                 locale = locale,
             )
@@ -224,7 +219,7 @@ private fun MainPanel(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(32.dp),
-                    keyTextSize = keyTextSize,
+                    keyTextSize = CalculatorTheme.calculatorScreenDimensions.keyTextSize,
                     arrangementSpace = 8.dp,
                     locale = locale,
                 )
