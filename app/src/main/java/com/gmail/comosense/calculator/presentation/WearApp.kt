@@ -2,6 +2,7 @@ package com.gmail.comosense.calculator.presentation
 
 import android.content.Context
 import android.widget.Toast
+import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
@@ -13,7 +14,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import com.gmail.comosense.calculator.R
 import kotlinx.coroutines.flow.Flow
 import java.util.Locale
@@ -68,22 +68,20 @@ fun WearApp(
 @Composable
 private fun CalculatorServiceErrorToast(errorEvent: Flow<CalculatorServiceError>) {
     val context: Context = LocalContext.current
-    val messageInvalidResult: String = stringResource(R.string.invalid_result)
-    val messageInvalidExpression: String = stringResource(R.string.invalid_expression)
-    val messageDivisionByZero: String = stringResource(R.string.division_by_zero)
-    val messageArithmetic: String = stringResource(R.string.arithmetic)
+
+    @StringRes
+    fun CalculatorServiceError.messageResourceId(): Int = when (this) {
+        CalculatorServiceError.InvalidResult -> R.string.invalid_result
+        CalculatorServiceError.InvalidExpression -> R.string.invalid_expression
+        CalculatorServiceError.DivisionByZero -> R.string.division_by_zero
+        CalculatorServiceError.Arithmetic -> R.string.arithmetic
+    }
 
     LaunchedEffect(errorEvent) {
         errorEvent.collect { error ->
-            val message: String = when (error) {
-                CalculatorServiceError.InvalidResult -> messageInvalidResult
-                CalculatorServiceError.InvalidExpression -> messageInvalidExpression
-                CalculatorServiceError.DivisionByZero -> messageDivisionByZero
-                CalculatorServiceError.Arithmetic -> messageArithmetic
-            }
             Toast.makeText(
                 context,
-                message,
+                error.messageResourceId(),
                 Toast.LENGTH_SHORT
             ).show()
         }
