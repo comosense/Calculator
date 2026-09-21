@@ -53,7 +53,7 @@ fun List<Symbol>.formatSymbols(locale: Locale): String {
 }
 
 private fun formatNumericString(value: String, locale: Locale): String {
-    val pointIndex: Int = value.indexOf(".")
+    val pointIndex: Int = value.indexOf(Symbol.Numeric.Point.text)
     val integerPart: String = if (pointIndex >= 0) {
         value.substring(0, pointIndex)
     } else {

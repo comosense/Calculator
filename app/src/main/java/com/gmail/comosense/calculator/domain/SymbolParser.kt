@@ -1,8 +1,6 @@
-package com.gmail.comosense.calculator.presentation
+package com.gmail.comosense.calculator.domain
 
 import com.gmail.comosense.calculator.common.Result
-import com.gmail.comosense.calculator.domain.Symbol
-import com.gmail.comosense.calculator.domain.Token
 import java.math.BigDecimal
 
 sealed interface SymbolParserError {
@@ -30,8 +28,11 @@ fun parseTokens(symbols: List<Symbol>): Result<List<Token>, SymbolParserError> {
 
         for (symbol in symbols) {
             when (symbol) {
-                is Symbol.Numeric ->
-                    numericBuffer.append(symbol.text)
+                is Symbol.Numeric.Digit ->
+                    numericBuffer.append(symbol.value)
+
+                is Symbol.Numeric.Point ->
+                    numericBuffer.append(".")
 
                 else -> {
                     when (val r: Result<Unit, SymbolParserError> = flushNumeric()) {
