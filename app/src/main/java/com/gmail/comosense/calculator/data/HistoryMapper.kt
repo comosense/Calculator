@@ -113,6 +113,8 @@ fun ProtoCalculation.toCalculationOrNull(): Calculation? {
         }
     }
 
+    if (expression.isEmpty() || result.isEmpty()) return null
+
     return Calculation(
         expression = expression,
         result = result,

@@ -68,23 +68,22 @@ fun WearApp(
 @Composable
 private fun CalculatorServiceErrorToast(errorEvent: Flow<CalculatorServiceError>) {
     val context: Context = LocalContext.current
-
-    val messages: Map<CalculatorServiceError, String> = mapOf(
-        CalculatorServiceError.InvalidResult to
-                stringResource(R.string.invalid_result),
-        CalculatorServiceError.InvalidExpression to
-                stringResource(R.string.invalid_expression),
-        CalculatorServiceError.DivisionByZero to
-                stringResource(R.string.division_by_zero),
-        CalculatorServiceError.Arithmetic to
-                stringResource(R.string.arithmetic),
-    )
+    val messageInvalidResult: String = stringResource(R.string.invalid_result)
+    val messageInvalidExpression: String = stringResource(R.string.invalid_expression)
+    val messageDivisionByZero: String = stringResource(R.string.division_by_zero)
+    val messageArithmetic: String = stringResource(R.string.arithmetic)
 
     LaunchedEffect(errorEvent) {
         errorEvent.collect { error ->
+            val message: String = when (error) {
+                CalculatorServiceError.InvalidResult -> messageInvalidResult
+                CalculatorServiceError.InvalidExpression -> messageInvalidExpression
+                CalculatorServiceError.DivisionByZero -> messageDivisionByZero
+                CalculatorServiceError.Arithmetic -> messageArithmetic
+            }
             Toast.makeText(
                 context,
-                messages.getValue(error),
+                message,
                 Toast.LENGTH_SHORT
             ).show()
         }

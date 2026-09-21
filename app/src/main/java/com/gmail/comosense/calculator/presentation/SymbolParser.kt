@@ -1,7 +1,8 @@
-package com.gmail.comosense.calculator.domain
+package com.gmail.comosense.calculator.presentation
 
 import com.gmail.comosense.calculator.common.Result
-import com.gmail.comosense.calculator.presentation.text
+import com.gmail.comosense.calculator.domain.Symbol
+import com.gmail.comosense.calculator.domain.Token
 import java.math.BigDecimal
 
 sealed interface SymbolParserError {
