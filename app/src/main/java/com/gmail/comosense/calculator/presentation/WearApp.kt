@@ -2,7 +2,6 @@ package com.gmail.comosense.calculator.presentation
 
 import android.content.Context
 import android.widget.Toast
-import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
@@ -69,7 +68,6 @@ fun WearApp(
 private fun CalculatorServiceErrorToast(errorEvent: Flow<CalculatorServiceError>) {
     val context: Context = LocalContext.current
 
-    @StringRes
     fun CalculatorServiceError.messageResourceId(): Int = when (this) {
         CalculatorServiceError.InvalidResult -> R.string.invalid_result
         CalculatorServiceError.InvalidExpression -> R.string.invalid_expression
