@@ -20,8 +20,8 @@ message Symbol {
     int32 digit = 3;
     bool point = 4;
 
-    bool open_parenthesis = 9;
-    bool close_parenthesis = 10;
+    bool opening_parenthesis = 9;
+    bool closing_parenthesis = 10;
 
     bool add = 11;
     bool subtract = 12;

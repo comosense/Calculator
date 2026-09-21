@@ -23,11 +23,11 @@ fun ProtoSymbol.toSymbolOrNull(): Symbol? {
         ProtoSymbol.ValueCase.POINT ->
             Symbol.Numeric.Point
 
-        ProtoSymbol.ValueCase.OPEN_PARENTHESIS ->
-            Symbol.FactorStart.OpenParenthesis
+        ProtoSymbol.ValueCase.OPENING_PARENTHESIS ->
+            Symbol.FactorStart.OpeningParenthesis
 
-        ProtoSymbol.ValueCase.CLOSE_PARENTHESIS ->
-            Symbol.FactorEnd.CloseParenthesis
+        ProtoSymbol.ValueCase.CLOSING_PARENTHESIS ->
+            Symbol.FactorEnd.ClosingParenthesis
 
         ProtoSymbol.ValueCase.ADD ->
             Symbol.Operator.Add
@@ -68,14 +68,14 @@ fun Symbol.toProto(): ProtoSymbol {
                 .setPoint(true)
                 .build()
 
-        Symbol.FactorStart.OpenParenthesis ->
+        Symbol.FactorStart.OpeningParenthesis ->
             ProtoSymbol.newBuilder()
-                .setOpenParenthesis(true)
+                .setOpeningParenthesis(true)
                 .build()
 
-        Symbol.FactorEnd.CloseParenthesis ->
+        Symbol.FactorEnd.ClosingParenthesis ->
             ProtoSymbol.newBuilder()
-                .setCloseParenthesis(true)
+                .setClosingParenthesis(true)
                 .build()
 
         Symbol.Operator.Add ->

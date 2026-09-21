@@ -11,11 +11,11 @@ sealed interface Token {
     data class Numeric(val value: BigDecimal) : Token
 
     sealed interface FactorStart : Token {
-        data object OpenParenthesis : FactorStart
+        data object OpeningParenthesis : FactorStart
     }
 
     sealed interface FactorEnd : Token {
-        data object CloseParenthesis : FactorEnd
+        data object ClosingParenthesis : FactorEnd
     }
 
     sealed interface Operator : Token {

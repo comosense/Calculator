@@ -13,8 +13,8 @@ val Symbol.text: String
         is Symbol.Sign.Negative -> "-"
         is Symbol.Numeric.Digit -> value.toString()
         is Symbol.Numeric.Point -> "."
-        is Symbol.FactorStart.OpenParenthesis -> "("
-        is Symbol.FactorEnd.CloseParenthesis -> ")"
+        is Symbol.FactorStart.OpeningParenthesis -> "("
+        is Symbol.FactorEnd.ClosingParenthesis -> ")"
         is Symbol.Operator.Add -> "+"
         is Symbol.Operator.Subtract -> "-"
         is Symbol.Operator.Multiply -> "×"

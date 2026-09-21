@@ -108,10 +108,10 @@ private fun MainPanel(
             CommandKey.Clear
         }
     val parenthesisKey: SymbolKey =
-        if (appState.canAppend(Symbol.FactorEnd.CloseParenthesis)) {
-            SymbolKey.CloseParenthesis
+        if (appState.canAppend(Symbol.FactorEnd.ClosingParenthesis)) {
+            SymbolKey.ClosingParenthesis
         } else {
-            SymbolKey.OpenParenthesis
+            SymbolKey.OpeningParenthesis
         }
     val plusKey: SymbolKey =
         if (appState.canAppend(Symbol.Operator.Add)) {

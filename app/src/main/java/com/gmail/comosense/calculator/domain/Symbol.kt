@@ -17,11 +17,11 @@ sealed interface Symbol {
     }
 
     sealed interface FactorStart : Symbol {
-        data object OpenParenthesis : FactorStart
+        data object OpeningParenthesis : FactorStart
     }
 
     sealed interface FactorEnd : Symbol {
-        data object CloseParenthesis : FactorEnd
+        data object ClosingParenthesis : FactorEnd
     }
 
     sealed interface Operator : Symbol {

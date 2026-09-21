@@ -64,11 +64,11 @@ private fun Symbol.toToken(): Result<Token, SymbolParserError> = when (this) {
     is Symbol.Sign.Negative ->
         Result.Ok(Token.Sign.Negative)
 
-    is Symbol.FactorStart.OpenParenthesis ->
-        Result.Ok(Token.FactorStart.OpenParenthesis)
+    is Symbol.FactorStart.OpeningParenthesis ->
+        Result.Ok(Token.FactorStart.OpeningParenthesis)
 
-    is Symbol.FactorEnd.CloseParenthesis ->
-        Result.Ok(Token.FactorEnd.CloseParenthesis)
+    is Symbol.FactorEnd.ClosingParenthesis ->
+        Result.Ok(Token.FactorEnd.ClosingParenthesis)
 
     is Symbol.Operator.Add ->
         Result.Ok(Token.Operator.Add)

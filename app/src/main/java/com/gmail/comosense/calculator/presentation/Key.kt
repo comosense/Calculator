@@ -22,12 +22,12 @@ sealed class SymbolKey : Key {
         override val symbol: Symbol = Symbol.Numeric.Point
     }
 
-    data object OpenParenthesis : SymbolKey() {
-        override val symbol: Symbol = Symbol.FactorStart.OpenParenthesis
+    data object OpeningParenthesis : SymbolKey() {
+        override val symbol: Symbol = Symbol.FactorStart.OpeningParenthesis
     }
 
-    data object CloseParenthesis : SymbolKey() {
-        override val symbol: Symbol = Symbol.FactorEnd.CloseParenthesis
+    data object ClosingParenthesis : SymbolKey() {
+        override val symbol: Symbol = Symbol.FactorEnd.ClosingParenthesis
     }
 
     data object Add : SymbolKey() {

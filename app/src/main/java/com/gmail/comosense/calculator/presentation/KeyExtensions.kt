@@ -101,8 +101,8 @@ val Key.colors: ButtonColors
         return when (this) {
             is SymbolKey.Digit,
             is SymbolKey.Point,
-            is SymbolKey.OpenParenthesis,
-            is SymbolKey.CloseParenthesis ->
+            is SymbolKey.OpeningParenthesis,
+            is SymbolKey.ClosingParenthesis ->
                 ButtonDefaults.buttonColors(
                     containerColor = colors.digitKeyContainer,
                     contentColor = colors.digitKeyContent,
