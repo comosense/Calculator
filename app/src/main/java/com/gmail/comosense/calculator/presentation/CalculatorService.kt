@@ -3,8 +3,10 @@ package com.gmail.comosense.calculator.presentation
 import com.gmail.comosense.calculator.common.Result
 import com.gmail.comosense.calculator.domain.CalculatorError
 import com.gmail.comosense.calculator.domain.Symbol
+import com.gmail.comosense.calculator.domain.SymbolParserError
 import com.gmail.comosense.calculator.domain.Token
 import com.gmail.comosense.calculator.domain.calculate
+import com.gmail.comosense.calculator.domain.parseTokens
 
 class CalculatorService(
     private val precision: Int = 50,

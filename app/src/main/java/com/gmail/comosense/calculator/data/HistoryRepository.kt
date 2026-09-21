@@ -13,7 +13,9 @@ class HistoryRepository(private val dataStore: DataStore<HistoryStore>) {
 
     val history: Flow<List<Calculation>> =
         dataStore.data.map { store ->
-            store.calculationsList.map { it.toCalculation() }
+            store.calculationsList.mapNotNull { calculation ->
+                calculation.toCalculationOrNull()
+            }
         }
 
     suspend fun addHistory(calculation: Calculation) {

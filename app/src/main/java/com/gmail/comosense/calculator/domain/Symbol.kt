@@ -7,7 +7,12 @@ sealed interface Symbol {
     }
 
     sealed interface Numeric : Symbol {
-        data class Digit(val value: Int) : Numeric
+        data class Digit(val value: Int) : Numeric {
+            init {
+                require(value in 0..9)
+            }
+        }
+
         data object Point : Numeric
     }
 

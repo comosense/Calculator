@@ -5,7 +5,7 @@ import com.gmail.comosense.calculator.domain.Symbol
 import com.gmail.comosense.calculator.data.proto.Calculation as ProtoCalculation
 import com.gmail.comosense.calculator.data.proto.Symbol as ProtoSymbol
 
-fun ProtoSymbol.toSymbol(): Symbol {
+fun ProtoSymbol.toSymbolOrNull(): Symbol? {
     return when (valueCase) {
         ProtoSymbol.ValueCase.POSITIVE ->
             Symbol.Sign.Positive
@@ -14,7 +14,11 @@ fun ProtoSymbol.toSymbol(): Symbol {
             Symbol.Sign.Negative
 
         ProtoSymbol.ValueCase.DIGIT ->
-            Symbol.Numeric.Digit(digit)
+            if (digit in 0..9) {
+                Symbol.Numeric.Digit(digit)
+            } else {
+                null
+            }
 
         ProtoSymbol.ValueCase.POINT ->
             Symbol.Numeric.Point
@@ -41,7 +45,7 @@ fun ProtoSymbol.toSymbol(): Symbol {
             Symbol.Error(error)
 
         ProtoSymbol.ValueCase.VALUE_NOT_SET ->
-            error("Invalid stored Symbol")
+            null
     }
 }
 
@@ -104,10 +108,22 @@ fun Symbol.toProto(): ProtoSymbol {
     }
 }
 
-fun ProtoCalculation.toCalculation(): Calculation {
+fun ProtoCalculation.toCalculationOrNull(): Calculation? {
+    val expression = buildList {
+        for (symbol in expressionList) {
+            add(symbol.toSymbolOrNull() ?: return null)
+        }
+    }
+
+    val result = buildList {
+        for (symbol in resultList) {
+            add(symbol.toSymbolOrNull() ?: return null)
+        }
+    }
+
     return Calculation(
-        expression = expressionList.map { it.toSymbol() },
-        result = resultList.map { it.toSymbol() },
+        expression = expression,
+        result = result,
     )
 }
 
