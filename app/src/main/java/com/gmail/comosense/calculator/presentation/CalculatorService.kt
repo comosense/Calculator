@@ -19,6 +19,11 @@ class CalculatorService(
     private val precision: Int = 50,
     private val displayScale: Int = 20,
 ) {
+    init {
+        require(precision > 0)
+        require(displayScale >= 0)
+    }
+
     fun calculate(expression: List<Symbol>): Result<List<Symbol>, CalculatorServiceError> {
         return when (val r: Result<List<Token>, SymbolParserError> =
             parseTokens(expression)) {
