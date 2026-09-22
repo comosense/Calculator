@@ -6,7 +6,6 @@ import androidx.wear.compose.material3.ButtonDefaults
 import com.gmail.comosense.calculator.R
 import com.gmail.comosense.calculator.presentation.theme.CalculatorScreenColors
 import com.gmail.comosense.calculator.presentation.theme.CalculatorTheme
-import java.text.DecimalFormatSymbols
 import java.util.Locale
 
 interface Display {
@@ -31,9 +30,7 @@ fun Key.display(locale: Locale): Display = when (this) {
         )
 
     is SymbolKey.Point ->
-        Display.Text(
-            DecimalFormatSymbols.getInstance(locale).decimalSeparator.toString()
-        )
+        Display.Text(decimalSeparator(locale).toString())
 
     is SymbolKey.Add ->
         Display.Drawable(

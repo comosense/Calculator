@@ -21,6 +21,10 @@ val Symbol.text: String
         is Symbol.Operator.Divide -> "÷"
     }
 
+fun decimalSeparator(locale: Locale): Char {
+    return DecimalFormatSymbols.getInstance(locale).decimalSeparator
+}
+
 fun List<Symbol>.formatSymbols(locale: Locale): String {
     return buildString {
         val numericBuffer: StringBuilder = StringBuilder()
@@ -76,7 +80,7 @@ private fun formatNumericString(value: String, locale: Locale): String {
     } else {
         buildString {
             append(formattedIntegerPart)
-            append(DecimalFormatSymbols.getInstance(locale).decimalSeparator)
+            append(decimalSeparator(locale))
             append(decimalPart)
         }
     }
