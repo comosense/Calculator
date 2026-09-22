@@ -26,6 +26,7 @@ import androidx.wear.compose.foundation.lazy.rememberTransformingLazyColumnState
 import androidx.wear.compose.material3.AppScaffold
 import androidx.wear.compose.material3.Button
 import androidx.wear.compose.material3.ButtonDefaults
+import androidx.wear.compose.material3.EdgeButton
 import androidx.wear.compose.material3.Icon
 import androidx.wear.compose.material3.ScreenScaffold
 import androidx.wear.compose.material3.SurfaceTransformation
@@ -50,6 +51,7 @@ fun HistoryScreen(
     var deleteMode: Boolean by remember { mutableStateOf(false) }
     val listState: TransformingLazyColumnState = rememberTransformingLazyColumnState()
     val transformationSpec: TransformationSpec = rememberTransformationSpec()
+    val colors: HistoryScreenColors = CalculatorTheme.historyScreenColors
 
     BackHandler {
         if (deleteMode) {
@@ -60,7 +62,28 @@ fun HistoryScreen(
     }
 
     AppScaffold {
-        ScreenScaffold(scrollState = listState) { contentPadding ->
+        ScreenScaffold(
+            scrollState = listState,
+            edgeButton = {
+                if (deleteMode) {
+                    EdgeButton(
+                        onClick = {
+                            onAction(AppAction.DeleteHistoryAll)
+                            onBack()
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = colors.deleteAllContainer,
+                            contentColor = colors.deleteAllContent,
+                        ),
+                    ) {
+                        Text(
+                            text = stringResource(R.string.delete_all),
+                            fontSize = CalculatorTheme.historyScreenDimensions.deleteAllFontSize,
+                        )
+                    }
+                }
+            },
+        ) { contentPadding ->
             HistoryList(
                 history = history,
                 deleteMode = deleteMode,
@@ -68,16 +91,12 @@ fun HistoryScreen(
                     onAction(AppAction.SelectHistory(result))
                     onBack()
                 },
-                onLongCLick = { deleteMode = true },
+                onLongClick = { deleteMode = true },
                 onDelete = { index ->
                     onAction(AppAction.DeleteHistory(index))
                     if (history.size == 1) {
                         onBack()
                     }
-                },
-                onDeleteAll = {
-                    onAction(AppAction.DeleteHistoryAll)
-                    onBack()
                 },
                 listState = listState,
                 transformationSpec = transformationSpec,
@@ -94,9 +113,8 @@ private fun HistoryList(
     history: List<Calculation>,
     deleteMode: Boolean,
     onClick: (List<Symbol>) -> Unit,
-    onLongCLick: () -> Unit,
+    onLongClick: () -> Unit,
     onDelete: (Int) -> Unit,
-    onDeleteAll: () -> Unit,
     listState: TransformingLazyColumnState,
     transformationSpec: TransformationSpec,
     contentPadding: PaddingValues,
@@ -126,7 +144,7 @@ private fun HistoryList(
                         onClick(calculation.result)
                     }
                 },
-                onLongClick = onLongCLick,
+                onLongClick = onLongClick,
                 modifier = Modifier
                     .fillMaxWidth()
                     .transformedHeight(this, transformationSpec)
@@ -135,16 +153,11 @@ private fun HistoryList(
                 locale = locale
             )
         }
-        if (deleteMode) {
-            item {
-                DeleteAllButton(onClick = onDeleteAll)
-            }
-        }
     }
 }
 
 @Composable
-fun HistoryItem(
+private fun HistoryItem(
     calculation: Calculation,
     deleteMode: Boolean,
     onClick: () -> Unit,
@@ -153,6 +166,8 @@ fun HistoryItem(
     transformation: SurfaceTransformation,
     locale: Locale,
 ) {
+    val expressionScrollState = rememberScrollState()
+    val resultScrollState = rememberScrollState()
     val colors: HistoryScreenColors = CalculatorTheme.historyScreenColors
 
     Button(
@@ -188,9 +203,6 @@ fun HistoryItem(
                 modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                val expressionScrollState = rememberScrollState()
-                val resultScrollState = rememberScrollState()
-
                 Text(
                     text = calculation.expression.formatSymbols(locale),
                     modifier = Modifier
@@ -213,29 +225,5 @@ fun HistoryItem(
                 )
             }
         }
-    }
-}
-
-@Composable
-private fun DeleteAllButton(
-    onClick: () -> Unit,
-) {
-    val colors: HistoryScreenColors = CalculatorTheme.historyScreenColors
-
-    Button(
-        onClick = onClick,
-        modifier = Modifier
-            .fillMaxWidth(),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = colors.deleteAllContainer,
-            contentColor = colors.deleteAllContent,
-        )
-    ) {
-        Text(
-            text = stringResource(R.string.delete_all),
-            modifier = Modifier.fillMaxWidth(),
-            fontSize = CalculatorTheme.historyScreenDimensions.deleteAllFontSize,
-            textAlign = TextAlign.Center,
-        )
     }
 }

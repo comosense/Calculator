@@ -62,9 +62,9 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
     init {
         viewModelScope.launch {
             historyRepository.history.collect { history ->
-                _appState.value = _appState.value.copy(
-                    history = history,
-                )
+                _appState.update { state ->
+                    state.copy(history = history)
+                }
             }
         }
     }
@@ -172,13 +172,13 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
         }
     }
 
-    fun deleteHistory(index: Int) {
+    private fun deleteHistory(index: Int) {
         viewModelScope.launch {
             historyRepository.deleteHistory(index)
         }
     }
 
-    fun deleteHistoryAll() {
+    private fun deleteHistoryAll() {
         viewModelScope.launch {
             historyRepository.deleteHistoryAll()
         }
