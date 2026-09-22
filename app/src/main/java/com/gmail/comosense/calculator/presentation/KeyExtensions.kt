@@ -29,8 +29,17 @@ fun Key.display(locale: Locale): Display = when (this) {
             stringResource = R.string.negative,
         )
 
+    is SymbolKey.Digit ->
+        Display.Text(value.toString())
+
     is SymbolKey.Point ->
         Display.Text(decimalSeparator(locale).toString())
+
+    is SymbolKey.OpeningParenthesis ->
+        Display.Text("(")
+
+    is SymbolKey.ClosingParenthesis ->
+        Display.Text(")")
 
     is SymbolKey.Add ->
         Display.Drawable(
@@ -55,9 +64,6 @@ fun Key.display(locale: Locale): Display = when (this) {
             painterResource = R.drawable.ic_divide,
             stringResource = R.string.divide,
         )
-
-    is SymbolKey ->
-        Display.Text(symbol.text)
 
     is CommandKey.Equal ->
         Display.Drawable(

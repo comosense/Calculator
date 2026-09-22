@@ -7,20 +7,6 @@ import java.text.DecimalFormatSymbols
 import java.text.NumberFormat
 import java.util.Locale
 
-val Symbol.text: String
-    get() = when (this) {
-        is Symbol.Sign.Positive -> "+"
-        is Symbol.Sign.Negative -> "-"
-        is Symbol.Numeric.Digit -> value.toString()
-        is Symbol.Numeric.Point -> "."
-        is Symbol.FactorStart.OpeningParenthesis -> "("
-        is Symbol.FactorEnd.ClosingParenthesis -> ")"
-        is Symbol.Operator.Add -> "+"
-        is Symbol.Operator.Subtract -> "-"
-        is Symbol.Operator.Multiply -> "×"
-        is Symbol.Operator.Divide -> "÷"
-    }
-
 fun decimalSeparator(locale: Locale): Char {
     return DecimalFormatSymbols.getInstance(locale).decimalSeparator
 }
@@ -43,12 +29,40 @@ fun List<Symbol>.formatSymbols(locale: Locale): String {
 
         for (symbol in this@formatSymbols) {
             when (symbol) {
-                is Symbol.Numeric ->
-                    numericBuffer.append(symbol.text)
+                is Symbol.Numeric.Digit ->
+                    numericBuffer.append(symbol.value)
+
+                is Symbol.Numeric.Point ->
+                    numericBuffer.append(".")
 
                 else -> {
                     flushNumeric()
-                    append(symbol.text)
+
+                    when (symbol) {
+                        Symbol.Sign.Positive ->
+                            append("+")
+
+                        Symbol.Sign.Negative ->
+                            append("-")
+
+                        Symbol.FactorStart.OpeningParenthesis ->
+                            append("(")
+
+                        Symbol.FactorEnd.ClosingParenthesis ->
+                            append(")")
+
+                        Symbol.Operator.Add ->
+                            append("+")
+
+                        Symbol.Operator.Subtract ->
+                            append("-")
+
+                        Symbol.Operator.Multiply ->
+                            append("×")
+
+                        Symbol.Operator.Divide ->
+                            append("÷")
+                    }
                 }
             }
         }
@@ -57,7 +71,7 @@ fun List<Symbol>.formatSymbols(locale: Locale): String {
 }
 
 private fun formatNumericString(value: String, locale: Locale): String {
-    val pointIndex: Int = value.indexOf(Symbol.Numeric.Point.text)
+    val pointIndex: Int = value.indexOf(".")
     val integerPart: String = if (pointIndex >= 0) {
         value.substring(0, pointIndex)
     } else {
