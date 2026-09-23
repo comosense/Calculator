@@ -43,13 +43,13 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
     }
 
     companion object {
-        private const val PRECISION: Int = 50
-        private const val DISPLAY_SCALE: Int = 20
+        private const val CALCULATION_PRECISION: Int = 50
+        private const val DISPLAY_DECIMAL_PLACES: Int = 20
     }
 
     private val calculatorService = CalculatorService(
-        precision = PRECISION,
-        displayScale = DISPLAY_SCALE,
+        precision = CALCULATION_PRECISION,
+        displayScale = DISPLAY_DECIMAL_PLACES,
     )
     private val _appState: MutableStateFlow<AppState> = MutableStateFlow(AppState())
     val appState: StateFlow<AppState> = _appState.asStateFlow()
