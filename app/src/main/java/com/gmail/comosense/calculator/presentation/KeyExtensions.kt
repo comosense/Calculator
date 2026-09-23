@@ -9,7 +9,10 @@ import com.gmail.comosense.calculator.presentation.theme.CalculatorTheme
 import java.util.Locale
 
 interface Display {
-    data class Text(val text: String) : Display
+    data class Text(
+        val text: String,
+    ) : Display
+
     data class Drawable(
         val painterResource: Int,
         val stringResource: Int,

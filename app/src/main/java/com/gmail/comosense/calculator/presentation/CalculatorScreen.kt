@@ -188,7 +188,6 @@ private fun MainPanel(
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(4f),
-                keyTextSize = CalculatorTheme.calculatorScreenDimensions.keyTextSize,
                 arrangementSpace = 2.dp,
                 locale = locale,
             )
@@ -220,7 +219,6 @@ private fun MainPanel(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(32.dp),
-                    keyTextSize = CalculatorTheme.calculatorScreenDimensions.keyTextSize,
                     arrangementSpace = 8.dp,
                     locale = locale,
                 )
@@ -307,7 +305,6 @@ private fun KeysGrid(
     keysGrid: List<List<Key?>>,
     onClick: (Key) -> Unit,
     modifier: Modifier,
-    keyTextSize: TextUnit,
     arrangementSpace: Dp,
     locale: Locale,
 ) {
@@ -322,7 +319,6 @@ private fun KeysGrid(
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f),
-                keyTextSize = keyTextSize,
                 arrangementSpace = arrangementSpace,
                 locale = locale,
             )
@@ -335,7 +331,6 @@ private fun KeysRow(
     keys: List<Key?>,
     onClick: (Key) -> Unit,
     modifier: Modifier,
-    keyTextSize: TextUnit,
     arrangementSpace: Dp,
     locale: Locale,
 ) {
@@ -352,7 +347,6 @@ private fun KeysRow(
                     modifier = Modifier
                         .fillMaxHeight()
                         .weight(1f),
-                    keyTextSize = keyTextSize,
                     locale = locale,
                 )
             } else {
@@ -371,7 +365,6 @@ private fun KeyButton(
     key: Key,
     onClick: (Key) -> Unit,
     modifier: Modifier,
-    keyTextSize: TextUnit,
     locale: Locale,
 ) {
     Button(
@@ -390,7 +383,7 @@ private fun KeyButton(
                     Text(
                         text = display.text,
                         color = key.colors.contentColor,
-                        fontSize = keyTextSize,
+                        fontSize = CalculatorTheme.calculatorScreenDimensions.keyTextSize,
                         textAlign = TextAlign.Center,
                     )
                 }
@@ -399,6 +392,7 @@ private fun KeyButton(
                     Icon(
                         painter = painterResource(display.painterResource),
                         contentDescription = stringResource(display.stringResource),
+                        modifier = Modifier.size(CalculatorTheme.calculatorScreenDimensions.keyIconSize),
                         tint = key.colors.contentColor,
                     )
                 }

@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.wear.compose.material3.MaterialTheme
 
@@ -72,7 +73,8 @@ fun CalculatorTheme(
         val calculatorScreenDimensions = CalculatorScreenDimensions(
             expressionMaxFontSize = 32.sp,
             expressionMinFontSize = 16.sp,
-            keyTextSize = 18.sp
+            keyTextSize = 18.sp,
+            keyIconSize = 20.dp,
         )
 
         val historyScreenDimensions = HistoryScreenDimensions(
