@@ -11,6 +11,7 @@ import com.gmail.comosense.calculator.domain.Calculation
 import com.gmail.comosense.calculator.domain.Symbol
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -54,10 +55,9 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
     private val _appState: MutableStateFlow<AppState> = MutableStateFlow(AppState())
     val appState: StateFlow<AppState> = _appState.asStateFlow()
 
-    private val _errorEvent = MutableSharedFlow<CalculatorServiceError>(
-        extraBufferCapacity = 1,
-    )
-    val errorEvent = _errorEvent.asSharedFlow()
+    private val _errorEvent: MutableSharedFlow<CalculatorServiceError> =
+        MutableSharedFlow<CalculatorServiceError>(extraBufferCapacity = 1)
+    val errorEvent: SharedFlow<CalculatorServiceError> = _errorEvent.asSharedFlow()
 
     init {
         viewModelScope.launch {
@@ -157,7 +157,6 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
     private fun selectHistory(result: List<Symbol>) {
         _appState.update { state ->
             if (state.isEntering) {
-//                if (state.lastSymbol !is Symbol.Numeric) {
                 if (state.canAppend(result)) {
                     state.copy(
                         entering = state.entering + result,

@@ -2,25 +2,29 @@ package com.gmail.comosense.calculator.presentation.theme
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.wear.compose.material3.MaterialTheme
 
-private val LocalCalculatorScreenColors = staticCompositionLocalOf<CalculatorScreenColors> {
-    error("CalculatorScreenColors is not provided")
-}
-private val LocalHistoryScreenColors = staticCompositionLocalOf<HistoryScreenColors> {
-    error("HistoryScreenColors is not provided")
-}
-
-private val LocalCalculatorScreenDimensions = staticCompositionLocalOf<CalculatorScreenDimensions> {
-    error("CalculatorScreenDimensions is not provided")
-}
-private val LocalHistoryScreenDimensions = staticCompositionLocalOf<HistoryScreenDimensions> {
-    error("HistoryScreenDimensions is not provided")
-}
+private val LocalCalculatorScreenColors: ProvidableCompositionLocal<CalculatorScreenColors> =
+    staticCompositionLocalOf {
+        error("CalculatorScreenColors is not provided")
+    }
+private val LocalHistoryScreenColors: ProvidableCompositionLocal<HistoryScreenColors> =
+    staticCompositionLocalOf {
+        error("HistoryScreenColors is not provided")
+    }
+private val LocalCalculatorScreenDimensions: ProvidableCompositionLocal<CalculatorScreenDimensions> =
+    staticCompositionLocalOf {
+        error("CalculatorScreenDimensions is not provided")
+    }
+private val LocalHistoryScreenDimensions: ProvidableCompositionLocal<HistoryScreenDimensions> =
+    staticCompositionLocalOf {
+        error("HistoryScreenDimensions is not provided")
+    }
 
 object CalculatorTheme {
     val calculatorScreenColors: CalculatorScreenColors

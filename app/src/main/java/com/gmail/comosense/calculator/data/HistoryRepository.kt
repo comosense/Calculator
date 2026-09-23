@@ -36,7 +36,7 @@ class HistoryRepository(private val dataStore: DataStore<HistoryStore>) {
 
     suspend fun deleteHistory(id: String) {
         dataStore.updateData { store ->
-            val index = store.historiesList
+            val index: Int = store.historiesList
                 .indexOfFirst { it.id == id }
 
             if (index < 0) {

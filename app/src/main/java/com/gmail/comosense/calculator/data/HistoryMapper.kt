@@ -103,13 +103,13 @@ fun Symbol.toProto(): ProtoSymbol {
 fun ProtoHistory.toHistoryOrNull(): History? {
     if (id.isEmpty()) return null
 
-    val expression = buildList {
+    val expression: List<Symbol> = buildList {
         for (symbol in expressionList) {
             add(symbol.toSymbolOrNull() ?: return null)
         }
     }
 
-    val result = buildList {
+    val result: List<Symbol> = buildList {
         for (symbol in resultList) {
             add(symbol.toSymbolOrNull() ?: return null)
         }

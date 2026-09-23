@@ -1,6 +1,7 @@
 package com.gmail.comosense.calculator.presentation
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -166,8 +167,8 @@ private fun HistoryItem(
     transformation: SurfaceTransformation,
     locale: Locale,
 ) {
-    val expressionScrollState = rememberScrollState()
-    val resultScrollState = rememberScrollState()
+    val expressionScrollState: ScrollState = rememberScrollState()
+    val resultScrollState: ScrollState = rememberScrollState()
     val colors: HistoryScreenColors = CalculatorTheme.historyScreenColors
 
     Button(
