@@ -20,73 +20,73 @@ interface Display {
 }
 
 fun Key.display(locale: Locale): Display = when (this) {
-    is SymbolKey.Positive ->
+    is AppKey.Positive ->
         Display.Drawable(
             painterResource = R.drawable.ic_add,
             stringResource = R.string.positive,
         )
 
-    is SymbolKey.Negative ->
+    is AppKey.Negative ->
         Display.Drawable(
             painterResource = R.drawable.ic_subtract,
             stringResource = R.string.negative,
         )
 
-    is SymbolKey.Digit ->
+    is AppKey.Digit ->
         Display.Text(value.toString())
 
-    is SymbolKey.Point ->
+    is AppKey.Point ->
         Display.Text(decimalSeparator(locale).toString())
 
-    is SymbolKey.OpeningParenthesis ->
+    is AppKey.OpeningParenthesis ->
         Display.Drawable(
             painterResource = R.drawable.ic_opening_parenthesis,
             stringResource = R.string.opening_parenthesis,
         )
 
-    is SymbolKey.ClosingParenthesis ->
+    is AppKey.ClosingParenthesis ->
         Display.Drawable(
             painterResource = R.drawable.ic_closing_parenthesis,
             stringResource = R.string.closing_parenthesis,
         )
 
-    is SymbolKey.Add ->
+    is AppKey.Add ->
         Display.Drawable(
             painterResource = R.drawable.ic_add,
             stringResource = R.string.add,
         )
 
-    is SymbolKey.Subtract ->
+    is AppKey.Subtract ->
         Display.Drawable(
             painterResource = R.drawable.ic_subtract,
             stringResource = R.string.subtract,
         )
 
-    is SymbolKey.Multiply ->
+    is AppKey.Multiply ->
         Display.Drawable(
             painterResource = R.drawable.ic_multiply,
             stringResource = R.string.multiply,
         )
 
-    is SymbolKey.Divide ->
+    is AppKey.Divide ->
         Display.Drawable(
             painterResource = R.drawable.ic_divide,
             stringResource = R.string.divide,
         )
 
-    is CommandKey.Equal ->
+    is AppKey.Equal ->
         Display.Drawable(
             painterResource = R.drawable.ic_equal,
             stringResource = R.string.equal,
         )
 
-    is CommandKey.Clear ->
+    is AppKey.Clear ->
         Display.Drawable(
             painterResource = R.drawable.ic_clear,
             stringResource = R.string.clear,
         )
 
-    is CommandKey.Backspace ->
+    is AppKey.Backspace ->
         Display.Drawable(
             painterResource = R.drawable.ic_backspace,
             stringResource = R.string.backspace,
@@ -101,7 +101,7 @@ fun Key.display(locale: Locale): Display = when (this) {
 
 val Key.longClickKeyOrNull: Key?
     get() = when (this) {
-        is CommandKey.Backspace -> CommandKey.Clear
+        is AppKey.Backspace -> AppKey.Clear
         else -> null
     }
 
@@ -111,29 +111,29 @@ val Key.colors: ButtonColors
         val colors: CalculatorScreenColors = CalculatorTheme.calculatorScreenColors
 
         return when (this) {
-            is SymbolKey.Digit,
-            is SymbolKey.Point,
-            is SymbolKey.OpeningParenthesis,
-            is SymbolKey.ClosingParenthesis ->
+            is AppKey.Digit,
+            is AppKey.Point,
+            is AppKey.OpeningParenthesis,
+            is AppKey.ClosingParenthesis ->
                 ButtonDefaults.buttonColors(
                     containerColor = colors.digitKeyContainer,
                     contentColor = colors.digitKeyContent,
                 )
 
-            is SymbolKey.Positive,
-            is SymbolKey.Negative,
-            is SymbolKey.Add,
-            is SymbolKey.Subtract,
-            is SymbolKey.Multiply,
-            is SymbolKey.Divide ->
+            is AppKey.Positive,
+            is AppKey.Negative,
+            is AppKey.Add,
+            is AppKey.Subtract,
+            is AppKey.Multiply,
+            is AppKey.Divide ->
                 ButtonDefaults.buttonColors(
                     containerColor = colors.operatorKeyContainer,
                     contentColor = colors.operatorKeyContent,
                 )
 
-            is CommandKey.Equal,
-            is CommandKey.Clear,
-            is CommandKey.Backspace ->
+            is AppKey.Equal,
+            is AppKey.Clear,
+            is AppKey.Backspace ->
                 ButtonDefaults.buttonColors(
                     containerColor = colors.commandKeyContainer,
                     contentColor = colors.commandKeyContent,
@@ -145,13 +145,4 @@ val Key.colors: ButtonColors
                     contentColor = colors.uiKeyContent,
                 )
         }
-    }
-
-val Key.toAppActionOrNull: AppAction?
-    get() = when (this) {
-        is SymbolKey -> AppAction.Input(symbol)
-        is CommandKey.Equal -> AppAction.Calculate
-        is CommandKey.Clear -> AppAction.Clear
-        is CommandKey.Backspace -> AppAction.Backspace
-        else -> null
     }

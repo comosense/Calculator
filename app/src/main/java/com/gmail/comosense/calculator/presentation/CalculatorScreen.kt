@@ -97,60 +97,60 @@ private fun MainPanel(
 ) {
     var showOperatorsKeyGrid: Boolean by remember { mutableStateOf(false) }
 
-    val deleteKey: CommandKey =
+    val deleteKey: Key =
         if (appState.isEntering) {
-            CommandKey.Backspace
+            AppKey.Backspace
         } else {
-            CommandKey.Clear
+            AppKey.Clear
         }
-    val parenthesisKey: SymbolKey =
+    val parenthesisKey: Key =
         if (appState.canAppend(Symbol.FactorEnd.ClosingParenthesis)) {
-            SymbolKey.ClosingParenthesis
+            AppKey.ClosingParenthesis
         } else {
-            SymbolKey.OpeningParenthesis
+            AppKey.OpeningParenthesis
         }
-    val plusKey: SymbolKey =
+    val plusKey: Key =
         if (appState.canAppend(Symbol.Operator.Add)) {
-            SymbolKey.Add
+            AppKey.Add
         } else {
-            SymbolKey.Positive
+            AppKey.Positive
         }
-    val minusKey: SymbolKey =
+    val minusKey: Key =
         if (appState.canAppend(Symbol.Operator.Subtract)) {
-            SymbolKey.Subtract
+            AppKey.Subtract
         } else {
-            SymbolKey.Negative
+            AppKey.Negative
         }
     val mainKeysGrid: List<List<Key?>> = listOf(
         listOf(
-            SymbolKey.Digit(7),
-            SymbolKey.Digit(8),
-            SymbolKey.Digit(9),
+            AppKey.Digit(7),
+            AppKey.Digit(8),
+            AppKey.Digit(9),
             deleteKey,
         ),
         listOf(
-            SymbolKey.Digit(4),
-            SymbolKey.Digit(5),
-            SymbolKey.Digit(6),
-            CommandKey.Equal,
+            AppKey.Digit(4),
+            AppKey.Digit(5),
+            AppKey.Digit(6),
+            AppKey.Equal,
         ),
         listOf(
-            SymbolKey.Digit(1),
-            SymbolKey.Digit(2),
-            SymbolKey.Digit(3),
+            AppKey.Digit(1),
+            AppKey.Digit(2),
+            AppKey.Digit(3),
             UiKey.Operators,
         ),
         listOf(
-            SymbolKey.Digit(0),
-            SymbolKey.Point,
+            AppKey.Digit(0),
+            AppKey.Point,
             parenthesisKey,
             null,
         ),
     )
     val operatorsKeysGrid: List<List<Key?>> = listOf(
         listOf(
-            SymbolKey.Multiply,
-            SymbolKey.Divide,
+            AppKey.Multiply,
+            AppKey.Divide,
         ),
         listOf(
             plusKey,
@@ -182,7 +182,7 @@ private fun MainPanel(
                             showOperatorsKeyGrid = true
 
                         else ->
-                            key.toAppActionOrNull?.let(onAction)
+                            key.appActionOrNull?.let(onAction)
                     }
                 },
                 modifier = Modifier
@@ -214,7 +214,7 @@ private fun MainPanel(
                     keysGrid = operatorsKeysGrid,
                     onClick = { key ->
                         showOperatorsKeyGrid = false
-                        key.toAppActionOrNull?.let(onAction)
+                        key.appActionOrNull?.let(onAction)
                     },
                     modifier = Modifier
                         .fillMaxSize()
