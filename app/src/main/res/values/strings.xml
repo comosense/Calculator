@@ -2,6 +2,8 @@
     <string name="app_name">Calculator</string>
     <string name="positive">Positive</string>
     <string name="negative">Negative</string>
+    <string name="opening_parenthesis">Opening Parenthesis</string>
+    <string name="closing_parenthesis">Closing Parenthesis</string>
     <string name="add">Add</string>
     <string name="subtract">Subtract</string>
     <string name="multiply">Multiply</string>

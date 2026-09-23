@@ -36,10 +36,16 @@ fun Key.display(locale: Locale): Display = when (this) {
         Display.Text(decimalSeparator(locale).toString())
 
     is SymbolKey.OpeningParenthesis ->
-        Display.Text("(")
+        Display.Drawable(
+            painterResource = R.drawable.ic_opening_parenthesis,
+            stringResource = R.string.opening_parenthesis,
+        )
 
     is SymbolKey.ClosingParenthesis ->
-        Display.Text(")")
+        Display.Drawable(
+            painterResource = R.drawable.ic_closing_parenthesis,
+            stringResource = R.string.closing_parenthesis,
+        )
 
     is SymbolKey.Add ->
         Display.Drawable(
