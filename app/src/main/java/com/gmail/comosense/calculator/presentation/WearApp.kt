@@ -13,6 +13,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.wear.compose.foundation.SwipeToDismissBoxState
 import androidx.wear.compose.foundation.SwipeToDismissValue
 import androidx.wear.compose.foundation.rememberSwipeToDismissBoxState
+import androidx.wear.compose.material3.AppScaffold
 import androidx.wear.compose.material3.SwipeToDismissBox
 import com.gmail.comosense.calculator.R
 import com.gmail.comosense.calculator.presentation.theme.CalculatorTheme
@@ -43,42 +44,44 @@ fun WearApp(
         }
     }
 
-    if (showHistory) {
-        SwipeToDismissBox(
-            state = swipeToDismissBoxState,
-            userSwipeEnabled = !isHistoryDeleteMode,
-            backgroundScrimColor = CalculatorTheme.calculatorScreenColors.background,
-            backgroundKey = "CalculatorScreen",
-            contentKey = "HistoryScreen",
-        ) { isBackground ->
-            if (isBackground) {
-                CalculatorScreen(
-                    appState = appState,
-                    onAction = onAction,
-                    onShowHistory = {},
-                    locale = locale,
-                )
-            } else {
-                HistoryScreen(
-                    histories = appState.histories,
-                    onAction = onAction,
-                    onBack = {
-                        coroutineScope.launch {
-                            swipeToDismissBoxState.snapTo(SwipeToDismissValue.Dismissed)
-                        }
-                    },
-                    onDeleteModeChanged = { isHistoryDeleteMode = it },
-                    locale = locale,
-                )
+    AppScaffold() {
+        if (showHistory) {
+            SwipeToDismissBox(
+                state = swipeToDismissBoxState,
+                userSwipeEnabled = !isHistoryDeleteMode,
+                backgroundScrimColor = CalculatorTheme.calculatorScreenColors.background,
+                backgroundKey = "CalculatorScreen",
+                contentKey = "HistoryScreen",
+            ) { isBackground ->
+                if (isBackground) {
+                    CalculatorScreen(
+                        appState = appState,
+                        onAction = onAction,
+                        onShowHistory = {},
+                        locale = locale,
+                    )
+                } else {
+                    HistoryScreen(
+                        histories = appState.histories,
+                        onAction = onAction,
+                        onBack = {
+                            coroutineScope.launch {
+                                swipeToDismissBoxState.snapTo(SwipeToDismissValue.Dismissed)
+                            }
+                        },
+                        onDeleteModeChanged = { isHistoryDeleteMode = it },
+                        locale = locale,
+                    )
+                }
             }
+        } else {
+            CalculatorScreen(
+                appState = appState,
+                onAction = onAction,
+                onShowHistory = { showHistory = true },
+                locale = locale,
+            )
         }
-    } else {
-        CalculatorScreen(
-            appState = appState,
-            onAction = onAction,
-            onShowHistory = { showHistory = true },
-            locale = locale,
-        )
     }
 }
 

@@ -47,7 +47,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import androidx.wear.compose.material3.AppScaffold
 import androidx.wear.compose.material3.Button
 import androidx.wear.compose.material3.Icon
 import androidx.wear.compose.material3.ScreenScaffold
@@ -65,24 +64,24 @@ fun CalculatorScreen(
 ) {
     val mainBoxSizeRatio: Float = 1f / sqrt(2f)
 
-    AppScaffold {
-        ScreenScaffold {
-            BoxWithConstraints(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(CalculatorTheme.calculatorScreenColors.background),
-                contentAlignment = Alignment.Center,
-            ) {
-                MainPanel(
-                    appState = appState,
-                    onAction = onAction,
-                    onShowHistory = onShowHistory,
-                    modifier = Modifier.size(
-                        minOf(maxWidth, maxHeight) * mainBoxSizeRatio
-                    ),
-                    locale = locale,
-                )
-            }
+    ScreenScaffold(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(CalculatorTheme.calculatorScreenColors.background),
+    ) {
+        BoxWithConstraints(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center,
+        ) {
+            MainPanel(
+                appState = appState,
+                onAction = onAction,
+                onShowHistory = onShowHistory,
+                modifier = Modifier.size(
+                    minOf(maxWidth, maxHeight) * mainBoxSizeRatio
+                ),
+                locale = locale,
+            )
         }
     }
 }

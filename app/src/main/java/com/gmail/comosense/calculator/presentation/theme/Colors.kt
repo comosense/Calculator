@@ -19,6 +19,7 @@ data class CalculatorScreenColors(
 
 @Immutable
 data class HistoryScreenColors(
+    val background: Color,
     val container: Color,
     val content: Color,
     val deleteContainer: Color,

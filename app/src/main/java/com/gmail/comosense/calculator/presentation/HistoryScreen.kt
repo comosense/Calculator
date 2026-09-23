@@ -2,6 +2,7 @@ package com.gmail.comosense.calculator.presentation
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,7 +26,6 @@ import androidx.compose.ui.unit.dp
 import androidx.wear.compose.foundation.lazy.TransformingLazyColumn
 import androidx.wear.compose.foundation.lazy.TransformingLazyColumnState
 import androidx.wear.compose.foundation.lazy.rememberTransformingLazyColumnState
-import androidx.wear.compose.material3.AppScaffold
 import androidx.wear.compose.material3.Button
 import androidx.wear.compose.material3.ButtonDefaults
 import androidx.wear.compose.material3.EdgeButton
@@ -68,49 +68,50 @@ fun HistoryScreen(
         }
     }
 
-    AppScaffold {
-        ScreenScaffold(
-            scrollState = listState,
-            edgeButton = {
-                if (deleteMode) {
-                    EdgeButton(
-                        onClick = {
-                            onAction(AppAction.DeleteHistoryAll)
-                            onBack()
-                        },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = colors.deleteAllContainer,
-                            contentColor = colors.deleteAllContent,
-                        ),
-                    ) {
-                        Text(
-                            text = stringResource(R.string.delete_all),
-                            fontSize = CalculatorTheme.historyScreenDimensions.deleteAllFontSize,
-                        )
-                    }
+    ScreenScaffold(
+        scrollState = listState,
+        edgeButton = {
+            if (deleteMode) {
+                EdgeButton(
+                    onClick = {
+                        onAction(AppAction.DeleteHistoryAll)
+                        onBack()
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = colors.deleteAllContainer,
+                        contentColor = colors.deleteAllContent,
+                    ),
+                ) {
+                    Text(
+                        text = stringResource(R.string.delete_all),
+                        fontSize = CalculatorTheme.historyScreenDimensions.deleteAllFontSize,
+                    )
+                }
+            }
+        },
+        modifier = Modifier
+            .fillMaxSize()
+            .background(colors.background),
+    ) { contentPadding ->
+        HistoryList(
+            histories = histories,
+            deleteMode = deleteMode,
+            onClick = { result ->
+                onAction(AppAction.SelectHistory(result))
+                onBack()
+            },
+            onLongClick = { deleteMode = true },
+            onDelete = { id ->
+                onAction(AppAction.DeleteHistory(id))
+                if (histories.size == 1) {
+                    onBack()
                 }
             },
-        ) { contentPadding ->
-            HistoryList(
-                histories = histories,
-                deleteMode = deleteMode,
-                onClick = { result ->
-                    onAction(AppAction.SelectHistory(result))
-                    onBack()
-                },
-                onLongClick = { deleteMode = true },
-                onDelete = { id ->
-                    onAction(AppAction.DeleteHistory(id))
-                    if (histories.size == 1) {
-                        onBack()
-                    }
-                },
-                listState = listState,
-                transformationSpec = transformationSpec,
-                contentPadding = contentPadding,
-                locale = locale,
-            )
-        }
+            listState = listState,
+            transformationSpec = transformationSpec,
+            contentPadding = contentPadding,
+            locale = locale,
+        )
     }
 }
 
