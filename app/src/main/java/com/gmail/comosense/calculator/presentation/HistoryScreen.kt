@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -47,12 +48,17 @@ fun HistoryScreen(
     histories: List<History>,
     onAction: (AppAction) -> Unit,
     onBack: () -> Unit,
+    onDeleteModeChanged: (Boolean) -> Unit,
     locale: Locale,
 ) {
     var deleteMode: Boolean by remember { mutableStateOf(false) }
     val listState: TransformingLazyColumnState = rememberTransformingLazyColumnState()
     val transformationSpec: TransformationSpec = rememberTransformationSpec()
     val colors: HistoryScreenColors = CalculatorTheme.historyScreenColors
+
+    LaunchedEffect(deleteMode) {
+        onDeleteModeChanged(deleteMode)
+    }
 
     BackHandler {
         if (deleteMode) {

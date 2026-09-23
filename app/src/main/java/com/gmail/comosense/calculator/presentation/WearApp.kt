@@ -2,19 +2,23 @@ package com.gmail.comosense.calculator.presentation
 
 import android.content.Context
 import android.widget.Toast
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
-import androidx.compose.animation.togetherWith
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
+import androidx.wear.compose.foundation.SwipeToDismissBoxState
+import androidx.wear.compose.foundation.SwipeToDismissValue
+import androidx.wear.compose.foundation.rememberSwipeToDismissBoxState
+import androidx.wear.compose.material3.SwipeToDismissBox
 import com.gmail.comosense.calculator.R
+import com.gmail.comosense.calculator.presentation.theme.CalculatorTheme
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 import java.util.Locale
 
 @Composable
@@ -25,42 +29,56 @@ fun WearApp(
     locale: Locale,
 ) {
     var showHistory: Boolean by remember { mutableStateOf(false) }
+    var isHistoryDeleteMode: Boolean by remember { mutableStateOf(false) }
+    val swipeToDismissBoxState: SwipeToDismissBoxState = rememberSwipeToDismissBoxState()
+    val coroutineScope: CoroutineScope = rememberCoroutineScope()
 
     CalculatorServiceErrorToast(errorEvent)
 
-    AnimatedContent(
-        targetState = showHistory,
-        transitionSpec = {
-            if (targetState) {
-                slideInVertically(
-                    initialOffsetY = { -it }
-                ) togetherWith slideOutVertically(
-                    targetOffsetY = { it }
+    LaunchedEffect(swipeToDismissBoxState.currentValue) {
+        if (swipeToDismissBoxState.currentValue == SwipeToDismissValue.Dismissed) {
+            showHistory = false
+            isHistoryDeleteMode = false
+            swipeToDismissBoxState.snapTo(SwipeToDismissValue.Default)
+        }
+    }
+
+    if (showHistory) {
+        SwipeToDismissBox(
+            state = swipeToDismissBoxState,
+            userSwipeEnabled = !isHistoryDeleteMode,
+            backgroundScrimColor = CalculatorTheme.calculatorScreenColors.background,
+            backgroundKey = "CalculatorScreen",
+            contentKey = "HistoryScreen",
+        ) { isBackground ->
+            if (isBackground) {
+                CalculatorScreen(
+                    appState = appState,
+                    onAction = onAction,
+                    onShowHistory = {},
+                    locale = locale,
                 )
             } else {
-                slideInVertically(
-                    initialOffsetY = { it }
-                ) togetherWith slideOutVertically(
-                    targetOffsetY = { -it }
+                HistoryScreen(
+                    histories = appState.histories,
+                    onAction = onAction,
+                    onBack = {
+                        coroutineScope.launch {
+                            swipeToDismissBoxState.snapTo(SwipeToDismissValue.Dismissed)
+                        }
+                    },
+                    onDeleteModeChanged = { isHistoryDeleteMode = it },
+                    locale = locale,
                 )
             }
-        },
-    ) { isShowHistory ->
-        if (isShowHistory) {
-            HistoryScreen(
-                histories = appState.histories,
-                onAction = onAction,
-                onBack = { showHistory = false },
-                locale = locale,
-            )
-        } else {
-            CalculatorScreen(
-                appState = appState,
-                onAction = onAction,
-                onShowHistory = { showHistory = true },
-                locale = locale,
-            )
         }
+    } else {
+        CalculatorScreen(
+            appState = appState,
+            onAction = onAction,
+            onShowHistory = { showHistory = true },
+            locale = locale,
+        )
     }
 }
 
