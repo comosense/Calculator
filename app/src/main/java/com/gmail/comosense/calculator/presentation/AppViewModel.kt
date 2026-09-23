@@ -52,12 +52,15 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
         precision = CALCULATION_PRECISION,
         displayScale = DISPLAY_DECIMAL_PLACES,
     )
-    private val _appState: MutableStateFlow<AppState> = MutableStateFlow(AppState())
-    val appState: StateFlow<AppState> = _appState.asStateFlow()
+    private val _appState: MutableStateFlow<AppState> =
+        MutableStateFlow(AppState())
+    val appState: StateFlow<AppState> =
+        _appState.asStateFlow()
 
     private val _errorEvent: MutableSharedFlow<CalculatorServiceError> =
-        MutableSharedFlow<CalculatorServiceError>(extraBufferCapacity = 1)
-    val errorEvent: SharedFlow<CalculatorServiceError> = _errorEvent.asSharedFlow()
+        MutableSharedFlow(extraBufferCapacity = 1)
+    val errorEvent: SharedFlow<CalculatorServiceError> =
+        _errorEvent.asSharedFlow()
 
     init {
         viewModelScope.launch {
