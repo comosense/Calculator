@@ -90,7 +90,7 @@ fun Key.display(locale: Locale): Display = when (this) {
         )
 }
 
-val Key.longClickKey: Key?
+val Key.longClickKeyOrNull: Key?
     get() = when (this) {
         is CommandKey.Backspace -> CommandKey.Clear
         else -> null
@@ -138,7 +138,7 @@ val Key.colors: ButtonColors
         }
     }
 
-val Key.toAppAction: AppAction?
+val Key.toAppActionOrNull: AppAction?
     get() = when (this) {
         is SymbolKey -> AppAction.Input(symbol)
         is CommandKey.Equal -> AppAction.Calculate

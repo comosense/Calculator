@@ -181,7 +181,7 @@ private fun MainPanel(
                             showOperatorsKeyGrid = true
 
                         else ->
-                            key.toAppAction?.let(onAction)
+                            key.toAppActionOrNull?.let(onAction)
                     }
                 },
                 modifier = Modifier
@@ -214,7 +214,7 @@ private fun MainPanel(
                     keysGrid = operatorsKeysGrid,
                     onClick = { key ->
                         showOperatorsKeyGrid = false
-                        key.toAppAction?.let(onAction)
+                        key.toAppActionOrNull?.let(onAction)
                     },
                     modifier = Modifier
                         .fillMaxSize()
@@ -374,7 +374,7 @@ private fun KeyButton(
 ) {
     Button(
         onClick = { onClick(key) },
-        onLongClick = { key.longClickKey?.let { onClick(it) } },
+        onLongClick = { key.longClickKeyOrNull?.let { onClick(it) } },
         modifier = modifier,
         colors = key.colors,
     ) {
