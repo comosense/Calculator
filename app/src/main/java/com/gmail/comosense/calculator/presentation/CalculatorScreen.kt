@@ -191,7 +191,6 @@ private fun MainPanel(
                 arrangementSpace = 2.dp,
                 locale = locale,
             )
-
         }
 
         AnimatedVisibility(

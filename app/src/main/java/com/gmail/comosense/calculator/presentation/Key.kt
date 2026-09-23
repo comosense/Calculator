@@ -6,19 +6,23 @@ sealed interface Key {
     val appActionOrNull: AppAction?
 
     data object Positive : Key {
-        override val appActionOrNull: AppAction = AppAction.Input(Symbol.Sign.Positive)
+        override val appActionOrNull: AppAction =
+            AppAction.Input(Symbol.Sign.Positive)
     }
 
     data object Negative : Key {
-        override val appActionOrNull: AppAction = AppAction.Input(Symbol.Sign.Negative)
+        override val appActionOrNull: AppAction =
+            AppAction.Input(Symbol.Sign.Negative)
     }
 
     data class Digit(val value: Int) : Key {
-        override val appActionOrNull: AppAction = AppAction.Input(Symbol.Numeric.Digit(value))
+        override val appActionOrNull: AppAction =
+            AppAction.Input(Symbol.Numeric.Digit(value))
     }
 
     data object Point : Key {
-        override val appActionOrNull: AppAction = AppAction.Input(Symbol.Numeric.Point)
+        override val appActionOrNull: AppAction =
+            AppAction.Input(Symbol.Numeric.Point)
     }
 
     data object OpeningParenthesis : Key {
@@ -32,34 +36,42 @@ sealed interface Key {
     }
 
     data object Add : Key {
-        override val appActionOrNull: AppAction = AppAction.Input(Symbol.Operator.Add)
+        override val appActionOrNull: AppAction =
+            AppAction.Input(Symbol.Operator.Add)
     }
 
     data object Subtract : Key {
-        override val appActionOrNull: AppAction = AppAction.Input(Symbol.Operator.Subtract)
+        override val appActionOrNull: AppAction =
+            AppAction.Input(Symbol.Operator.Subtract)
     }
 
     data object Multiply : Key {
-        override val appActionOrNull: AppAction = AppAction.Input(Symbol.Operator.Multiply)
+        override val appActionOrNull: AppAction =
+            AppAction.Input(Symbol.Operator.Multiply)
     }
 
     data object Divide : Key {
-        override val appActionOrNull: AppAction = AppAction.Input(Symbol.Operator.Divide)
+        override val appActionOrNull: AppAction =
+            AppAction.Input(Symbol.Operator.Divide)
     }
 
     data object Equal : Key {
-        override val appActionOrNull: AppAction = AppAction.Calculate
+        override val appActionOrNull: AppAction =
+            AppAction.Calculate
     }
 
     data object Clear : Key {
-        override val appActionOrNull: AppAction = AppAction.Clear
+        override val appActionOrNull: AppAction =
+            AppAction.Clear
     }
 
     data object Backspace : Key {
-        override val appActionOrNull: AppAction = AppAction.Backspace
+        override val appActionOrNull: AppAction =
+            AppAction.Backspace
     }
 
     data object Operators : Key {
-        override val appActionOrNull: AppAction? = null
+        override val appActionOrNull: AppAction? =
+            null
     }
 }
