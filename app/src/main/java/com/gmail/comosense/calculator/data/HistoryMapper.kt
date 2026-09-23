@@ -101,6 +101,8 @@ fun Symbol.toProto(): ProtoSymbol {
 }
 
 fun ProtoCalculation.toCalculationOrNull(): Calculation? {
+    if (id.isEmpty()) return null
+
     val expression = buildList {
         for (symbol in expressionList) {
             add(symbol.toSymbolOrNull() ?: return null)
@@ -116,6 +118,7 @@ fun ProtoCalculation.toCalculationOrNull(): Calculation? {
     if (expression.isEmpty() || result.isEmpty()) return null
 
     return Calculation(
+        id = id,
         expression = expression,
         result = result,
     )
@@ -124,6 +127,7 @@ fun ProtoCalculation.toCalculationOrNull(): Calculation? {
 fun Calculation.toProto(): ProtoCalculation {
     return ProtoCalculation
         .newBuilder()
+        .setId(id)
         .addAllExpression(expression.map { it.toProto() })
         .addAllResult(result.map { it.toProto() })
         .build()

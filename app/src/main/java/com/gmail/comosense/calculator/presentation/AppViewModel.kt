@@ -23,7 +23,7 @@ sealed interface AppAction {
     data object Clear : AppAction
     data object Backspace : AppAction
     data class SelectHistory(val result: List<Symbol>) : AppAction
-    data class DeleteHistory(val index: Int) : AppAction
+    data class DeleteHistory(val id: String) : AppAction
     data object DeleteHistoryAll : AppAction
 }
 
@@ -76,7 +76,7 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
             is AppAction.Clear -> clear()
             is AppAction.Backspace -> backspace()
             is AppAction.SelectHistory -> selectHistory(action.result)
-            is AppAction.DeleteHistory -> deleteHistory(action.index)
+            is AppAction.DeleteHistory -> deleteHistory(action.id)
             is AppAction.DeleteHistoryAll -> deleteHistoryAll()
         }
     }
@@ -124,6 +124,7 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
                 viewModelScope.launch {
                     historyRepository.addHistory(
                         Calculation(
+                            id = "",
                             expression = state.expression,
                             result = r.value,
                         )
@@ -173,9 +174,9 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
         }
     }
 
-    private fun deleteHistory(index: Int) {
+    private fun deleteHistory(id: String) {
         viewModelScope.launch {
-            historyRepository.deleteHistory(index)
+            historyRepository.deleteHistory(id)
         }
     }
 

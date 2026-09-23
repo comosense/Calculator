@@ -8,8 +8,9 @@ message HistoryStore {
 }
 
 message Calculation {
-  repeated Symbol expression = 1;
-  repeated Symbol result = 2;
+  string id = 1;
+  repeated Symbol expression = 2;
+  repeated Symbol result = 3;
 }
 
 message Symbol {

@@ -92,8 +92,8 @@ fun HistoryScreen(
                     onBack()
                 },
                 onLongClick = { deleteMode = true },
-                onDelete = { index ->
-                    onAction(AppAction.DeleteHistory(index))
+                onDelete = { id ->
+                    onAction(AppAction.DeleteHistory(id))
                     if (history.size == 1) {
                         onBack()
                     }
@@ -114,7 +114,7 @@ private fun HistoryList(
     deleteMode: Boolean,
     onClick: (List<Symbol>) -> Unit,
     onLongClick: () -> Unit,
-    onDelete: (Int) -> Unit,
+    onDelete: (String) -> Unit,
     listState: TransformingLazyColumnState,
     transformationSpec: TransformationSpec,
     contentPadding: PaddingValues,
@@ -130,7 +130,7 @@ private fun HistoryList(
     ) {
         items(
             count = history.size,
-            key = { index -> index },
+            key = { index -> history[index].id },
         ) { index ->
             val calculation: Calculation = history[index]
 
@@ -139,7 +139,7 @@ private fun HistoryList(
                 deleteMode = deleteMode,
                 onClick = {
                     if (deleteMode) {
-                        onDelete(index)
+                        onDelete(calculation.id)
                     } else {
                         onClick(calculation.result)
                     }
