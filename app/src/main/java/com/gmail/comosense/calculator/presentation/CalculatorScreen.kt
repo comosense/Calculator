@@ -99,58 +99,58 @@ private fun MainPanel(
 
     val deleteKey: Key =
         if (appState.isEntering) {
-            AppKey.Backspace
+            Key.Backspace
         } else {
-            AppKey.Clear
+            Key.Clear
         }
     val parenthesisKey: Key =
         if (appState.canAppend(Symbol.FactorEnd.ClosingParenthesis)) {
-            AppKey.ClosingParenthesis
+            Key.ClosingParenthesis
         } else {
-            AppKey.OpeningParenthesis
+            Key.OpeningParenthesis
         }
     val plusKey: Key =
         if (appState.canAppend(Symbol.Operator.Add)) {
-            AppKey.Add
+            Key.Add
         } else {
-            AppKey.Positive
+            Key.Positive
         }
     val minusKey: Key =
         if (appState.canAppend(Symbol.Operator.Subtract)) {
-            AppKey.Subtract
+            Key.Subtract
         } else {
-            AppKey.Negative
+            Key.Negative
         }
     val mainKeysGrid: List<List<Key?>> = listOf(
         listOf(
-            AppKey.Digit(7),
-            AppKey.Digit(8),
-            AppKey.Digit(9),
+            Key.Digit(7),
+            Key.Digit(8),
+            Key.Digit(9),
             deleteKey,
         ),
         listOf(
-            AppKey.Digit(4),
-            AppKey.Digit(5),
-            AppKey.Digit(6),
-            AppKey.Equal,
+            Key.Digit(4),
+            Key.Digit(5),
+            Key.Digit(6),
+            Key.Equal,
         ),
         listOf(
-            AppKey.Digit(1),
-            AppKey.Digit(2),
-            AppKey.Digit(3),
-            UiKey.Operators,
+            Key.Digit(1),
+            Key.Digit(2),
+            Key.Digit(3),
+            Key.Operators,
         ),
         listOf(
-            AppKey.Digit(0),
-            AppKey.Point,
+            Key.Digit(0),
+            Key.Point,
             parenthesisKey,
             null,
         ),
     )
     val operatorsKeysGrid: List<List<Key?>> = listOf(
         listOf(
-            AppKey.Multiply,
-            AppKey.Divide,
+            Key.Multiply,
+            Key.Divide,
         ),
         listOf(
             plusKey,
@@ -178,7 +178,7 @@ private fun MainPanel(
                 keysGrid = mainKeysGrid,
                 onClick = { key ->
                     when (key) {
-                        is UiKey.Operators ->
+                        is Key.Operators ->
                             showOperatorsKeyGrid = true
 
                         else ->
