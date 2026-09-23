@@ -4,10 +4,10 @@ option java_package = "com.gmail.comosense.calculator.data.proto";
 option java_multiple_files = true;
 
 message HistoryStore {
-  repeated Calculation calculations = 1;
+  repeated History histories = 1;
 }
 
-message Calculation {
+message History {
   string id = 1;
   repeated Symbol expression = 2;
   repeated Symbol result = 3;

@@ -61,9 +61,9 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
 
     init {
         viewModelScope.launch {
-            historyRepository.history.collect { history ->
+            historyRepository.history.collect { histories ->
                 _appState.update { state ->
-                    state.copy(history = history)
+                    state.copy(histories = histories)
                 }
             }
         }
@@ -124,7 +124,6 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
                 viewModelScope.launch {
                     historyRepository.addHistory(
                         Calculation(
-                            id = "",
                             expression = state.expression,
                             result = r.value,
                         )

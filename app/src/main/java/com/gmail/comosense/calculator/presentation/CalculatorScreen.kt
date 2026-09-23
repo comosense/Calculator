@@ -250,6 +250,7 @@ private fun ExpressionBox(
         val measured: TextLayoutResult = remember(
             expression,
             minFontSize,
+            maxWidth,
         ) {
             textMeasurer.measure(
                 text = expression,

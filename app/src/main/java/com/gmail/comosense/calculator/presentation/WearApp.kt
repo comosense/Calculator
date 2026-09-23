@@ -48,7 +48,7 @@ fun WearApp(
     ) { isShowHistory ->
         if (isShowHistory) {
             HistoryScreen(
-                history = appState.history,
+                histories = appState.histories,
                 onAction = onAction,
                 onBack = { showHistory = false },
                 locale = locale,

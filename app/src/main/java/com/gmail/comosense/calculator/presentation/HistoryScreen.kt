@@ -35,7 +35,7 @@ import androidx.wear.compose.material3.lazy.TransformationSpec
 import androidx.wear.compose.material3.lazy.rememberTransformationSpec
 import androidx.wear.compose.material3.lazy.transformedHeight
 import com.gmail.comosense.calculator.R
-import com.gmail.comosense.calculator.domain.Calculation
+import com.gmail.comosense.calculator.data.History
 import com.gmail.comosense.calculator.domain.Symbol
 import com.gmail.comosense.calculator.presentation.theme.CalculatorTheme
 import com.gmail.comosense.calculator.presentation.theme.HistoryScreenColors
@@ -43,7 +43,7 @@ import java.util.Locale
 
 @Composable
 fun HistoryScreen(
-    history: List<Calculation>,
+    histories: List<History>,
     onAction: (AppAction) -> Unit,
     onBack: () -> Unit,
     locale: Locale,
@@ -85,7 +85,7 @@ fun HistoryScreen(
             },
         ) { contentPadding ->
             HistoryList(
-                history = history,
+                histories = histories,
                 deleteMode = deleteMode,
                 onClick = { result ->
                     onAction(AppAction.SelectHistory(result))
@@ -94,7 +94,7 @@ fun HistoryScreen(
                 onLongClick = { deleteMode = true },
                 onDelete = { id ->
                     onAction(AppAction.DeleteHistory(id))
-                    if (history.size == 1) {
+                    if (histories.size == 1) {
                         onBack()
                     }
                 },
@@ -110,7 +110,7 @@ fun HistoryScreen(
 
 @Composable
 private fun HistoryList(
-    history: List<Calculation>,
+    histories: List<History>,
     deleteMode: Boolean,
     onClick: (List<Symbol>) -> Unit,
     onLongClick: () -> Unit,
@@ -129,19 +129,19 @@ private fun HistoryList(
         ),
     ) {
         items(
-            count = history.size,
-            key = { index -> history[index].id },
+            count = histories.size,
+            key = { index -> histories[index].id },
         ) { index ->
-            val calculation: Calculation = history[index]
+            val history: History = histories[index]
 
             HistoryItem(
-                calculation = calculation,
+                history = history,
                 deleteMode = deleteMode,
                 onClick = {
                     if (deleteMode) {
-                        onDelete(calculation.id)
+                        onDelete(history.id)
                     } else {
-                        onClick(calculation.result)
+                        onClick(history.calculation.result)
                     }
                 },
                 onLongClick = onLongClick,
@@ -158,7 +158,7 @@ private fun HistoryList(
 
 @Composable
 private fun HistoryItem(
-    calculation: Calculation,
+    history: History,
     deleteMode: Boolean,
     onClick: () -> Unit,
     onLongClick: () -> Unit,
@@ -204,7 +204,7 @@ private fun HistoryItem(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Text(
-                    text = calculation.expression.formatSymbols(locale),
+                    text = history.calculation.expression.formatSymbols(locale),
                     modifier = Modifier
                         .fillMaxWidth()
                         .horizontalScroll(expressionScrollState),
@@ -214,7 +214,7 @@ private fun HistoryItem(
                 )
 
                 Text(
-                    text = calculation.result.formatSymbols(locale),
+                    text = history.calculation.result.formatSymbols(locale),
                     modifier = Modifier
                         .fillMaxWidth()
                         .horizontalScroll(resultScrollState),

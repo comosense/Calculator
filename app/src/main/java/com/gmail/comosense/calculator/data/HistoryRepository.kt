@@ -12,37 +12,38 @@ class HistoryRepository(private val dataStore: DataStore<HistoryStore>) {
         private const val HISTORY_SIZE: Int = 50
     }
 
-    val history: Flow<List<Calculation>> =
+    val history: Flow<List<History>> =
         dataStore.data.map { store ->
-            store.calculationsList.mapNotNull { calculation ->
-                calculation.toCalculationOrNull()
+            store.historiesList.mapNotNull { calculation ->
+                calculation.toHistoryOrNull()
             }
         }
 
     suspend fun addHistory(calculation: Calculation) {
         dataStore.updateData { store ->
-            val newCalculation = calculation
-                .copy(id = UUID.randomUUID().toString())
-                .toProto()
+            val newHistory = History(
+                id = UUID.randomUUID().toString(),
+                calculation = calculation,
+            )
 
             store.toBuilder()
-                .clearCalculations()
-                .addCalculations(newCalculation)
-                .addAllCalculations(store.calculationsList.take(HISTORY_SIZE - 1))
+                .clearHistories()
+                .addHistories(newHistory.toProto())
+                .addAllHistories(store.historiesList.take(HISTORY_SIZE - 1))
                 .build()
         }
     }
 
     suspend fun deleteHistory(id: String) {
         dataStore.updateData { store ->
-            val index = store.calculationsList
+            val index = store.historiesList
                 .indexOfFirst { it.id == id }
 
             if (index < 0) {
                 store
             } else {
                 store.toBuilder()
-                    .removeCalculations(index)
+                    .removeHistories(index)
                     .build()
             }
         }
@@ -51,7 +52,7 @@ class HistoryRepository(private val dataStore: DataStore<HistoryStore>) {
     suspend fun deleteHistoryAll() {
         dataStore.updateData { store ->
             store.toBuilder()
-                .clearCalculations()
+                .clearHistories()
                 .build()
         }
     }
