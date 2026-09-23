@@ -157,7 +157,8 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
     private fun selectHistory(result: List<Symbol>) {
         _appState.update { state ->
             if (state.isEntering) {
-                if (state.lastSymbol !is Symbol.Numeric) {
+//                if (state.lastSymbol !is Symbol.Numeric) {
+                if (state.canAppend(result)) {
                     state.copy(
                         entering = state.entering + result,
                     )
