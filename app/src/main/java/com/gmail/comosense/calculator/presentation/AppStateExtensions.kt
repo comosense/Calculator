@@ -1,7 +1,6 @@
 package com.gmail.comosense.calculator.presentation
 
 import com.gmail.comosense.calculator.domain.Symbol
-import com.gmail.comosense.calculator.domain.isAppendableAfter
 import java.util.Locale
 
 val AppState.expression: List<Symbol>
@@ -48,4 +47,31 @@ fun AppState.canAppend(symbols: List<Symbol>): Boolean {
         }
     }
     return true
+}
+
+private fun Symbol.isAppendableAfter(previous: Symbol?): Boolean = when (this) {
+    is Symbol.Numeric.Digit ->
+        previous !is Symbol.FactorEnd
+
+    is Symbol.Numeric.Point ->
+        previous is Symbol.Numeric.Digit
+
+    is Symbol.Sign ->
+        previous == null ||
+                previous is Symbol.FactorStart ||
+                previous is Symbol.Operator
+
+    is Symbol.FactorStart ->
+        previous == null ||
+                previous is Symbol.Sign ||
+                previous is Symbol.FactorStart ||
+                previous is Symbol.Operator
+
+    is Symbol.FactorEnd ->
+        previous is Symbol.Numeric.Digit ||
+                previous is Symbol.FactorEnd
+
+    is Symbol.Operator ->
+        previous is Symbol.Numeric.Digit ||
+                previous is Symbol.FactorEnd
 }
