@@ -9,13 +9,13 @@ import java.util.UUID
 
 class HistoryRepository(private val dataStore: DataStore<HistoryStore>) {
     companion object {
-        private const val HISTORY_SIZE: Int = 50
+        private const val HISTORIES_SIZE: Int = 50
     }
 
     val history: Flow<List<History>> =
         dataStore.data.map { store ->
-            store.historiesList.mapNotNull { calculation ->
-                calculation.toHistoryOrNull()
+            store.historiesList.mapNotNull { history ->
+                history.toHistoryOrNull()
             }
         }
 
@@ -29,7 +29,7 @@ class HistoryRepository(private val dataStore: DataStore<HistoryStore>) {
             store.toBuilder()
                 .clearHistories()
                 .addHistories(newHistory.toProto())
-                .addAllHistories(store.historiesList.take(HISTORY_SIZE - 1))
+                .addAllHistories(store.historiesList.take(HISTORIES_SIZE - 1))
                 .build()
         }
     }
