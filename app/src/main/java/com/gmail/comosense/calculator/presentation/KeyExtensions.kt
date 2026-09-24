@@ -13,7 +13,7 @@ interface Display {
         val text: String,
     ) : Display
 
-    data class Drawable(
+    data class Icon(
         val painterResource: Int,
         val stringResource: Int,
     ) : Display
@@ -21,13 +21,13 @@ interface Display {
 
 fun Key.display(locale: Locale): Display = when (this) {
     is Key.Positive ->
-        Display.Drawable(
+        Display.Icon(
             painterResource = R.drawable.ic_add,
             stringResource = R.string.positive,
         )
 
     is Key.Negative ->
-        Display.Drawable(
+        Display.Icon(
             painterResource = R.drawable.ic_subtract,
             stringResource = R.string.negative,
         )
@@ -39,61 +39,61 @@ fun Key.display(locale: Locale): Display = when (this) {
         Display.Text(decimalSeparator(locale).toString())
 
     is Key.OpeningParenthesis ->
-        Display.Drawable(
+        Display.Icon(
             painterResource = R.drawable.ic_opening_parenthesis,
             stringResource = R.string.opening_parenthesis,
         )
 
     is Key.ClosingParenthesis ->
-        Display.Drawable(
+        Display.Icon(
             painterResource = R.drawable.ic_closing_parenthesis,
             stringResource = R.string.closing_parenthesis,
         )
 
     is Key.Add ->
-        Display.Drawable(
+        Display.Icon(
             painterResource = R.drawable.ic_add,
             stringResource = R.string.add,
         )
 
     is Key.Subtract ->
-        Display.Drawable(
+        Display.Icon(
             painterResource = R.drawable.ic_subtract,
             stringResource = R.string.subtract,
         )
 
     is Key.Multiply ->
-        Display.Drawable(
+        Display.Icon(
             painterResource = R.drawable.ic_multiply,
             stringResource = R.string.multiply,
         )
 
     is Key.Divide ->
-        Display.Drawable(
+        Display.Icon(
             painterResource = R.drawable.ic_divide,
             stringResource = R.string.divide,
         )
 
     is Key.Equal ->
-        Display.Drawable(
+        Display.Icon(
             painterResource = R.drawable.ic_equal,
             stringResource = R.string.equal,
         )
 
     is Key.Clear ->
-        Display.Drawable(
+        Display.Icon(
             painterResource = R.drawable.ic_clear,
             stringResource = R.string.clear,
         )
 
     is Key.Backspace ->
-        Display.Drawable(
+        Display.Icon(
             painterResource = R.drawable.ic_backspace,
             stringResource = R.string.backspace,
         )
 
     is Key.Operators ->
-        Display.Drawable(
+        Display.Icon(
             painterResource = R.drawable.ic_operators,
             stringResource = R.string.operators,
         )

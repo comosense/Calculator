@@ -383,7 +383,7 @@ private fun KeyButton(
                     )
                 }
 
-                is Display.Drawable -> {
+                is Display.Icon -> {
                     Icon(
                         painter = painterResource(display.painterResource),
                         contentDescription = stringResource(display.stringResource),

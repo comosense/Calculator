@@ -151,9 +151,13 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
 
     private fun backspace() {
         _appState.update { state ->
-            state.copy(
-                entering = state.entering.dropLast(1),
-            )
+            if (state.isEntering) {
+                state.copy(
+                    entering = state.entering.dropLast(1),
+                )
+            } else {
+                state
+            }
         }
     }
 
