@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.wear.compose.material3.ButtonColors
 import androidx.wear.compose.material3.ButtonDefaults
 import com.gmail.comosense.calculator.R
+import com.gmail.comosense.calculator.domain.Symbol
 import com.gmail.comosense.calculator.presentation.theme.CalculatorScreenColors
 import com.gmail.comosense.calculator.presentation.theme.CalculatorTheme
 
@@ -97,6 +98,51 @@ fun Key.display(symbolFormatter: SymbolFormatter): Display = when (this) {
             stringResource = R.string.operators,
         )
 }
+
+val Key.appActionOrNull: AppAction?
+    get() = when (this) {
+        is Key.Positive ->
+            AppAction.Input(Symbol.Sign.Positive)
+
+        is Key.Negative ->
+            AppAction.Input(Symbol.Sign.Negative)
+
+        is Key.Digit ->
+            AppAction.Input(Symbol.Numeric.Digit(value))
+
+        is Key.Point ->
+            AppAction.Input(Symbol.Numeric.Point)
+
+        is Key.OpeningParenthesis ->
+            AppAction.Input(Symbol.FactorStart.OpeningParenthesis)
+
+        is Key.ClosingParenthesis ->
+            AppAction.Input(Symbol.FactorEnd.ClosingParenthesis)
+
+        is Key.Add ->
+            AppAction.Input(Symbol.Operator.Add)
+
+        is Key.Subtract ->
+            AppAction.Input(Symbol.Operator.Subtract)
+
+        is Key.Multiply ->
+            AppAction.Input(Symbol.Operator.Multiply)
+
+        is Key.Divide ->
+            AppAction.Input(Symbol.Operator.Divide)
+
+        is Key.Equal ->
+            AppAction.Calculate
+
+        is Key.Clear ->
+            AppAction.Clear
+
+        is Key.Backspace ->
+            AppAction.Backspace
+
+        else ->
+            null
+    }
 
 val Key.longClickKeyOrNull: Key?
     get() = when (this) {
