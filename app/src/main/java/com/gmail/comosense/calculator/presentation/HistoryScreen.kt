@@ -54,7 +54,6 @@ fun HistoryScreen(
     var deleteMode: Boolean by remember { mutableStateOf(false) }
     val listState: TransformingLazyColumnState = rememberTransformingLazyColumnState()
     val transformationSpec: TransformationSpec = rememberTransformationSpec()
-    val colors: HistoryScreenColors = CalculatorTheme.historyScreenColors
 
     LaunchedEffect(deleteMode) {
         onDeleteModeChanged(deleteMode)
@@ -78,8 +77,8 @@ fun HistoryScreen(
                         onBack()
                     },
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = colors.deleteAllContainer,
-                        contentColor = colors.deleteAllContent,
+                        containerColor = CalculatorTheme.historyScreenColors.deleteAllContainer,
+                        contentColor = CalculatorTheme.historyScreenColors.deleteAllContent,
                     ),
                 ) {
                     Text(
@@ -89,9 +88,6 @@ fun HistoryScreen(
                 }
             }
         },
-        modifier = Modifier
-            .fillMaxSize()
-            .background(colors.background),
     ) { contentPadding ->
         HistoryList(
             histories = histories,
@@ -129,7 +125,9 @@ private fun HistoryList(
     locale: Locale,
 ) {
     TransformingLazyColumn(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .background(CalculatorTheme.historyScreenColors.background),
         state = listState,
         contentPadding = PaddingValues(
             top = contentPadding.calculateTopPadding() + 48.dp,

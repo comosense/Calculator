@@ -64,13 +64,11 @@ fun CalculatorScreen(
 ) {
     val mainBoxSizeRatio: Float = 1f / sqrt(2f)
 
-    ScreenScaffold(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(CalculatorTheme.calculatorScreenColors.background),
-    ) {
+    ScreenScaffold {
         BoxWithConstraints(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .background(CalculatorTheme.calculatorScreenColors.background),
             contentAlignment = Alignment.Center,
         ) {
             MainPanel(
@@ -120,7 +118,7 @@ private fun MainPanel(
         } else {
             Key.Negative
         }
-    val mainKeysGrid: List<List<Key?>> = listOf(
+    val mainKeyGrid: List<List<Key?>> = listOf(
         listOf(
             Key.Digit(7),
             Key.Digit(8),
@@ -146,7 +144,7 @@ private fun MainPanel(
             null,
         ),
     )
-    val operatorsKeysGrid: List<List<Key?>> = listOf(
+    val operatorsKeyGrid: List<List<Key?>> = listOf(
         listOf(
             Key.Multiply,
             Key.Divide,
@@ -173,8 +171,8 @@ private fun MainPanel(
                 locale = locale,
             )
 
-            KeysGrid(
-                keysGrid = mainKeysGrid,
+            KeyGrid(
+                keyGrid = mainKeyGrid,
                 onClick = { key ->
                     when (key) {
                         is Key.Operators ->
@@ -208,8 +206,8 @@ private fun MainPanel(
                     )
                     .clickable { showOperatorsKeyGrid = false },
             ) {
-                KeysGrid(
-                    keysGrid = operatorsKeysGrid,
+                KeyGrid(
+                    keyGrid = operatorsKeyGrid,
                     onClick = { key ->
                         showOperatorsKeyGrid = false
                         key.appActionOrNull?.let(onAction)
@@ -299,8 +297,8 @@ private fun ExpressionBox(
 }
 
 @Composable
-private fun KeysGrid(
-    keysGrid: List<List<Key?>>,
+private fun KeyGrid(
+    keyGrid: List<List<Key?>>,
     onClick: (Key) -> Unit,
     modifier: Modifier,
     arrangementSpace: Dp,
@@ -310,7 +308,7 @@ private fun KeysGrid(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(arrangementSpace)
     ) {
-        keysGrid.forEach { keys ->
+        keyGrid.forEach { keys ->
             KeysRow(
                 keys = keys,
                 onClick = onClick,
