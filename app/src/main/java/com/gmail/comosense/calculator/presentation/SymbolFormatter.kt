@@ -31,40 +31,13 @@ class SymbolFormatter(locale: Locale) {
 
             for (symbol in symbols) {
                 when (symbol) {
-                    is Symbol.Numeric.Digit ->
-                        numericBuffer.append(symbol.value)
-
-                    is Symbol.Numeric.Point ->
-                        numericBuffer.append(".")
+                    is Symbol.Numeric -> {
+                        numericBuffer.append(symbol.toCanonicalizedText)
+                    }
 
                     else -> {
                         flushNumeric()
-
-                        when (symbol) {
-                            Symbol.Sign.Positive ->
-                                append("+")
-
-                            Symbol.Sign.Negative ->
-                                append("-")
-
-                            Symbol.FactorStart.OpeningParenthesis ->
-                                append("(")
-
-                            Symbol.FactorEnd.ClosingParenthesis ->
-                                append(")")
-
-                            Symbol.Operator.Add ->
-                                append("+")
-
-                            Symbol.Operator.Subtract ->
-                                append("-")
-
-                            Symbol.Operator.Multiply ->
-                                append("×")
-
-                            Symbol.Operator.Divide ->
-                                append("÷")
-                        }
+                        append(symbol.toCanonicalizedText)
                     }
                 }
             }
@@ -102,4 +75,18 @@ class SymbolFormatter(locale: Locale) {
 
         return integerFormatter.format(BigInteger(integerPart))
     }
+
+    private val Symbol.toCanonicalizedText: String
+        get() = when (this) {
+            is Symbol.Sign.Positive -> "+"
+            is Symbol.Sign.Negative -> "-"
+            is Symbol.Numeric.Digit -> value.toString()
+            is Symbol.Numeric.Point -> "."
+            is Symbol.FactorStart.OpeningParenthesis -> "("
+            is Symbol.FactorEnd.ClosingParenthesis -> ")"
+            is Symbol.Operator.Add -> "+"
+            is Symbol.Operator.Subtract -> "-"
+            is Symbol.Operator.Multiply -> "×"
+            is Symbol.Operator.Divide -> "÷"
+        }
 }

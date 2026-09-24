@@ -40,7 +40,7 @@ fun parseTokens(symbols: List<Symbol>): Result<List<Token>, SymbolParserError> {
                         is Result.Err -> return r
                     }
 
-                    when (val r: Result<Token, SymbolParserError> = symbol.toToken()) {
+                    when (val r: Result<Token, SymbolParserError> = symbol.toToken) {
                         is Result.Ok -> add(r.value)
                         is Result.Err -> return r
                     }
@@ -57,31 +57,32 @@ fun parseTokens(symbols: List<Symbol>): Result<List<Token>, SymbolParserError> {
     return Result.Ok(tokens)
 }
 
-private fun Symbol.toToken(): Result<Token, SymbolParserError> = when (this) {
-    is Symbol.Sign.Positive ->
-        Result.Ok(Token.Sign.Positive)
+private val Symbol.toToken: Result<Token, SymbolParserError>
+    get() = when (this) {
+        is Symbol.Sign.Positive ->
+            Result.Ok(Token.Sign.Positive)
 
-    is Symbol.Sign.Negative ->
-        Result.Ok(Token.Sign.Negative)
+        is Symbol.Sign.Negative ->
+            Result.Ok(Token.Sign.Negative)
 
-    is Symbol.FactorStart.OpeningParenthesis ->
-        Result.Ok(Token.FactorStart.OpeningParenthesis)
+        is Symbol.FactorStart.OpeningParenthesis ->
+            Result.Ok(Token.FactorStart.OpeningParenthesis)
 
-    is Symbol.FactorEnd.ClosingParenthesis ->
-        Result.Ok(Token.FactorEnd.ClosingParenthesis)
+        is Symbol.FactorEnd.ClosingParenthesis ->
+            Result.Ok(Token.FactorEnd.ClosingParenthesis)
 
-    is Symbol.Operator.Add ->
-        Result.Ok(Token.Operator.Add)
+        is Symbol.Operator.Add ->
+            Result.Ok(Token.Operator.Add)
 
-    is Symbol.Operator.Subtract ->
-        Result.Ok(Token.Operator.Subtract)
+        is Symbol.Operator.Subtract ->
+            Result.Ok(Token.Operator.Subtract)
 
-    is Symbol.Operator.Multiply ->
-        Result.Ok(Token.Operator.Multiply)
+        is Symbol.Operator.Multiply ->
+            Result.Ok(Token.Operator.Multiply)
 
-    is Symbol.Operator.Divide ->
-        Result.Ok(Token.Operator.Divide)
+        is Symbol.Operator.Divide ->
+            Result.Ok(Token.Operator.Divide)
 
-    else ->
-        Result.Err(SymbolParserError.UnsupportedSymbol)
-}
+        else ->
+            Result.Err(SymbolParserError.UnsupportedSymbol)
+    }
