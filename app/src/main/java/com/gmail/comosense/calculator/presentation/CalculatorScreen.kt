@@ -166,8 +166,6 @@ private fun MainPanel(
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f),
-                maxFontSize = CalculatorTheme.calculatorScreenDimensions.expressionMaxFontSize,
-                minFontSize = CalculatorTheme.calculatorScreenDimensions.expressionMinFontSize,
                 locale = locale,
             )
 
@@ -230,8 +228,6 @@ private fun ExpressionBox(
     appState: AppState,
     onShowHistory: () -> Unit,
     modifier: Modifier,
-    maxFontSize: TextUnit,
-    minFontSize: TextUnit,
     locale: Locale,
 ) {
     val expression: String = appState.displayExpression(locale)
@@ -244,6 +240,7 @@ private fun ExpressionBox(
         contentAlignment = Alignment.Center,
     ) {
         val density: Density = LocalDensity.current
+        val minFontSize: TextUnit = CalculatorTheme.calculatorScreenDimensions.expressionMinFontSize
         val measured: TextLayoutResult = remember(
             expression,
             minFontSize,
@@ -281,15 +278,15 @@ private fun ExpressionBox(
                     text = expression,
                     maxLines = 1,
                     color = CalculatorTheme.calculatorScreenColors.expression,
-                    fontSize = minFontSize,
+                    fontSize = CalculatorTheme.calculatorScreenDimensions.expressionMinFontSize,
                 )
             }
         } else {
             Text(
                 text = expression,
                 autoSize = TextAutoSize.StepBased(
-                    maxFontSize = maxFontSize,
-                    minFontSize = minFontSize,
+                    maxFontSize = CalculatorTheme.calculatorScreenDimensions.expressionMaxFontSize,
+                    minFontSize = CalculatorTheme.calculatorScreenDimensions.expressionMinFontSize,
                 ),
                 maxLines = 1,
                 color = CalculatorTheme.calculatorScreenColors.expression,
