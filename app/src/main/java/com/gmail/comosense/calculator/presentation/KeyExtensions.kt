@@ -6,7 +6,6 @@ import androidx.wear.compose.material3.ButtonDefaults
 import com.gmail.comosense.calculator.R
 import com.gmail.comosense.calculator.presentation.theme.CalculatorScreenColors
 import com.gmail.comosense.calculator.presentation.theme.CalculatorTheme
-import java.util.Locale
 
 interface Display {
     data class Text(
@@ -19,7 +18,7 @@ interface Display {
     ) : Display
 }
 
-fun Key.display(locale: Locale): Display = when (this) {
+fun Key.display(symbolFormatter: SymbolFormatter): Display = when (this) {
     is Key.Positive ->
         Display.Icon(
             painterResource = R.drawable.ic_add,
@@ -36,7 +35,7 @@ fun Key.display(locale: Locale): Display = when (this) {
         Display.Text(value.toString())
 
     is Key.Point ->
-        Display.Text(decimalSeparator(locale).toString())
+        Display.Text(symbolFormatter.decimalSeparator.toString())
 
     is Key.OpeningParenthesis ->
         Display.Icon(

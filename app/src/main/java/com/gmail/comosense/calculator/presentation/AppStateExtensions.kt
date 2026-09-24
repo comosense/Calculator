@@ -1,15 +1,14 @@
 package com.gmail.comosense.calculator.presentation
 
 import com.gmail.comosense.calculator.domain.Symbol
-import java.util.Locale
 
 val AppState.expression: List<Symbol>
     get() = result + entering
 val AppState.isEntering: Boolean
     get() = entering.isNotEmpty()
 
-fun AppState.displayExpression(locale: Locale): String {
-    return expression.formatSymbols(locale).ifEmpty { "0" }
+fun AppState.displayExpression(symbolFormatter: SymbolFormatter): String {
+    return symbolFormatter.format(expression).ifEmpty { "0" }
 }
 
 fun AppState.canAppend(symbol: Symbol): Boolean = this.canAppend(listOf(symbol))

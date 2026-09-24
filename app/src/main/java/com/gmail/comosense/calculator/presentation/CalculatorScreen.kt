@@ -53,7 +53,6 @@ import androidx.wear.compose.material3.Icon
 import androidx.wear.compose.material3.ScreenScaffold
 import com.gmail.comosense.calculator.domain.Symbol
 import com.gmail.comosense.calculator.presentation.theme.CalculatorTheme
-import java.util.Locale
 import kotlin.math.sqrt
 
 @Composable
@@ -61,7 +60,7 @@ fun CalculatorScreen(
     appState: AppState,
     onAction: (AppAction) -> Unit,
     onShowHistory: () -> Unit,
-    locale: Locale,
+    symbolFormatter: SymbolFormatter,
 ) {
     val mainBoxSizeRatio: Float = 1f / sqrt(2f)
 
@@ -79,7 +78,7 @@ fun CalculatorScreen(
                 modifier = Modifier.size(
                     minOf(maxWidth, maxHeight) * mainBoxSizeRatio
                 ),
-                locale = locale,
+                symbolFormatter = symbolFormatter,
             )
         }
     }
@@ -91,7 +90,7 @@ private fun MainPanel(
     onAction: (AppAction) -> Unit,
     onShowHistory: () -> Unit,
     modifier: Modifier,
-    locale: Locale,
+    symbolFormatter: SymbolFormatter,
 ) {
     var showOperatorsKeyGrid: Boolean by remember { mutableStateOf(false) }
 
@@ -167,7 +166,7 @@ private fun MainPanel(
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f),
-                locale = locale,
+                symbolFormatter = symbolFormatter,
             )
 
             KeyGrid(
@@ -185,7 +184,7 @@ private fun MainPanel(
                     .fillMaxWidth()
                     .weight(4f),
                 arrangementSpace = 2.dp,
-                locale = locale,
+                symbolFormatter = symbolFormatter,
             )
         }
 
@@ -227,7 +226,7 @@ private fun MainPanel(
                         )
                         .padding(32.dp),
                     arrangementSpace = 8.dp,
-                    locale = locale,
+                    symbolFormatter = symbolFormatter,
                 )
             }
         }
@@ -239,9 +238,9 @@ private fun ExpressionBox(
     appState: AppState,
     onShowHistory: () -> Unit,
     modifier: Modifier,
-    locale: Locale,
+    symbolFormatter: SymbolFormatter,
 ) {
-    val expression: String = appState.displayExpression(locale)
+    val expression: String = appState.displayExpression(symbolFormatter)
     val scrollState: ScrollState = rememberScrollState()
     val textMeasurer: TextMeasurer = rememberTextMeasurer()
 
@@ -312,7 +311,7 @@ private fun KeyGrid(
     onClick: (Key) -> Unit,
     modifier: Modifier,
     arrangementSpace: Dp,
-    locale: Locale,
+    symbolFormatter: SymbolFormatter,
 ) {
     Column(
         modifier = modifier,
@@ -326,7 +325,7 @@ private fun KeyGrid(
                     .fillMaxWidth()
                     .weight(1f),
                 arrangementSpace = arrangementSpace,
-                locale = locale,
+                symbolFormatter = symbolFormatter,
             )
         }
     }
@@ -338,7 +337,7 @@ private fun KeysRow(
     onClick: (Key) -> Unit,
     modifier: Modifier,
     arrangementSpace: Dp,
-    locale: Locale,
+    symbolFormatter: SymbolFormatter,
 ) {
     Row(
         modifier = modifier,
@@ -353,7 +352,7 @@ private fun KeysRow(
                     modifier = Modifier
                         .fillMaxHeight()
                         .weight(1f),
-                    locale = locale,
+                    symbolFormatter = symbolFormatter,
                 )
             } else {
                 Spacer(
@@ -371,7 +370,7 @@ private fun KeyButton(
     key: Key,
     onClick: (Key) -> Unit,
     modifier: Modifier,
-    locale: Locale,
+    symbolFormatter: SymbolFormatter,
 ) {
     Button(
         onClick = { onClick(key) },
@@ -384,7 +383,7 @@ private fun KeyButton(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center,
         ) {
-            when (val display: Display = key.display(locale)) {
+            when (val display: Display = key.display(symbolFormatter)) {
                 is Display.Text -> {
                     Text(
                         text = display.text,

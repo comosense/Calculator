@@ -41,7 +41,6 @@ import com.gmail.comosense.calculator.data.History
 import com.gmail.comosense.calculator.domain.Symbol
 import com.gmail.comosense.calculator.presentation.theme.CalculatorTheme
 import com.gmail.comosense.calculator.presentation.theme.HistoryScreenColors
-import java.util.Locale
 
 @Composable
 fun HistoryScreen(
@@ -49,7 +48,7 @@ fun HistoryScreen(
     onAction: (AppAction) -> Unit,
     onBack: () -> Unit,
     onDeleteModeChanged: (Boolean) -> Unit,
-    locale: Locale,
+    symbolFormatter: SymbolFormatter,
 ) {
     var deleteMode: Boolean by remember { mutableStateOf(false) }
     val listState: TransformingLazyColumnState = rememberTransformingLazyColumnState()
@@ -106,7 +105,7 @@ fun HistoryScreen(
             listState = listState,
             transformationSpec = transformationSpec,
             contentPadding = contentPadding,
-            locale = locale,
+            symbolFormatter = symbolFormatter,
         )
     }
 }
@@ -122,7 +121,7 @@ private fun HistoryList(
     listState: TransformingLazyColumnState,
     transformationSpec: TransformationSpec,
     contentPadding: PaddingValues,
-    locale: Locale,
+    symbolFormatter: SymbolFormatter,
 ) {
     TransformingLazyColumn(
         modifier = Modifier
@@ -156,7 +155,7 @@ private fun HistoryList(
                     .transformedHeight(this, transformationSpec)
                     .padding(horizontal = 8.dp),
                 transformation = SurfaceTransformation(transformationSpec),
-                locale = locale
+                symbolFormatter = symbolFormatter,
             )
         }
     }
@@ -170,7 +169,7 @@ private fun HistoryItem(
     onLongClick: () -> Unit,
     modifier: Modifier,
     transformation: SurfaceTransformation,
-    locale: Locale,
+    symbolFormatter: SymbolFormatter,
 ) {
     val expressionScrollState: ScrollState = rememberScrollState()
     val resultScrollState: ScrollState = rememberScrollState()
@@ -210,7 +209,7 @@ private fun HistoryItem(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Text(
-                    text = history.calculation.expression.formatSymbols(locale),
+                    text = symbolFormatter.format(history.calculation.expression),
                     modifier = Modifier
                         .fillMaxWidth()
                         .horizontalScroll(expressionScrollState),
@@ -220,7 +219,7 @@ private fun HistoryItem(
                 )
 
                 Text(
-                    text = history.calculation.result.formatSymbols(locale),
+                    text = symbolFormatter.format(history.calculation.result),
                     modifier = Modifier
                         .fillMaxWidth()
                         .horizontalScroll(resultScrollState),

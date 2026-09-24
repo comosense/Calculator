@@ -40,6 +40,7 @@ fun WearApp(
     var isHistoryDeleteMode: Boolean by remember { mutableStateOf(false) }
     val swipeToDismissBoxState: SwipeToDismissBoxState = rememberSwipeToDismissBoxState()
     val coroutineScope: CoroutineScope = rememberCoroutineScope()
+    val symbolFormatter: SymbolFormatter = remember(locale) { SymbolFormatter(locale) }
 
     CalculatorServiceErrorToast(errorEvent)
 
@@ -60,7 +61,7 @@ fun WearApp(
                     showHistory = true
                 }
             },
-            locale = locale,
+            symbolFormatter = symbolFormatter,
         )
 
         AnimatedVisibility(
@@ -86,7 +87,7 @@ fun WearApp(
                         appState = appState,
                         onAction = onAction,
                         onShowHistory = {},
-                        locale = locale,
+                        symbolFormatter = symbolFormatter,
                     )
                 } else {
                     HistoryScreen(
@@ -98,7 +99,7 @@ fun WearApp(
                             }
                         },
                         onDeleteModeChanged = { isHistoryDeleteMode = it },
-                        locale = locale,
+                        symbolFormatter = symbolFormatter,
                     )
                 }
             }
