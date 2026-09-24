@@ -110,7 +110,6 @@ fun HistoryScreen(
     }
 }
 
-
 @Composable
 private fun HistoryList(
     histories: List<History>,

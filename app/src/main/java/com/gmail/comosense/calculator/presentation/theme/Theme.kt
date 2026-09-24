@@ -45,7 +45,6 @@ object CalculatorTheme {
         get() = LocalHistoryScreenDimensions.current
 }
 
-
 @Composable
 fun CalculatorTheme(
     content: @Composable () -> Unit
