@@ -200,11 +200,9 @@ private fun MainPanel(
         ) {
             Box(
                 modifier = Modifier
-                    .background(
-                        color = Color.Black.copy(alpha = 0.9f),
-                        shape = RoundedCornerShape(16.dp)
-                    )
+                    .fillMaxSize()
                     .clickable { showOperatorsKeyGrid = false },
+                contentAlignment = Alignment.Center,
             ) {
                 KeyGrid(
                     keyGrid = operatorsKeyGrid,
@@ -214,6 +212,10 @@ private fun MainPanel(
                     },
                     modifier = Modifier
                         .fillMaxSize()
+                        .background(
+                            color = Color.Black.copy(alpha = 0.9f),
+                            shape = RoundedCornerShape(16.dp)
+                        )
                         .padding(32.dp),
                     arrangementSpace = 8.dp,
                     locale = locale,
