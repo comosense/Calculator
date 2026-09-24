@@ -1,6 +1,6 @@
 package com.gmail.comosense.calculator.presentation
 
-import android.content.Context
+import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -29,12 +29,12 @@ sealed interface AppAction {
 }
 
 class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel() {
-    class Factory(private val context: Context) : ViewModelProvider.Factory {
+    class Factory(private val application: Application) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(AppViewModel::class.java)) {
                 @Suppress("UNCHECKED_CAST")
                 return AppViewModel(
-                    historyRepository = HistoryRepository(context.historyDataStore),
+                    historyRepository = HistoryRepository(application.historyDataStore),
                 ) as T
             }
             throw IllegalArgumentException(

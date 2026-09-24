@@ -17,7 +17,7 @@ import kotlinx.coroutines.flow.emptyFlow
 
 class MainActivity : ComponentActivity() {
     private val viewModel: AppViewModel by viewModels {
-        AppViewModel.Factory(applicationContext)
+        AppViewModel.Factory(application)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,7 +50,7 @@ fun DefaultPreview() {
                 Symbol.Numeric.Digit(1),
                 Symbol.Operator.Add,
                 Symbol.Numeric.Digit(2),
-                ),
+            ),
         ),
         onAction = {},
         errorEvent = emptyFlow(),

@@ -26,11 +26,13 @@ class HistoryRepository(private val dataStore: DataStore<HistoryStore>) {
                 calculation = calculation,
             )
 
-            store.toBuilder()
-                .clearHistories()
-                .addHistories(newHistory.toProto())
-                .addAllHistories(store.historiesList.take(HISTORIES_SIZE - 1))
-                .build()
+            val builder: HistoryStore.Builder = store
+                .toBuilder()
+                .addHistories(0, newHistory.toProto())
+            while (builder.historiesCount > HISTORIES_SIZE) {
+                builder.removeHistories(builder.historiesCount - 1)
+            }
+            builder.build()
         }
     }
 
