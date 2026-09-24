@@ -2,6 +2,12 @@ package com.gmail.comosense.calculator.presentation
 
 import android.content.Context
 import android.widget.Toast
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.scaleIn
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -9,6 +15,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.wear.compose.foundation.SwipeToDismissBoxState
 import androidx.wear.compose.foundation.SwipeToDismissValue
@@ -40,12 +47,33 @@ fun WearApp(
         if (swipeToDismissBoxState.currentValue == SwipeToDismissValue.Dismissed) {
             showHistory = false
             isHistoryDeleteMode = false
-            swipeToDismissBoxState.snapTo(SwipeToDismissValue.Default)
         }
     }
 
-    AppScaffold() {
-        if (showHistory) {
+    AppScaffold {
+        CalculatorScreen(
+            appState = appState,
+            onAction = onAction,
+            onShowHistory = {
+                coroutineScope.launch {
+                    swipeToDismissBoxState.snapTo(SwipeToDismissValue.Default)
+                    showHistory = true
+                }
+            },
+            locale = locale,
+        )
+
+        AnimatedVisibility(
+            visible = showHistory,
+            enter = fadeIn(
+                animationSpec = tween(180),
+            ) + scaleIn(
+                initialScale = 0.96f,
+                animationSpec = tween(180),
+            ),
+            exit = ExitTransition.None,
+            modifier = Modifier.fillMaxSize(),
+        ) {
             SwipeToDismissBox(
                 state = swipeToDismissBoxState,
                 userSwipeEnabled = !isHistoryDeleteMode,
@@ -74,13 +102,6 @@ fun WearApp(
                     )
                 }
             }
-        } else {
-            CalculatorScreen(
-                appState = appState,
-                onAction = onAction,
-                onShowHistory = { showHistory = true },
-                locale = locale,
-            )
         }
     }
 }

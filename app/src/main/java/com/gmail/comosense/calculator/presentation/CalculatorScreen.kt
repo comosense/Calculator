@@ -1,6 +1,7 @@
 package com.gmail.comosense.calculator.presentation
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
@@ -193,8 +194,18 @@ private fun MainPanel(
             modifier = Modifier
                 .fillMaxSize()
                 .zIndex(10f),
-            enter = fadeIn() + scaleIn(initialScale = 0.75f),
-            exit = fadeOut() + scaleOut(targetScale = 0.75f),
+            enter = fadeIn(
+                animationSpec = tween(180),
+            ) + scaleIn(
+                initialScale = 0.96f,
+                animationSpec = tween(180),
+            ),
+            exit = fadeOut(
+                animationSpec = tween(180),
+            ) + scaleOut(
+                targetScale = 0.96f,
+                animationSpec = tween(180),
+            ),
         ) {
             Box(
                 modifier = Modifier
