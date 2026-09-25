@@ -32,7 +32,7 @@ sealed interface AppAction {
 class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel() {
     companion object {
         private const val CALCULATION_PRECISION: Int = 50
-        private const val DISPLAY_DECIMAL_PLACES: Int = 20
+        private const val DISPLAY_SCALE: Int = 20
     }
 
     class Factory(private val application: Application) : ViewModelProvider.Factory {
@@ -113,7 +113,7 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
             calculate(
                 expression = state.expression,
                 precision = CALCULATION_PRECISION,
-                displayScale = DISPLAY_DECIMAL_PLACES,
+                displayScale = DISPLAY_SCALE,
             )) {
             is Result.Ok -> {
                 _appState.update {
