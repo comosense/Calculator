@@ -2,7 +2,7 @@ package com.gmail.comosense.calculator.data
 
 import androidx.datastore.core.DataStore
 import com.gmail.comosense.calculator.data.proto.HistoryStore
-import com.gmail.comosense.calculator.domain.Calculation
+import com.gmail.comosense.calculator.domain.Symbol
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.util.UUID
@@ -19,11 +19,12 @@ class HistoryRepository(private val dataStore: DataStore<HistoryStore>) {
             }
         }
 
-    suspend fun addHistory(calculation: Calculation) {
+    suspend fun addHistory(expression: List<Symbol>, result: List<Symbol>) {
         dataStore.updateData { store ->
             val newHistory = History(
                 id = UUID.randomUUID().toString(),
-                calculation = calculation,
+                expression = expression,
+                result = result,
             )
 
             val builder: HistoryStore.Builder = store

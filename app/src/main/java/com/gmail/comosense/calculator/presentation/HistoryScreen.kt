@@ -145,7 +145,7 @@ private fun HistoryList(
                     if (deleteMode) {
                         onDelete(history.id)
                     } else {
-                        onClick(history.calculation.result)
+                        onClick(history.result)
                     }
                 },
                 onLongClick = onLongClick,
@@ -208,7 +208,7 @@ private fun HistoryItem(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Text(
-                    text = symbolFormatter.format(history.calculation.expression),
+                    text = symbolFormatter.format(history.expression),
                     modifier = Modifier
                         .fillMaxWidth()
                         .horizontalScroll(expressionScrollState),
@@ -218,7 +218,7 @@ private fun HistoryItem(
                 )
 
                 Text(
-                    text = symbolFormatter.format(history.calculation.result),
+                    text = symbolFormatter.format(history.result),
                     modifier = Modifier
                         .fillMaxWidth()
                         .horizontalScroll(resultScrollState),

@@ -7,7 +7,6 @@ import androidx.lifecycle.viewModelScope
 import com.gmail.comosense.calculator.common.Result
 import com.gmail.comosense.calculator.data.HistoryRepository
 import com.gmail.comosense.calculator.data.historyDataStore
-import com.gmail.comosense.calculator.domain.Calculation
 import com.gmail.comosense.calculator.domain.CalculatorError
 import com.gmail.comosense.calculator.domain.Symbol
 import com.gmail.comosense.calculator.domain.calculate
@@ -126,10 +125,8 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
 
                 viewModelScope.launch {
                     historyRepository.addHistory(
-                        Calculation(
-                            expression = state.expression,
-                            result = r.value,
-                        )
+                        expression = state.expression,
+                        result = r.value,
                     )
                 }
             }

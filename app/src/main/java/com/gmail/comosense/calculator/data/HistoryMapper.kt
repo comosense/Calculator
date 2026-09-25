@@ -1,6 +1,5 @@
 package com.gmail.comosense.calculator.data
 
-import com.gmail.comosense.calculator.domain.Calculation
 import com.gmail.comosense.calculator.domain.Symbol
 import com.gmail.comosense.calculator.data.proto.History as ProtoHistory
 import com.gmail.comosense.calculator.data.proto.Symbol as ProtoSymbol
@@ -119,10 +118,8 @@ fun ProtoHistory.toHistoryOrNull(): History? {
 
     return History(
         id = id,
-        calculation = Calculation(
-            expression = expression,
-            result = result,
-        ),
+        expression = expression,
+        result = result,
     )
 }
 
@@ -130,7 +127,7 @@ fun History.toProto(): ProtoHistory {
     return ProtoHistory
         .newBuilder()
         .setId(id)
-        .addAllExpression(calculation.expression.map { it.toProto() })
-        .addAllResult(calculation.result.map { it.toProto() })
+        .addAllExpression(expression.map { it.toProto() })
+        .addAllResult(result.map { it.toProto() })
         .build()
 }
