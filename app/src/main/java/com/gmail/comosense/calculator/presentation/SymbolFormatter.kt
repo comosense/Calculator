@@ -8,8 +8,6 @@ import java.text.NumberFormat
 import java.util.Locale
 
 class SymbolFormatter(locale: Locale) {
-    val decimalSeparator: Char = DecimalFormatSymbols.getInstance(locale).decimalSeparator
-
     private val integerFormatter: DecimalFormat? =
         (NumberFormat.getNumberInstance(locale) as? DecimalFormat)?.apply {
             isGroupingUsed = true
@@ -17,6 +15,8 @@ class SymbolFormatter(locale: Locale) {
             minimumFractionDigits = 0
             maximumFractionDigits = 0
         }
+
+    val decimalSeparator: Char = DecimalFormatSymbols.getInstance(locale).decimalSeparator
 
     fun format(symbols: List<Symbol>): String {
         return buildString {
