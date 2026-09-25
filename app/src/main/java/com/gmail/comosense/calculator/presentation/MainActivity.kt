@@ -16,8 +16,18 @@ import com.gmail.comosense.calculator.presentation.theme.CalculatorTheme
 import kotlinx.coroutines.flow.emptyFlow
 
 class MainActivity : ComponentActivity() {
+        companion object {
+        private const val CALCULATION_PRECISION: Int = 50
+        private const val DISPLAY_DECIMAL_PLACES: Int = 20
+    }
     private val viewModel: AppViewModel by viewModels {
-        AppViewModel.Factory(application)
+        AppViewModel.Factory(
+            calculatorService = CalculatorService(
+                precision = CALCULATION_PRECISION,
+                displayScale = DISPLAY_DECIMAL_PLACES,
+            ),
+            application = application,
+        )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

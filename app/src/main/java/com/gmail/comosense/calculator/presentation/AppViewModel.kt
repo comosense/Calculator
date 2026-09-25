@@ -28,12 +28,19 @@ sealed interface AppAction {
     data object DeleteHistoryAll : AppAction
 }
 
-class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel() {
-    class Factory(private val application: Application) : ViewModelProvider.Factory {
+class AppViewModel(
+    private val calculatorService: CalculatorService,
+    private val historyRepository: HistoryRepository,
+) : ViewModel() {
+    class Factory(
+        private val calculatorService: CalculatorService,
+        private val application: Application,
+    ) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(AppViewModel::class.java)) {
                 @Suppress("UNCHECKED_CAST")
                 return AppViewModel(
+                    calculatorService = calculatorService,
                     historyRepository = HistoryRepository(application.historyDataStore),
                 ) as T
             }
@@ -43,15 +50,6 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
         }
     }
 
-    companion object {
-        private const val CALCULATION_PRECISION: Int = 50
-        private const val DISPLAY_DECIMAL_PLACES: Int = 20
-    }
-
-    private val calculatorService = CalculatorService(
-        precision = CALCULATION_PRECISION,
-        displayScale = DISPLAY_DECIMAL_PLACES,
-    )
     private val _appState: MutableStateFlow<AppState> =
         MutableStateFlow(AppState())
     val appState: StateFlow<AppState> =

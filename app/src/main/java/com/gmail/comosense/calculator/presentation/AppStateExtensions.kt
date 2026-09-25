@@ -7,10 +7,6 @@ val AppState.expression: List<Symbol>
 val AppState.isEntering: Boolean
     get() = entering.isNotEmpty()
 
-fun AppState.displayExpression(symbolFormatter: SymbolFormatter): String {
-    return symbolFormatter.format(expression).ifEmpty { "0" }
-}
-
 fun AppState.canAppend(symbol: Symbol): Boolean = this.canAppend(listOf(symbol))
 
 fun AppState.canAppend(symbols: List<Symbol>): Boolean {

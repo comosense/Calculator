@@ -240,9 +240,10 @@ private fun ExpressionBox(
     modifier: Modifier,
     symbolFormatter: SymbolFormatter,
 ) {
-    val expression: String = appState.displayExpression(symbolFormatter)
     val scrollState: ScrollState = rememberScrollState()
     val textMeasurer: TextMeasurer = rememberTextMeasurer()
+
+    val expression: String = symbolFormatter.format(appState.expression).ifEmpty { "0" }
 
     BoxWithConstraints(
         modifier = modifier
