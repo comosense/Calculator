@@ -128,7 +128,3 @@ private fun CalculatorServiceErrorToast(errorEvent: Flow<CalculatorServiceError>
         }
     }
 }
-
-private fun temp() {
-
-}
