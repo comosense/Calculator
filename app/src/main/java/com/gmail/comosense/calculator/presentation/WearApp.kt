@@ -38,9 +38,9 @@ fun WearApp(
 ) {
     var showHistory: Boolean by remember { mutableStateOf(false) }
     var isHistoryDeleteMode: Boolean by remember { mutableStateOf(false) }
-    val symbolFormatter: SymbolFormatter = remember(locale) { SymbolFormatter(locale) }
     val swipeToDismissBoxState: SwipeToDismissBoxState = rememberSwipeToDismissBoxState()
     val coroutineScope: CoroutineScope = rememberCoroutineScope()
+    val symbolFormatter: SymbolFormatter = remember(locale) { SymbolFormatter(locale) }
 
     CalculatorServiceErrorToast(errorEvent)
 
