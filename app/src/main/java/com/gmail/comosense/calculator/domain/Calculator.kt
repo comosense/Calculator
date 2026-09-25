@@ -9,11 +9,47 @@ enum class CalculatorError {
     InvalidExpression,
     DivisionByZero,
     Arithmetic,
+    InvalidResult,
 }
 
 private class DivisionByZeroException : ArithmeticException()
 
-fun calculate(expression: List<Token>, precision: Int): Result<BigDecimal, CalculatorError> {
+fun calculate(
+    expression: List<Symbol>,
+    precision: Int,
+    displayScale: Int,
+): Result<List<Symbol>, CalculatorError> {
+    return when (val tokens = parseTokens(expression)) {
+        is Result.Ok -> {
+            when (val calculated = calculate(tokens.value, precision)) {
+                is Result.Ok -> {
+                    when (val symbols = calculated.value.toSymbols(displayScale)) {
+                        is Result.Ok -> {
+                            Result.Ok(symbols.value)
+                        }
+
+                        is Result.Err -> {
+                            Result.Err(symbols.error)
+                        }
+                    }
+                }
+
+                is Result.Err -> {
+                    Result.Err(calculated.error)
+                }
+            }
+        }
+
+        is Result.Err -> {
+            Result.Err(CalculatorError.InvalidExpression)
+        }
+    }
+}
+
+private fun calculate(
+    expression: List<Token>,
+    precision: Int,
+): Result<BigDecimal, CalculatorError> {
     if (expression.isEmpty()) {
         return Result.Err(CalculatorError.InvalidExpression)
     }
@@ -36,7 +72,10 @@ fun calculate(expression: List<Token>, precision: Int): Result<BigDecimal, Calcu
     }
 }
 
-private class Parser(private val tokens: List<Token>, precision: Int) {
+private class Parser(
+    private val tokens: List<Token>,
+    precision: Int,
+) {
     private val mathContext: MathContext = MathContext(
         precision,
         RoundingMode.HALF_UP,
@@ -129,4 +168,27 @@ private class Parser(private val tokens: List<Token>, precision: Int) {
             }
         }
     }
+}
+
+private fun BigDecimal.toSymbols(scale: Int): Result<List<Symbol>, CalculatorError> {
+    val displayResult: BigDecimal = if (compareTo(BigDecimal.ZERO) == 0) {
+        BigDecimal.ZERO
+    } else {
+        setScale(scale, RoundingMode.HALF_UP).stripTrailingZeros()
+    }
+
+    val symbols: List<Symbol> = buildList {
+        for (c in displayResult.toPlainString()) {
+            add(
+                when (c) {
+                    in '0'..'9' -> Symbol.Numeric.Digit(c.digitToInt())
+                    '.' -> Symbol.Numeric.Point
+                    '-' -> Symbol.Sign.Negative
+                    else -> return Result.Err(CalculatorError.InvalidResult)
+                }
+            )
+        }
+    }
+
+    return Result.Ok(symbols)
 }

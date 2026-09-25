@@ -8,7 +8,9 @@ import com.gmail.comosense.calculator.common.Result
 import com.gmail.comosense.calculator.data.HistoryRepository
 import com.gmail.comosense.calculator.data.historyDataStore
 import com.gmail.comosense.calculator.domain.Calculation
+import com.gmail.comosense.calculator.domain.CalculatorError
 import com.gmail.comosense.calculator.domain.Symbol
+import com.gmail.comosense.calculator.domain.calculate
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -28,21 +30,17 @@ sealed interface AppAction {
     data object DeleteHistoryAll : AppAction
 }
 
-class AppViewModel(
-    private val calculatorService: CalculatorService,
-    private val historyRepository: HistoryRepository,
-) : ViewModel() {
-    class Factory(
-        private val calculatorService: CalculatorService,
-        private val application: Application,
-    ) : ViewModelProvider.Factory {
+class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel() {
+    companion object {
+        private const val CALCULATION_PRECISION: Int = 50
+        private const val DISPLAY_DECIMAL_PLACES: Int = 20
+    }
+
+    class Factory(private val application: Application) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(AppViewModel::class.java)) {
                 @Suppress("UNCHECKED_CAST")
-                return AppViewModel(
-                    calculatorService = calculatorService,
-                    historyRepository = HistoryRepository(application.historyDataStore),
-                ) as T
+                return AppViewModel(HistoryRepository(application.historyDataStore)) as T
             }
             throw IllegalArgumentException(
                 "Unknown ViewModel class: ${modelClass.name}"
@@ -55,9 +53,9 @@ class AppViewModel(
     val appState: StateFlow<AppState> =
         _appState.asStateFlow()
 
-    private val _errorEvent: MutableSharedFlow<CalculatorServiceError> =
+    private val _errorEvent: MutableSharedFlow<CalculatorError> =
         MutableSharedFlow(extraBufferCapacity = 1)
-    val errorEvent: SharedFlow<CalculatorServiceError> =
+    val errorEvent: SharedFlow<CalculatorError> =
         _errorEvent.asSharedFlow()
 
     init {
@@ -112,8 +110,12 @@ class AppViewModel(
 
         if (!state.isEntering) return
 
-        when (val r: Result<List<Symbol>, CalculatorServiceError> =
-            calculatorService.calculate(state.expression)) {
+        when (val r: Result<List<Symbol>, CalculatorError> =
+            calculate(
+                expression = state.expression,
+                precision = CALCULATION_PRECISION,
+                displayScale = DISPLAY_DECIMAL_PLACES,
+            )) {
             is Result.Ok -> {
                 _appState.update {
                     it.copy(

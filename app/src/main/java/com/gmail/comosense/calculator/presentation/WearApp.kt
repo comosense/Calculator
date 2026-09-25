@@ -23,6 +23,7 @@ import androidx.wear.compose.foundation.rememberSwipeToDismissBoxState
 import androidx.wear.compose.material3.AppScaffold
 import androidx.wear.compose.material3.SwipeToDismissBox
 import com.gmail.comosense.calculator.R
+import com.gmail.comosense.calculator.domain.CalculatorError
 import com.gmail.comosense.calculator.presentation.theme.CalculatorTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -33,7 +34,7 @@ import java.util.Locale
 fun WearApp(
     appState: AppState,
     onAction: (AppAction) -> Unit,
-    errorEvent: Flow<CalculatorServiceError>,
+    errorEvent: Flow<CalculatorError>,
     locale: Locale,
 ) {
     var showHistory: Boolean by remember { mutableStateOf(false) }
@@ -42,7 +43,7 @@ fun WearApp(
     val coroutineScope: CoroutineScope = rememberCoroutineScope()
     val symbolFormatter: SymbolFormatter = remember(locale) { SymbolFormatter(locale) }
 
-    CalculatorServiceErrorToast(errorEvent)
+    CalculatorErrorToast(errorEvent)
 
     LaunchedEffect(swipeToDismissBoxState.currentValue) {
         if (swipeToDismissBoxState.currentValue == SwipeToDismissValue.Dismissed) {
@@ -108,14 +109,14 @@ fun WearApp(
 }
 
 @Composable
-private fun CalculatorServiceErrorToast(errorEvent: Flow<CalculatorServiceError>) {
+private fun CalculatorErrorToast(errorEvent: Flow<CalculatorError>) {
     val context: Context = LocalContext.current
 
-    fun CalculatorServiceError.messageResourceId(): Int = when (this) {
-        CalculatorServiceError.InvalidResult -> R.string.invalid_result
-        CalculatorServiceError.InvalidExpression -> R.string.invalid_expression
-        CalculatorServiceError.DivisionByZero -> R.string.division_by_zero
-        CalculatorServiceError.Arithmetic -> R.string.arithmetic
+    fun CalculatorError.messageResourceId(): Int = when (this) {
+        CalculatorError.InvalidExpression -> R.string.invalid_expression
+        CalculatorError.DivisionByZero -> R.string.division_by_zero
+        CalculatorError.Arithmetic -> R.string.arithmetic
+        CalculatorError.InvalidResult -> R.string.invalid_result
     }
 
     LaunchedEffect(errorEvent) {
