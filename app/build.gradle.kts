@@ -61,7 +61,6 @@ dependencies {
     implementation(libs.wear.tooling.preview)
     implementation(libs.play.services.wearable)
     implementation(libs.protobuf.kotlin.lite)
-    implementation(libs.protobuf.protoc)
     androidTestImplementation(platform(libs.compose.bom))
     androidTestImplementation(libs.ui.test.junit4)
     debugImplementation(libs.ui.test.manifest)
@@ -70,7 +69,7 @@ dependencies {
 
 protobuf {
     protoc {
-        artifact = "com.google.protobuf:protoc:${libs.versions.protobufProtoc.get()}"
+        artifact = "com.google.protobuf:protoc:${libs.versions.protobufKotlinLite.get()}"
     }
 
     generateProtoTasks {
