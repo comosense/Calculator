@@ -22,14 +22,8 @@ android {
     buildTypes {
         release {
             signingConfig = signingConfigs.getByName("debug")
-            isMinifyEnabled = true
-            isShrinkResources = true
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro",
-            )
             optimization {
-                enable = false
+                enable = true
             }
             ndk {
                 debugSymbolLevel = "FULL"
@@ -66,8 +60,8 @@ dependencies {
     implementation(libs.compose.ui.tooling)
     implementation(libs.wear.tooling.preview)
     implementation(libs.play.services.wearable)
-    implementation(libs.protobuf.javalite)
     implementation(libs.protobuf.kotlin.lite)
+    implementation(libs.protobuf.protoc)
     androidTestImplementation(platform(libs.compose.bom))
     androidTestImplementation(libs.ui.test.junit4)
     debugImplementation(libs.ui.test.manifest)
@@ -76,7 +70,7 @@ dependencies {
 
 protobuf {
     protoc {
-        artifact = "com.google.protobuf:protoc:4.32.1"
+        artifact = "com.google.protobuf:protoc:${libs.versions.protobufProtoc.get()}"
     }
 
     generateProtoTasks {
@@ -85,9 +79,7 @@ protobuf {
                 create("java") {
                     option("lite")
                 }
-                create("kotlin") {
-                    option("lite")
-                }
+                create("kotlin")
             }
         }
     }
