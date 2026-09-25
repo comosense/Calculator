@@ -1,12 +1,14 @@
 package com.gmail.comosense.calculator.presentation
 
-import androidx.compose.runtime.Composable
-import androidx.wear.compose.material3.ButtonColors
-import androidx.wear.compose.material3.ButtonDefaults
 import com.gmail.comosense.calculator.R
 import com.gmail.comosense.calculator.domain.Symbol
-import com.gmail.comosense.calculator.presentation.theme.CalculatorScreenColors
-import com.gmail.comosense.calculator.presentation.theme.CalculatorTheme
+
+enum class Style {
+    Digit,
+    Operator,
+    Command,
+    Ui,
+}
 
 interface Display {
     data class Text(
@@ -18,6 +20,33 @@ interface Display {
         val stringResource: Int,
     ) : Display
 }
+
+val Key.style: Style
+    get() {
+        return when (this) {
+            is Key.Digit,
+            is Key.Point,
+            is Key.OpeningParenthesis,
+            is Key.ClosingParenthesis ->
+                Style.Digit
+
+            is Key.Positive,
+            is Key.Negative,
+            is Key.Add,
+            is Key.Subtract,
+            is Key.Multiply,
+            is Key.Divide ->
+                Style.Operator
+
+            is Key.Equal,
+            is Key.Clear,
+            is Key.Backspace ->
+                Style.Command
+
+            is Key.Operators ->
+                Style.Ui
+        }
+    }
 
 fun Key.display(symbolFormatter: SymbolFormatter): Display = when (this) {
     is Key.Positive ->
@@ -148,46 +177,4 @@ val Key.longClickKeyOrNull: Key?
     get() = when (this) {
         is Key.Backspace -> Key.Clear
         else -> null
-    }
-
-val Key.colors: ButtonColors
-    @Composable
-    get() {
-        val colors: CalculatorScreenColors = CalculatorTheme.calculatorScreenColors
-
-        return when (this) {
-            is Key.Digit,
-            is Key.Point,
-            is Key.OpeningParenthesis,
-            is Key.ClosingParenthesis ->
-                ButtonDefaults.buttonColors(
-                    containerColor = colors.digitKeyContainer,
-                    contentColor = colors.digitKeyContent,
-                )
-
-            is Key.Positive,
-            is Key.Negative,
-            is Key.Add,
-            is Key.Subtract,
-            is Key.Multiply,
-            is Key.Divide ->
-                ButtonDefaults.buttonColors(
-                    containerColor = colors.operatorKeyContainer,
-                    contentColor = colors.operatorKeyContent,
-                )
-
-            is Key.Equal,
-            is Key.Clear,
-            is Key.Backspace ->
-                ButtonDefaults.buttonColors(
-                    containerColor = colors.commandKeyContainer,
-                    contentColor = colors.commandKeyContent,
-                )
-
-            is Key.Operators ->
-                ButtonDefaults.buttonColors(
-                    containerColor = colors.uiKeyContainer,
-                    contentColor = colors.uiKeyContent,
-                )
-        }
     }

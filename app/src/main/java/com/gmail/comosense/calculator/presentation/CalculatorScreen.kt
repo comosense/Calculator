@@ -49,6 +49,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.wear.compose.material3.Button
+import androidx.wear.compose.material3.ButtonDefaults
 import androidx.wear.compose.material3.Icon
 import androidx.wear.compose.material3.ScreenScaffold
 import com.gmail.comosense.calculator.domain.Symbol
@@ -373,11 +374,45 @@ private fun KeyButton(
     modifier: Modifier,
     symbolFormatter: SymbolFormatter,
 ) {
+    data class Colors(
+        val container: Color,
+        val content: Color,
+    )
+
+    val colors: Colors = when (key.style) {
+        Style.Digit ->
+            Colors(
+                container = CalculatorTheme.calculatorScreenColors.digitKeyContainer,
+                content = CalculatorTheme.calculatorScreenColors.digitKeyContent,
+            )
+
+        Style.Operator ->
+            Colors(
+                container = CalculatorTheme.calculatorScreenColors.operatorKeyContainer,
+                content = CalculatorTheme.calculatorScreenColors.operatorKeyContent,
+            )
+
+        Style.Command ->
+            Colors(
+                container = CalculatorTheme.calculatorScreenColors.commandKeyContainer,
+                content = CalculatorTheme.calculatorScreenColors.commandKeyContent,
+            )
+
+        Style.Ui ->
+            Colors(
+                container = CalculatorTheme.calculatorScreenColors.uiKeyContainer,
+                content = CalculatorTheme.calculatorScreenColors.uiKeyContent,
+            )
+    }
+
     Button(
         onClick = { onClick(key) },
         onLongClick = { key.longClickKeyOrNull?.let { onClick(it) } },
         modifier = modifier,
-        colors = key.colors,
+        colors = ButtonDefaults.buttonColors(
+            containerColor = colors.container,
+            contentColor = colors.container,
+        ),
         contentPadding = PaddingValues(0.dp),
     ) {
         Box(
@@ -388,7 +423,7 @@ private fun KeyButton(
                 is Display.Text -> {
                     Text(
                         text = display.text,
-                        color = key.colors.contentColor,
+                        color = colors.content,
                         fontSize = CalculatorTheme.calculatorScreenDimensions.keyTextSize,
                         textAlign = TextAlign.Center,
                     )
@@ -399,7 +434,7 @@ private fun KeyButton(
                         painter = painterResource(display.painterResource),
                         contentDescription = stringResource(display.stringResource),
                         modifier = Modifier.size(CalculatorTheme.calculatorScreenDimensions.keyIconSize),
-                        tint = key.colors.contentColor,
+                        tint = colors.content,
                     )
                 }
             }
