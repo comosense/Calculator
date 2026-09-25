@@ -21,31 +21,80 @@ interface Display {
     ) : Display
 }
 
+val Key.appActionOrNull: AppAction?
+    get() = when (this) {
+        is Key.Positive ->
+            AppAction.Input(Symbol.Sign.Positive)
+
+        is Key.Negative ->
+            AppAction.Input(Symbol.Sign.Negative)
+
+        is Key.Digit ->
+            AppAction.Input(Symbol.Numeric.Digit(value))
+
+        is Key.Point ->
+            AppAction.Input(Symbol.Numeric.Point)
+
+        is Key.OpeningParenthesis ->
+            AppAction.Input(Symbol.FactorStart.OpeningParenthesis)
+
+        is Key.ClosingParenthesis ->
+            AppAction.Input(Symbol.FactorEnd.ClosingParenthesis)
+
+        is Key.Add ->
+            AppAction.Input(Symbol.Operator.Add)
+
+        is Key.Subtract ->
+            AppAction.Input(Symbol.Operator.Subtract)
+
+        is Key.Multiply ->
+            AppAction.Input(Symbol.Operator.Multiply)
+
+        is Key.Divide ->
+            AppAction.Input(Symbol.Operator.Divide)
+
+        is Key.Equal ->
+            AppAction.Calculate
+
+        is Key.Clear ->
+            AppAction.Clear
+
+        is Key.Backspace ->
+            AppAction.Backspace
+
+        else ->
+            null
+    }
+
+val Key.longClickKeyOrNull: Key?
+    get() = when (this) {
+        is Key.Backspace -> Key.Clear
+        else -> null
+    }
+
 val Key.style: Style
-    get() {
-        return when (this) {
-            is Key.Digit,
-            is Key.Point,
-            is Key.OpeningParenthesis,
-            is Key.ClosingParenthesis ->
-                Style.Digit
+    get() = when (this) {
+        is Key.Digit,
+        is Key.Point,
+        is Key.OpeningParenthesis,
+        is Key.ClosingParenthesis ->
+            Style.Digit
 
-            is Key.Positive,
-            is Key.Negative,
-            is Key.Add,
-            is Key.Subtract,
-            is Key.Multiply,
-            is Key.Divide ->
-                Style.Operator
+        is Key.Positive,
+        is Key.Negative,
+        is Key.Add,
+        is Key.Subtract,
+        is Key.Multiply,
+        is Key.Divide ->
+            Style.Operator
 
-            is Key.Equal,
-            is Key.Clear,
-            is Key.Backspace ->
-                Style.Command
+        is Key.Equal,
+        is Key.Clear,
+        is Key.Backspace ->
+            Style.Command
 
-            is Key.Operators ->
-                Style.Ui
-        }
+        is Key.Operators ->
+            Style.Ui
     }
 
 fun Key.display(symbolFormatter: SymbolFormatter): Display = when (this) {
@@ -127,54 +176,3 @@ fun Key.display(symbolFormatter: SymbolFormatter): Display = when (this) {
             stringResource = R.string.operators,
         )
 }
-
-val Key.appActionOrNull: AppAction?
-    get() = when (this) {
-        is Key.Positive ->
-            AppAction.Input(Symbol.Sign.Positive)
-
-        is Key.Negative ->
-            AppAction.Input(Symbol.Sign.Negative)
-
-        is Key.Digit ->
-            AppAction.Input(Symbol.Numeric.Digit(value))
-
-        is Key.Point ->
-            AppAction.Input(Symbol.Numeric.Point)
-
-        is Key.OpeningParenthesis ->
-            AppAction.Input(Symbol.FactorStart.OpeningParenthesis)
-
-        is Key.ClosingParenthesis ->
-            AppAction.Input(Symbol.FactorEnd.ClosingParenthesis)
-
-        is Key.Add ->
-            AppAction.Input(Symbol.Operator.Add)
-
-        is Key.Subtract ->
-            AppAction.Input(Symbol.Operator.Subtract)
-
-        is Key.Multiply ->
-            AppAction.Input(Symbol.Operator.Multiply)
-
-        is Key.Divide ->
-            AppAction.Input(Symbol.Operator.Divide)
-
-        is Key.Equal ->
-            AppAction.Calculate
-
-        is Key.Clear ->
-            AppAction.Clear
-
-        is Key.Backspace ->
-            AppAction.Backspace
-
-        else ->
-            null
-    }
-
-val Key.longClickKeyOrNull: Key?
-    get() = when (this) {
-        is Key.Backspace -> Key.Clear
-        else -> null
-    }
