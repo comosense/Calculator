@@ -16,10 +16,11 @@ import com.gmail.comosense.calculator.presentation.theme.CalculatorTheme
 import kotlinx.coroutines.flow.emptyFlow
 
 class MainActivity : ComponentActivity() {
-        companion object {
+    companion object {
         private const val CALCULATION_PRECISION: Int = 50
         private const val DISPLAY_DECIMAL_PLACES: Int = 20
     }
+
     private val viewModel: AppViewModel by viewModels {
         AppViewModel.Factory(
             calculatorService = CalculatorService(
@@ -54,16 +55,18 @@ class MainActivity : ComponentActivity() {
 @WearPreviewFontScales
 @Composable
 fun DefaultPreview() {
-    WearApp(
-        appState = AppState(
-            entering = listOf(
-                Symbol.Numeric.Digit(1),
-                Symbol.Operator.Add,
-                Symbol.Numeric.Digit(2),
+    CalculatorTheme {
+        WearApp(
+            appState = AppState(
+                entering = listOf(
+                    Symbol.Numeric.Digit(1),
+                    Symbol.Operator.Add,
+                    Symbol.Numeric.Digit(2),
+                ),
             ),
-        ),
-        onAction = {},
-        errorEvent = emptyFlow(),
-        locale = LocalLocale.current.platformLocale,
-    )
+            onAction = {},
+            errorEvent = emptyFlow(),
+            locale = LocalLocale.current.platformLocale,
+        )
+    }
 }
