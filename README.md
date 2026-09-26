@@ -2,70 +2,131 @@
 
 A simple calculator app designed specifically for Wear OS smartwatches.
 
-Built with Wear Compose Material 3, it offers easy-to-tap keys and an operator overlay optimized for
-round and small smartwatch screens.
+Designed for small and round watch displays, with large, easy-to-tap keys and a compact operator overlay.
 
 [![Get it on Google Play](https://img.shields.io/badge/Google_Play-Download-414141?style=for-the-badge&logo=google-play&logoColor=white)](https://play.google.com/store/apps/details?id=com.gmail.comosense.calculator)
 
-Available on Google Play:  
+Available on Google Play:
 [Download on Google Play Store](https://play.google.com/store/apps/details?id=com.gmail.comosense.calculator)
 
 ## Features
 
-- **Basic Arithmetic Operations**: Addition (`+`), subtraction (`-`), multiplication (`×`), and
-  division (`÷`)
-- **Smart Keys**:
-  - Keys automatically switch between their available states depending on input context (`+` /
-      positive sign, `-` / negative sign, `(` / `)`, and `←` / `Clear`).
-  - An operator overlay panel (operator key) keeps keys large and easy to hit on small displays.
-- **Parentheses & Signs**: Support for grouped expressions and negative/positive numbers.
-- **Locale-Aware Formatting**: Automatically formats numbers with grouping (thousands) separators
-  and locale-specific decimal separators (e.g., `,` or `.`).
-- **Calculation History**:
-  - Automatically saves up to 50 calculations across sessions using Jetpack DataStore (Protobuf).
-  - Tap any past result to insert or reuse it in your current calculation.
-  - Interactive delete mode: remove single entries or clear all history.
+- **Basic arithmetic**
+  - Addition `+`
+  - Subtraction `-`
+  - Multiplication `×`
+  - Division `÷`
+- Parentheses
+  - Supports grouped expressions such as `(1 + 2) × 3`
+- Positive / negative numbers
+  Supports unary `+` and `-`
+- Smart keypad
+  - Keys change depending on the current input context
+  - Parenthesis key switches between `(` and `)`
+  - Delete key switches between backspace `←` and clear
+- Operator overlay
+  - Quickly access `+`, `-`, `×`, and `÷`
+  - Keeps the main keypad large and easy to use on a small screen
+- Locale-aware number formatting
+  - Thousands separators and decimal separators follow the device locale
+- Calculation history
+  - Up to 50 calculations are saved
+  - History is preserved across app launches
+  - Tap a previous result to reuse it
+  - Delete individual entries or clear the entire history
 
 ## Usage
 
-### Basic Calculation
+### Basic calculation
 
-Tap the keypad buttons to construct your expression:
+Enter an expression using the keypad and press `=`.
 
-- **Digits (`0`–`9`) & Decimal Point (`.` / `,`)**: Enter numbers.
-- **Operators Key**: Opens a quick overlay containing `+`, `-`, `×`, and `÷`.
-- **Dynamic Parenthesis Key**: Toggles between `(` and `)` depending on whether an open parenthesis
-  needs to be closed.
-- **Delete / Clear Key**:
-  - Shows `←` (Backspace) when an expression is being entered.
-  - Shows Clear when idle.
-  - *Tip*: Long-press `←` at any time to clear the entire input.
-- **`=`**: Calculates the expression.
+For example:
 
-Expressions follow standard mathematical operator precedence (e.g., `1 + 2 × 3 = 7`).
+```text
+1 + 2 × 3 = 7
+```
 
-### Calculation History
+The calculator follows standard mathematical operator precedence, so multiplication is performed before addition.
 
-1. **Open History**: Tap the expression display area at the top of the main screen.
-2. **Reuse a Result**: Tap any history item to append its result to your current expression (or use it as the starting value).
-3. **Delete History**:
-  Long-press any history entry to enter **Delete Mode**.
-  Tap individual items to delete them.
-  Tap the bottom **Delete All** button to clear the entire history.
-4. **Exit History**: Swipe from the left edge (Swipe-to-Dismiss) or press the back button.
+### Operators
 
-## Architecture & Tech Stack
+Tap the operator button to open the operator overlay:
 
-- **Platform**: Android Wear OS (Wear OS 4 / 5+)
-- **Language**: Kotlin (100%)
-- **UI Toolkit**: Jetpack Compose for Wear OS, Wear Compose Material 3
-- **Data Persistence**: Jetpack DataStore (Protocol Buffers)
-- **State Management & Concurrency**: Android Architecture Components (`ViewModel`, Kotlin
-  Coroutines, `StateFlow`, `SharedFlow`)
-- **Calculation Engine**:
-  - Lexer/Tokenizer converting raw symbols into structured tokens.
-  - Recursive-descent parser supporting operator precedence and unary signs.
-  - `BigDecimal` with custom `MathContext` (50-digit precision, `HALF_UP` rounding).
+```text
++  -  ×  ÷
+```
+
+### Parentheses
+
+The parenthesis button automatically switches between `(` and `)` depending on the current expression.
+
+For example:
+
+```text
+(1 + 2) × 3
+```
+
+### Delete and clear
+
+While entering an expression, the delete button works as Backspace `←`.
+When there is no active expression, it becomes Clear.
+
+You can also long-press the backspace button to clear the current input.
+
+### Calculation history
+
+Tap the expression display at the top of the calculator to open the history.
+
+From the history screen you can:
+
+1. Tap a calculation to reuse its result.
+2. Long-press a history entry to enter delete mode.
+3. Tap individual entries to delete them.
+4. Tap Delete All to clear the history.
+5. Swipe from the left edge or press the back button to return to the calculator.
+
+The history is stored locally on the watch using Jetpack DataStore and is limited to 50 entries.
+
+## Supported devices
+
+The app targets Wear OS devices running Android API 30 or later.
+The UI is designed specifically for smartwatch displays, including round screens.
+
+## Privacy
+
+Calculator stores calculation history locally on the watch.
+No account or server connection is required for the calculator itself.
+See [Privacy Policy](privacy-policy.md) for details.
+
+## Technology stack
+
+- Language: Kotlin
+- Platform: Wear OS
+- Minimum SDK: Android API 30
+- Target SDK: Android API 37
+- UI: Jetpack Compose
+- Wear UI: Compose for Wear OS / Wear Compose Material 3
+- State management: ViewModel, StateFlow, SharedFlow
+- Concurrency: Kotlin Coroutines
+- Persistence: Jetpack DataStore
+- Serialization: Protocol Buffers
+
+## Calculation engine
+
+The calculator does not rely on a general-purpose expression evaluation library.
+
+The expression engine consists of:
+
+- Lexer / tokenizer
+- Recursive-descent parser
+- Operator precedence handling
+- Unary + / -
+- BigDecimal-based calculation
+- Custom MathContext with 50-digit precision
+- HALF_UP rounding
+
+This allows expressions to be parsed and calculated locally on the watch.
 
 ## License
 
