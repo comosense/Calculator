@@ -113,10 +113,10 @@ private fun CalculatorErrorToast(errorEvent: Flow<CalculatorError>) {
     val context: Context = LocalContext.current
 
     fun CalculatorError.messageResourceId(): Int = when (this) {
-        CalculatorError.InvalidExpression -> R.string.invalid_expression
-        CalculatorError.DivisionByZero -> R.string.division_by_zero
-        CalculatorError.Arithmetic -> R.string.arithmetic
-        CalculatorError.Unsupposed -> R.string.unsupposed
+        CalculatorError.InvalidExpression -> R.string.calculator_error_invalid_expression
+        CalculatorError.DivisionByZero -> R.string.calculator_error_division_by_zero
+        CalculatorError.Arithmetic -> R.string.calculator_error_arithmetic
+        CalculatorError.Unsupposed -> R.string.calculator_error_unsupposed
     }
 
     LaunchedEffect(errorEvent) {

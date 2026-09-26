@@ -198,7 +198,7 @@ private fun HistoryItem(
             if (deleteMode) {
                 Icon(
                     painter = painterResource(R.drawable.ic_delete),
-                    contentDescription = stringResource(R.string.delete),
+                    contentDescription = stringResource(R.string.content_description_delete),
                     modifier = Modifier.align(Alignment.Center),
                     tint = colors.deleteIcon,
                 )

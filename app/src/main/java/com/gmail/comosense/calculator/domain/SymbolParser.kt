@@ -35,22 +35,22 @@ fun parseTokens(symbols: List<Symbol>): Result<List<Token>, SymbolParserError> {
                     numericBuffer.append(".")
 
                 else -> {
-                    when (val r: Result<Unit, SymbolParserError> = flushNumeric()) {
+                    when (val unitResult: Result<Unit, SymbolParserError> = flushNumeric()) {
                         is Result.Ok -> Unit
-                        is Result.Err -> return r
+                        is Result.Err -> return unitResult
                     }
 
-                    when (val r: Result<Token, SymbolParserError> = symbol.toToken) {
-                        is Result.Ok -> add(r.value)
-                        is Result.Err -> return r
+                    when (val tokenResult: Result<Token, SymbolParserError> = symbol.toToken) {
+                        is Result.Ok -> add(tokenResult.value)
+                        is Result.Err -> return tokenResult
                     }
                 }
             }
         }
 
-        when (val r: Result<Unit, SymbolParserError> = flushNumeric()) {
+        when (val unitResult: Result<Unit, SymbolParserError> = flushNumeric()) {
             is Result.Ok -> Unit
-            is Result.Err -> return r
+            is Result.Err -> return unitResult
         }
     }
 

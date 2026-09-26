@@ -109,7 +109,7 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
 
         if (!state.isEntering) return
 
-        when (val r: Result<List<Symbol>, CalculatorError> =
+        when (val calculatedResult: Result<List<Symbol>, CalculatorError> =
             calculate(
                 expression = state.expression,
                 precision = CALCULATION_PRECISION,
@@ -118,7 +118,7 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
             is Result.Ok -> {
                 _appState.update {
                     it.copy(
-                        result = r.value,
+                        result = calculatedResult.value,
                         entering = emptyList(),
                     )
                 }
@@ -126,13 +126,13 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
                 viewModelScope.launch {
                     historyRepository.addHistory(
                         expression = state.expression,
-                        result = r.value,
+                        result = calculatedResult.value,
                     )
                 }
             }
 
             is Result.Err -> {
-                _errorEvent.tryEmit(r.error)
+                _errorEvent.tryEmit(calculatedResult.error)
             }
         }
     }

@@ -101,13 +101,13 @@ fun Key.display(symbolFormatter: SymbolFormatter): Display = when (this) {
     is Key.Positive ->
         Display.Icon(
             painterResource = R.drawable.ic_add,
-            stringResource = R.string.positive,
+            stringResource = R.string.content_description_positive,
         )
 
     is Key.Negative ->
         Display.Icon(
             painterResource = R.drawable.ic_subtract,
-            stringResource = R.string.negative,
+            stringResource = R.string.content_description_negative,
         )
 
     is Key.Digit ->
@@ -119,60 +119,60 @@ fun Key.display(symbolFormatter: SymbolFormatter): Display = when (this) {
     is Key.OpeningParenthesis ->
         Display.Icon(
             painterResource = R.drawable.ic_opening_parenthesis,
-            stringResource = R.string.opening_parenthesis,
+            stringResource = R.string.content_description_opening_parenthesis,
         )
 
     is Key.ClosingParenthesis ->
         Display.Icon(
             painterResource = R.drawable.ic_closing_parenthesis,
-            stringResource = R.string.closing_parenthesis,
+            stringResource = R.string.content_description_closing_parenthesis,
         )
 
     is Key.Add ->
         Display.Icon(
             painterResource = R.drawable.ic_add,
-            stringResource = R.string.add,
+            stringResource = R.string.content_description_add,
         )
 
     is Key.Subtract ->
         Display.Icon(
             painterResource = R.drawable.ic_subtract,
-            stringResource = R.string.subtract,
+            stringResource = R.string.content_description_subtract,
         )
 
     is Key.Multiply ->
         Display.Icon(
             painterResource = R.drawable.ic_multiply,
-            stringResource = R.string.multiply,
+            stringResource = R.string.content_description_multiply,
         )
 
     is Key.Divide ->
         Display.Icon(
             painterResource = R.drawable.ic_divide,
-            stringResource = R.string.divide,
+            stringResource = R.string.content_description_divide,
         )
 
     is Key.Equal ->
         Display.Icon(
             painterResource = R.drawable.ic_equal,
-            stringResource = R.string.equal,
+            stringResource = R.string.content_description_equal,
         )
 
     is Key.Clear ->
         Display.Icon(
             painterResource = R.drawable.ic_clear,
-            stringResource = R.string.clear,
+            stringResource = R.string.content_description_clear,
         )
 
     is Key.Backspace ->
         Display.Icon(
             painterResource = R.drawable.ic_backspace,
-            stringResource = R.string.backspace,
+            stringResource = R.string.content_description_backspace,
         )
 
     is Key.Operators ->
         Display.Icon(
             painterResource = R.drawable.ic_operators,
-            stringResource = R.string.operators,
+            stringResource = R.string.content_description_operators,
         )
 }
