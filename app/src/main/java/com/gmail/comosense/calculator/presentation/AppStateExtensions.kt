@@ -15,13 +15,14 @@ fun AppState.canAppend(symbols: List<Symbol>): Boolean {
     for (symbol in symbols) {
         if (when (symbol) {
                 is Symbol.Numeric.Point -> {
-                    tempExpression.isNotEmpty() &&
-                            symbol.isAppendableAfter(tempExpression.lastOrNull()) &&
-                            tempExpression
-                                .takeLastWhile {
-                                    it is Symbol.Numeric.Digit || it is Symbol.Numeric.Point
-                                }
-                                .none { it is Symbol.Numeric.Point }
+                    (entering.lastOrNull() !is Symbol.Numeric) ||
+                            (tempExpression.isNotEmpty() &&
+                                    symbol.isAppendableAfter(tempExpression.lastOrNull()) &&
+                                    tempExpression
+                                        .takeLastWhile {
+                                            it is Symbol.Numeric.Digit || it is Symbol.Numeric.Point
+                                        }
+                                        .none { it is Symbol.Numeric.Point })
                 }
 
                 is Symbol.FactorEnd -> {

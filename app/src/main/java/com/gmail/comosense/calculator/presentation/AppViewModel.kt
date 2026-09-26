@@ -84,6 +84,26 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
             if (!state.canAppend(symbol)) return@update state
 
             when (symbol) {
+                is Symbol.Numeric.Point -> {
+                    if (state.entering.isEmpty()) {
+                        state.copy(
+                            result = emptyList(),
+                            entering = listOf(
+                                Symbol.Numeric.Digit(0),
+                                symbol,
+                            )
+                        )
+                    } else {
+                        state.copy(
+                            entering = if ((state.entering.lastOrNull() is Symbol.Numeric)) {
+                                state.entering + symbol
+                            } else {
+                                state.entering + Symbol.Numeric.Digit(0) + symbol
+                            }
+                        )
+                    }
+                }
+
                 is Symbol.Operator -> {
                     state.copy(
                         entering = state.entering + symbol,
