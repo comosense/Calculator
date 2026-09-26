@@ -15,7 +15,7 @@ android {
         minSdk = 30
         targetSdk = 37
         versionCode = 104
-        versionName = "2026.09.26.1035"
+        versionName = "YYYY.MM.DD.XXXX"
 
     }
 
