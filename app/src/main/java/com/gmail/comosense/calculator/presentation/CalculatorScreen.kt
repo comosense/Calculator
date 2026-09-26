@@ -411,7 +411,7 @@ private fun KeyButton(
         modifier = modifier,
         colors = ButtonDefaults.buttonColors(
             containerColor = colors.container,
-            contentColor = colors.container,
+            contentColor = colors.content,
         ),
         contentPadding = PaddingValues(0.dp),
     ) {

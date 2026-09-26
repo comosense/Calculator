@@ -17,5 +17,5 @@
     <string name="calculator_error_invalid_expression">Invalid expression</string>
     <string name="calculator_error_division_by_zero">Division by zero</string>
     <string name="calculator_error_arithmetic">Arithmetic error</string>
-    <string name="calculator_error_unsupposed">Unsupposed error</string>
+    <string name="calculator_error_unsupported">Unsupported error</string>
 </resources>

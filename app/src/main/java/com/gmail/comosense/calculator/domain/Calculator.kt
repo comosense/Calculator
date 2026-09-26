@@ -9,7 +9,7 @@ enum class CalculatorError {
     InvalidExpression,
     DivisionByZero,
     Arithmetic,
-    Unsupposed,
+    Unsupported,
 }
 
 private class DivisionByZeroException : ArithmeticException()
@@ -187,7 +187,7 @@ private fun BigDecimal.toSymbols(scale: Int): Result<List<Symbol>, CalculatorErr
                     in '0'..'9' -> Symbol.Numeric.Digit(c.digitToInt())
                     '.' -> Symbol.Numeric.Point
                     '-' -> Symbol.Sign.Negative
-                    else -> return Result.Err(CalculatorError.Unsupposed)
+                    else -> return Result.Err(CalculatorError.Unsupported)
                 }
             )
         }

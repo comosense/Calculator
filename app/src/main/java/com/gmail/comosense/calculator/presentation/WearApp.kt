@@ -116,7 +116,7 @@ private fun CalculatorErrorToast(errorEvent: Flow<CalculatorError>) {
         CalculatorError.InvalidExpression -> R.string.calculator_error_invalid_expression
         CalculatorError.DivisionByZero -> R.string.calculator_error_division_by_zero
         CalculatorError.Arithmetic -> R.string.calculator_error_arithmetic
-        CalculatorError.Unsupposed -> R.string.calculator_error_unsupposed
+        CalculatorError.Unsupported -> R.string.calculator_error_unsupported
     }
 
     LaunchedEffect(errorEvent) {
