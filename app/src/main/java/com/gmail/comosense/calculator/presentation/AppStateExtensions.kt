@@ -8,36 +8,30 @@ val AppState.isEntering: Boolean
     get() = entering.isNotEmpty()
 
 fun AppState.canAppend(symbol: Symbol): Boolean = this.canAppend(listOf(symbol))
-
 fun AppState.canAppend(symbols: List<Symbol>): Boolean {
-    val tempExpression: MutableList<Symbol> = expression.toMutableList()
+    val tempEntering: MutableList<Symbol> = entering.toMutableList()
 
     for (symbol in symbols) {
         if (when (symbol) {
-                is Symbol.Numeric.Point -> {
-                    (entering.lastOrNull() !is Symbol.Numeric) ||
-                            (tempExpression.isNotEmpty() &&
-                                    symbol.isAppendableAfter(tempExpression.lastOrNull()) &&
-                                    tempExpression
-                                        .takeLastWhile {
-                                            it is Symbol.Numeric.Digit || it is Symbol.Numeric.Point
-                                        }
-                                        .none { it is Symbol.Numeric.Point })
-                }
+                is Symbol.Numeric.Point ->
+                    symbol.isAppendableAfter(tempEntering.lastOrNull()) &&
+                            tempEntering
+                                .takeLastWhile { it is Symbol.Numeric }
+                                .none { it is Symbol.Numeric.Point }
 
-                is Symbol.FactorEnd -> {
-                    tempExpression.isNotEmpty() &&
-                            symbol.isAppendableAfter(tempExpression.lastOrNull()) &&
-                            (tempExpression.count { it is Symbol.FactorStart }
-                                    > tempExpression.count { it is Symbol.FactorEnd })
-                }
+                is Symbol.FactorEnd.ClosingParenthesis ->
+                    symbol.isAppendableAfter(tempEntering.lastOrNull()) &&
+                            (tempEntering.count { it is Symbol.FactorStart }
+                                    > tempEntering.count { it is Symbol.FactorEnd })
 
-                else -> {
-                    symbol.isAppendableAfter(tempExpression.lastOrNull())
-                }
+                is Symbol.Operator ->
+                    symbol.isAppendableAfter((result + tempEntering).lastOrNull())
+
+                else ->
+                    symbol.isAppendableAfter(tempEntering.lastOrNull())
             }
         ) {
-            tempExpression.add(symbol)
+            tempEntering.add(symbol)
         } else {
             return false
         }

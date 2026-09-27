@@ -81,44 +81,54 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
 
     private fun appendSymbol(symbol: Symbol) {
         _appState.update { state ->
-            if (!state.canAppend(symbol)) return@update state
-
             when (symbol) {
-                is Symbol.Numeric.Point -> {
-                    if (state.entering.isEmpty()) {
-                        state.copy(
-                            result = emptyList(),
-                            entering = listOf(
-                                Symbol.Numeric.Digit(0),
-                                symbol,
-                            )
+                is Symbol.Operator -> {
+                    if (state.canAppend(symbol)) {
+                        state.appendEntering(
+                            symbols = listOf(symbol),
+                            clearResult = false,
                         )
                     } else {
-                        state.copy(
-                            entering = if ((state.entering.lastOrNull() is Symbol.Numeric)) {
-                                state.entering + symbol
-                            } else {
-                                state.entering + Symbol.Numeric.Digit(0) + symbol
-                            }
-                        )
+                        state
                     }
                 }
 
-                is Symbol.Operator -> {
-                    state.copy(
-                        entering = state.entering + symbol,
-                    )
+                is Symbol.Numeric.Point -> {
+                    if (state.canAppend(symbol)) {
+                        state.appendEntering(
+                            symbols = listOf(symbol),
+                        )
+                    } else if (state.canAppend(listOf(Symbol.Numeric.Digit(0), symbol))) {
+                        state.appendEntering(
+                            symbols = listOf(Symbol.Numeric.Digit(0), symbol),
+                        )
+                    } else {
+                        state
+                    }
+                }
+
+                is Symbol.FactorStart.OpeningParenthesis -> {
+                    if (state.canAppend(symbol)) {
+                        state.appendEntering(
+                            symbols = listOf(symbol),
+                        )
+                    } else if (state.canAppend(listOf(Symbol.Operator.Multiply, symbol))) {
+                        state.appendEntering(
+                            symbols = listOf(Symbol.Operator.Multiply, symbol),
+                        )
+                    } else {
+                        state
+                    }
                 }
 
                 else -> {
-                    state.copy(
-                        result = if (state.entering.isEmpty()) {
-                            emptyList()
-                        } else {
-                            state.result
-                        },
-                        entering = state.entering + symbol,
-                    )
+                    if (state.canAppend(symbol)) {
+                        state.appendEntering(
+                            symbols = listOf(symbol),
+                        )
+                    } else {
+                        state
+                    }
                 }
             }
         }
@@ -206,5 +216,15 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
         viewModelScope.launch {
             historyRepository.deleteHistoryAll()
         }
+    }
+
+    private fun AppState.appendEntering(
+        symbols: List<Symbol>,
+        clearResult: Boolean = entering.isEmpty(),
+    ): AppState {
+        return copy(
+            result = if (clearResult) emptyList() else result,
+            entering = entering + symbols,
+        )
     }
 }
