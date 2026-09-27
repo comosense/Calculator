@@ -7,6 +7,31 @@ val AppState.expression: List<Symbol>
 val AppState.isEntering: Boolean
     get() = entering.isNotEmpty()
 
+fun AppState.symbolsToAppendOrNull(symbol: Symbol): List<Symbol>? {
+    if (canAppend(symbol)) return listOf(symbol)
+
+    return when (symbol) {
+        is Symbol.Numeric.Point ->
+            listOf(Symbol.Numeric.Digit(0), symbol)
+
+        is Symbol.FactorStart.OpeningParenthesis ->
+            listOf(Symbol.Operator.Multiply, symbol)
+
+        else ->
+            return null
+    }.takeIf(::canAppend)
+}
+
+fun AppState.appendEntering(
+    symbols: List<Symbol>,
+    keepResult: Boolean,
+): AppState {
+    return copy(
+        result = if (keepResult) result else emptyList(),
+        entering = entering + symbols,
+    )
+}
+
 fun AppState.canAppend(symbol: Symbol): Boolean = this.canAppend(listOf(symbol))
 fun AppState.canAppend(symbols: List<Symbol>): Boolean {
     val tempEntering: MutableList<Symbol> = entering.toMutableList()

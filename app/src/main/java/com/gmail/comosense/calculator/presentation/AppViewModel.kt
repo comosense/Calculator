@@ -81,56 +81,11 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
 
     private fun appendSymbol(symbol: Symbol) {
         _appState.update { state ->
-            when (symbol) {
-                is Symbol.Operator -> {
-                    if (state.canAppend(symbol)) {
-                        state.appendEntering(
-                            symbols = listOf(symbol),
-                            clearResult = false,
-                        )
-                    } else {
-                        state
-                    }
-                }
-
-                is Symbol.Numeric.Point -> {
-                    if (state.canAppend(symbol)) {
-                        state.appendEntering(
-                            symbols = listOf(symbol),
-                        )
-                    } else if (state.canAppend(listOf(Symbol.Numeric.Digit(0), symbol))) {
-                        state.appendEntering(
-                            symbols = listOf(Symbol.Numeric.Digit(0), symbol),
-                        )
-                    } else {
-                        state
-                    }
-                }
-
-                is Symbol.FactorStart.OpeningParenthesis -> {
-                    if (state.canAppend(symbol)) {
-                        state.appendEntering(
-                            symbols = listOf(symbol),
-                        )
-                    } else if (state.canAppend(listOf(Symbol.Operator.Multiply, symbol))) {
-                        state.appendEntering(
-                            symbols = listOf(Symbol.Operator.Multiply, symbol),
-                        )
-                    } else {
-                        state
-                    }
-                }
-
-                else -> {
-                    if (state.canAppend(symbol)) {
-                        state.appendEntering(
-                            symbols = listOf(symbol),
-                        )
-                    } else {
-                        state
-                    }
-                }
-            }
+            val symbols: List<Symbol> = state.symbolsToAppendOrNull(symbol) ?: return@update state
+            state.appendEntering(
+                symbols = symbols,
+                keepResult = (symbol is Symbol.Operator) || state.isEntering
+            )
         }
     }
 
@@ -216,15 +171,5 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
         viewModelScope.launch {
             historyRepository.deleteHistoryAll()
         }
-    }
-
-    private fun AppState.appendEntering(
-        symbols: List<Symbol>,
-        clearResult: Boolean = entering.isEmpty(),
-    ): AppState {
-        return copy(
-            result = if (clearResult) emptyList() else result,
-            entering = entering + symbols,
-        )
     }
 }
