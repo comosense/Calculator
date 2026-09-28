@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Calculator</string>
+    <string name="no_history">No history</string>
     <string name="delete_all">Delete All</string>
     <string name="content_description_positive">Positive</string>
     <string name="content_description_negative">Negative</string>
@@ -13,6 +14,7 @@
     <string name="content_description_clear">Clear</string>
     <string name="content_description_backspace">Backspace</string>
     <string name="content_description_operators">Operators</string>
+    <string name="content_description_undo">Undo</string>
     <string name="content_description_delete">Delete</string>
     <string name="calculator_error_invalid_expression">Invalid expression</string>
     <string name="calculator_error_division_by_zero">Division by zero</string>

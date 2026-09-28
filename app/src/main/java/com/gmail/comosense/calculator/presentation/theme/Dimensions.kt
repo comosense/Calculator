@@ -8,13 +8,14 @@ import androidx.compose.ui.unit.TextUnit
 data class CalculatorScreenDimensions(
     val expressionMaxFontSize: TextUnit,
     val expressionMinFontSize: TextUnit,
-    val keyTextSize: TextUnit,
+    val keyTextFontSize: TextUnit,
     val keyIconSize: Dp,
 )
 
 @Immutable
 data class HistoryScreenDimensions(
+    val textFontSize: TextUnit,
     val expressionFontSize: TextUnit,
     val resultFontSize: TextUnit,
-    val deleteAllFontSize: TextUnit,
+    val buttonFontSize: TextUnit,
 )

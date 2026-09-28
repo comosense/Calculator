@@ -53,7 +53,7 @@ import androidx.wear.compose.material3.ButtonDefaults
 import androidx.wear.compose.material3.Icon
 import androidx.wear.compose.material3.ScreenScaffold
 import com.gmail.comosense.calculator.domain.Symbol
-import com.gmail.comosense.calculator.presentation.theme.CalculatorTheme
+import com.gmail.comosense.calculator.presentation.theme.AppTheme
 import kotlin.math.sqrt
 
 @Composable
@@ -69,7 +69,7 @@ fun CalculatorScreen(
         BoxWithConstraints(
             modifier = Modifier
                 .fillMaxSize()
-                .background(CalculatorTheme.calculatorScreenColors.background),
+                .background(AppTheme.calculatorScreenColors.background),
             contentAlignment = Alignment.Center,
         ) {
             MainPanel(
@@ -252,7 +252,7 @@ private fun ExpressionBox(
         contentAlignment = Alignment.Center,
     ) {
         val density: Density = LocalDensity.current
-        val minFontSize: TextUnit = CalculatorTheme.calculatorScreenDimensions.expressionMinFontSize
+        val minFontSize: TextUnit = AppTheme.calculatorScreenDimensions.expressionMinFontSize
         val measured: TextLayoutResult = remember(
             expression,
             minFontSize,
@@ -289,19 +289,19 @@ private fun ExpressionBox(
                 Text(
                     text = expression,
                     maxLines = 1,
-                    color = CalculatorTheme.calculatorScreenColors.expression,
-                    fontSize = CalculatorTheme.calculatorScreenDimensions.expressionMinFontSize,
+                    color = AppTheme.calculatorScreenColors.expression,
+                    fontSize = AppTheme.calculatorScreenDimensions.expressionMinFontSize,
                 )
             }
         } else {
             Text(
                 text = expression,
                 autoSize = TextAutoSize.StepBased(
-                    maxFontSize = CalculatorTheme.calculatorScreenDimensions.expressionMaxFontSize,
-                    minFontSize = CalculatorTheme.calculatorScreenDimensions.expressionMinFontSize,
+                    maxFontSize = AppTheme.calculatorScreenDimensions.expressionMaxFontSize,
+                    minFontSize = AppTheme.calculatorScreenDimensions.expressionMinFontSize,
                 ),
                 maxLines = 1,
-                color = CalculatorTheme.calculatorScreenColors.expression,
+                color = AppTheme.calculatorScreenColors.expression,
             )
         }
     }
@@ -382,26 +382,26 @@ private fun KeyButton(
     val colors: Colors = when (key.style) {
         Style.Digit ->
             Colors(
-                container = CalculatorTheme.calculatorScreenColors.digitKeyContainer,
-                content = CalculatorTheme.calculatorScreenColors.digitKeyContent,
+                container = AppTheme.calculatorScreenColors.digitKeyContainer,
+                content = AppTheme.calculatorScreenColors.digitKeyContent,
             )
 
         Style.Operator ->
             Colors(
-                container = CalculatorTheme.calculatorScreenColors.operatorKeyContainer,
-                content = CalculatorTheme.calculatorScreenColors.operatorKeyContent,
+                container = AppTheme.calculatorScreenColors.operatorKeyContainer,
+                content = AppTheme.calculatorScreenColors.operatorKeyContent,
             )
 
         Style.Command ->
             Colors(
-                container = CalculatorTheme.calculatorScreenColors.commandKeyContainer,
-                content = CalculatorTheme.calculatorScreenColors.commandKeyContent,
+                container = AppTheme.calculatorScreenColors.commandKeyContainer,
+                content = AppTheme.calculatorScreenColors.commandKeyContent,
             )
 
         Style.Ui ->
             Colors(
-                container = CalculatorTheme.calculatorScreenColors.uiKeyContainer,
-                content = CalculatorTheme.calculatorScreenColors.uiKeyContent,
+                container = AppTheme.calculatorScreenColors.uiKeyContainer,
+                content = AppTheme.calculatorScreenColors.uiKeyContent,
             )
     }
 
@@ -424,7 +424,7 @@ private fun KeyButton(
                     Text(
                         text = display.text,
                         color = colors.content,
-                        fontSize = CalculatorTheme.calculatorScreenDimensions.keyTextSize,
+                        fontSize = AppTheme.calculatorScreenDimensions.keyTextFontSize,
                         textAlign = TextAlign.Center,
                     )
                 }
@@ -433,7 +433,7 @@ private fun KeyButton(
                     Icon(
                         painter = painterResource(display.painterResource),
                         contentDescription = stringResource(display.stringResource),
-                        modifier = Modifier.size(CalculatorTheme.calculatorScreenDimensions.keyIconSize),
+                        modifier = Modifier.size(AppTheme.calculatorScreenDimensions.keyIconSize),
                         tint = colors.content,
                     )
                 }

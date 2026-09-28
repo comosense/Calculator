@@ -25,6 +25,8 @@ data class HistoryScreenColors(
     val deleteContainer: Color,
     val deleteContent: Color,
     val deleteIcon: Color,
-    val deleteAllContainer: Color,
-    val deleteAllContent: Color,
+    val backButtonContainer: Color,
+    val backButtonContent: Color,
+    val deleteAllButtonContainer: Color,
+    val deleteAllButtonContent: Color,
 )

@@ -26,7 +26,7 @@ private val LocalHistoryScreenDimensions: ProvidableCompositionLocal<HistoryScre
         error("HistoryScreenDimensions is not provided")
     }
 
-object CalculatorTheme {
+object AppTheme {
     val calculatorScreenColors: CalculatorScreenColors
         @Composable
         @ReadOnlyComposable
@@ -46,7 +46,7 @@ object CalculatorTheme {
 }
 
 @Composable
-fun CalculatorTheme(
+fun AppTheme(
     content: @Composable () -> Unit
 ) {
     MaterialTheme {
@@ -70,21 +70,24 @@ fun CalculatorTheme(
             deleteContainer = MaterialTheme.colorScheme.tertiaryContainer,
             deleteContent = MaterialTheme.colorScheme.onTertiaryContainer,
             deleteIcon = MaterialTheme.colorScheme.tertiaryDim,
-            deleteAllContainer = MaterialTheme.colorScheme.errorContainer,
-            deleteAllContent = MaterialTheme.colorScheme.onErrorContainer,
+            backButtonContainer = MaterialTheme.colorScheme.primaryContainer,
+            backButtonContent = MaterialTheme.colorScheme.onPrimaryContainer,
+            deleteAllButtonContainer = MaterialTheme.colorScheme.errorContainer,
+            deleteAllButtonContent = MaterialTheme.colorScheme.onErrorContainer,
         )
 
         val calculatorScreenDimensions = CalculatorScreenDimensions(
             expressionMaxFontSize = 32.sp,
             expressionMinFontSize = 16.sp,
-            keyTextSize = 18.sp,
+            keyTextFontSize = 18.sp,
             keyIconSize = 20.dp,
         )
 
         val historyScreenDimensions = HistoryScreenDimensions(
+            textFontSize = 18.sp,
             expressionFontSize = 16.sp,
             resultFontSize = 18.sp,
-            deleteAllFontSize = 18.sp,
+            buttonFontSize = 18.sp,
         )
 
         CompositionLocalProvider(

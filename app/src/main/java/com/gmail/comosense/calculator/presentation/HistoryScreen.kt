@@ -39,7 +39,7 @@ import androidx.wear.compose.material3.lazy.transformedHeight
 import com.gmail.comosense.calculator.R
 import com.gmail.comosense.calculator.data.History
 import com.gmail.comosense.calculator.domain.Symbol
-import com.gmail.comosense.calculator.presentation.theme.CalculatorTheme
+import com.gmail.comosense.calculator.presentation.theme.AppTheme
 import com.gmail.comosense.calculator.presentation.theme.HistoryScreenColors
 
 @Composable
@@ -69,20 +69,36 @@ fun HistoryScreen(
     ScreenScaffold(
         scrollState = listState,
         edgeButton = {
-            if (deleteMode) {
+            if (!deleteMode) {
                 EdgeButton(
                     onClick = {
-                        onAction(AppAction.DeleteHistoryAll)
                         onBack()
                     },
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = CalculatorTheme.historyScreenColors.deleteAllContainer,
-                        contentColor = CalculatorTheme.historyScreenColors.deleteAllContent,
+                        containerColor = AppTheme.historyScreenColors.backButtonContainer,
+                        contentColor = AppTheme.historyScreenColors.backButtonContent,
+                    ),
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_undo),
+                        contentDescription = stringResource(R.string.content_description_undo),
+                        tint = AppTheme.historyScreenColors.backButtonContent,
+                    )
+                }
+            } else {
+                EdgeButton(
+                    onClick = {
+                        deleteMode = false
+                        onAction(AppAction.DeleteHistoryAll)
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = AppTheme.historyScreenColors.deleteAllButtonContainer,
+                        contentColor = AppTheme.historyScreenColors.deleteAllButtonContent,
                     ),
                 ) {
                     Text(
                         text = stringResource(R.string.delete_all),
-                        fontSize = CalculatorTheme.historyScreenDimensions.deleteAllFontSize,
+                        fontSize = AppTheme.historyScreenDimensions.buttonFontSize,
                     )
                 }
             }
@@ -95,11 +111,13 @@ fun HistoryScreen(
                 onAction(AppAction.SelectHistory(result))
                 onBack()
             },
-            onLongClick = { deleteMode = true },
+            onLongClick = {
+                deleteMode = true
+            },
             onDelete = { id ->
                 onAction(AppAction.DeleteHistory(id))
                 if (histories.size == 1) {
-                    onBack()
+                    deleteMode = false
                 }
             },
             listState = listState,
@@ -125,37 +143,52 @@ private fun HistoryList(
     TransformingLazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .background(CalculatorTheme.historyScreenColors.background),
+            .background(AppTheme.historyScreenColors.background),
         state = listState,
         contentPadding = PaddingValues(
             top = contentPadding.calculateTopPadding() + 48.dp,
             bottom = contentPadding.calculateBottomPadding() + 48.dp,
         ),
     ) {
-        items(
-            count = histories.size,
-            key = { index -> histories[index].id },
-        ) { index ->
-            val history: History = histories[index]
+        if (histories.isNotEmpty()) {
+            items(
+                count = histories.size,
+                key = { index -> histories[index].id },
+            ) { index ->
+                val history: History = histories[index]
 
-            HistoryItem(
-                history = history,
-                deleteMode = deleteMode,
-                onClick = {
-                    if (deleteMode) {
-                        onDelete(history.id)
-                    } else {
-                        onClick(history.result)
-                    }
-                },
-                onLongClick = onLongClick,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .transformedHeight(this, transformationSpec)
-                    .padding(horizontal = 8.dp),
-                transformation = SurfaceTransformation(transformationSpec),
-                symbolFormatter = symbolFormatter,
-            )
+                HistoryItem(
+                    history = history,
+                    deleteMode = deleteMode,
+                    onClick = {
+                        if (deleteMode) {
+                            onDelete(history.id)
+                        } else {
+                            onClick(history.result)
+                        }
+                    },
+                    onLongClick = onLongClick,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .transformedHeight(this, transformationSpec)
+                        .padding(horizontal = 8.dp),
+                    transformation = SurfaceTransformation(transformationSpec),
+                    symbolFormatter = symbolFormatter,
+                )
+            }
+        } else {
+            item {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Text(
+                        text = stringResource(R.string.no_history),
+                        color = AppTheme.historyScreenColors.content,
+                        fontSize = AppTheme.historyScreenDimensions.textFontSize,
+                    )
+                }
+            }
         }
     }
 }
@@ -172,7 +205,7 @@ private fun HistoryItem(
 ) {
     val expressionScrollState: ScrollState = rememberScrollState()
     val resultScrollState: ScrollState = rememberScrollState()
-    val colors: HistoryScreenColors = CalculatorTheme.historyScreenColors
+    val colors: HistoryScreenColors = AppTheme.historyScreenColors
 
     Button(
         onClick = onClick,
@@ -212,7 +245,7 @@ private fun HistoryItem(
                     modifier = Modifier
                         .fillMaxWidth()
                         .horizontalScroll(expressionScrollState),
-                    fontSize = CalculatorTheme.historyScreenDimensions.expressionFontSize,
+                    fontSize = AppTheme.historyScreenDimensions.expressionFontSize,
                     softWrap = false,
                     maxLines = 1,
                 )
@@ -222,7 +255,7 @@ private fun HistoryItem(
                     modifier = Modifier
                         .fillMaxWidth()
                         .horizontalScroll(resultScrollState),
-                    fontSize = CalculatorTheme.historyScreenDimensions.resultFontSize,
+                    fontSize = AppTheme.historyScreenDimensions.resultFontSize,
                     textAlign = TextAlign.End,
                     softWrap = false,
                     maxLines = 1,

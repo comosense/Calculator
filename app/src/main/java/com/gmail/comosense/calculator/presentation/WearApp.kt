@@ -24,7 +24,7 @@ import androidx.wear.compose.material3.AppScaffold
 import androidx.wear.compose.material3.SwipeToDismissBox
 import com.gmail.comosense.calculator.R
 import com.gmail.comosense.calculator.domain.CalculatorError
-import com.gmail.comosense.calculator.presentation.theme.CalculatorTheme
+import com.gmail.comosense.calculator.presentation.theme.AppTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
@@ -79,7 +79,7 @@ fun WearApp(
             SwipeToDismissBox(
                 state = swipeToDismissBoxState,
                 userSwipeEnabled = !isHistoryDeleteMode,
-                backgroundScrimColor = CalculatorTheme.calculatorScreenColors.background,
+                backgroundScrimColor = AppTheme.calculatorScreenColors.background,
                 backgroundKey = "CalculatorScreen",
                 contentKey = "HistoryScreen",
             ) { isBackground ->

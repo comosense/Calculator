@@ -12,7 +12,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.wear.compose.ui.tooling.preview.WearPreviewDevices
 import androidx.wear.compose.ui.tooling.preview.WearPreviewFontScales
 import com.gmail.comosense.calculator.domain.Symbol
-import com.gmail.comosense.calculator.presentation.theme.CalculatorTheme
+import com.gmail.comosense.calculator.presentation.theme.AppTheme
 import kotlinx.coroutines.flow.emptyFlow
 
 class MainActivity : ComponentActivity() {
@@ -26,7 +26,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            CalculatorTheme {
+            AppTheme {
                 val appState: AppState by viewModel.appState.collectAsStateWithLifecycle()
 
                 WearApp(
@@ -44,7 +44,7 @@ class MainActivity : ComponentActivity() {
 @WearPreviewFontScales
 @Composable
 fun DefaultPreview() {
-    CalculatorTheme {
+    AppTheme {
         WearApp(
             appState = AppState(
                 entering = listOf(
