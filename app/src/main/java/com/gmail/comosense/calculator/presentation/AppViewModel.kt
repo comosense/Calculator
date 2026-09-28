@@ -59,7 +59,7 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
 
     init {
         viewModelScope.launch {
-            historyRepository.history.collect { histories ->
+            historyRepository.histories.collect { histories ->
                 _appState.update { state ->
                     state.copy(histories = histories)
                 }

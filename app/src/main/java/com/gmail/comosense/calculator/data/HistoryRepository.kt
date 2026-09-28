@@ -12,7 +12,7 @@ class HistoryRepository(private val dataStore: DataStore<HistoryStore>) {
         private const val MAX_HISTORIES_SIZE: Int = 50
     }
 
-    val history: Flow<List<History>> =
+    val histories: Flow<List<History>> =
         dataStore.data.map { store ->
             store.historiesList.mapNotNull { history ->
                 history.toHistoryOrNull()

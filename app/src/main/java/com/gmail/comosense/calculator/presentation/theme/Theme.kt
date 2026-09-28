@@ -63,12 +63,16 @@ fun AppTheme(
 
         val historyScreenColors = HistoryScreenColors(
             background = MaterialTheme.colorScheme.background,
-            textContent = MaterialTheme.colorScheme.primaryDim,
+            textContent = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
             historyContainer = MaterialTheme.colorScheme.surfaceContainer,
             historyContent = MaterialTheme.colorScheme.onSurface,
+            historyExpression = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
+            historyResult = MaterialTheme.colorScheme.onSurface,
             deleteContainer = MaterialTheme.colorScheme.tertiaryContainer,
             deleteContent = MaterialTheme.colorScheme.onTertiaryContainer,
             deleteIcon = MaterialTheme.colorScheme.tertiaryDim,
+            deleteExpression = MaterialTheme.colorScheme.onTertiaryContainer.copy(alpha = 0.5f),
+            deleteResult = MaterialTheme.colorScheme.onTertiaryContainer,
             backButtonContainer = MaterialTheme.colorScheme.primaryContainer,
             backButtonContent = MaterialTheme.colorScheme.onPrimaryContainer,
             deleteAllButtonContainer = MaterialTheme.colorScheme.errorContainer,
