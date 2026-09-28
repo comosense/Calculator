@@ -1,11 +1,5 @@
 package com.gmail.comosense.calculator.presentation
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.scaleIn
-import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -20,18 +14,13 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -47,7 +36,6 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 import androidx.wear.compose.material3.Button
 import androidx.wear.compose.material3.ButtonDefaults
 import androidx.wear.compose.material3.Icon
@@ -63,8 +51,6 @@ fun CalculatorScreen(
     onShowHistory: () -> Unit,
     symbolFormatter: SymbolFormatter,
 ) {
-    val mainBoxSizeRatio: Float = 1f / sqrt(2f)
-
     ScreenScaffold {
         BoxWithConstraints(
             modifier = Modifier
@@ -72,12 +58,18 @@ fun CalculatorScreen(
                 .background(AppTheme.calculatorScreenColors.background),
             contentAlignment = Alignment.Center,
         ) {
+            val shortLength: Dp = minOf(maxWidth, maxHeight) * (1f / sqrt(2f))
+            val longLength: Dp = minOf(maxWidth, maxHeight) * (sqrt(3f) / 2f)
+
             MainPanel(
                 appState = appState,
+                shortLength = shortLength,
+                longLength = longLength,
                 onAction = onAction,
                 onShowHistory = onShowHistory,
                 modifier = Modifier.size(
-                    minOf(maxWidth, maxHeight) * mainBoxSizeRatio
+                    width = longLength,
+                    height = shortLength,
                 ),
                 symbolFormatter = symbolFormatter,
             )
@@ -88,13 +80,13 @@ fun CalculatorScreen(
 @Composable
 private fun MainPanel(
     appState: AppState,
+    shortLength: Dp,
+    longLength: Dp,
     onAction: (AppAction) -> Unit,
     onShowHistory: () -> Unit,
     modifier: Modifier,
     symbolFormatter: SymbolFormatter,
 ) {
-    var showOperatorsKeyGrid: Boolean by remember { mutableStateOf(false) }
-
     val deleteKey: Key =
         if (appState.isEntering) {
             Key.Backspace
@@ -124,35 +116,29 @@ private fun MainPanel(
             Key.Digit(7),
             Key.Digit(8),
             Key.Digit(9),
+            Key.Equal,
             deleteKey,
         ),
         listOf(
             Key.Digit(4),
             Key.Digit(5),
             Key.Digit(6),
-            Key.Equal,
+            Key.Multiply,
+            Key.Divide,
         ),
         listOf(
             Key.Digit(1),
             Key.Digit(2),
             Key.Digit(3),
-            Key.Operators,
+            plusKey,
+            minusKey,
         ),
         listOf(
+            null,
             Key.Digit(0),
             Key.Point,
             parenthesisKey,
             null,
-        ),
-    )
-    val operatorsKeyGrid: List<List<Key?>> = listOf(
-        listOf(
-            Key.Multiply,
-            Key.Divide,
-        ),
-        listOf(
-            plusKey,
-            minusKey,
         ),
     )
 
@@ -165,7 +151,7 @@ private fun MainPanel(
                 appState = appState,
                 onShowHistory = onShowHistory,
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .size(shortLength)
                     .weight(1f),
                 symbolFormatter = symbolFormatter,
             )
@@ -173,63 +159,14 @@ private fun MainPanel(
             KeyGrid(
                 keyGrid = mainKeyGrid,
                 onClick = { key ->
-                    when (key) {
-                        is Key.Operators ->
-                            showOperatorsKeyGrid = true
-
-                        else ->
-                            key.appActionOrNull?.let(onAction)
-                    }
+                    onAction(key.appAction)
                 },
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .size(longLength)
                     .weight(4f),
                 arrangementSpace = 2.dp,
                 symbolFormatter = symbolFormatter,
             )
-        }
-
-        AnimatedVisibility(
-            visible = showOperatorsKeyGrid,
-            modifier = Modifier
-                .fillMaxSize()
-                .zIndex(10f),
-            enter = fadeIn(
-                animationSpec = tween(180),
-            ) + scaleIn(
-                initialScale = 0.96f,
-                animationSpec = tween(180),
-            ),
-            exit = fadeOut(
-                animationSpec = tween(180),
-            ) + scaleOut(
-                targetScale = 0.96f,
-                animationSpec = tween(180),
-            ),
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .clickable { showOperatorsKeyGrid = false },
-                contentAlignment = Alignment.Center,
-            ) {
-                KeyGrid(
-                    keyGrid = operatorsKeyGrid,
-                    onClick = { key ->
-                        showOperatorsKeyGrid = false
-                        key.appActionOrNull?.let(onAction)
-                    },
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(
-                            color = Color.Black.copy(alpha = 0.9f),
-                            shape = RoundedCornerShape(16.dp)
-                        )
-                        .padding(32.dp),
-                    arrangementSpace = 8.dp,
-                    symbolFormatter = symbolFormatter,
-                )
-            }
         }
     }
 }
@@ -396,12 +333,6 @@ private fun KeyButton(
             Colors(
                 container = AppTheme.calculatorScreenColors.commandKeyContainer,
                 content = AppTheme.calculatorScreenColors.commandKeyContent,
-            )
-
-        Style.Ui ->
-            Colors(
-                container = AppTheme.calculatorScreenColors.uiKeyContainer,
-                content = AppTheme.calculatorScreenColors.uiKeyContent,
             )
     }
 

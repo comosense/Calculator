@@ -7,7 +7,6 @@ enum class Style {
     Digit,
     Operator,
     Command,
-    Ui,
 }
 
 interface Display {
@@ -21,7 +20,7 @@ interface Display {
     ) : Display
 }
 
-val Key.appActionOrNull: AppAction?
+val Key.appAction: AppAction
     get() = when (this) {
         is Key.Positive ->
             AppAction.Input(Symbol.Sign.Positive)
@@ -61,9 +60,6 @@ val Key.appActionOrNull: AppAction?
 
         is Key.Backspace ->
             AppAction.Backspace
-
-        else ->
-            null
     }
 
 val Key.longClickKeyOrNull: Key?
@@ -92,9 +88,6 @@ val Key.style: Style
         is Key.Clear,
         is Key.Backspace ->
             Style.Command
-
-        is Key.Operators ->
-            Style.Ui
     }
 
 fun Key.display(symbolFormatter: SymbolFormatter): Display = when (this) {
@@ -168,11 +161,5 @@ fun Key.display(symbolFormatter: SymbolFormatter): Display = when (this) {
         Display.Icon(
             painterResource = R.drawable.ic_backspace,
             stringResource = R.string.content_description_backspace,
-        )
-
-    is Key.Operators ->
-        Display.Icon(
-            painterResource = R.drawable.ic_operators,
-            stringResource = R.string.content_description_operators,
         )
 }

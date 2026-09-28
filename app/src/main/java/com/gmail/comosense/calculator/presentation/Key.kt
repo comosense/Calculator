@@ -14,5 +14,4 @@ sealed interface Key {
     data object Equal : Key
     data object Clear : Key
     data object Backspace : Key
-    data object Operators : Key
 }
