@@ -57,6 +57,7 @@ dependencies {
     implementation(libs.compose.ui.tooling)
     implementation(libs.wear.tooling.preview)
     implementation(libs.protobuf.kotlin.lite)
+    implementation(libs.androidx.lifecycle.runtime.compose)
     androidTestImplementation(platform(libs.compose.bom))
     androidTestImplementation(libs.ui.test.junit4)
     debugImplementation(libs.ui.test.manifest)

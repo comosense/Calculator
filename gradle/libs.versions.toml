@@ -19,6 +19,7 @@ foundationLayout = "1.12.1"
 foundation = "1.12.1"
 
 [libraries]
+androidx-lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose" }
 datastore = { module = "androidx.datastore:datastore", version.ref = "datastore" }
 compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
 protobuf-kotlin-lite = { module = "com.google.protobuf:protobuf-kotlin-lite", version.ref = "protobufKotlinLite" }
