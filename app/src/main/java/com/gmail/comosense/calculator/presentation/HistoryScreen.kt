@@ -184,7 +184,7 @@ private fun HistoryList(
                 ) {
                     Text(
                         text = stringResource(R.string.no_history),
-                        color = AppTheme.historyScreenColors.content,
+                        color = AppTheme.historyScreenColors.textContent,
                         fontSize = AppTheme.historyScreenDimensions.textFontSize,
                     )
                 }
@@ -215,12 +215,12 @@ private fun HistoryItem(
             containerColor = if (deleteMode) {
                 colors.deleteContainer
             } else {
-                colors.container
+                colors.historyContainer
             },
             contentColor = if (deleteMode) {
                 colors.deleteContent
             } else {
-                colors.content
+                colors.historyContent
             },
         ),
         transformation = transformation,

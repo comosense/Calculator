@@ -65,8 +65,9 @@ fun AppTheme(
 
         val historyScreenColors = HistoryScreenColors(
             background = MaterialTheme.colorScheme.background,
-            container = MaterialTheme.colorScheme.background,
-            content = MaterialTheme.colorScheme.onBackground,
+            textContent = MaterialTheme.colorScheme.primaryDim,
+            historyContainer = MaterialTheme.colorScheme.background,
+            historyContent = MaterialTheme.colorScheme.onBackground,
             deleteContainer = MaterialTheme.colorScheme.tertiaryContainer,
             deleteContent = MaterialTheme.colorScheme.onTertiaryContainer,
             deleteIcon = MaterialTheme.colorScheme.tertiaryDim,
