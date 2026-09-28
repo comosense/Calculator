@@ -69,7 +69,7 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
 
     fun onAction(action: AppAction) {
         when (action) {
-            is AppAction.Input -> appendSymbol(action.symbol)
+            is AppAction.Input -> input(action.symbol)
             is AppAction.Calculate -> calculate()
             is AppAction.Clear -> clear()
             is AppAction.Backspace -> backspace()
@@ -79,12 +79,12 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
         }
     }
 
-    private fun appendSymbol(symbol: Symbol) {
+    private fun input(symbol: Symbol) {
         _appState.update { state ->
             val symbols: List<Symbol> = state.symbolsToAppendOrNull(symbol) ?: return@update state
-            state.appendEntering(
+            state.append(
                 symbols = symbols,
-                keepResult = (symbol is Symbol.Operator) || state.isEntering
+                keepResult = (symbol is Symbol.Operator) || state.isInputting
             )
         }
     }
@@ -92,7 +92,7 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
     private fun calculate() {
         val state: AppState = _appState.value
 
-        if (!state.isEntering) return
+        if (!state.isInputting) return
 
         when (val calculatedResult: Result<List<Symbol>, CalculatorError> =
             calculate(
@@ -104,7 +104,7 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
                 _appState.update {
                     it.copy(
                         result = calculatedResult.value,
-                        entering = emptyList(),
+                        input = emptyList(),
                     )
                 }
 
@@ -126,16 +126,16 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
         _appState.update { state ->
             state.copy(
                 result = emptyList(),
-                entering = emptyList(),
+                input = emptyList(),
             )
         }
     }
 
     private fun backspace() {
         _appState.update { state ->
-            if (state.isEntering) {
+            if (state.isInputting) {
                 state.copy(
-                    entering = state.entering.dropLast(1),
+                    input = state.input.dropLast(1),
                 )
             } else {
                 state
@@ -145,10 +145,10 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
 
     private fun selectHistory(result: List<Symbol>) {
         _appState.update { state ->
-            if (state.isEntering) {
+            if (state.isInputting) {
                 if (state.canAppend(result)) {
                     state.copy(
-                        entering = state.entering + result,
+                        input = state.input + result,
                     )
                 } else {
                     state

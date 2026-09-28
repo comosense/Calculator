@@ -71,7 +71,7 @@ private fun MainPanel(
     symbolFormatter: SymbolFormatter,
 ) {
     val deleteKey: Key =
-        if (appState.isEntering) {
+        if (appState.isInputting) {
             Key.Backspace
         } else {
             Key.Clear

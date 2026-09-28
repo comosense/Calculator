@@ -3,9 +3,9 @@ package com.gmail.comosense.calculator.presentation
 import com.gmail.comosense.calculator.domain.Symbol
 
 val AppState.expression: List<Symbol>
-    get() = result + entering
-val AppState.isEntering: Boolean
-    get() = entering.isNotEmpty()
+    get() = result + input
+val AppState.isInputting: Boolean
+    get() = input.isNotEmpty()
 
 fun AppState.symbolsToAppendOrNull(symbol: Symbol): List<Symbol>? {
     if (canAppend(symbol)) return listOf(symbol)
@@ -22,41 +22,41 @@ fun AppState.symbolsToAppendOrNull(symbol: Symbol): List<Symbol>? {
     }.takeIf(::canAppend)
 }
 
-fun AppState.appendEntering(
+fun AppState.append(
     symbols: List<Symbol>,
     keepResult: Boolean,
 ): AppState {
     return copy(
         result = if (keepResult) result else emptyList(),
-        entering = entering + symbols,
+        input = input + symbols,
     )
 }
 
 fun AppState.canAppend(symbol: Symbol): Boolean = this.canAppend(listOf(symbol))
 fun AppState.canAppend(symbols: List<Symbol>): Boolean {
-    val tempEntering: MutableList<Symbol> = entering.toMutableList()
+    val tempInput: MutableList<Symbol> = input.toMutableList()
 
     for (symbol in symbols) {
         if (when (symbol) {
                 is Symbol.Numeric.Point ->
-                    symbol.isAppendableAfter(tempEntering.lastOrNull()) &&
-                            tempEntering
+                    symbol.isAppendableAfter(tempInput.lastOrNull()) &&
+                            tempInput
                                 .takeLastWhile { it is Symbol.Numeric }
                                 .none { it is Symbol.Numeric.Point }
 
                 is Symbol.FactorEnd.ClosingParenthesis ->
-                    symbol.isAppendableAfter(tempEntering.lastOrNull()) &&
-                            (tempEntering.count { it is Symbol.FactorStart }
-                                    > tempEntering.count { it is Symbol.FactorEnd })
+                    symbol.isAppendableAfter(tempInput.lastOrNull()) &&
+                            (tempInput.count { it is Symbol.FactorStart }
+                                    > tempInput.count { it is Symbol.FactorEnd })
 
                 is Symbol.Operator ->
-                    symbol.isAppendableAfter((result + tempEntering).lastOrNull())
+                    symbol.isAppendableAfter((result + tempInput).lastOrNull())
 
                 else ->
-                    symbol.isAppendableAfter(tempEntering.lastOrNull())
+                    symbol.isAppendableAfter(tempInput.lastOrNull())
             }
         ) {
-            tempEntering.add(symbol)
+            tempInput.add(symbol)
         } else {
             return false
         }

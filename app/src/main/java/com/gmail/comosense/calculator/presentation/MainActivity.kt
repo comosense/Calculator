@@ -47,7 +47,7 @@ fun DefaultPreview() {
     AppTheme {
         WearApp(
             appState = AppState(
-                entering = listOf(
+                input = listOf(
                     Symbol.Numeric.Digit(1),
                     Symbol.Operator.Add,
                     Symbol.Numeric.Digit(2),
