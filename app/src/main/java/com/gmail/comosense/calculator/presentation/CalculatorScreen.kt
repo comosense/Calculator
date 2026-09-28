@@ -116,8 +116,8 @@ private fun MainPanel(
             Key.Digit(7),
             Key.Digit(8),
             Key.Digit(9),
-            Key.Equal,
             deleteKey,
+            Key.Equal,
         ),
         listOf(
             Key.Digit(4),
