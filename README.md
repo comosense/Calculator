@@ -29,11 +29,6 @@ Designed for small and round watch displays, with large, easy-to-tap keys and a 
 * The parenthesis key switches between `(` and `)`
 * The delete key switches between backspace `←` and clear
 
-### Operator overlay
-
-* Quickly access `+`, `-`, `×`, and `÷`
-* Keeps the main keypad large and easy to use on a small screen
-
 ### Locale-aware number formatting
 
 * Thousands separators and decimal separators follow the device locale
@@ -58,14 +53,6 @@ For example:
 ```
 
 The calculator follows standard mathematical operator precedence, so multiplication is performed before addition.
-
-### Operators
-
-Tap the operator button to open the operator overlay:
-
-```text
-+  -  ×  ÷
-```
 
 ### Parentheses
 
