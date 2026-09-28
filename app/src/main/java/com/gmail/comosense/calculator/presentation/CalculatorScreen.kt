@@ -52,36 +52,19 @@ fun CalculatorScreen(
     symbolFormatter: SymbolFormatter,
 ) {
     ScreenScaffold {
-        BoxWithConstraints(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(AppTheme.calculatorScreenColors.background),
-            contentAlignment = Alignment.Center,
-        ) {
-            val shortLength: Dp = minOf(maxWidth, maxHeight) * (1f / sqrt(2f))
-            val longLength: Dp = minOf(maxWidth, maxHeight) * (sqrt(3f) / 2f)
-
-            MainPanel(
-                appState = appState,
-                shortLength = shortLength,
-                longLength = longLength,
-                onAction = onAction,
-                onShowHistory = onShowHistory,
-                modifier = Modifier.size(
-                    width = longLength,
-                    height = shortLength,
-                ),
-                symbolFormatter = symbolFormatter,
-            )
-        }
+        MainPanel(
+            appState = appState,
+            onAction = onAction,
+            onShowHistory = onShowHistory,
+            modifier = Modifier.fillMaxSize(),
+            symbolFormatter = symbolFormatter,
+        )
     }
 }
 
 @Composable
 private fun MainPanel(
     appState: AppState,
-    shortLength: Dp,
-    longLength: Dp,
     onAction: (AppAction) -> Unit,
     onShowHistory: () -> Unit,
     modifier: Modifier,
@@ -142,16 +125,27 @@ private fun MainPanel(
         ),
     )
 
-    Box(modifier = modifier) {
+    BoxWithConstraints(
+        modifier = modifier.background(AppTheme.calculatorScreenColors.background),
+        contentAlignment = Alignment.Center,
+    ) {
+        val displayDiameter: Dp = minOf(maxWidth, maxHeight)
+        val panelWidth: Dp = displayDiameter * (sqrt(3f) / 2f)
+        val inscribedLength: Dp = displayDiameter * (1f / sqrt(2f))
+
         Column(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .size(
+                    width = panelWidth,
+                    height = inscribedLength,
+                ),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             ExpressionBox(
                 appState = appState,
                 onShowHistory = onShowHistory,
                 modifier = Modifier
-                    .size(shortLength)
+                    .size(inscribedLength)
                     .weight(1f),
                 symbolFormatter = symbolFormatter,
             )
@@ -162,7 +156,7 @@ private fun MainPanel(
                     onAction(key.appAction)
                 },
                 modifier = Modifier
-                    .size(longLength)
+                    .size(panelWidth)
                     .weight(4f),
                 arrangementSpace = 2.dp,
                 symbolFormatter = symbolFormatter,
