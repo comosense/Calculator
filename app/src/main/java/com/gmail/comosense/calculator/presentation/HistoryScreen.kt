@@ -112,7 +112,7 @@ fun HistoryScreen(
                 onBack()
             },
             onLongClick = {
-                deleteMode = true
+                deleteMode = !deleteMode
             },
             onDelete = { id ->
                 onAction(AppAction.DeleteHistory(id))
