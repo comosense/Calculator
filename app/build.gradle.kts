@@ -25,14 +25,11 @@ android {
             optimization {
                 enable = true
             }
-            ndk {
-                debugSymbolLevel = "FULL"
-            }
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     useLibrary("wear-sdk")
     buildFeatures {
@@ -59,7 +56,6 @@ dependencies {
     implementation(libs.compose.material3)
     implementation(libs.compose.ui.tooling)
     implementation(libs.wear.tooling.preview)
-    implementation(libs.play.services.wearable)
     implementation(libs.protobuf.kotlin.lite)
     androidTestImplementation(platform(libs.compose.bom))
     androidTestImplementation(libs.ui.test.junit4)

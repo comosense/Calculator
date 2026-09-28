@@ -1,7 +1,6 @@
 [versions]
 agp = "9.4.1"
 datastore = "1.2.1"
-playServicesWearable = "20.0.1"
 kotlin = "2.4.20"
 composeBom = "2026.09.00"
 composeMaterial3 = "1.7.0"
@@ -21,7 +20,6 @@ foundation = "1.12.1"
 
 [libraries]
 datastore = { module = "androidx.datastore:datastore", version.ref = "datastore" }
-play-services-wearable = { group = "com.google.android.gms", name = "play-services-wearable", version.ref = "playServicesWearable" }
 compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
 protobuf-kotlin-lite = { module = "com.google.protobuf:protobuf-kotlin-lite", version.ref = "protobufKotlinLite" }
 ui = { group = "androidx.compose.ui", name = "ui" }
