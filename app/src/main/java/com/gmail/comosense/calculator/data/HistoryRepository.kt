@@ -9,7 +9,7 @@ import java.util.UUID
 
 class HistoryRepository(private val dataStore: DataStore<HistoryStore>) {
     companion object {
-        private const val HISTORIES_SIZE: Int = 50
+        private const val MAX_HISTORIES_SIZE: Int = 50
     }
 
     val history: Flow<List<History>> =
@@ -30,7 +30,7 @@ class HistoryRepository(private val dataStore: DataStore<HistoryStore>) {
             val builder: HistoryStore.Builder = store
                 .toBuilder()
                 .addHistories(0, newHistory.toProto())
-            while (builder.historiesCount > HISTORIES_SIZE) {
+            while (builder.historiesCount > MAX_HISTORIES_SIZE) {
                 builder.removeHistories(builder.historiesCount - 1)
             }
             builder.build()
