@@ -4,7 +4,7 @@
     <selectionStates>
       <SelectionState runConfigName="Calculator">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2026-09-28T06:00:38.276135800Z">
+        <DropdownSelection timestamp="2026-09-29T07:52:13.614707200Z">
           <Target type="DEFAULT_BOOT">
             <handle>
               <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\tomoyuki\.android\avd\Wear_OS_XL_Round.avd" />
