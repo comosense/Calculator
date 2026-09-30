@@ -8,7 +8,7 @@ Designed for small and round watch displays, with large, easy-to-tap keys and a 
 
 ## Features
 
-### Basic arithmetic**
+### Basic arithmetic
 
 * Addition `+`
 * Subtraction `-`
