@@ -42,7 +42,11 @@ import androidx.wear.compose.material3.Icon
 import androidx.wear.compose.material3.ScreenScaffold
 import com.gmail.comosense.calculator.domain.Symbol
 import com.gmail.comosense.calculator.presentation.theme.AppTheme
-import kotlin.math.sqrt
+
+// Ratios derived from the geometry of the display area and panels.
+// See doc/calculator-screen-constants.md for the derivation.
+const val INSCRIBED_RATIO: Float = 0.70710677f
+const val PANEL_RATIO: Float = 0.9055385f
 
 @Composable
 fun CalculatorScreen(
@@ -130,8 +134,8 @@ private fun MainPanel(
         contentAlignment = Alignment.Center,
     ) {
         val displayDiameter: Dp = minOf(maxWidth, maxHeight)
-        val panelWidth: Dp = displayDiameter * (sqrt(3f) / 2f)
-        val inscribedLength: Dp = displayDiameter * (1f / sqrt(2f))
+        val inscribedLength: Dp = displayDiameter * INSCRIBED_RATIO
+        val panelWidth: Dp = displayDiameter * PANEL_RATIO
 
         Column(
             modifier = Modifier
