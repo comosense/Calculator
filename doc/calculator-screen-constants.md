@@ -74,7 +74,7 @@ HI &= \frac{ 1 }{ 2 } CD - CD + GH\\
 &= -\frac{ 1 }{ 2 } CD + \frac{ 4 }{ 5 } CD\\
 &= \frac{ 3 }{ 10 } CD\\
 &= \frac{ 3 }{ 10 } \cdot \frac{ 1 } { \sqrt{ 2 } } d\\
-&= \frac{ 3 }{ 10 \sqrt{ 2 } } d
+&= \frac{ 3 }{ 10 \sqrt{ 2 } } d\\
 \end{aligned}
 $$
 
@@ -120,8 +120,12 @@ $$
 
 The mathematical values of the two ratios are:
 
-$INSCRIBED\\_RATIO = \frac{ 1 } { \sqrt{ 2 } } \approx 0.70710678118654752440084436210485...$
-$PANEL\\_RATIO = \sqrt{ \frac{ 41 }{ 50 } } \approx 0.90553851381374166265738081669841...$
+$$
+\begin{aligned}
+INSCRIBED\\_RATIO &= \frac{ 1 } { \sqrt{ 2 } } \approx 0.70710678118654752440084436210485...\\
+PANEL\\_RATIO &= \sqrt{ \frac{ 41 }{ 50 } } \approx 0.90553851381374166265738081669841...\\
+\end{aligned}
+$$
 
 The application stores these values as `Float`, so the values are rounded to `Float` precision in
 the source code:
