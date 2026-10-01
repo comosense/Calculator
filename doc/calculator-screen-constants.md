@@ -121,10 +121,10 @@ $$
 The mathematical values of the two ratios are:
 
 $$
-EH = 2\sqrt{ \frac{ 41 }{ 200 } } d\\
-= \sqrt{ \frac{ 41 }{ 50 } } d\\
-% INSCRIBED\\_RATIO = \frac{ 1 } { \sqrt{ 2 } } \approx 0.70710678118654752440084436210485...\\
-% PANEL\\_RATIO = \sqrt{ \frac{ 41 }{ 50 } } \approx 0.90553851381374166265738081669841...
+\begin{aligned}
+INSCRIBED\\_RATIO &= \frac{ 1 } { \sqrt{ 2 } } \approx 0.70710678118654752440084436210485...\\
+PANEL\\_RATIO &= \sqrt{ \frac{ 41 }{ 50 } } \approx 0.90553851381374166265738081669841...
+\end{aligned}
 $$
 
 The application stores these values as `Float`, so the values are rounded to `Float` precision in
