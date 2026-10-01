@@ -85,6 +85,7 @@ OH = \frac{ 1 }{ 2 } d
 $$
 
 Triangle `OIH` is a right triangle. Applying the Pythagorean theorem,
+
 $$
 \begin{aligned}
 OI &= \sqrt{ OH^2 - HI^2 }\\
@@ -95,6 +96,7 @@ OI &= \sqrt{ OH^2 - HI^2 }\\
 $$
 
 `OI` is the perpendicular bisector of `EH`, so
+
 $$
 EH = 2 \cdot OI
 $$
