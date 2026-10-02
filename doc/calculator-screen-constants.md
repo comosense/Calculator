@@ -7,7 +7,7 @@ This document describes how the following constants used in `CalculatorScreen.kt
 
 ## Assumptions
 
-![Geometry used to derive the display and panel ratios](calculator-screen-constants.png)
+![Geometry used to derive the display and panel ratios](fig/calculator-screen-constants.png)
 
 * The display area is a circle with diameter `d`.
 * Quadrilateral `ABCD` is a square inscribed in the display area.
