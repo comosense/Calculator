@@ -84,7 +84,7 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
             val symbols: List<Symbol> = state.symbolsToAppendOrNull(symbol) ?: return@update state
             state.append(
                 symbols = symbols,
-                keepResult = (symbol is Symbol.Operator) || state.isInputting
+                keepResult = (symbol is Symbol.Operator) || state.isInputting,
             )
         }
     }

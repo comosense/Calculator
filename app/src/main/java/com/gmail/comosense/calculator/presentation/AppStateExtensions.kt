@@ -65,16 +65,16 @@ fun AppState.canAppend(symbols: List<Symbol>): Boolean {
 }
 
 private fun Symbol.isAppendableAfter(previous: Symbol?): Boolean = when (this) {
+    is Symbol.Sign ->
+        previous == null ||
+                previous is Symbol.FactorStart ||
+                previous is Symbol.Operator
+
     is Symbol.Numeric.Digit ->
         previous !is Symbol.FactorEnd
 
     is Symbol.Numeric.Point ->
         previous is Symbol.Numeric.Digit
-
-    is Symbol.Sign ->
-        previous == null ||
-                previous is Symbol.FactorStart ||
-                previous is Symbol.Operator
 
     is Symbol.FactorStart ->
         previous == null ||

@@ -182,8 +182,7 @@ private fun ExpressionBox(
     val expression: String = symbolFormatter.format(appState.expression).ifEmpty { "0" }
 
     BoxWithConstraints(
-        modifier = modifier
-            .clickable { onShowHistory() },
+        modifier = modifier.clickable { onShowHistory() },
         contentAlignment = Alignment.Center,
     ) {
         val density: Density = LocalDensity.current
