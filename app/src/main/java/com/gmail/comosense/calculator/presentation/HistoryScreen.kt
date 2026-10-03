@@ -5,6 +5,7 @@ import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -39,6 +41,14 @@ import androidx.wear.compose.material3.lazy.transformedHeight
 import com.gmail.comosense.calculator.R
 import com.gmail.comosense.calculator.data.History
 import com.gmail.comosense.calculator.presentation.theme.AppTheme
+
+data class HistoryItemContent(
+    val containerColor: Color,
+    val contentColor: Color,
+    val expressionColor: Color,
+    val resultColor: Color,
+    val icon: (@Composable BoxScope.() -> Unit)? = null,
+)
 
 @Composable
 fun HistoryScreen(
@@ -104,7 +114,29 @@ fun HistoryScreen(
     ) { contentPadding ->
         HistoryList(
             histories = histories,
-            deleteMode = deleteMode,
+            historyItemContent = if (deleteMode) {
+                HistoryItemContent(
+                    containerColor = AppTheme.historyScreenColors.deleteContainer,
+                    contentColor = AppTheme.historyScreenColors.deleteContent,
+                    expressionColor = AppTheme.historyScreenColors.deleteExpression,
+                    resultColor = AppTheme.historyScreenColors.deleteResult,
+                    icon = {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_delete),
+                            contentDescription = stringResource(R.string.content_description_delete),
+                            modifier = Modifier.align(Alignment.Center),
+                            tint = AppTheme.historyScreenColors.deleteIcon,
+                        )
+                    }
+                )
+            } else {
+                HistoryItemContent(
+                    containerColor = AppTheme.historyScreenColors.historyContainer,
+                    contentColor = AppTheme.historyScreenColors.historyContent,
+                    expressionColor = AppTheme.historyScreenColors.historyExpression,
+                    resultColor = AppTheme.historyScreenColors.historyResult,
+                )
+            },
             onClick = { id ->
                 if (deleteMode) {
                     onAction(AppAction.DeleteHistory(id))
@@ -130,7 +162,7 @@ fun HistoryScreen(
 @Composable
 private fun HistoryList(
     histories: List<History>,
-    deleteMode: Boolean,
+    historyItemContent: HistoryItemContent,
     onClick: (String) -> Unit,
     onLongClick: () -> Unit,
     listState: TransformingLazyColumnState,
@@ -157,7 +189,7 @@ private fun HistoryList(
 
                 HistoryItem(
                     history = history,
-                    deleteMode = deleteMode,
+                    historyItemContent = historyItemContent,
                     onClick = onClick,
                     onLongClick = onLongClick,
                     modifier = Modifier
@@ -188,7 +220,7 @@ private fun HistoryList(
 @Composable
 private fun HistoryItem(
     history: History,
-    deleteMode: Boolean,
+    historyItemContent: HistoryItemContent,
     onClick: (String) -> Unit,
     onLongClick: () -> Unit,
     modifier: Modifier,
@@ -202,30 +234,16 @@ private fun HistoryItem(
         onClick = { onClick(history.id) },
         onLongClick = onLongClick,
         modifier = modifier,
-        colors = if (deleteMode) {
-            ButtonDefaults.buttonColors(
-                containerColor = AppTheme.historyScreenColors.deleteContainer,
-                contentColor = AppTheme.historyScreenColors.deleteContent,
-            )
-        } else {
-            ButtonDefaults.buttonColors(
-                containerColor = AppTheme.historyScreenColors.historyContainer,
-                contentColor = AppTheme.historyScreenColors.historyContent,
-            )
-        },
+        colors = ButtonDefaults.buttonColors(
+            containerColor = historyItemContent.containerColor,
+            contentColor = historyItemContent.contentColor,
+        ),
         transformation = transformation,
     ) {
         Box(
             modifier = Modifier.fillMaxWidth(),
         ) {
-            if (deleteMode) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_delete),
-                    contentDescription = stringResource(R.string.content_description_delete),
-                    modifier = Modifier.align(Alignment.Center),
-                    tint = AppTheme.historyScreenColors.deleteIcon,
-                )
-            }
+            historyItemContent.icon?.invoke(this)
             Column(
                 modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -235,11 +253,7 @@ private fun HistoryItem(
                     modifier = Modifier
                         .fillMaxWidth()
                         .horizontalScroll(expressionScrollState),
-                    color = if (deleteMode) {
-                        AppTheme.historyScreenColors.deleteExpression
-                    } else {
-                        AppTheme.historyScreenColors.historyExpression
-                    },
+                    color = historyItemContent.expressionColor,
                     fontSize = AppTheme.historyScreenDimensions.expressionFontSize,
                     softWrap = false,
                     maxLines = 1,
@@ -250,11 +264,7 @@ private fun HistoryItem(
                     modifier = Modifier
                         .fillMaxWidth()
                         .horizontalScroll(resultScrollState),
-                    color = if (deleteMode) {
-                        AppTheme.historyScreenColors.deleteResult
-                    } else {
-                        AppTheme.historyScreenColors.historyResult
-                    },
+                    color = historyItemContent.resultColor,
                     fontSize = AppTheme.historyScreenDimensions.resultFontSize,
                     textAlign = TextAlign.End,
                     softWrap = false,
