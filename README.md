@@ -9,8 +9,6 @@ overlay.
 
 ## Features
 
-a
-
 ### Basic arithmetic
 
 * Addition `+`
