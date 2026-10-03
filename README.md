@@ -2,11 +2,14 @@
 
 A simple calculator app designed specifically for Wear OS smartwatches.
 
-Designed for small and round watch displays, with large, easy-to-tap keys and a compact operator overlay.
+Designed for small and round watch displays, with large, easy-to-tap keys and a compact operator
+overlay.
 
 [![Get it on Google Play](https://img.shields.io/badge/Google_Play-Download-414141?style=for-the-badge\&logo=google-play\&logoColor=white)](https://play.google.com/store/apps/details?id=com.gmail.comosense.calculator)
 
 ## Features
+
+a
 
 ### Basic arithmetic
 
@@ -52,11 +55,13 @@ For example:
 1 + 2 × 3 = 7
 ```
 
-The calculator follows standard mathematical operator precedence, so multiplication is performed before addition.
+The calculator follows standard mathematical operator precedence, so multiplication is performed
+before addition.
 
 ### Parentheses
 
-The parenthesis button automatically switches between `(` and `)` depending on the current expression.
+The parenthesis button automatically switches between `(` and `)` depending on the current
+expression.
 
 For example:
 
@@ -135,12 +140,19 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Disclaimer
 
-THIS SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+THIS SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
+NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT.
 
-IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 This app is provided for general-purpose calculations and personal use.
 
-While reasonable care has been taken to ensure the correctness of the calculation logic, no guarantee is made regarding the accuracy or suitability of the results for any particular purpose.
+While reasonable care has been taken to ensure the correctness of the calculation logic, no
+guarantee is made regarding the accuracy or suitability of the results for any particular purpose.
 
-Do not rely on this app for critical, financial, medical, scientific, or other high-stakes calculations. Always verify important results using an appropriate and reliable calculator or calculation tool.
+Do not rely on this app for critical, financial, medical, scientific, or other high-stakes
+calculations. Always verify important results using an appropriate and reliable calculator or
+calculation tool.
