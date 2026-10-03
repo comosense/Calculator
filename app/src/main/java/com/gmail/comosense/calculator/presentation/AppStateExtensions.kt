@@ -7,7 +7,6 @@ val AppState.expression: List<Symbol>
 val AppState.isInputting: Boolean
     get() = input.isNotEmpty()
 
-
 fun AppState.appendExpression(symbol: Symbol): AppState {
     val symbols: List<Symbol> = symbolsToAppendOrNull(symbol) ?: return this
 
