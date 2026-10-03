@@ -29,7 +29,9 @@ fun AppState.applyResult(result: List<Symbol>): AppState {
     )
 }
 
-fun AppState.applyHistoryResult(result: List<Symbol>): AppState {
+fun AppState.applyHistory(id: String): AppState {
+    val result = (histories.firstOrNull { it.id == id } ?: return this).result
+
     return if (isInputting) {
         if (canAppend(result)) {
             copy(

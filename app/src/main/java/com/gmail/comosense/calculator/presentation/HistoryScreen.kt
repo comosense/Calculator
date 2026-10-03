@@ -38,7 +38,6 @@ import androidx.wear.compose.material3.lazy.rememberTransformationSpec
 import androidx.wear.compose.material3.lazy.transformedHeight
 import com.gmail.comosense.calculator.R
 import com.gmail.comosense.calculator.data.History
-import com.gmail.comosense.calculator.domain.Symbol
 import com.gmail.comosense.calculator.presentation.theme.AppTheme
 
 @Composable
@@ -106,18 +105,19 @@ fun HistoryScreen(
         HistoryList(
             histories = histories,
             deleteMode = deleteMode,
-            onClick = { result ->
-                onAction(AppAction.SelectHistory(result))
-                onBack()
+            onClick = { id ->
+                if (deleteMode) {
+                    onAction(AppAction.DeleteHistory(id))
+                    if (histories.size == 1) {
+                        deleteMode = false
+                    }
+                } else {
+                    onAction(AppAction.SelectHistory(id))
+                    onBack()
+                }
             },
             onLongClick = {
                 deleteMode = !deleteMode
-            },
-            onDelete = { id ->
-                onAction(AppAction.DeleteHistory(id))
-                if (histories.size == 1) {
-                    deleteMode = false
-                }
             },
             listState = listState,
             transformationSpec = transformationSpec,
@@ -131,9 +131,8 @@ fun HistoryScreen(
 private fun HistoryList(
     histories: List<History>,
     deleteMode: Boolean,
-    onClick: (List<Symbol>) -> Unit,
+    onClick: (String) -> Unit,
     onLongClick: () -> Unit,
-    onDelete: (String) -> Unit,
     listState: TransformingLazyColumnState,
     transformationSpec: TransformationSpec,
     contentPadding: PaddingValues,
@@ -161,7 +160,6 @@ private fun HistoryList(
                     deleteMode = deleteMode,
                     onClick = onClick,
                     onLongClick = onLongClick,
-                    onDelete = onDelete,
                     modifier = Modifier
                         .fillMaxWidth()
                         .transformedHeight(this, transformationSpec)
@@ -191,9 +189,8 @@ private fun HistoryList(
 private fun HistoryItem(
     history: History,
     deleteMode: Boolean,
-    onClick: (List<Symbol>) -> Unit,
+    onClick: (String) -> Unit,
     onLongClick: () -> Unit,
-    onDelete: (String) -> Unit,
     modifier: Modifier,
     transformation: SurfaceTransformation,
     symbolFormatter: SymbolFormatter,
@@ -202,13 +199,7 @@ private fun HistoryItem(
     val resultScrollState: ScrollState = rememberScrollState()
 
     Button(
-        onClick = {
-            if (deleteMode) {
-                onDelete(history.id)
-            } else {
-                onClick(history.result)
-            }
-        },
+        onClick = { onClick(history.id) },
         onLongClick = onLongClick,
         modifier = modifier,
         colors = if (deleteMode) {

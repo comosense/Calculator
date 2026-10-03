@@ -24,7 +24,7 @@ sealed interface AppAction {
     data object Calculate : AppAction
     data object Clear : AppAction
     data object Backspace : AppAction
-    data class SelectHistory(val result: List<Symbol>) : AppAction
+    data class SelectHistory(val id: String) : AppAction
     data class DeleteHistory(val id: String) : AppAction
     data object DeleteHistoryAll : AppAction
 }
@@ -82,7 +82,7 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
                 -> backspace()
 
             is AppAction.SelectHistory
-                -> selectHistory(action.result)
+                -> selectHistory(action.id)
 
             is AppAction.DeleteHistory
                 -> deleteHistory(action.id)
@@ -141,9 +141,9 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
         }
     }
 
-    private fun selectHistory(result: List<Symbol>) {
+    private fun selectHistory(id: String) {
         _appState.update {
-            it.applyHistoryResult(result)
+            it.applyHistory(id)
         }
     }
 
