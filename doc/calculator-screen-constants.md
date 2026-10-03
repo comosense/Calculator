@@ -14,8 +14,7 @@ This document describes how the following constants used in `CalculatorScreen.kt
 * Quadrilateral `EFGH` has vertices `E` and `H` on the circumference of the display area.
 * Sides `BC` and `FG` lie on the same line.
 * The ratio of the side length of square `ABCD` to `EF` (or `GH`) is 5:4.
-* Point `I` is the intersection of the perpendicular from `H` to the horizontal line passing through
-  the center `O` and that horizontal line.
+* Point `I` is the foot of the perpendicular from `H` to the horizontal line passing through the center `O`.
 
 `INSCRIBED_RATIO` represents the ratio of the side length `AB` of the inscribed square `ABCD` to the
 diameter `d` of the display area.
@@ -95,7 +94,7 @@ OI &= \sqrt{ OH^2 - HI^2 }\\
 \end{aligned}
 $$
 
-`OI` is the perpendicular bisector of `EH`, so
+Since `O` is the center of the circle and `OI` is perpendicular to chord `EH`, `OI` bisects `EH`, so
 
 $$
 EH = 2 \cdot OI
