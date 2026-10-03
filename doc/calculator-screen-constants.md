@@ -14,7 +14,7 @@ This document describes how the following constants used in `CalculatorScreen.kt
 * Quadrilateral `EFGH` has vertices `E` and `H` on the circumference of the display area.
 * Sides `BC` and `FG` lie on the same line.
 * The ratio of the side length of square `ABCD` to `EF` (or `GH`) is 5:4.
-* Point `I` is the foot of the perpendicular from `H` to the horizontal line passing through the center `O`.
+* Point `I` is the foot of the perpendicular from `E` to the horizontal line passing through the center `O`.
 
 `INSCRIBED_RATIO` represents the ratio of the side length `AB` of the inscribed square `ABCD` to the
 diameter `d` of the display area.
@@ -23,24 +23,30 @@ diameter `d` of the display area.
 
 ## Quadrilateral ABCD
 
-`ABCD` is a square, and its diagonal `AC` is equal to the diameter `d` of the display area.
+`ABCD` is a square, and its diagonal `BD` is equal to the diameter `d` of the display area.
 
 For a square, the diagonal is $\sqrt{2}$ times the side length:
 
 $$
-AC = \sqrt{ 2 } \cdot AD
+\begin{aligned}
+BD = \sqrt{ 2 } \cdot AD\\
+\end{aligned}
 $$
 
 Therefore,
 
 $$
-AD = \frac{ 1 } { \sqrt{ 2 } } d
+\begin{aligned}
+AD = \frac{ 1 } { \sqrt{ 2 } } d\\
+\end{aligned}
 $$
 
 Since all sides of `ABCD` have the same length,
 
 $$
-AB = BC = CD = AD = \frac{ 1 } { \sqrt{ 2 } } d
+\begin{aligned}
+AB = BC = CD = AD = \frac{ 1 } { \sqrt{ 2 } } d\\
+\end{aligned}
 $$
 
 Thus,
@@ -56,40 +62,46 @@ $$
 The side lengths of `ABCD` and `EFGH` satisfy
 
 $$
-GH = \frac{ 4 }{ 5 }CD
+\begin{aligned}
+EF = \frac{ 4 }{ 5 }AB\\
+\end{aligned}
 $$
 
-First, calculate the vertical distance `HI`.
+First, calculate the vertical distance `EI`.
 
 From the geometry shown in the diagram,
 
 $$
-HI = \frac{ 1 }{ 2 } CD - ( CD - GH )
+\begin{aligned}
+EI = \frac{ 1 }{ 2 } AB - ( AB - EF )\\
+\end{aligned}
 $$
 
 Therefore,
 
 $$
 \begin{aligned}
-HI &= \frac{ 1 }{ 2 } CD - CD + GH\\
-&= -\frac{ 1 }{ 2 } CD + \frac{ 4 }{ 5 } CD\\
-&= \frac{ 3 }{ 10 } CD\\
+EI &= \frac{ 1 }{ 2 } AB - AB + EF\\
+&= -\frac{ 1 }{ 2 } AB + \frac{ 4 }{ 5 } AB\\
+&= \frac{ 3 }{ 10 } AB\\
 &= \frac{ 3 }{ 10 } \cdot \frac{ 1 } { \sqrt{ 2 } } d\\
 &= \frac{ 3 }{ 10 \sqrt{ 2 } } d\\
 \end{aligned}
 $$
 
-Since `H` lies on the circumference of the display area,
-
-$$
-OH = \frac{ 1 }{ 2 } d
-$$
-
-Triangle `OIH` is a right triangle. Applying the Pythagorean theorem,
+Since `E` lies on the circumference of the display area,
 
 $$
 \begin{aligned}
-OI &= \sqrt{ OH^2 - HI^2 }\\
+OE = \frac{ 1 }{ 2 } d\\
+\end{aligned}
+$$
+
+Triangle `OIE` is a right triangle. Applying the Pythagorean theorem,
+
+$$
+\begin{aligned}
+OI &= \sqrt{ OE^2 - EI^2 }\\
 &= \sqrt{ ( \frac{ 1 }{ 2 } d )^2 - ( \frac{ 3 }{ 10 \sqrt{ 2 } } d )^2 }\\
 &= \sqrt{ \frac{ 1 }{ 4 } d^2 - \frac{ 9 }{ 200 } d^2 }\\
 &= \sqrt{ \frac{ 41 }{ 200 } } d\\
@@ -99,7 +111,9 @@ $$
 Since `O` is the center of the circle and `OI` is perpendicular to chord `EH`, `OI` bisects `EH`, so
 
 $$
-EH = 2 \cdot OI
+\begin{aligned}
+EH = 2 \cdot OI\\
+\end{aligned}
 $$
 
 Therefore,
