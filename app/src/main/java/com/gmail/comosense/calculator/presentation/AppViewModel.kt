@@ -80,13 +80,7 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
     }
 
     private fun input(symbol: Symbol) {
-        _appState.update { state ->
-            val symbols: List<Symbol> = state.symbolsToAppendOrNull(symbol) ?: return@update state
-            state.append(
-                symbols = symbols,
-                keepResult = (symbol is Symbol.Operator) || state.isInputting,
-            )
-        }
+        _appState.update { it.appendExpression(symbol) }
     }
 
     private fun calculate() {
@@ -94,26 +88,17 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
 
         if (!state.isInputting) return
 
+        val expression: List<Symbol> = state.expression
         when (val calculatedResult: Result<List<Symbol>, CalculatorError> =
             calculate(
-                expression = state.expression,
+                expression = expression,
                 precision = CALCULATION_PRECISION,
                 displayScale = DISPLAY_SCALE,
             )) {
             is Result.Ok -> {
-                _appState.update {
-                    it.copy(
-                        result = calculatedResult.value,
-                        input = emptyList(),
-                    )
-                }
-
-                viewModelScope.launch {
-                    historyRepository.addHistory(
-                        expression = state.expression,
-                        result = calculatedResult.value,
-                    )
-                }
+                val result: List<Symbol> = calculatedResult.value
+                _appState.update { it.applyResult(result) }
+                viewModelScope.launch { historyRepository.addHistory(expression, result) }
             }
 
             is Result.Err -> {
@@ -123,53 +108,22 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
     }
 
     private fun clear() {
-        _appState.update { state ->
-            state.copy(
-                result = emptyList(),
-                input = emptyList(),
-            )
-        }
+        _appState.update { it.clearExpression() }
     }
 
     private fun backspace() {
-        _appState.update { state ->
-            if (state.isInputting) {
-                state.copy(
-                    input = state.input.dropLast(1),
-                )
-            } else {
-                state
-            }
-        }
+        _appState.update { it.dropLastExpressionSymbol() }
     }
 
     private fun selectHistory(result: List<Symbol>) {
-        _appState.update { state ->
-            if (state.isInputting) {
-                if (state.canAppend(result)) {
-                    state.copy(
-                        input = state.input + result,
-                    )
-                } else {
-                    state
-                }
-            } else {
-                state.copy(
-                    result = result,
-                )
-            }
-        }
+        _appState.update { it.applyHistoryResult(result) }
     }
 
     private fun deleteHistory(id: String) {
-        viewModelScope.launch {
-            historyRepository.deleteHistory(id)
-        }
+        viewModelScope.launch { historyRepository.deleteHistory(id) }
     }
 
     private fun deleteHistoryAll() {
-        viewModelScope.launch {
-            historyRepository.deleteHistoryAll()
-        }
+        viewModelScope.launch { historyRepository.deleteHistoryAll() }
     }
 }

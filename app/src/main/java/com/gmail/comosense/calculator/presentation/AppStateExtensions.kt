@@ -7,29 +7,58 @@ val AppState.expression: List<Symbol>
 val AppState.isInputting: Boolean
     get() = input.isNotEmpty()
 
-fun AppState.symbolsToAppendOrNull(symbol: Symbol): List<Symbol>? {
-    if (canAppend(symbol)) return listOf(symbol)
 
-    return when (symbol) {
-        is Symbol.Numeric.Point ->
-            listOf(Symbol.Numeric.Digit(0), symbol)
+fun AppState.appendExpression(symbol: Symbol): AppState {
+    val symbols: List<Symbol> = symbolsToAppendOrNull(symbol) ?: return this
 
-        is Symbol.FactorStart.OpeningParenthesis ->
-            listOf(Symbol.Operator.Multiply, symbol)
-
-        else ->
-            return null
-    }.takeIf(::canAppend)
+    return if (symbol is Symbol.Operator || isInputting) {
+        copy(
+            input = input + symbols,
+        )
+    } else {
+        copy(
+            result = emptyList(),
+            input = input + symbols,
+        )
+    }
 }
 
-fun AppState.append(
-    symbols: List<Symbol>,
-    keepResult: Boolean,
-): AppState {
+fun AppState.applyResult(result: List<Symbol>): AppState {
     return copy(
-        result = if (keepResult) result else emptyList(),
-        input = input + symbols,
+        result = result,
+        input = emptyList(),
     )
+}
+
+fun AppState.applyHistoryResult(result: List<Symbol>): AppState {
+    return if (isInputting) {
+        if (canAppend(result)) {
+            copy(
+                input = input + result,
+            )
+        } else {
+            this
+        }
+    } else {
+        applyResult(result)
+    }
+}
+
+fun AppState.clearExpression(): AppState {
+    return copy(
+        result = emptyList(),
+        input = emptyList(),
+    )
+}
+
+fun AppState.dropLastExpressionSymbol(): AppState {
+    return if (isInputting) {
+        copy(
+            input = input.dropLast(1),
+        )
+    } else {
+        this
+    }
 }
 
 fun AppState.canAppend(symbol: Symbol): Boolean = this.canAppend(listOf(symbol))
@@ -62,6 +91,21 @@ fun AppState.canAppend(symbols: List<Symbol>): Boolean {
         }
     }
     return true
+}
+
+private fun AppState.symbolsToAppendOrNull(symbol: Symbol): List<Symbol>? {
+    if (canAppend(symbol)) return listOf(symbol)
+
+    return when (symbol) {
+        is Symbol.Numeric.Point ->
+            listOf(Symbol.Numeric.Digit(0), symbol)
+
+        is Symbol.FactorStart.OpeningParenthesis ->
+            listOf(Symbol.Operator.Multiply, symbol)
+
+        else ->
+            return null
+    }.takeIf(::canAppend)
 }
 
 private fun Symbol.isAppendableAfter(previous: Symbol?): Boolean = when (this) {
