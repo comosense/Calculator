@@ -69,18 +69,33 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
 
     fun onAction(action: AppAction) {
         when (action) {
-            is AppAction.Input -> input(action.symbol)
-            is AppAction.Calculate -> calculate()
-            is AppAction.Clear -> clear()
-            is AppAction.Backspace -> backspace()
-            is AppAction.SelectHistory -> selectHistory(action.result)
-            is AppAction.DeleteHistory -> deleteHistory(action.id)
-            is AppAction.DeleteHistoryAll -> deleteHistoryAll()
+            is AppAction.Input
+                -> input(action.symbol)
+
+            is AppAction.Calculate
+                -> calculate()
+
+            is AppAction.Clear
+                -> clear()
+
+            is AppAction.Backspace
+                -> backspace()
+
+            is AppAction.SelectHistory
+                -> selectHistory(action.result)
+
+            is AppAction.DeleteHistory
+                -> deleteHistory(action.id)
+
+            is AppAction.DeleteHistoryAll
+                -> deleteHistoryAll()
         }
     }
 
     private fun input(symbol: Symbol) {
-        _appState.update { it.appendExpression(symbol) }
+        _appState.update {
+            it.appendExpression(symbol)
+        }
     }
 
     private fun calculate() {
@@ -97,8 +112,15 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
             )) {
             is Result.Ok -> {
                 val result: List<Symbol> = calculatedResult.value
-                _appState.update { it.applyResult(result) }
-                viewModelScope.launch { historyRepository.addHistory(expression, result) }
+                _appState.update {
+                    it.applyResult(result)
+                }
+                viewModelScope.launch {
+                    historyRepository.addHistory(
+                        expression = expression,
+                        result = result
+                    )
+                }
             }
 
             is Result.Err -> {
@@ -108,22 +130,32 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
     }
 
     private fun clear() {
-        _appState.update { it.clearExpression() }
+        _appState.update {
+            it.clearExpression()
+        }
     }
 
     private fun backspace() {
-        _appState.update { it.dropLastExpressionSymbol() }
+        _appState.update {
+            it.dropLastExpressionSymbol()
+        }
     }
 
     private fun selectHistory(result: List<Symbol>) {
-        _appState.update { it.applyHistoryResult(result) }
+        _appState.update {
+            it.applyHistoryResult(result)
+        }
     }
 
     private fun deleteHistory(id: String) {
-        viewModelScope.launch { historyRepository.deleteHistory(id) }
+        viewModelScope.launch {
+            historyRepository.deleteHistory(id)
+        }
     }
 
     private fun deleteHistoryAll() {
-        viewModelScope.launch { historyRepository.deleteHistoryAll() }
+        viewModelScope.launch {
+            historyRepository.deleteHistoryAll()
+        }
     }
 }
