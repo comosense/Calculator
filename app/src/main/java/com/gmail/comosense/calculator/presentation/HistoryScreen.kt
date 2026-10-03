@@ -77,23 +77,7 @@ fun HistoryScreen(
     ScreenScaffold(
         scrollState = listState,
         edgeButton = {
-            if (!deleteMode) {
-                EdgeButton(
-                    onClick = {
-                        onBack()
-                    },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = AppTheme.historyScreenColors.backButtonContainer,
-                        contentColor = AppTheme.historyScreenColors.backButtonContent,
-                    ),
-                ) {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_undo),
-                        contentDescription = stringResource(R.string.content_description_undo),
-                        tint = AppTheme.historyScreenColors.backButtonContent,
-                    )
-                }
-            } else {
+            if (deleteMode) {
                 EdgeButton(
                     onClick = {
                         deleteMode = false
@@ -107,6 +91,22 @@ fun HistoryScreen(
                     Text(
                         text = stringResource(R.string.delete_all),
                         fontSize = AppTheme.historyScreenDimensions.buttonFontSize,
+                    )
+                }
+            } else {
+                EdgeButton(
+                    onClick = {
+                        onBack()
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = AppTheme.historyScreenColors.backButtonContainer,
+                        contentColor = AppTheme.historyScreenColors.backButtonContent,
+                    ),
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_undo),
+                        contentDescription = stringResource(R.string.content_description_undo),
+                        tint = AppTheme.historyScreenColors.backButtonContent,
                     )
                 }
             }
