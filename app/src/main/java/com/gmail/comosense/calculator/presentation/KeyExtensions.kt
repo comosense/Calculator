@@ -64,8 +64,14 @@ val Key.appAction: AppAction
 
 val Key.longClickKeyOrNull: Key?
     get() = when (this) {
-        is Key.Backspace -> Key.Clear
-        else -> null
+        is Key.ClosingParenthesis
+            -> Key.OpeningParenthesis
+
+        is Key.Backspace
+            -> Key.Clear
+
+        else
+            -> null
     }
 
 val Key.style: Style
