@@ -101,6 +101,7 @@ private fun AppState.symbolsToAppendOrNull(symbol: Symbol): List<Symbol>? {
         is Symbol.Numeric.Point ->
             listOf(Symbol.Numeric.Digit(0), symbol)
 
+        is Symbol.Constant,
         is Symbol.Factor,
         is Symbol.FactorStart ->
             listOf(Symbol.Operator.Multiply, symbol)
