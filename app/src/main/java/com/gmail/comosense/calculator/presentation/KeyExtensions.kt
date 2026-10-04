@@ -62,10 +62,10 @@ val Key.appAction: AppAction
             AppAction.Backspace
 
         is Key.Pi ->
-            AppAction.Input(Symbol.Factor.Constant.Pi)
+            AppAction.Input(Symbol.Constant.Pi)
 
         is Key.Euler ->
-            AppAction.Input(Symbol.Factor.Constant.Euler)
+            AppAction.Input(Symbol.Constant.Euler)
 
         is Key.Sqrt ->
             AppAction.Input(Symbol.Factor.Function.Sqrt)

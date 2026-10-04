@@ -23,10 +23,10 @@ fun ProtoSymbol.toSymbolOrNull(): Symbol? {
             Symbol.Numeric.Point
 
         ProtoSymbol.ValueCase.PI ->
-            Symbol.Factor.Constant.Pi
+            Symbol.Constant.Pi
 
         ProtoSymbol.ValueCase.EULER ->
-            Symbol.Factor.Constant.Euler
+            Symbol.Constant.Euler
 
         ProtoSymbol.ValueCase.SQRT ->
             Symbol.Factor.Function.Sqrt
@@ -91,12 +91,12 @@ fun Symbol.toProto(): ProtoSymbol {
                 .setPoint(true)
                 .build()
 
-        Symbol.Factor.Constant.Pi ->
+        Symbol.Constant.Pi ->
             ProtoSymbol.newBuilder()
                 .setPi(true)
                 .build()
 
-        Symbol.Factor.Constant.Euler ->
+        Symbol.Constant.Euler ->
             ProtoSymbol.newBuilder()
                 .setEuler(true)
                 .build()

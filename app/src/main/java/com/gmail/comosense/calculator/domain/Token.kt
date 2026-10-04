@@ -10,12 +10,12 @@ sealed interface Token {
 
     data class Numeric(val value: BigDecimal) : Token
 
-    sealed interface Factor : Token {
-        sealed interface Constant : Factor {
-            data object Pi : Constant
-            data object Euler : Constant
-        }
+    sealed interface Constant : Token {
+        data object Pi : Constant
+        data object Euler : Constant
+    }
 
+    sealed interface Factor : Token {
         sealed interface Function : Factor {
             data object Sqrt : Function
         }

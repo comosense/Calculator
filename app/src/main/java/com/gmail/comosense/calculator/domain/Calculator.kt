@@ -23,7 +23,7 @@ fun calculate(
         parseTokens(expression)) {
         is Result.Ok -> {
             when (val calculatedResult: Result<BigDecimal, CalculatorError> =
-                calculate(tokensResult.value, precision)) {
+                calculateTokens(tokensResult.value, precision)) {
                 is Result.Ok -> {
                     when (val symbolsResult: Result<List<Symbol>, CalculatorError> =
                         calculatedResult.value.toSymbols(displayScale)) {
@@ -49,16 +49,16 @@ fun calculate(
     }
 }
 
-private fun calculate(
-    expression: List<Token>,
+private fun calculateTokens(
+    tokens: List<Token>,
     precision: Int,
 ): Result<BigDecimal, CalculatorError> {
-    if (expression.isEmpty()) {
+    if (tokens.isEmpty()) {
         return Result.Err(CalculatorError.InvalidExpression)
     }
 
     return try {
-        val parser = Parser(expression, precision)
+        val parser = Parser(tokens, precision)
         val result: BigDecimal = parser.parseExpression()
 
         if (parser.isEnd()) {
@@ -155,9 +155,9 @@ private class Parser(
                 token.value
             }
 
-            is Token.Factor.Constant -> {
+            is Token.Constant -> {
                 position++
-                parseFactorConstant(token)
+                parseConstant(token)
             }
 
             is Token.Factor.Function -> {
@@ -192,35 +192,46 @@ private class Parser(
     }
 
     private fun applyFunction(
-//        function: Token.FactorStart.Function,
-        function: Token,
+        function: Token.Factor.Function,
         value: BigDecimal,
     ): BigDecimal {
         val doubleValue: Double = value.toDouble()
 
-        val result: Double = when (function) {
-            Token.Factor.Function.Sqrt ->
-                kotlin.math.sqrt(doubleValue)
+        return applyResult(
+            when (function) {
+                Token.Factor.Function.Sqrt ->
+                    kotlin.math.sqrt(doubleValue)
+            }
+        )
+    }
 
-            Token.FactorStart.Function.Sin ->
-                kotlin.math.sin(doubleValue)
+    private fun applyFunction(
+        function: Token.FactorStart.Function,
+        value: BigDecimal,
+    ): BigDecimal {
+        val doubleValue: Double = value.toDouble()
 
-            Token.FactorStart.Function.Cos ->
-                kotlin.math.cos(doubleValue)
+        return applyResult(
+            when (function) {
+                Token.FactorStart.Function.Sin ->
+                    kotlin.math.sin(doubleValue)
 
-            Token.FactorStart.Function.Tan ->
-                kotlin.math.tan(doubleValue)
+                Token.FactorStart.Function.Cos ->
+                    kotlin.math.cos(doubleValue)
 
-            Token.FactorStart.Function.Log ->
-                kotlin.math.log10(doubleValue)
+                Token.FactorStart.Function.Tan ->
+                    kotlin.math.tan(doubleValue)
 
-            Token.FactorStart.Function.Ln ->
-                kotlin.math.ln(doubleValue)
+                Token.FactorStart.Function.Log ->
+                    kotlin.math.log10(doubleValue)
 
-            else ->
-                throw IllegalArgumentException("Invalid function")
-        }
+                Token.FactorStart.Function.Ln ->
+                    kotlin.math.ln(doubleValue)
+            }
+        )
+    }
 
+    private fun applyResult(result: Double): BigDecimal {
         if (!result.isFinite()) {
             throw ArithmeticException("Invalid function result")
         }
@@ -228,12 +239,12 @@ private class Parser(
         return BigDecimal.valueOf(result).round(mathContext)
     }
 
-    private fun parseFactorConstant(constant: Token.Factor.Constant): BigDecimal {
+    private fun parseConstant(constant: Token.Constant): BigDecimal {
         val result: Double = when (constant) {
-            Token.Factor.Constant.Pi ->
+            Token.Constant.Pi ->
                 kotlin.math.PI
 
-            Token.Factor.Constant.Euler ->
+            Token.Constant.Euler ->
                 kotlin.math.E
         }
 
