@@ -62,13 +62,13 @@ val Key.appAction: AppAction
             AppAction.Backspace
 
         is Key.Pi ->
-            AppAction.Input(Symbol.Constant.Pi)
+            AppAction.Input(Symbol.Factor.Constant.Pi)
 
         is Key.Euler ->
-            AppAction.Input(Symbol.Constant.Euler)
+            AppAction.Input(Symbol.Factor.Constant.Euler)
 
         is Key.Sqrt ->
-            AppAction.Input(Symbol.FactorStart.Function.Sqrt)
+            AppAction.Input(Symbol.Factor.Function.Sqrt)
 
         is Key.Sin ->
             AppAction.Input(Symbol.FactorStart.Function.Sin)
@@ -210,7 +210,7 @@ fun Key.display(symbolFormatter: SymbolFormatter): Display = when (this) {
         Display.Text("e")
 
     is Key.Sqrt ->
-        Display.Text("sqrt")
+        Display.Text("√")
 
     is Key.Sin ->
         Display.Text("sin")

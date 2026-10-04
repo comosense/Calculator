@@ -121,7 +121,14 @@ private fun Symbol.isAppendableAfter(previous: Symbol?): Boolean = when (this) {
     is Symbol.Numeric.Point ->
         previous is Symbol.Numeric.Digit
 
-    is Symbol.Constant,
+    is Symbol.Factor.Constant ->
+        previous == null ||
+                previous is Symbol.Sign ||
+                previous is Symbol.Factor.Function ||
+                previous is Symbol.FactorStart ||
+                previous is Symbol.Operator
+
+    is Symbol.Factor.Function,
     is Symbol.FactorStart ->
         previous == null ||
                 previous is Symbol.Sign ||
@@ -131,6 +138,6 @@ private fun Symbol.isAppendableAfter(previous: Symbol?): Boolean = when (this) {
     is Symbol.FactorEnd,
     is Symbol.Operator ->
         previous is Symbol.Numeric.Digit ||
-                previous is Symbol.Constant ||
+                previous is Symbol.Factor.Constant ||
                 previous is Symbol.FactorEnd
 }

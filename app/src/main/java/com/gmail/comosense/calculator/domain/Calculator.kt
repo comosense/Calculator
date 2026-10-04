@@ -155,9 +155,14 @@ private class Parser(
                 token.value
             }
 
-            is Token.Constant -> {
+            is Token.Factor.Constant -> {
                 position++
-                parseConstant(token)
+                parseFactorConstant(token)
+            }
+
+            is Token.Factor.Function -> {
+                position++
+                applyFunction(token, parseFactor())
             }
 
             is Token.FactorStart.OpeningParenthesis -> {
@@ -187,13 +192,14 @@ private class Parser(
     }
 
     private fun applyFunction(
-        function: Token.FactorStart.Function,
+//        function: Token.FactorStart.Function,
+        function: Token,
         value: BigDecimal,
     ): BigDecimal {
         val doubleValue: Double = value.toDouble()
 
         val result: Double = when (function) {
-            Token.FactorStart.Function.Sqrt ->
+            Token.Factor.Function.Sqrt ->
                 kotlin.math.sqrt(doubleValue)
 
             Token.FactorStart.Function.Sin ->
@@ -210,6 +216,9 @@ private class Parser(
 
             Token.FactorStart.Function.Ln ->
                 kotlin.math.ln(doubleValue)
+
+            else ->
+                throw IllegalArgumentException("Invalid function")
         }
 
         if (!result.isFinite()) {
@@ -219,12 +228,12 @@ private class Parser(
         return BigDecimal.valueOf(result).round(mathContext)
     }
 
-    private fun parseConstant(constant: Token.Constant): BigDecimal {
+    private fun parseFactorConstant(constant: Token.Factor.Constant): BigDecimal {
         val result: Double = when (constant) {
-            Token.Constant.Pi ->
+            Token.Factor.Constant.Pi ->
                 kotlin.math.PI
 
-            Token.Constant.Euler ->
+            Token.Factor.Constant.Euler ->
                 kotlin.math.E
         }
 

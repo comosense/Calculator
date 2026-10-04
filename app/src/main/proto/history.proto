@@ -29,14 +29,13 @@ message Symbol {
     bool multiply = 13;
     bool divide = 14;
 
-    bool sqrt = 16;
-    bool sin = 32;
-    bool cos = 33;
-    bool tan = 34;
+    bool pi = 16;
+    bool euler = 17;
+    bool sqrt = 32;
+    bool sin = 40;
+    bool cos = 41;
+    bool tan = 42;
     bool log = 48;
     bool ln = 49;
-
-    bool pi = 64;
-    bool euler = 65;
   }
 }

@@ -23,16 +23,16 @@ fun ProtoSymbol.toSymbolOrNull(): Symbol? {
             Symbol.Numeric.Point
 
         ProtoSymbol.ValueCase.PI ->
-            Symbol.Constant.Pi
+            Symbol.Factor.Constant.Pi
 
         ProtoSymbol.ValueCase.EULER ->
-            Symbol.Constant.Euler
+            Symbol.Factor.Constant.Euler
+
+        ProtoSymbol.ValueCase.SQRT ->
+            Symbol.Factor.Function.Sqrt
 
         ProtoSymbol.ValueCase.OPENING_PARENTHESIS ->
             Symbol.FactorStart.OpeningParenthesis
-
-        ProtoSymbol.ValueCase.SQRT ->
-            Symbol.FactorStart.Function.Sqrt
 
         ProtoSymbol.ValueCase.SIN ->
             Symbol.FactorStart.Function.Sin
@@ -91,24 +91,24 @@ fun Symbol.toProto(): ProtoSymbol {
                 .setPoint(true)
                 .build()
 
-        Symbol.Constant.Pi ->
+        Symbol.Factor.Constant.Pi ->
             ProtoSymbol.newBuilder()
                 .setPi(true)
                 .build()
 
-        Symbol.Constant.Euler ->
+        Symbol.Factor.Constant.Euler ->
             ProtoSymbol.newBuilder()
                 .setEuler(true)
+                .build()
+
+        Symbol.Factor.Function.Sqrt ->
+            ProtoSymbol.newBuilder()
+                .setSqrt(true)
                 .build()
 
         Symbol.FactorStart.OpeningParenthesis ->
             ProtoSymbol.newBuilder()
                 .setOpeningParenthesis(true)
-                .build()
-
-        Symbol.FactorStart.Function.Sqrt ->
-            ProtoSymbol.newBuilder()
-                .setSqrt(true)
                 .build()
 
         Symbol.FactorStart.Function.Sin ->

@@ -65,17 +65,17 @@ private val Symbol.toToken: Result<Token, SymbolParserError>
         is Symbol.Sign.Negative ->
             Result.Ok(Token.Sign.Negative)
 
-        is Symbol.Constant.Pi ->
-            Result.Ok(Token.Constant.Pi)
+        is Symbol.Factor.Constant.Pi ->
+            Result.Ok(Token.Factor.Constant.Pi)
 
-        is Symbol.Constant.Euler ->
-            Result.Ok(Token.Constant.Euler)
+        is Symbol.Factor.Constant.Euler ->
+            Result.Ok(Token.Factor.Constant.Euler)
+
+        is Symbol.Factor.Function.Sqrt ->
+            Result.Ok(Token.Factor.Function.Sqrt)
 
         is Symbol.FactorStart.OpeningParenthesis ->
             Result.Ok(Token.FactorStart.OpeningParenthesis)
-
-        is Symbol.FactorStart.Function.Sqrt ->
-            Result.Ok(Token.FactorStart.Function.Sqrt)
 
         is Symbol.FactorStart.Function.Sin ->
             Result.Ok(Token.FactorStart.Function.Sin)

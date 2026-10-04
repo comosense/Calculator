@@ -16,15 +16,20 @@ sealed interface Symbol {
         data object Point : Numeric
     }
 
-    sealed interface Constant : Symbol {
-        data object Pi : Constant
-        data object Euler : Constant
+    sealed interface Factor : Symbol {
+        sealed interface Constant : Factor {
+            data object Pi : Constant
+            data object Euler : Constant
+        }
+
+        sealed interface Function : Factor {
+            data object Sqrt : Function
+        }
     }
 
     sealed interface FactorStart : Symbol {
         data object OpeningParenthesis : FactorStart
         sealed interface Function : FactorStart {
-            data object Sqrt : Function
             data object Sin : Function
             data object Cos : Function
             data object Tan : Function
