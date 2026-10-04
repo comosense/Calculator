@@ -64,6 +64,9 @@ fun ProtoSymbol.toSymbolOrNull(): Symbol? {
         ProtoSymbol.ValueCase.DIVIDE ->
             Symbol.Operator.Divide
 
+        ProtoSymbol.ValueCase.POWER ->
+            Symbol.Operator.Power
+
         ProtoSymbol.ValueCase.VALUE_NOT_SET ->
             null
     }
@@ -159,6 +162,11 @@ fun Symbol.toProto(): ProtoSymbol {
         Symbol.Operator.Divide ->
             ProtoSymbol.newBuilder()
                 .setDivide(true)
+                .build()
+
+        Symbol.Operator.Power ->
+            ProtoSymbol.newBuilder()
+                .setPower(true)
                 .build()
     }
 }

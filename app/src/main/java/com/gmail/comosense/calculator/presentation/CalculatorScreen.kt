@@ -143,8 +143,8 @@ private fun MainPanel(
     val functionKeyGrid: List<List<Key?>> = listOf(
         listOf(
             Key.Sqrt,
+            Key.Power,
             Key.Pi,
-            Key.Euler,
         ),
         listOf(
             Key.Sin,
@@ -154,7 +154,7 @@ private fun MainPanel(
         listOf(
             Key.Log,
             Key.Ln,
-            null,
+            Key.Euler,
         ),
         listOf(null),
     )

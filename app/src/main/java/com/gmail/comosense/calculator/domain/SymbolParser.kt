@@ -107,6 +107,9 @@ private val Symbol.toToken: Result<Token, SymbolParserError>
         is Symbol.Operator.Divide ->
             Result.Ok(Token.Operator.Divide)
 
+        is Symbol.Operator.Power ->
+            Result.Ok(Token.Operator.Power)
+
         else ->
             Result.Err(SymbolParserError.UnsupportedSymbol)
     }

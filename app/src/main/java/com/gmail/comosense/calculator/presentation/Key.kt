@@ -11,6 +11,7 @@ sealed interface Key {
     data object Subtract : Key
     data object Multiply : Key
     data object Divide : Key
+    data object Power : Key
     data object Equal : Key
     data object Clear : Key
     data object Backspace : Key
