@@ -226,7 +226,7 @@ private fun MainPanel(
                     painter = painterResource(R.drawable.ic_key_switcher),
                     contentDescription = stringResource(R.string.content_description_key_switcher),
                     modifier = Modifier.fillMaxSize(),
-                    tint = AppTheme.calculatorScreenColors.special,
+                    tint = AppTheme.calculatorScreenColors.keySwitcher,
                 )
             }
         }

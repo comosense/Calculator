@@ -59,7 +59,7 @@ fun AppTheme(
             operatorKeyContent = MaterialTheme.colorScheme.onTertiary,
             commandKeyContainer = MaterialTheme.colorScheme.primary,
             commandKeyContent = MaterialTheme.colorScheme.onPrimary,
-            special = MaterialTheme.colorScheme.tertiary,
+            keySwitcher = MaterialTheme.colorScheme.tertiary,
         )
 
         val historyScreenColors = HistoryScreenColors(
