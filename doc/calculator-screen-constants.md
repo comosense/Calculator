@@ -170,7 +170,7 @@ Also, since `JR` is half the length of `QR`, we have
 
 $$
 \begin{aligned}
-(\frac{ 1 } { 2 \sqrt{ 2 } } d + QR)^2 + (\frac{ 1 }{ 2 } QR)^2 &= (\frac{ 1 }{ 2 } d)^2\\
+\left( \frac{ 1 } { 2 \sqrt{ 2 } } d + QR \right)^2 + \left( \frac{ 1 }{ 2 } QR \right)^2 &= \left( \frac{ 1 }{ 2 } d \right)^2\\
 \end{aligned}
 $$
 
