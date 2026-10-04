@@ -68,6 +68,24 @@ private val Symbol.toToken: Result<Token, SymbolParserError>
         is Symbol.FactorStart.OpeningParenthesis ->
             Result.Ok(Token.FactorStart.OpeningParenthesis)
 
+        is Symbol.FactorStart.Function.Sqrt ->
+            Result.Ok(Token.FactorStart.Function.Sqrt)
+
+        is Symbol.FactorStart.Function.Sin ->
+            Result.Ok(Token.FactorStart.Function.Sin)
+
+        is Symbol.FactorStart.Function.Cos ->
+            Result.Ok(Token.FactorStart.Function.Cos)
+
+        is Symbol.FactorStart.Function.Tan ->
+            Result.Ok(Token.FactorStart.Function.Tan)
+
+        is Symbol.FactorStart.Function.Log ->
+            Result.Ok(Token.FactorStart.Function.Log)
+
+        is Symbol.FactorStart.Function.Ln ->
+            Result.Ok(Token.FactorStart.Function.Ln)
+
         is Symbol.FactorEnd.ClosingParenthesis ->
             Result.Ok(Token.FactorEnd.ClosingParenthesis)
 

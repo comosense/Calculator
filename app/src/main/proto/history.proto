@@ -28,5 +28,12 @@ message Symbol {
     bool subtract = 12;
     bool multiply = 13;
     bool divide = 14;
+
+    bool sqrt = 16;
+    bool sin = 32;
+    bool cos = 33;
+    bool tan = 34;
+    bool log = 64;
+    bool ln = 65;
   }
 }

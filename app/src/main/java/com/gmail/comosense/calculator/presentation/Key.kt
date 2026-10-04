@@ -14,4 +14,10 @@ sealed interface Key {
     data object Equal : Key
     data object Clear : Key
     data object Backspace : Key
+    data object Sqrt : Key
+    data object Sin : Key
+    data object Cos : Key
+    data object Tan : Key
+    data object Log : Key
+    data object Ln : Key
 }

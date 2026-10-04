@@ -18,6 +18,14 @@ sealed interface Symbol {
 
     sealed interface FactorStart : Symbol {
         data object OpeningParenthesis : FactorStart
+        sealed interface Function : FactorStart {
+            data object Sqrt : Function
+            data object Sin : Function
+            data object Cos : Function
+            data object Tan : Function
+            data object Log : Function
+            data object Ln : Function
+        }
     }
 
     sealed interface FactorEnd : Symbol {

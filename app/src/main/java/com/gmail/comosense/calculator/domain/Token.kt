@@ -12,6 +12,14 @@ sealed interface Token {
 
     sealed interface FactorStart : Token {
         data object OpeningParenthesis : FactorStart
+        sealed interface Function : FactorStart {
+            data object Sqrt : Function
+            data object Sin : Function
+            data object Cos : Function
+            data object Tan : Function
+            data object Log : Function
+            data object Ln : Function
+        }
     }
 
     sealed interface FactorEnd : Token {

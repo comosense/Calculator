@@ -5,7 +5,6 @@ import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,6 +20,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -47,7 +47,9 @@ data class HistoryItemContent(
     val contentColor: Color,
     val expressionColor: Color,
     val resultColor: Color,
-    val icon: (@Composable BoxScope.() -> Unit)? = null,
+    val icon: Painter? = null,
+    val iconDescription: String = "",
+    val iconColor: Color = contentColor,
 )
 
 @Composable
@@ -120,14 +122,9 @@ fun HistoryScreen(
                     contentColor = AppTheme.historyScreenColors.deleteContent,
                     expressionColor = AppTheme.historyScreenColors.deleteExpression,
                     resultColor = AppTheme.historyScreenColors.deleteResult,
-                    icon = {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_delete),
-                            contentDescription = stringResource(R.string.content_description_delete),
-                            modifier = Modifier.align(Alignment.Center),
-                            tint = AppTheme.historyScreenColors.deleteIcon,
-                        )
-                    }
+                    icon = painterResource(R.drawable.ic_delete),
+                    iconDescription = stringResource(R.string.content_description_delete),
+                    iconColor = AppTheme.historyScreenColors.deleteIcon,
                 )
             } else {
                 HistoryItemContent(
@@ -243,7 +240,14 @@ private fun HistoryItem(
         Box(
             modifier = Modifier.fillMaxWidth(),
         ) {
-            historyItemContent.icon?.invoke(this)
+            if (historyItemContent.icon != null) {
+                Icon(
+                    painter = historyItemContent.icon,
+                    contentDescription = historyItemContent.iconDescription,
+                    modifier = Modifier.align(Alignment.Center),
+                    tint = historyItemContent.iconColor,
+                )
+            }
             Column(
                 modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,

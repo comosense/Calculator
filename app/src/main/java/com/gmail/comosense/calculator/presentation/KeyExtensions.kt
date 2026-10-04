@@ -60,6 +60,24 @@ val Key.appAction: AppAction
 
         is Key.Backspace ->
             AppAction.Backspace
+
+        is Key.Sqrt ->
+            AppAction.Input(Symbol.FactorStart.Function.Sqrt)
+
+        is Key.Sin ->
+            AppAction.Input(Symbol.FactorStart.Function.Sin)
+
+        is Key.Cos ->
+            AppAction.Input(Symbol.FactorStart.Function.Cos)
+
+        is Key.Tan ->
+            AppAction.Input(Symbol.FactorStart.Function.Tan)
+
+        is Key.Log ->
+            AppAction.Input(Symbol.FactorStart.Function.Log)
+
+        is Key.Ln ->
+            AppAction.Input(Symbol.FactorStart.Function.Ln)
     }
 
 val Key.longClickKeyOrNull: Key?
@@ -94,6 +112,14 @@ val Key.style: Style
         is Key.Clear,
         is Key.Backspace ->
             Style.Command
+
+        is Key.Sqrt,
+        is Key.Sin,
+        is Key.Cos,
+        is Key.Tan,
+        is Key.Log,
+        is Key.Ln ->
+            Style.Digit
     }
 
 fun Key.display(symbolFormatter: SymbolFormatter): Display = when (this) {
@@ -168,4 +194,22 @@ fun Key.display(symbolFormatter: SymbolFormatter): Display = when (this) {
             painterResource = R.drawable.ic_backspace,
             stringResource = R.string.content_description_backspace,
         )
+
+    is Key.Sqrt ->
+        Display.Text("sqrt")
+
+    is Key.Sin ->
+        Display.Text("sin")
+
+    is Key.Cos ->
+        Display.Text("cos")
+
+    is Key.Tan ->
+        Display.Text("tan")
+
+    is Key.Log ->
+        Display.Text("log")
+
+    is Key.Ln ->
+        Display.Text("ln")
 }

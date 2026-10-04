@@ -8,8 +8,8 @@
     <string name="calculator_error_unsupported">Unsupported error</string>
     <string name="content_description_positive">Positive</string>
     <string name="content_description_negative">Negative</string>
-    <string name="content_description_opening_parenthesis">Opening Parenthesis</string>
-    <string name="content_description_closing_parenthesis">Closing Parenthesis</string>
+    <string name="content_description_opening_parenthesis">Opening parenthesis</string>
+    <string name="content_description_closing_parenthesis">Closing parenthesis</string>
     <string name="content_description_add">Add</string>
     <string name="content_description_subtract">Subtract</string>
     <string name="content_description_multiply">Multiply</string>
@@ -19,4 +19,5 @@
     <string name="content_description_backspace">Backspace</string>
     <string name="content_description_undo">Undo</string>
     <string name="content_description_delete">Delete</string>
+    <string name="content_description_key_switcher">Key switcher</string>
 </resources>

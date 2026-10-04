@@ -1,5 +1,10 @@
 package com.gmail.comosense.calculator.presentation
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -20,7 +25,10 @@ import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -39,7 +47,9 @@ import androidx.compose.ui.unit.dp
 import androidx.wear.compose.material3.Button
 import androidx.wear.compose.material3.ButtonDefaults
 import androidx.wear.compose.material3.Icon
+import androidx.wear.compose.material3.IconButton
 import androidx.wear.compose.material3.ScreenScaffold
+import com.gmail.comosense.calculator.R
 import com.gmail.comosense.calculator.domain.Symbol
 import com.gmail.comosense.calculator.presentation.theme.AppTheme
 
@@ -47,6 +57,7 @@ import com.gmail.comosense.calculator.presentation.theme.AppTheme
 // See doc/calculator-screen-constants.md for the derivation.
 const val INSCRIBED_RATIO: Float = 0.70710677f
 const val PANEL_RATIO: Float = 0.9055385f
+const val KEY_SWITCHER_RATIO: Float = 0.14142136f
 
 @Composable
 fun CalculatorScreen(
@@ -74,6 +85,7 @@ private fun MainPanel(
     modifier: Modifier,
     symbolFormatter: SymbolFormatter,
 ) {
+    var showFunctionKeyGrid by remember { mutableStateOf(false) }
     val deleteKey: Key =
         if (appState.isInputting) {
             Key.Backspace
@@ -128,6 +140,20 @@ private fun MainPanel(
             null,
         ),
     )
+    val functionKeyGrid: List<List<Key?>> = listOf(
+        listOf(null),
+        listOf(
+            Key.Sqrt,
+            Key.Log,
+            Key.Ln,
+        ),
+        listOf(
+            Key.Sin,
+            Key.Cos,
+            Key.Tan,
+        ),
+        listOf(null),
+    )
 
     BoxWithConstraints(
         modifier = modifier.background(AppTheme.calculatorScreenColors.background),
@@ -136,35 +162,69 @@ private fun MainPanel(
         val displayDiameter: Dp = minOf(maxWidth, maxHeight)
         val inscribedLength: Dp = displayDiameter * INSCRIBED_RATIO
         val panelWidth: Dp = displayDiameter * PANEL_RATIO
+        val keySwitcherLength: Dp = displayDiameter * KEY_SWITCHER_RATIO
 
         Column(
-            modifier = Modifier
-                .size(
-                    width = panelWidth,
-                    height = inscribedLength,
-                ),
+            modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
+            Spacer(
+                modifier = Modifier.size(keySwitcherLength)
+            )
+
             ExpressionBox(
                 appState = appState,
                 onShowHistory = onShowHistory,
-                modifier = Modifier
-                    .size(inscribedLength)
-                    .weight(1f),
+                modifier = Modifier.size(
+                    width = inscribedLength,
+                    height = inscribedLength / 5f
+                ),
                 symbolFormatter = symbolFormatter,
             )
 
-            KeyGrid(
-                keyGrid = mainKeyGrid,
-                onClick = { key ->
-                    onAction(key.appAction)
+            AnimatedContent(
+                targetState = showFunctionKeyGrid,
+                transitionSpec = {
+                    slideInVertically(
+                        animationSpec = tween(250),
+                        initialOffsetY = { height -> height },
+                    ) togetherWith slideOutVertically(
+                        animationSpec = tween(250),
+                        targetOffsetY = { height -> height }
+                    )
                 },
-                modifier = Modifier
-                    .size(panelWidth)
-                    .weight(4f),
-                arrangementSpace = 2.dp,
-                symbolFormatter = symbolFormatter,
-            )
+                modifier = Modifier.size(
+                    width = panelWidth,
+                    height = inscribedLength * (4f / 5f)
+                ),
+
+                ) { isShowFunctionKeyGrid ->
+                KeyGrid(
+                    keyGrid = if (isShowFunctionKeyGrid) {
+                        functionKeyGrid
+                    } else {
+                        mainKeyGrid
+                    },
+                    onClick = { key ->
+                        onAction(key.appAction)
+                    },
+                    modifier = Modifier.fillMaxSize(),
+                    arrangementSpace = 2.dp,
+                    symbolFormatter = symbolFormatter,
+                )
+            }
+
+            IconButton(
+                onClick = { showFunctionKeyGrid = !showFunctionKeyGrid },
+                modifier = Modifier.size(keySwitcherLength)
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_key_switcher),
+                    contentDescription = stringResource(R.string.content_description_key_switcher),
+                    modifier = Modifier.fillMaxSize(),
+                    tint = AppTheme.calculatorScreenColors.special,
+                )
+            }
         }
     }
 }

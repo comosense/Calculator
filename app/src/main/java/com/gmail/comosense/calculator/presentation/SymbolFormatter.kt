@@ -83,6 +83,12 @@ class SymbolFormatter(locale: Locale) {
             is Symbol.Numeric.Digit -> value.toString()
             is Symbol.Numeric.Point -> "."
             is Symbol.FactorStart.OpeningParenthesis -> "("
+            is Symbol.FactorStart.Function.Sqrt -> "Sqrt("
+            is Symbol.FactorStart.Function.Sin -> "Sin("
+            is Symbol.FactorStart.Function.Cos -> "Cos("
+            is Symbol.FactorStart.Function.Tan -> "Tan("
+            is Symbol.FactorStart.Function.Log -> "Log("
+            is Symbol.FactorStart.Function.Ln -> "Ln("
             is Symbol.FactorEnd.ClosingParenthesis -> ")"
             is Symbol.Operator.Add -> "+"
             is Symbol.Operator.Subtract -> "-"

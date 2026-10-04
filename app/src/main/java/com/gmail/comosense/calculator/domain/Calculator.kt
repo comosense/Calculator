@@ -155,21 +155,63 @@ private class Parser(
                 token.value
             }
 
-            is Token.FactorStart -> {
+            is Token.FactorStart.OpeningParenthesis -> {
                 position++
-                val value: BigDecimal = parseExpression()
-                if (isEnd() || tokens[position] !is Token.FactorEnd) {
-                    throw IllegalArgumentException("Missing FactorEnd")
-                }
+                parseFactorBody()
+            }
 
+            is Token.FactorStart.Function -> {
                 position++
-                value
+                applyFunction(token, parseFactorBody())
             }
 
             else -> {
                 throw IllegalArgumentException("Expected factor")
             }
         }
+    }
+
+    private fun parseFactorBody(): BigDecimal {
+        val value: BigDecimal = parseExpression()
+        if (isEnd() || tokens[position] !is Token.FactorEnd) {
+            throw IllegalArgumentException("Missing FactorEnd")
+        }
+
+        position++
+        return value
+    }
+
+    private fun applyFunction(
+        function: Token.FactorStart.Function,
+        value: BigDecimal,
+    ): BigDecimal {
+        val doubleValue: Double = value.toDouble()
+
+        val result: Double = when (function) {
+            Token.FactorStart.Function.Sqrt ->
+                kotlin.math.sqrt(doubleValue)
+
+            Token.FactorStart.Function.Sin ->
+                kotlin.math.sin(doubleValue)
+
+            Token.FactorStart.Function.Cos ->
+                kotlin.math.cos(doubleValue)
+
+            Token.FactorStart.Function.Tan ->
+                kotlin.math.tan(doubleValue)
+
+            Token.FactorStart.Function.Log ->
+                kotlin.math.log10(doubleValue)
+
+            Token.FactorStart.Function.Ln ->
+                kotlin.math.ln(doubleValue)
+        }
+
+        if (!result.isFinite()) {
+            throw ArithmeticException("Invalid function result")
+        }
+
+        return BigDecimal.valueOf(result).round(mathContext)
     }
 }
 

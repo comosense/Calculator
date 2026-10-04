@@ -25,6 +25,24 @@ fun ProtoSymbol.toSymbolOrNull(): Symbol? {
         ProtoSymbol.ValueCase.OPENING_PARENTHESIS ->
             Symbol.FactorStart.OpeningParenthesis
 
+        ProtoSymbol.ValueCase.SQRT ->
+            Symbol.FactorStart.Function.Sqrt
+
+        ProtoSymbol.ValueCase.SIN ->
+            Symbol.FactorStart.Function.Sin
+
+        ProtoSymbol.ValueCase.COS ->
+            Symbol.FactorStart.Function.Cos
+
+        ProtoSymbol.ValueCase.TAN ->
+            Symbol.FactorStart.Function.Tan
+
+        ProtoSymbol.ValueCase.LOG ->
+            Symbol.FactorStart.Function.Log
+
+        ProtoSymbol.ValueCase.LN ->
+            Symbol.FactorStart.Function.Ln
+
         ProtoSymbol.ValueCase.CLOSING_PARENTHESIS ->
             Symbol.FactorEnd.ClosingParenthesis
 
@@ -70,6 +88,36 @@ fun Symbol.toProto(): ProtoSymbol {
         Symbol.FactorStart.OpeningParenthesis ->
             ProtoSymbol.newBuilder()
                 .setOpeningParenthesis(true)
+                .build()
+
+        Symbol.FactorStart.Function.Sqrt ->
+            ProtoSymbol.newBuilder()
+                .setSqrt(true)
+                .build()
+
+        Symbol.FactorStart.Function.Sin ->
+            ProtoSymbol.newBuilder()
+                .setSin(true)
+                .build()
+
+        Symbol.FactorStart.Function.Cos ->
+            ProtoSymbol.newBuilder()
+                .setCos(true)
+                .build()
+
+        Symbol.FactorStart.Function.Tan ->
+            ProtoSymbol.newBuilder()
+                .setTan(true)
+                .build()
+
+        Symbol.FactorStart.Function.Log ->
+            ProtoSymbol.newBuilder()
+                .setLog(true)
+                .build()
+
+        Symbol.FactorStart.Function.Ln ->
+            ProtoSymbol.newBuilder()
+                .setLn(true)
                 .build()
 
         Symbol.FactorEnd.ClosingParenthesis ->
