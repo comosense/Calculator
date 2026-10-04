@@ -155,6 +155,11 @@ private class Parser(
                 token.value
             }
 
+            is Token.Constant -> {
+                position++
+                parseConstant(token)
+            }
+
             is Token.FactorStart.OpeningParenthesis -> {
                 position++
                 parseFactorBody()
@@ -209,6 +214,22 @@ private class Parser(
 
         if (!result.isFinite()) {
             throw ArithmeticException("Invalid function result")
+        }
+
+        return BigDecimal.valueOf(result).round(mathContext)
+    }
+
+    private fun parseConstant(constant: Token.Constant): BigDecimal {
+        val result: Double = when (constant) {
+            Token.Constant.Pi ->
+                kotlin.math.PI
+
+            Token.Constant.Euler ->
+                kotlin.math.E
+        }
+
+        if (!result.isFinite()) {
+            throw ArithmeticException("Invalid constant")
         }
 
         return BigDecimal.valueOf(result).round(mathContext)

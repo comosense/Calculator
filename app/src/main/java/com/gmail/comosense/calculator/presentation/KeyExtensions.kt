@@ -61,6 +61,12 @@ val Key.appAction: AppAction
         is Key.Backspace ->
             AppAction.Backspace
 
+        is Key.Pi ->
+            AppAction.Input(Symbol.Constant.Pi)
+
+        is Key.Euler ->
+            AppAction.Input(Symbol.Constant.Euler)
+
         is Key.Sqrt ->
             AppAction.Input(Symbol.FactorStart.Function.Sqrt)
 
@@ -113,6 +119,8 @@ val Key.style: Style
         is Key.Backspace ->
             Style.Command
 
+        is Key.Pi,
+        is Key.Euler,
         is Key.Sqrt,
         is Key.Sin,
         is Key.Cos,
@@ -194,6 +202,12 @@ fun Key.display(symbolFormatter: SymbolFormatter): Display = when (this) {
             painterResource = R.drawable.ic_backspace,
             stringResource = R.string.content_description_backspace,
         )
+
+    is Key.Pi ->
+        Display.Text("π")
+
+    is Key.Euler ->
+        Display.Text("e")
 
     is Key.Sqrt ->
         Display.Text("sqrt")

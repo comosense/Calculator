@@ -33,7 +33,10 @@ message Symbol {
     bool sin = 32;
     bool cos = 33;
     bool tan = 34;
-    bool log = 64;
-    bool ln = 65;
+    bool log = 48;
+    bool ln = 49;
+
+    bool pi = 64;
+    bool euler = 65;
   }
 }

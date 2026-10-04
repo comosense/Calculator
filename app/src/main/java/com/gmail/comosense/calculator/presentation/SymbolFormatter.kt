@@ -82,6 +82,8 @@ class SymbolFormatter(locale: Locale) {
             is Symbol.Sign.Negative -> "-"
             is Symbol.Numeric.Digit -> value.toString()
             is Symbol.Numeric.Point -> "."
+            is Symbol.Constant.Pi -> "π"
+            is Symbol.Constant.Euler -> "e"
             is Symbol.FactorStart.OpeningParenthesis -> "("
             is Symbol.FactorStart.Function.Sqrt -> "Sqrt("
             is Symbol.FactorStart.Function.Sin -> "Sin("

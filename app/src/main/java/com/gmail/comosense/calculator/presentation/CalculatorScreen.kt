@@ -141,16 +141,20 @@ private fun MainPanel(
         ),
     )
     val functionKeyGrid: List<List<Key?>> = listOf(
-        listOf(null),
         listOf(
             Key.Sqrt,
-            Key.Log,
-            Key.Ln,
+            Key.Pi,
+            Key.Euler,
         ),
         listOf(
             Key.Sin,
             Key.Cos,
             Key.Tan,
+        ),
+        listOf(
+            Key.Log,
+            Key.Ln,
+            null,
         ),
         listOf(null),
     )

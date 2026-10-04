@@ -16,6 +16,11 @@ sealed interface Symbol {
         data object Point : Numeric
     }
 
+    sealed interface Constant : Symbol {
+        data object Pi : Constant
+        data object Euler : Constant
+    }
+
     sealed interface FactorStart : Symbol {
         data object OpeningParenthesis : FactorStart
         sealed interface Function : FactorStart {

@@ -22,6 +22,12 @@ fun ProtoSymbol.toSymbolOrNull(): Symbol? {
         ProtoSymbol.ValueCase.POINT ->
             Symbol.Numeric.Point
 
+        ProtoSymbol.ValueCase.PI ->
+            Symbol.Constant.Pi
+
+        ProtoSymbol.ValueCase.EULER ->
+            Symbol.Constant.Euler
+
         ProtoSymbol.ValueCase.OPENING_PARENTHESIS ->
             Symbol.FactorStart.OpeningParenthesis
 
@@ -83,6 +89,16 @@ fun Symbol.toProto(): ProtoSymbol {
         Symbol.Numeric.Point ->
             ProtoSymbol.newBuilder()
                 .setPoint(true)
+                .build()
+
+        Symbol.Constant.Pi ->
+            ProtoSymbol.newBuilder()
+                .setPi(true)
+                .build()
+
+        Symbol.Constant.Euler ->
+            ProtoSymbol.newBuilder()
+                .setEuler(true)
                 .build()
 
         Symbol.FactorStart.OpeningParenthesis ->

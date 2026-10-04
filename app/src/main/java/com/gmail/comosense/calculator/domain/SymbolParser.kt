@@ -65,6 +65,12 @@ private val Symbol.toToken: Result<Token, SymbolParserError>
         is Symbol.Sign.Negative ->
             Result.Ok(Token.Sign.Negative)
 
+        is Symbol.Constant.Pi ->
+            Result.Ok(Token.Constant.Pi)
+
+        is Symbol.Constant.Euler ->
+            Result.Ok(Token.Constant.Euler)
+
         is Symbol.FactorStart.OpeningParenthesis ->
             Result.Ok(Token.FactorStart.OpeningParenthesis)
 
