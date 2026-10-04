@@ -212,11 +212,11 @@ $$
 
 ## Summary
 
-The mathematical values of the three ratios are:
+The mathematical values of the ratios are:
 
 $$
 \begin{aligned}
-INSCRIBED\\_LENGTH\\_RATIO &= \frac{ 1 } { \sqrt{ 2 } } \approx 0.70710678118654752440084436210485...\\
+\text{INSCRIBED\_LENGTH\_RATIO} &= \frac{ 1 } { \sqrt{ 2 } } \approx 0.70710678118654752440084436210485...\\
 PANEL\\_WIDTH\\_RATIO &= \sqrt{ \frac{ 41 }{ 50 } } \approx 0.90553851381374166265738081669841...\\
 KEY\\_SWITCHER\\_LENGTH\\_RATIO &= \frac { \sqrt{ 2 } }{ 10 } \approx 0.14142135623730950488016887242097...\\
 \end{aligned}
