@@ -55,9 +55,9 @@ import com.gmail.comosense.calculator.presentation.theme.AppTheme
 
 // Ratios derived from the geometry of the display area and panels.
 // See doc/calculator-screen-constants.md for the derivation.
-const val INSCRIBED_RATIO: Float = 0.70710677f
-const val PANEL_RATIO: Float = 0.9055385f
-const val KEY_SWITCHER_RATIO: Float = 0.14142136f
+const val INSCRIBED_LENGTH_RATIO: Float = 0.70710677f
+const val PANEL_WIDTH_RATIO: Float = 0.9055385f
+const val KEY_SWITCHER_LENGTH_RATIO: Float = 0.14142136f
 
 @Composable
 fun CalculatorScreen(
@@ -164,9 +164,9 @@ private fun MainPanel(
         contentAlignment = Alignment.Center,
     ) {
         val displayDiameter: Dp = minOf(maxWidth, maxHeight)
-        val inscribedLength: Dp = displayDiameter * INSCRIBED_RATIO
-        val panelWidth: Dp = displayDiameter * PANEL_RATIO
-        val keySwitcherLength: Dp = displayDiameter * KEY_SWITCHER_RATIO
+        val inscribedLength: Dp = displayDiameter * INSCRIBED_LENGTH_RATIO
+        val panelWidth: Dp = displayDiameter * PANEL_WIDTH_RATIO
+        val keySwitcherLength: Dp = displayDiameter * KEY_SWITCHER_LENGTH_RATIO
 
         Column(
             modifier = Modifier.fillMaxSize(),

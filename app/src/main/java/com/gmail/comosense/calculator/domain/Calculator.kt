@@ -109,30 +109,6 @@ private class Parser(
         return value
     }
 
-    //    private fun parseTerm(): BigDecimal {
-//        var value: BigDecimal = parseFactor()
-//
-//        while (!isEnd()) {
-//            value = when (tokens[position]) {
-//                is Token.Operator.Multiply -> {
-//                    position++
-//                    value.multiply(parseFactor(), mathContext)
-//                }
-//
-//                is Token.Operator.Divide -> {
-//                    position++
-//                    val divisor: BigDecimal = parseFactor()
-//                    if (divisor.compareTo(BigDecimal.ZERO) == 0) {
-//                        throw DivisionByZeroException()
-//                    }
-//                    value.divide(divisor, mathContext)
-//                }
-//
-//                else -> return value
-//            }
-//        }
-//        return value
-//    }
     private fun parseTerm(): BigDecimal {
         var value: BigDecimal = parseSign()
 
@@ -191,16 +167,6 @@ private class Parser(
         }
 
         return when (val token: Token = tokens[position]) {
-//            is Token.Sign.Positive -> {
-//                position++
-//                parseFactor()
-//            }
-//
-//            is Token.Sign.Negative -> {
-//                position++
-//                parseFactor().negate(mathContext)
-//            }
-//
             is Token.Numeric -> {
                 position++
                 token.value
