@@ -47,6 +47,10 @@ sealed interface Symbol {
         data object Subtract : Operator
         data object Multiply : Operator
         data object Divide : Operator
-        data object Power : Operator
+    }
+
+    sealed interface SpecialOperator : Symbol {
+        data object Power : SpecialOperator
+        data object Factorial : SpecialOperator
     }
 }

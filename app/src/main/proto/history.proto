@@ -28,10 +28,12 @@ message Symbol {
     bool subtract = 12;
     bool multiply = 13;
     bool divide = 14;
-    bool power = 15;
 
-    bool pi = 16;
-    bool euler = 17;
+    bool power = 16;
+    bool factorial = 17;
+
+    bool pi = 24;
+    bool euler = 25;
     bool sqrt = 32;
     bool sin = 40;
     bool cos = 41;

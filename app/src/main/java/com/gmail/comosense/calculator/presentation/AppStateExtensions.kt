@@ -114,12 +114,15 @@ private fun AppState.symbolsToAppendOrNull(symbol: Symbol): List<Symbol>? {
 private fun Symbol.isAppendableAfter(previous: Symbol?): Boolean = when (this) {
     is Symbol.Sign ->
         previous == null ||
+                previous is Symbol.Factor ||
                 previous is Symbol.FactorStart ||
-                previous is Symbol.Operator
+                previous is Symbol.Operator ||
+                previous is Symbol.SpecialOperator.Power
 
     is Symbol.Numeric.Digit ->
         previous !is Symbol.Constant &&
-                previous !is Symbol.FactorEnd
+                previous !is Symbol.FactorEnd &&
+                previous !is Symbol.SpecialOperator.Factorial
 
     is Symbol.Numeric.Point ->
         previous is Symbol.Numeric.Digit
@@ -131,11 +134,14 @@ private fun Symbol.isAppendableAfter(previous: Symbol?): Boolean = when (this) {
                 previous is Symbol.Sign ||
                 previous is Symbol.Factor ||
                 previous is Symbol.FactorStart ||
-                previous is Symbol.Operator
+                previous is Symbol.Operator ||
+                previous is Symbol.SpecialOperator.Power
 
     is Symbol.FactorEnd,
-    is Symbol.Operator ->
+    is Symbol.Operator,
+    is Symbol.SpecialOperator ->
         previous is Symbol.Numeric.Digit ||
                 previous is Symbol.Constant ||
-                previous is Symbol.FactorEnd
+                previous is Symbol.FactorEnd ||
+                previous is Symbol.SpecialOperator.Factorial
 }

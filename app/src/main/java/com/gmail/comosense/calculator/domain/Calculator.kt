@@ -2,6 +2,7 @@ package com.gmail.comosense.calculator.domain
 
 import com.gmail.comosense.calculator.common.Result
 import java.math.BigDecimal
+import java.math.BigInteger
 import java.math.MathContext
 import java.math.RoundingMode
 import kotlin.math.pow
@@ -152,14 +153,25 @@ private class Parser(
     }
 
     private fun parsePower(): BigDecimal {
-        val base = parseFactor()
+        val base: BigDecimal = parseFactorial()
 
-        return if (tokens.getOrNull(position) is Token.Operator.Power) {
+        return if (tokens.getOrNull(position) is Token.SpecialOperator.Power) {
             position++
             applyPower(base, parseSign())
         } else {
             base
         }
+    }
+
+    private fun parseFactorial(): BigDecimal {
+        var value: BigDecimal = parseFactor()
+
+        while (tokens.getOrNull(position) is Token.SpecialOperator.Factorial) {
+            position++
+            value = applyFactorial(value)
+        }
+
+        return value
     }
 
     private fun parseFactor(): BigDecimal {
@@ -221,6 +233,28 @@ private class Parser(
         }
 
         return applyResult(baseDouble.pow(exponentDouble))
+    }
+
+    private fun applyFactorial(value: BigDecimal): BigDecimal {
+        val integerValue = try {
+            value.toBigIntegerExact()
+        } catch (_: ArithmeticException) {
+            throw ArithmeticException("Factorial requires an integer")
+        }
+
+        if (integerValue < BigInteger.ZERO) {
+            throw ArithmeticException("Factorial requires a non-negative integer")
+        }
+
+        var result: BigInteger = BigInteger.ONE
+        var i: BigInteger = BigInteger.ONE
+
+        while (i <= integerValue) {
+            result = result.multiply(i)
+            i = i.add(BigInteger.ONE)
+        }
+
+        return BigDecimal(result).round(mathContext)
     }
 
     private fun applyFunction(

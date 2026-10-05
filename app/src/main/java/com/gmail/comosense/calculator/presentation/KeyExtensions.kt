@@ -53,7 +53,10 @@ val Key.appAction: AppAction
             AppAction.Input(Symbol.Operator.Divide)
 
         is Key.Power ->
-            AppAction.Input(Symbol.Operator.Power)
+            AppAction.Input(Symbol.SpecialOperator.Power)
+
+        is Key.Factorial ->
+            AppAction.Input(Symbol.SpecialOperator.Factorial)
 
         is Key.Equal ->
             AppAction.Calculate
@@ -123,6 +126,7 @@ val Key.style: Style
             Style.Command
 
         is Key.Power,
+        is Key.Factorial,
         is Key.Pi,
         is Key.Euler,
         is Key.Sqrt,
@@ -191,6 +195,9 @@ fun Key.display(symbolFormatter: SymbolFormatter): Display = when (this) {
 
     is Key.Power ->
         Display.Text("^")
+
+    is Key.Factorial ->
+        Display.Text("!")
 
     is Key.Equal ->
         Display.Icon(

@@ -150,7 +150,12 @@ private fun MainPanel(
         listOf(
             Key.Sqrt,
             Key.Power,
-            Key.Pi,
+            Key.Factorial,
+        ),
+        listOf(
+            Key.Log,
+            Key.Ln,
+            Key.Euler,
         ),
         listOf(
             Key.Sin,
@@ -158,11 +163,10 @@ private fun MainPanel(
             Key.Tan,
         ),
         listOf(
-            Key.Log,
-            Key.Ln,
-            Key.Euler,
+            null,
+            Key.Pi,
+            null,
         ),
-        listOf(null),
     )
 
     BoxWithConstraints(

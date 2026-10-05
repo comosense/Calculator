@@ -96,6 +96,7 @@ class SymbolFormatter(locale: Locale) {
             is Symbol.Operator.Subtract -> "-"
             is Symbol.Operator.Multiply -> "×"
             is Symbol.Operator.Divide -> "÷"
-            is Symbol.Operator.Power -> "^"
+            is Symbol.SpecialOperator.Power -> "^"
+            is Symbol.SpecialOperator.Factorial -> "!"
         }
 }

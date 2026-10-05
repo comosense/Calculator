@@ -12,6 +12,7 @@ sealed interface Key {
     data object Multiply : Key
     data object Divide : Key
     data object Power : Key
+    data object Factorial : Key
     data object Equal : Key
     data object Clear : Key
     data object Backspace : Key
