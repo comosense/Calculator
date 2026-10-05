@@ -11,24 +11,24 @@ This document describes how the following constants used in `CalculatorScreen.kt
 ![Geometry used to derive the display and panel ratios](fig/calculator-screen-constants.png)
 
 * The display area is a circle with diameter `d`.
-* Quadrilateral `ABCD` is a square inscribed in the display area.
-* Quadrilateral `EFGH` has vertices `E` and `H` on the circumference of the display area.
-* Sides `GF` and `BC` lie on the same line.
-* The ratio of the side length of square `ABCD` to `EF` (or `GH`) is 5:4.
-* Point `P` is the foot of the perpendicular from `E` to the horizontal line passing through the center `O`.
-* Quadrilateral `IJKL` is a square and has vertices `J` and `K` on the circumference of the display area.
-* Sides `IL` and `BC` lie on the same line.
-* Point `Q` and `R` are the feet of the perpendiculars from `I` and `J`, respectively, to the horizontal line passing through the center `O`.
+* Quadrilateral $ABCD$ is a square inscribed in the display circle.
+* Quadrilateral $EFGH$ has vertices $E$ and $H$ on the circumference of the display circle.
+* Sides $GF$ and $BC$ lie on the same line.
+* The ratio of the side length of square $ABCD$ to $EF$ (or $GH$) is $5:4$.
+* Point $P$ is the foot of the perpendicular from $E$ to the horizontal line passing through the center $O$.
+* Quadrilateral $IJKL$ is a square and has vertices $J$ and $K$ on the circumference of the display circle.
+* Sides $IL$ and $BC$ lie on the same line.
+* Point $Q$ and $R$ are the feet of the perpendiculars from $I$ and $J$, respectively, to the horizontal line passing through the center $O$.
 
-`INSCRIBED_LENGTH_RATIO` represents the ratio of the side length `AB` of the inscribed square `ABCD` to the diameter `d` of the display area.
+`INSCRIBED_LENGTH_RATIO` is the ratio of the side length $AB$ of the inscribed square $ABCD$ to the diameter `d` of the display circle.
 
-`PANEL_WIDTH_RATIO` represents the ratio of the side length `EH` to the diameter `d` of the display area.
+`PANEL_WIDTH_RATIO` is the ratio of the side length $EH$ to the diameter `d` of the display circle.
 
-`KEY_SWITCHER_LENGTH_RATIO` represents the ratio of the side length `IL` of the square `IJKL` to the diameter `d` of the display area.
+`KEY_SWITCHER_LENGTH_RATIO` is the ratio of the side length $IL$ of the square $IJKL$ to the diameter `d` of the display circle.
 
-## Quadrilateral ABCD
+## Quadrilateral $ABCD$
 
-`ABCD` is a square, and its diagonal `BD` is equal to the diameter `d` of the display area.
+$ABCD$ is a square inscribed in the display circle, so its diagonal $BD$ is equal to the diameter `d` of the display circle.
 
 For a square, the diagonal is $\sqrt{2}$ times the side length:
 
@@ -46,7 +46,7 @@ AD = \frac{ 1 } { \sqrt{ 2 } } d\\
 \end{aligned}
 $$
 
-Since all sides of `ABCD` have the same length,
+Since all sides of $ABCD$ have the same length,
 
 $$
 \begin{aligned}
@@ -62,9 +62,9 @@ INSCRIBED\\_LENGTH\\_RATIO = \frac{ 1 } { \sqrt{ 2 } } \approx 0.707106781186547
 \end{aligned}
 $$
 
-## Quadrilateral EFGH
+## Quadrilateral $EFGH$
 
-The side lengths of `ABCD` and `EFGH` satisfy
+The side lengths of $ABCD$ and $EFGH$ satisfy
 
 $$
 \begin{aligned}
@@ -72,7 +72,7 @@ EF = \frac{ 4 }{ 5 }AB\\
 \end{aligned}
 $$
 
-First, calculate the vertical distance `EP`.
+First, calculate the vertical distance $EP$.
 
 From the geometry shown in the diagram,
 
@@ -94,7 +94,7 @@ EP &= \frac{ 1 }{ 2 } AB - AB + EF\\
 \end{aligned}
 $$
 
-Since `E` lies on the circumference of the display area,
+Since $E$ lies on the circumference of the display circle,
 
 $$
 \begin{aligned}
@@ -102,7 +102,7 @@ OE = \frac{ 1 }{ 2 } d\\
 \end{aligned}
 $$
 
-Triangle `OPE` is a right triangle. Applying the Pythagorean theorem,
+Triangle $OPE$ is a right triangle. Applying the Pythagorean theorem,
 
 $$
 \begin{aligned}
@@ -113,7 +113,7 @@ OP &= \sqrt{ OE^2 - EP^2 }\\
 \end{aligned}
 $$
 
-Since `O` is the center of the circle and `OP` is perpendicular to chord `EH`, `OP` bisects `EH`, so
+Since $O$ is the center of the circle and $OP$ is perpendicular to chord $EH$, $OP$ bisects $EH$, so
 
 $$
 \begin{aligned}
@@ -138,9 +138,9 @@ PANEL\\_WIDTH\\_RATIO = \sqrt{ \frac{ 41 }{ 50 } } \approx 0.9055385138137416626
 \end{aligned}
 $$
 
-## Quadrilateral IJKL
+## Quadrilateral $IJKL$
 
-Triangle `ORJ` is a right triangle. Applying the Pythagorean theorem,
+Triangle $ORJ$ is a right triangle. Applying the Pythagorean theorem,
 
 $$
 \begin{aligned}
@@ -149,7 +149,7 @@ OR^2 + JR^2 &= OJ^2\\
 \end{aligned}
 $$
 
-Since `J` lies on the circumference of the display area,
+Since $J$ lies on the circumference of the display circle,
 
 $$
 \begin{aligned}
@@ -157,7 +157,7 @@ OJ = \frac{ 1 }{ 2 } d\\
 \end{aligned}
 $$
 
-From the calculation above, `OQ` is given by
+From the calculation above, $OQ$ is given by
 
 $$
 \begin{aligned}
@@ -166,38 +166,43 @@ OQ &= \frac{ 1 }{ 2 } AB\\
 \end{aligned}
 $$
 
-Also, since `JR` is half the length of `QR`, we have
+Since $IJKL$ is a square, $IJ = JK$. Because $R$ is the projection of $J$ onto the center line and $Q$ is the projection of $I$, the horizontal distance $QR$ equals $IJ$, while $JR$ is half of $IJ$.
 
 $$
 \begin{aligned}
 \left( \frac{ 1 } { 2 \sqrt{ 2 } } d + QR \right)^2 + \left( \frac{ 1 }{ 2 } QR \right)^2 &= \left( \frac{ 1 }{ 2 } d \right)^2\\
+\left( \frac{ 1 }{ 8 } d^2 + \frac{ 1 } { \sqrt{ 2 } } d \cdot QR + QR^2 \right) + \left( \frac{ 1 }{ 4 } QR^2 \right) &= \left( \frac{ 1 }{ 4 } d^2 \right)\\
+\frac{ 5 }{ 4 } QR^2 + \frac{ 1 } { \sqrt{ 2 } } d \cdot QR - \frac{ 1 }{ 8 } d^2 &= 0\\
+10 \cdot QR^2 + 4 \sqrt{ 2 } \cdot d \cdot QR - d^2 &= 0\\
 \end{aligned}
 $$
 
-Solving this equation for `QR` gives
+Solving this equation for $QR$ gives
 
 $$
 \begin{aligned}
-QR = \frac { -2 \sqrt{ 2 } \pm 3 \sqrt{ 2 } }{ 10 } d\\
+QR &= \frac{ -4 \sqrt{ 2 } \cdot d \pm \sqrt{ ( 4 \sqrt{ 2 } \cdot d )^2 - 4 \cdot 10 (-d^2) }}{ 2 \cdot 10}\\
+QR &= \frac{ -4 \sqrt{ 2 } \pm \sqrt{ 72 }}{ 2 \cdot 10} d\\
+ &= \frac{ -2 \sqrt{ 2 } \pm 3 \sqrt{ 2 } }{ 10 } d\\
 \end{aligned}
 $$
 
-Since `QR` is positive,
+Since $QR$ represents a length, we take the positive solution:
 
 $$
 \begin{aligned}
-QR &= \frac { -2 \sqrt{ 2 } + 3 \sqrt{ 2 } }{ 10 } d\\
- &= \frac { \sqrt{ 2 } }{ 10 } d\\
+QR &= \frac{ -2 \sqrt{ 2 } + 3 \sqrt{ 2 } }{ 10 } d\\
+ &= \frac{ \sqrt{ 2 } }{ 10 } d\\
 \end{aligned}
 $$
 
-`QR` has the same length as `IJ`, and all sides of `IJKL` have the same length,
+$QR$ has the same length as $IJ$, and all sides of $IJKL$ have the same length,
 
 Therefore,
 
 $$
 \begin{aligned}
-QR = IJ = JK = KL = IL = \frac { \sqrt{ 2 } }{ 10 }d\\
+QR = IJ = JK = KL = IL = \frac{ \sqrt{ 2 } }{ 10 }d\\
 \end{aligned}
 $$
 
@@ -205,10 +210,9 @@ Thus,
 
 $$
 \begin{aligned}
-KEY\\_SWITCHER\\_LENGTH\\_RATIO = \frac { \sqrt{ 2 } }{ 10 } \approx 0.14142135623730950488016887242097...\\
+KEY\\_SWITCHER\\_LENGTH\\_RATIO = \frac{ \sqrt{ 2 } }{ 10 } \approx 0.14142135623730950488016887242097...\\
 \end{aligned}
 $$
-
 
 ## Summary
 
@@ -218,7 +222,7 @@ $$
 \begin{aligned}
 INSCRIBED\\_LENGTH\\_RATIO &= \frac{ 1 } { \sqrt{ 2 } } \approx 0.70710678118654752440084436210485...\\
 PANEL\\_WIDTH\\_RATIO &= \sqrt{ \frac{ 41 }{ 50 } } \approx 0.90553851381374166265738081669841...\\
-KEY\\_SWITCHER\\_LENGTH\\_RATIO &= \frac { \sqrt{ 2 } }{ 10 } \approx 0.14142135623730950488016887242097...\\
+KEY\\_SWITCHER\\_LENGTH\\_RATIO &= \frac{ \sqrt{ 2 } }{ 10 } \approx 0.14142135623730950488016887242097...\\
 \end{aligned}
 $$
 
