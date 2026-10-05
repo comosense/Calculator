@@ -176,6 +176,7 @@ private fun MainPanel(
 
         Column(
             modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Spacer(
