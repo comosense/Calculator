@@ -31,13 +31,13 @@ sealed interface AppAction {
 
 class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel() {
     companion object {
-        private const val CALCULATION_PRECISION: Int = 16
+        private const val CALCULATION_PRECISION: Int = 20
         private const val DISPLAY_SCALE: Int = 16
     }
 
     class Factory(private val application: Application) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            if (modelClass.isAssignableFrom(AppViewModel::class.java)) {
+            if (AppViewModel::class.java.isAssignableFrom(modelClass)) {
                 @Suppress("UNCHECKED_CAST")
                 return AppViewModel(HistoryRepository(application.historyDataStore)) as T
             }
