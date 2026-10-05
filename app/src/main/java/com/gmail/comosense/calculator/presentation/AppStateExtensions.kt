@@ -129,7 +129,7 @@ private fun Symbol.isAppendableAfter(previous: Symbol?): Boolean = when (this) {
     is Symbol.FactorStart ->
         previous == null ||
                 previous is Symbol.Sign ||
-                previous is Symbol.Factor.Function ||
+                previous is Symbol.Factor ||
                 previous is Symbol.FactorStart ||
                 previous is Symbol.Operator
 
