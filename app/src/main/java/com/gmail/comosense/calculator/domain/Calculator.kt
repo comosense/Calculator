@@ -10,11 +10,13 @@ import kotlin.math.pow
 enum class CalculatorError {
     InvalidExpression,
     DivisionByZero,
+    LargeArgument,
     Arithmetic,
     Unsupported,
 }
 
 private class DivisionByZeroException : ArithmeticException()
+private class LargeArgumentException : ArithmeticException()
 
 fun calculate(
     expression: List<Symbol>,
@@ -70,6 +72,8 @@ private fun calculateTokens(
         }
     } catch (_: DivisionByZeroException) {
         Result.Err(CalculatorError.DivisionByZero)
+    } catch (_: LargeArgumentException) {
+        Result.Err(CalculatorError.LargeArgument)
     } catch (_: IllegalArgumentException) {
         Result.Err(CalculatorError.InvalidExpression)
     } catch (_: ArithmeticException) {
@@ -251,7 +255,7 @@ private class Parser(
         }
 
         if (integerValue > MAX_FACTORIAL_ARGUMENT.toBigInteger()) {
-            throw ArithmeticException("Factorial argument is too large")
+            throw LargeArgumentException()
         }
         var result: BigInteger = BigInteger.ONE
         var i: BigInteger = BigInteger.ONE

@@ -4,6 +4,7 @@
     <string name="delete_all">Delete All</string>
     <string name="calculator_error_invalid_expression">Invalid expression</string>
     <string name="calculator_error_division_by_zero">Division by zero</string>
+    <string name="calculator_error_large_argument">Too large argument</string>
     <string name="calculator_error_arithmetic">Arithmetic error</string>
     <string name="calculator_error_unsupported">Unsupported error</string>
     <string name="content_description_positive">Positive</string>
