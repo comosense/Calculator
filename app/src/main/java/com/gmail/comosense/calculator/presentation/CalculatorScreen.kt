@@ -1,6 +1,9 @@
 package com.gmail.comosense.calculator.presentation
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.AnimationVector1D
+import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
@@ -31,6 +34,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
@@ -242,11 +248,53 @@ private fun ExpressionBox(
 ) {
     val scrollState: ScrollState = rememberScrollState()
     val textMeasurer: TextMeasurer = rememberTextMeasurer()
-
     val expression: String = symbolFormatter.format(appState.expression).ifEmpty { "0" }
 
+    val blinkProgress: Animatable<Float, AnimationVector1D> = remember { Animatable(0f) }
+    val blinkColor: Color = AppTheme.calculatorScreenColors.expressionBlinkBackground
+
+    LaunchedEffect(appState.histories) {
+        repeat(2) {
+            blinkProgress.animateTo(
+                targetValue = 1f,
+                animationSpec = tween(
+                    durationMillis = 180,
+                    easing = FastOutSlowInEasing,
+                ),
+            )
+            blinkProgress.animateTo(
+                targetValue = 0f,
+                animationSpec = tween(
+                    durationMillis = 350,
+                    easing = FastOutSlowInEasing,
+                ),
+            )
+        }
+    }
+
     BoxWithConstraints(
-        modifier = modifier.clickable { onShowHistory() },
+        modifier = modifier
+            .clickable { onShowHistory() }
+            .drawBehind {
+                if (blinkProgress.value > 0f) {
+                    drawRoundRect(
+                        brush = Brush.radialGradient(
+                            colors = listOf(
+                                blinkColor.copy(alpha = 0.38f * blinkProgress.value),
+                                blinkColor.copy(alpha = 0.20f * blinkProgress.value),
+                                blinkColor.copy(alpha = 0.05f * blinkProgress.value),
+                                Color.Transparent
+                            ),
+                            center = center,
+                            radius = size.maxDimension * 0.5f,
+                        ),
+                        cornerRadius = CornerRadius(
+                            x = size.minDimension * 0.5f,
+                            y = size.minDimension * 0.5f,
+                        )
+                    )
+                }
+            },
         contentAlignment = Alignment.Center,
     ) {
         val density: Density = LocalDensity.current

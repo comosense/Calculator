@@ -7,6 +7,7 @@ import androidx.compose.ui.graphics.Color
 data class CalculatorScreenColors(
     val background: Color,
     val expression: Color,
+    val expressionBlinkBackground: Color,
     val digitKeyContainer: Color,
     val digitKeyContent: Color,
     val operatorKeyContainer: Color,

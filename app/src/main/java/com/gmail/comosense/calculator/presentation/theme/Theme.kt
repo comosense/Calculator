@@ -53,6 +53,7 @@ fun AppTheme(
         val calculatorScreenColors = CalculatorScreenColors(
             background = MaterialTheme.colorScheme.surfaceContainer,
             expression = MaterialTheme.colorScheme.onSurface,
+            expressionBlinkBackground = MaterialTheme.colorScheme.primaryDim,
             digitKeyContainer = MaterialTheme.colorScheme.surfaceContainer,
             digitKeyContent = MaterialTheme.colorScheme.onSurface,
             operatorKeyContainer = MaterialTheme.colorScheme.tertiary,
