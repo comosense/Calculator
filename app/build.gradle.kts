@@ -14,7 +14,7 @@ android {
         applicationId = "com.gmail.comosense.calculator"
         minSdk = 30
         targetSdk = 37
-        versionCode = 108
+        versionCode = 109
         versionName = "2026.10.05.1500"
 
     }
