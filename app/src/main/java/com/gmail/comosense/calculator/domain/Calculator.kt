@@ -4,6 +4,7 @@ import com.gmail.comosense.calculator.common.Result
 import java.math.BigDecimal
 import java.math.MathContext
 import java.math.RoundingMode
+import kotlin.math.pow
 
 enum class CalculatorError {
     InvalidExpression,
@@ -155,7 +156,7 @@ private class Parser(
 
         return if (tokens.getOrNull(position) is Token.Operator.Power) {
             position++
-            base.pow(parseSign().intValueExact(), mathContext)
+            applyPower(base, parseSign())
         } else {
             base
         }
@@ -208,6 +209,20 @@ private class Parser(
         return value
     }
 
+    private fun applyPower(
+        base: BigDecimal,
+        exponent: BigDecimal,
+    ): BigDecimal {
+        val baseDouble: Double = base.toDouble()
+        val exponentDouble: Double = exponent.toDouble()
+
+        if (!baseDouble.isFinite() || !exponentDouble.isFinite()) {
+            throw ArithmeticException("Invalid power operand")
+        }
+
+        return applyResult(baseDouble.pow(exponentDouble))
+    }
+
     private fun applyFunction(
         function: Token.Factor.Function,
         value: BigDecimal,
@@ -250,7 +265,7 @@ private class Parser(
 
     private fun applyResult(result: Double): BigDecimal {
         if (!result.isFinite()) {
-            throw ArithmeticException("Invalid function result")
+            throw ArithmeticException("Invalid result")
         }
 
         return BigDecimal.valueOf(result).round(mathContext)
