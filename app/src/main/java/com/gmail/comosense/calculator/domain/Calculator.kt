@@ -81,6 +81,10 @@ private class Parser(
     private val tokens: List<Token>,
     precision: Int,
 ) {
+    companion object {
+        private const val MAX_FACTORIAL_ARGUMENT = 100
+    }
+
     private val mathContext: MathContext = MathContext(
         precision,
         RoundingMode.HALF_UP,
@@ -246,6 +250,9 @@ private class Parser(
             throw ArithmeticException("Factorial requires a non-negative integer")
         }
 
+        if (integerValue > MAX_FACTORIAL_ARGUMENT.toBigInteger()) {
+            throw ArithmeticException("Factorial argument is too large")
+        }
         var result: BigInteger = BigInteger.ONE
         var i: BigInteger = BigInteger.ONE
 
