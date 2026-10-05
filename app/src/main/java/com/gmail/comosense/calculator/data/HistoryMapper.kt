@@ -182,6 +182,12 @@ fun Symbol.toProto(): ProtoSymbol {
 fun ProtoHistory.toHistoryOrNull(): History? {
     if (id.isEmpty()) return null
 
+    if (expressionCount > HistoryConstraints.MAX_EXPRESSION_SIZE ||
+        resultCount > HistoryConstraints.MAX_RESULT_SIZE
+    ) {
+        return null
+    }
+
     val expression: List<Symbol> = buildList {
         for (symbol in expressionList) {
             add(symbol.toSymbolOrNull() ?: return null)

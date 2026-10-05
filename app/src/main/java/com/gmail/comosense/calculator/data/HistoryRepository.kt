@@ -8,10 +8,6 @@ import kotlinx.coroutines.flow.map
 import java.util.UUID
 
 class HistoryRepository(private val dataStore: DataStore<HistoryStore>) {
-    companion object {
-        private const val MAX_HISTORIES_SIZE: Int = 50
-    }
-
     val histories: Flow<List<History>> =
         dataStore.data.map { store ->
             store.historiesList.mapNotNull { history ->
@@ -20,6 +16,12 @@ class HistoryRepository(private val dataStore: DataStore<HistoryStore>) {
         }
 
     suspend fun addHistory(expression: List<Symbol>, result: List<Symbol>) {
+        if (expression.size > HistoryConstraints.MAX_EXPRESSION_SIZE ||
+            result.size > HistoryConstraints.MAX_RESULT_SIZE
+        ) {
+            return
+        }
+
         dataStore.updateData { store ->
             val newHistory = History(
                 id = UUID.randomUUID().toString(),
@@ -30,7 +32,7 @@ class HistoryRepository(private val dataStore: DataStore<HistoryStore>) {
             val builder: HistoryStore.Builder = store
                 .toBuilder()
                 .addHistories(0, newHistory.toProto())
-            while (builder.historiesCount > MAX_HISTORIES_SIZE) {
+            while (builder.historiesCount > HistoryConstraints.MAX_HISTORIES_SIZE) {
                 builder.removeHistories(builder.historiesCount - 1)
             }
             builder.build()
