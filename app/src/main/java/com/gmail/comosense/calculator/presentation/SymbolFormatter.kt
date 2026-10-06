@@ -32,12 +32,12 @@ class SymbolFormatter(locale: Locale) {
             for (symbol in symbols) {
                 when (symbol) {
                     is Symbol.Numeric -> {
-                        numericBuffer.append(symbol.toCanonicalizedText)
+                        numericBuffer.append(symbol.canonicalizedText)
                     }
 
                     else -> {
                         flushNumeric()
-                        append(symbol.toCanonicalizedText)
+                        append(symbol.canonicalizedText)
                     }
                 }
             }
@@ -76,7 +76,7 @@ class SymbolFormatter(locale: Locale) {
         return integerFormatter.format(BigInteger(integerPart))
     }
 
-    private val Symbol.toCanonicalizedText: String
+    private val Symbol.canonicalizedText: String
         get() = when (this) {
             is Symbol.Sign.Positive -> "+"
             is Symbol.Sign.Negative -> "-"

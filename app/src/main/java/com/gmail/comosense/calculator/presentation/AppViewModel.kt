@@ -19,6 +19,12 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+sealed interface AppEvent {
+    data class CalculatorError(
+        val error: com.gmail.comosense.calculator.domain.CalculatorError
+    ) : AppEvent
+}
+
 sealed interface AppAction {
     data class Input(val symbol: Symbol) : AppAction
     data object Calculate : AppAction
@@ -52,10 +58,10 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
     val appState: StateFlow<AppState> =
         _appState.asStateFlow()
 
-    private val _errorEvent: MutableSharedFlow<CalculatorError> =
+    private val _appEvent: MutableSharedFlow<AppEvent> =
         MutableSharedFlow(extraBufferCapacity = 1)
-    val errorEvent: SharedFlow<CalculatorError> =
-        _errorEvent.asSharedFlow()
+    val appEvent: SharedFlow<AppEvent> =
+        _appEvent.asSharedFlow()
 
     init {
         viewModelScope.launch {
@@ -126,7 +132,7 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
             }
 
             is Result.Err -> {
-                _errorEvent.tryEmit(calculatedResult.error)
+                _appEvent.tryEmit(AppEvent.CalculatorError(calculatedResult.error))
             }
         }
     }

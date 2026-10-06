@@ -28,22 +28,12 @@ fun calculate(
         is Result.Ok -> {
             when (val calculatedResult: Result<BigDecimal, CalculatorError> =
                 calculateTokens(tokensResult.value, precision)) {
-                is Result.Ok -> {
-                    when (val symbolsResult: Result<List<Symbol>, CalculatorError> =
-                        calculatedResult.value.toSymbols(displayScale)) {
-                        is Result.Ok -> {
-                            Result.Ok(symbolsResult.value)
-                        }
+                is Result.Ok ->
+                    calculatedResult.value.toSymbols(displayScale)
 
-                        is Result.Err -> {
-                            symbolsResult
-                        }
-                    }
-                }
-
-                is Result.Err -> {
+                is Result.Err ->
                     calculatedResult
-                }
+                
             }
         }
 
@@ -229,6 +219,18 @@ private class Parser(
         return value
     }
 
+    private fun parseConstant(constant: Token.Constant): BigDecimal {
+        return applyResult(
+            when (constant) {
+                Token.Constant.Pi ->
+                    kotlin.math.PI
+
+                Token.Constant.Euler ->
+                    kotlin.math.E
+            }
+        )
+    }
+
     private fun applyPower(
         base: BigDecimal,
         exponent: BigDecimal,
@@ -311,22 +313,6 @@ private class Parser(
     private fun applyResult(result: Double): BigDecimal {
         if (!result.isFinite()) {
             throw ArithmeticException("Invalid result")
-        }
-
-        return BigDecimal.valueOf(result).round(mathContext)
-    }
-
-    private fun parseConstant(constant: Token.Constant): BigDecimal {
-        val result: Double = when (constant) {
-            Token.Constant.Pi ->
-                kotlin.math.PI
-
-            Token.Constant.Euler ->
-                kotlin.math.E
-        }
-
-        if (!result.isFinite()) {
-            throw ArithmeticException("Invalid constant")
         }
 
         return BigDecimal.valueOf(result).round(mathContext)

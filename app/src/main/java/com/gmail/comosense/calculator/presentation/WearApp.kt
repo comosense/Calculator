@@ -33,8 +33,8 @@ import java.util.Locale
 @Composable
 fun WearApp(
     appState: AppState,
+    appEvent: Flow<AppEvent>,
     onAction: (AppAction) -> Unit,
-    errorEvent: Flow<CalculatorError>,
     locale: Locale,
 ) {
     var showHistory: Boolean by remember { mutableStateOf(false) }
@@ -43,7 +43,7 @@ fun WearApp(
     val coroutineScope: CoroutineScope = rememberCoroutineScope()
     val symbolFormatter: SymbolFormatter = remember(locale) { SymbolFormatter(locale) }
 
-    CalculatorErrorToast(errorEvent)
+    ErrorToast(appEvent)
 
     LaunchedEffect(swipeToDismissBoxState.currentValue) {
         if (swipeToDismissBoxState.currentValue == SwipeToDismissValue.Dismissed) {
@@ -109,7 +109,7 @@ fun WearApp(
 }
 
 @Composable
-private fun CalculatorErrorToast(errorEvent: Flow<CalculatorError>) {
+private fun ErrorToast(appEvent: Flow<AppEvent>) {
     val context: Context = LocalContext.current
 
     fun CalculatorError.messageResourceId(): Int = when (this) {
@@ -120,13 +120,16 @@ private fun CalculatorErrorToast(errorEvent: Flow<CalculatorError>) {
         CalculatorError.Unsupported -> R.string.calculator_error_unsupported
     }
 
-    LaunchedEffect(errorEvent) {
-        errorEvent.collect { error ->
-            Toast.makeText(
-                context,
-                error.messageResourceId(),
-                Toast.LENGTH_SHORT
-            ).show()
+    LaunchedEffect(appEvent) {
+        appEvent.collect { appEvent ->
+            when (appEvent) {
+                is AppEvent.CalculatorError ->
+                    Toast.makeText(
+                        context,
+                        appEvent.error.messageResourceId(),
+                        Toast.LENGTH_SHORT
+                    ).show()
+            }
         }
     }
 }
