@@ -19,12 +19,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-sealed interface AppEvent {
-    data class CalculatorError(
-        val error: com.gmail.comosense.calculator.domain.CalculatorError
-    ) : AppEvent
-}
-
 sealed interface AppAction {
     data class Input(val symbol: Symbol) : AppAction
     data object Calculate : AppAction
@@ -110,14 +104,14 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
         if (!state.isInputting) return
 
         val expression: List<Symbol> = state.expression
-        when (val calculatedResult: Result<List<Symbol>, CalculatorError> =
+        when (val calculated: Result<List<Symbol>, CalculatorError> =
             calculate(
                 expression = expression,
                 precision = CALCULATION_PRECISION,
                 displayScale = DISPLAY_SCALE,
             )) {
             is Result.Ok -> {
-                val result: List<Symbol> = calculatedResult.value
+                val result: List<Symbol> = calculated.value
                 _appState.update {
                     it.applyResult(result)
                 }
@@ -132,7 +126,7 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
             }
 
             is Result.Err -> {
-                _appEvent.tryEmit(AppEvent.CalculatorError(calculatedResult.error))
+                _appEvent.tryEmit(AppEvent.CalculatorError(calculated.error))
             }
         }
     }

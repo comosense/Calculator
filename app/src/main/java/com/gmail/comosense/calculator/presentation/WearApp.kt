@@ -43,7 +43,7 @@ fun WearApp(
     val coroutineScope: CoroutineScope = rememberCoroutineScope()
     val symbolFormatter: SymbolFormatter = remember(locale) { SymbolFormatter(locale) }
 
-    ErrorToast(appEvent)
+    HandleEvent(appEvent)
 
     LaunchedEffect(swipeToDismissBoxState.currentValue) {
         if (swipeToDismissBoxState.currentValue == SwipeToDismissValue.Dismissed) {
@@ -109,27 +109,28 @@ fun WearApp(
 }
 
 @Composable
-private fun ErrorToast(appEvent: Flow<AppEvent>) {
+private fun HandleEvent(appEvent: Flow<AppEvent>) {
     val context: Context = LocalContext.current
-
-    fun CalculatorError.messageResourceId(): Int = when (this) {
-        CalculatorError.InvalidExpression -> R.string.calculator_error_invalid_expression
-        CalculatorError.DivisionByZero -> R.string.calculator_error_division_by_zero
-        CalculatorError.LargeArgument -> R.string.calculator_error_large_argument
-        CalculatorError.Arithmetic -> R.string.calculator_error_arithmetic
-        CalculatorError.Unsupported -> R.string.calculator_error_unsupported
-    }
 
     LaunchedEffect(appEvent) {
         appEvent.collect { appEvent ->
             when (appEvent) {
-                is AppEvent.CalculatorError ->
+                is AppEvent.CalculatorError -> {
                     Toast.makeText(
                         context,
                         appEvent.error.messageResourceId(),
                         Toast.LENGTH_SHORT
                     ).show()
+                }
             }
         }
     }
+}
+
+private fun CalculatorError.messageResourceId(): Int = when (this) {
+    CalculatorError.InvalidExpression -> R.string.calculator_error_invalid_expression
+    CalculatorError.DivisionByZero -> R.string.calculator_error_division_by_zero
+    CalculatorError.LargeArgument -> R.string.calculator_error_large_argument
+    CalculatorError.Arithmetic -> R.string.calculator_error_arithmetic
+    CalculatorError.Unsupported -> R.string.calculator_error_unsupported
 }
