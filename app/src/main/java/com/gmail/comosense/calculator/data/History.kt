@@ -11,5 +11,5 @@ data class History(
 internal object HistoryConstraints {
     const val MAX_HISTORIES_SIZE: Int = 50
     const val MAX_EXPRESSION_SIZE: Int = 1024
-    const val MAX_RESULT_SIZE: Int = 128
+    const val MAX_RESULT_SIZE: Int = 256
 }
