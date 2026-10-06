@@ -112,9 +112,11 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
             )) {
             is Result.Ok -> {
                 val result: List<Symbol> = calculated.value
+
                 _appState.update {
                     it.applyResult(result)
                 }
+
                 viewModelScope.launch {
                     runCatching {
                         historyRepository.addHistory(
