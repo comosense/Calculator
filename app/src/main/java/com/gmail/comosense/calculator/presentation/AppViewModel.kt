@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.gmail.comosense.calculator.common.Result
+import com.gmail.comosense.calculator.data.HistoryError
 import com.gmail.comosense.calculator.data.HistoryRepository
 import com.gmail.comosense.calculator.data.historyDataStore
 import com.gmail.comosense.calculator.domain.CalculatorError
@@ -118,11 +119,15 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
                 }
 
                 viewModelScope.launch {
-                    runCatching {
-                        historyRepository.addHistory(
-                            expression = expression,
-                            result = result
-                        )
+                    when (val r: Result<Unit, HistoryError> = historyRepository.addHistory(
+                        expression = expression,
+                        result = result
+                    )) {
+                        is Result.Ok ->
+                            Unit
+
+                        is Result.Err ->
+                            _appEvent.tryEmit(AppEvent.HistoryError(r.error))
                     }
                 }
             }
@@ -153,13 +158,25 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
 
     private fun deleteHistory(id: String) {
         viewModelScope.launch {
-            historyRepository.deleteHistory(id)
+            when (val r: Result<Unit, HistoryError> = historyRepository.deleteHistory(id)) {
+                is Result.Ok ->
+                    Unit
+
+                is Result.Err ->
+                    _appEvent.tryEmit(AppEvent.HistoryError(r.error))
+            }
         }
     }
 
     private fun deleteHistoryAll() {
         viewModelScope.launch {
-            historyRepository.deleteHistoryAll()
+            when (val r: Result<Unit, HistoryError> = historyRepository.deleteHistoryAll()) {
+                is Result.Ok ->
+                    Unit
+
+                is Result.Err ->
+                    _appEvent.tryEmit(AppEvent.HistoryError(r.error))
+            }
         }
     }
 }
