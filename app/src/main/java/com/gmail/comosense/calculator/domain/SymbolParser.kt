@@ -37,9 +37,9 @@ fun parseTokens(symbols: List<Symbol>): Result<List<Token>, SymbolParserError> {
                 else -> {
                     if (!flushNumeric()) return Result.Err(SymbolParserError.IllegalNumeric)
 
-                    when (val tokenResult: Result<Token, SymbolParserError> = symbol.toToken()) {
-                        is Result.Ok -> add(tokenResult.value)
-                        is Result.Err -> return tokenResult
+                    when (val token: Result<Token, SymbolParserError> = symbol.toToken()) {
+                        is Result.Ok -> add(token.value)
+                        is Result.Err -> return token
                     }
                 }
             }
