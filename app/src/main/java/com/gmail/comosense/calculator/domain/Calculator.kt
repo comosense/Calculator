@@ -225,7 +225,7 @@ private class Parser(
     private fun parseConstant(constant: Token.Constant): BigDecimal {
         return when (constant) {
             Token.Constant.Pi ->
-                applyResult(kotlin.math.PI)
+                bigDecimalMath.pi()
 
             Token.Constant.Euler ->
                 bigDecimalMath.e()

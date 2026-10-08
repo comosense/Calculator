@@ -339,9 +339,9 @@ private fun ExpressionBox(
             ) {
                 Text(
                     text = expression,
-                    maxLines = 1,
                     color = AppTheme.calculatorScreenColors.expression,
                     fontSize = AppTheme.calculatorScreenDimensions.expressionMinFontSize,
+                    maxLines = 1,
                 )
             }
         } else {
