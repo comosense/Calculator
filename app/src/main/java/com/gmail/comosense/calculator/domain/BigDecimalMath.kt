@@ -8,6 +8,7 @@ class FactorialLargeArgumentException : ArithmeticException()
 class FactorialInvalidArgumentException : ArithmeticException()
 class SqrtInvalidArgumentException : ArithmeticException()
 class LogInvalidArgumentException : ArithmeticException()
+class TanInvalidArgumentException : ArithmeticException()
 
 class BigDecimalMath(private val mathContext: MathContext) {
     companion object {
@@ -38,6 +39,18 @@ class BigDecimalMath(private val mathContext: MathContext) {
     }
     private val lnTen: BigDecimal by lazy {
         ln(TEN, workMathContext)
+    }
+    private val pi: BigDecimal by lazy {
+        pi()
+    }
+    private val halfPi: BigDecimal by lazy {
+        pi.divide(TWO, workMathContext)
+    }
+    private val oneAndHalfPi: BigDecimal by lazy {
+        pi.add(halfPi, workMathContext)
+    }
+    private val twoPi: BigDecimal by lazy {
+        pi.multiply(TWO, workMathContext)
     }
 
     fun e(): BigDecimal {
@@ -140,7 +153,32 @@ class BigDecimalMath(private val mathContext: MathContext) {
         return ln(value, workMathContext).round(mathContext)
     }
 
-    private fun sqrt(value: BigDecimal, mc: MathContext): BigDecimal {
+    fun sin(value: BigDecimal): BigDecimal {
+        return sin(value, workMathContext).round(mathContext)
+    }
+
+    fun cos(value: BigDecimal): BigDecimal {
+        return cos(value, workMathContext).round(mathContext)
+    }
+
+    fun tan(value: BigDecimal): BigDecimal {
+        val cos: BigDecimal = cos(value, workMathContext)
+        if (cos.round(mathContext).compareTo(ZERO) == 0) {
+            throw TanInvalidArgumentException()
+        }
+
+        val sin: BigDecimal = sin(value, workMathContext)
+
+        return sin.divide(
+            cos,
+            workMathContext,
+        ).round(mathContext)
+    }
+
+    private fun sqrt(
+        value: BigDecimal,
+        mc: MathContext,
+    ): BigDecimal {
         fun initialSqrtEstimate(value: BigDecimal): BigDecimal {
             val integerDigits: Int = value.precision() - value.scale()
             val exponent: Int = integerDigits / 2
@@ -175,7 +213,10 @@ class BigDecimalMath(private val mathContext: MathContext) {
         }
     }
 
-    private fun arctan(value: BigDecimal, mc: MathContext): BigDecimal {
+    private fun arctan(
+        value: BigDecimal,
+        mc: MathContext,
+    ): BigDecimal {
         val valueSquared: BigDecimal = value.multiply(value, mc)
 
         var term: BigDecimal = value
@@ -213,7 +254,10 @@ class BigDecimalMath(private val mathContext: MathContext) {
         }
     }
 
-    private fun ln(value: BigDecimal, mc: MathContext): BigDecimal {
+    private fun ln(
+        value: BigDecimal,
+        mc: MathContext,
+    ): BigDecimal {
         if (value <= ZERO) {
             throw LogInvalidArgumentException()
         }
@@ -253,7 +297,10 @@ class BigDecimalMath(private val mathContext: MathContext) {
             )
     }
 
-    private fun calculateLn(value: BigDecimal, mc: MathContext): BigDecimal {
+    private fun calculateLn(
+        value: BigDecimal,
+        mc: MathContext,
+    ): BigDecimal {
         val z: BigDecimal = value.subtract(ONE, mc)
             .divide(
                 value.add(ONE, mc),
@@ -293,5 +340,184 @@ class BigDecimalMath(private val mathContext: MathContext) {
 
             sum = nextSum
         }
+    }
+
+    private fun sin(
+        value: BigDecimal,
+        mc: MathContext,
+    ): BigDecimal {
+        val angle: BigDecimal = normalizeAngle(value, mc)
+
+        return when {
+            angle <= halfPi -> {
+                sinTaylor(
+                    angle,
+                    mc,
+                )
+            }
+
+            angle <= pi -> {
+                sinTaylor(
+                    pi.subtract(
+                        angle,
+                        mc,
+                    ),
+                    mc,
+                )
+            }
+
+            angle <= oneAndHalfPi -> {
+                sinTaylor(
+                    angle.subtract(
+                        pi,
+                        mc,
+                    ),
+                    mc,
+                ).negate(mc)
+            }
+
+            else -> {
+                sinTaylor(
+                    twoPi.subtract(
+                        angle,
+                        mc,
+                    ),
+                    mc,
+                ).negate(mc)
+            }
+        }
+    }
+
+    private fun cos(
+        value: BigDecimal,
+        mc: MathContext,
+    ): BigDecimal {
+        val angle: BigDecimal = normalizeAngle(value, mc)
+
+        return when {
+            angle <= halfPi -> {
+                cosTaylor(
+                    angle,
+                    mc,
+                )
+            }
+
+            angle <= pi -> {
+                cosTaylor(
+                    pi.subtract(
+                        angle,
+                        mc,
+                    ),
+                    mc,
+                ).negate()
+            }
+
+            angle <= oneAndHalfPi -> {
+                cosTaylor(
+                    angle.subtract(
+                        pi,
+                        mc,
+                    ),
+                    mc,
+                ).negate(mc)
+            }
+
+            else -> {
+                cosTaylor(
+                    twoPi.subtract(
+                        angle,
+                        mc,
+                    ),
+                    mc,
+                )
+            }
+        }
+    }
+
+    private fun sinTaylor(
+        value: BigDecimal,
+        mc: MathContext,
+    ): BigDecimal {
+        val valueSquared: BigDecimal = value.multiply(
+            value,
+            mc,
+        )
+
+        var term: BigDecimal = value
+        var sum: BigDecimal = value
+        var n = 1
+
+        while (true) {
+            val denominator = BigDecimal(
+                (2 * n) * (2 * n + 1)
+            )
+
+            term = term
+                .multiply(valueSquared, mc)
+                .divide(denominator, mc)
+                .negate()
+
+            val nextSum: BigDecimal = sum.add(
+                term,
+                mc,
+            )
+
+            if (nextSum.compareTo(sum) == 0) {
+                return nextSum
+            }
+
+            sum = nextSum
+            n++
+        }
+    }
+
+    private fun cosTaylor(
+        value: BigDecimal,
+        mc: MathContext,
+    ): BigDecimal {
+        val valueSquared: BigDecimal = value.multiply(
+            value,
+            mc,
+        )
+
+        var term: BigDecimal = ONE
+        var sum: BigDecimal = ONE
+        var n = 1
+
+        while (true) {
+            val denominator = BigDecimal(
+                (2 * n - 1) * (2 * n)
+            )
+
+            term = term
+                .multiply(valueSquared, mc)
+                .divide(denominator, mc)
+                .negate()
+
+            val nextSum: BigDecimal = sum.add(
+                term,
+                mc,
+            )
+
+            if (nextSum.compareTo(sum) == 0) {
+                return nextSum
+            }
+
+            sum = nextSum
+            n++
+        }
+    }
+
+    private fun normalizeAngle(
+        value: BigDecimal,
+        mc: MathContext,
+    ): BigDecimal {
+        var angle: BigDecimal = value.remainder(twoPi, mc)
+
+        if (angle < ZERO) {
+            angle = angle.add(twoPi, mc)
+        }
+
+        return angle
     }
 }

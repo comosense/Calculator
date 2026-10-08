@@ -13,6 +13,7 @@ enum class CalculatorError {
     FactorialLargeArgument,
     SqrtInvalidArgument,
     LogInvalidArgument,
+    TanInvalidArgument,
     Arithmetic,
     Unsupported,
 }
@@ -75,6 +76,8 @@ private fun calculate(
         Result.Err(CalculatorError.SqrtInvalidArgument)
     } catch (_: LogInvalidArgumentException) {
         Result.Err(CalculatorError.LogInvalidArgument)
+    } catch (_: TanInvalidArgumentException) {
+        Result.Err(CalculatorError.TanInvalidArgument)
     } catch (_: ArithmeticException) {
         Result.Err(CalculatorError.Arithmetic)
     }
@@ -263,17 +266,15 @@ private class Parser(
         function: Token.FactorStart.Function,
         value: BigDecimal,
     ): BigDecimal {
-        val doubleValue: Double = value.toDouble()
-
         return when (function) {
             Token.FactorStart.Function.Sin ->
-                applyResult(kotlin.math.sin(doubleValue))
+                bigDecimalMath.sin(value)
 
             Token.FactorStart.Function.Cos ->
-                applyResult(kotlin.math.cos(doubleValue))
+                bigDecimalMath.cos(value)
 
             Token.FactorStart.Function.Tan ->
-                applyResult(kotlin.math.tan(doubleValue))
+                bigDecimalMath.tan(value)
 
             Token.FactorStart.Function.Log ->
                 bigDecimalMath.log(value)
