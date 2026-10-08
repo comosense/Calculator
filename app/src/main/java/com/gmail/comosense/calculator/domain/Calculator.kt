@@ -9,9 +9,10 @@ import kotlin.math.pow
 enum class CalculatorError {
     InvalidExpression,
     DivisionByZero,
-    LargeArgument,
-    FactorialNonPositiveInteger,
-    SqrtNegativeArgument,
+    FactorialInvalidArgument,
+    FactorialLargeArgument,
+    SqrtInvalidArgument,
+    LogInvalidArgument,
     Arithmetic,
     Unsupported,
 }
@@ -66,12 +67,14 @@ private fun calculate(
         Result.Err(CalculatorError.InvalidExpression)
     } catch (_: DivisionByZeroException) {
         Result.Err(CalculatorError.DivisionByZero)
-    } catch (_: LargeArgumentException) {
-        Result.Err(CalculatorError.LargeArgument)
-    } catch (_: FactorialNonPositiveIntegerException) {
-        Result.Err(CalculatorError.FactorialNonPositiveInteger)
-    } catch (_: SqrtNegativeArgumentException) {
-        Result.Err(CalculatorError.SqrtNegativeArgument)
+    } catch (_: FactorialInvalidArgumentException) {
+        Result.Err(CalculatorError.FactorialInvalidArgument)
+    } catch (_: FactorialLargeArgumentException) {
+        Result.Err(CalculatorError.FactorialLargeArgument)
+    } catch (_: SqrtInvalidArgumentException) {
+        Result.Err(CalculatorError.SqrtInvalidArgument)
+    } catch (_: LogInvalidArgumentException) {
+        Result.Err(CalculatorError.LogInvalidArgument)
     } catch (_: ArithmeticException) {
         Result.Err(CalculatorError.Arithmetic)
     }
@@ -262,24 +265,22 @@ private class Parser(
     ): BigDecimal {
         val doubleValue: Double = value.toDouble()
 
-        return applyResult(
-            when (function) {
-                Token.FactorStart.Function.Sin ->
-                    kotlin.math.sin(doubleValue)
+        return when (function) {
+            Token.FactorStart.Function.Sin ->
+                applyResult(kotlin.math.sin(doubleValue))
 
-                Token.FactorStart.Function.Cos ->
-                    kotlin.math.cos(doubleValue)
+            Token.FactorStart.Function.Cos ->
+                applyResult(kotlin.math.cos(doubleValue))
 
-                Token.FactorStart.Function.Tan ->
-                    kotlin.math.tan(doubleValue)
+            Token.FactorStart.Function.Tan ->
+                applyResult(kotlin.math.tan(doubleValue))
 
-                Token.FactorStart.Function.Log ->
-                    kotlin.math.log10(doubleValue)
+            Token.FactorStart.Function.Log ->
+                bigDecimalMath.log(value)
 
-                Token.FactorStart.Function.Ln ->
-                    kotlin.math.ln(doubleValue)
-            }
-        )
+            Token.FactorStart.Function.Ln ->
+                bigDecimalMath.ln(value)
+        }
     }
 
     private fun applyResult(result: Double): BigDecimal {
