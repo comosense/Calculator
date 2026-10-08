@@ -23,6 +23,9 @@ fun calculate(
     precision: Int,
     displayScale: Int,
 ): Result<List<Symbol>, CalculatorError> {
+    require(precision > 0)
+    require(displayScale >= 0)
+
     val tokens: List<Token> =
         when (val tokensResult: Result<List<Token>, SymbolParserError> = parseTokens(expression)) {
             is Result.Ok ->

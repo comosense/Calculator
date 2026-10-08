@@ -7,6 +7,7 @@ import com.gmail.comosense.calculator.domain.Symbol
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.util.UUID
+import kotlin.coroutines.cancellation.CancellationException
 
 enum class HistoryError {
     Add,
@@ -19,10 +20,8 @@ class HistoryRepository(private val dataStore: DataStore<HistoryStore>) {
     val histories: Flow<List<History>> =
         dataStore.data.map { store ->
             store.historiesList
+                .mapNotNull { it.toHistoryOrNull() }
                 .take(HistoryConstraints.MAX_HISTORIES_SIZE)
-                .mapNotNull { history ->
-                    history.toHistoryOrNull()
-                }
         }
 
     suspend fun addHistory(
@@ -51,6 +50,8 @@ class HistoryRepository(private val dataStore: DataStore<HistoryStore>) {
                 }
                 builder.build()
             }
+        } catch (e: CancellationException) {
+            throw e
         } catch (_: Exception) {
             return Result.Err(HistoryError.Add)
         }
@@ -72,6 +73,8 @@ class HistoryRepository(private val dataStore: DataStore<HistoryStore>) {
                         .build()
                 }
             }
+        } catch (e: CancellationException) {
+            throw e
         } catch (_: Exception) {
             return Result.Err(HistoryError.Delete)
         }
@@ -86,6 +89,8 @@ class HistoryRepository(private val dataStore: DataStore<HistoryStore>) {
                     .clearHistories()
                     .build()
             }
+        } catch (e: CancellationException) {
+            throw e
         } catch (_: Exception) {
             return Result.Err(HistoryError.DeleteAll)
         }
