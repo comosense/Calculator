@@ -11,12 +11,14 @@ enum class CalculatorError {
     InvalidExpression,
     DivisionByZero,
     LargeArgument,
+    FactorialNonPositiveInteger,
     Arithmetic,
     Unsupported,
 }
 
 private class DivisionByZeroException : ArithmeticException()
 private class LargeArgumentException : ArithmeticException()
+private class FactorialNonPositiveIntegerException : ArithmeticException()
 
 fun calculate(
     expression: List<Symbol>,
@@ -62,12 +64,14 @@ private fun calculate(
         } else {
             Result.Err(CalculatorError.InvalidExpression)
         }
+    } catch (_: IllegalArgumentException) {
+        Result.Err(CalculatorError.InvalidExpression)
     } catch (_: DivisionByZeroException) {
         Result.Err(CalculatorError.DivisionByZero)
     } catch (_: LargeArgumentException) {
         Result.Err(CalculatorError.LargeArgument)
-    } catch (_: IllegalArgumentException) {
-        Result.Err(CalculatorError.InvalidExpression)
+    } catch (_: FactorialNonPositiveIntegerException) {
+        Result.Err(CalculatorError.FactorialNonPositiveInteger)
     } catch (_: ArithmeticException) {
         Result.Err(CalculatorError.Arithmetic)
     }
@@ -251,11 +255,11 @@ private class Parser(
         val integerValue = try {
             value.toBigIntegerExact()
         } catch (_: ArithmeticException) {
-            throw ArithmeticException("Factorial requires an integer")
+            throw FactorialNonPositiveIntegerException()
         }
 
         if (integerValue < BigInteger.ZERO) {
-            throw ArithmeticException("Factorial requires a non-negative integer")
+            throw FactorialNonPositiveIntegerException()
         }
 
         if (integerValue > MAX_FACTORIAL_ARGUMENT.toBigInteger()) {

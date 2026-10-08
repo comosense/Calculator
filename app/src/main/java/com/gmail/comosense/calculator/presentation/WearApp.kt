@@ -139,6 +139,7 @@ private fun CalculatorError.messageResourceId(): Int = when (this) {
     CalculatorError.InvalidExpression -> R.string.calculator_error_invalid_expression
     CalculatorError.DivisionByZero -> R.string.calculator_error_division_by_zero
     CalculatorError.LargeArgument -> R.string.calculator_error_large_argument
+    CalculatorError.FactorialNonPositiveInteger -> R.string.calculator_error_factorial_non_positive_integer
     CalculatorError.Arithmetic -> R.string.calculator_error_arithmetic
     CalculatorError.Unsupported -> R.string.calculator_error_unsupported
 }
