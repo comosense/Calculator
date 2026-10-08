@@ -105,35 +105,36 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
         if (!state.isInputting) return
 
         val expression: List<Symbol> = state.expression
-        when (val calculated: Result<List<Symbol>, CalculatorError> =
-            calculate(
-                expression = expression,
-                precision = CALCULATION_PRECISION,
-                displayScale = DISPLAY_SCALE,
-            )) {
-            is Result.Ok -> {
-                val result: List<Symbol> = calculated.value
+        val result: List<Symbol> =
+            when (val calculatedResult: Result<List<Symbol>, CalculatorError> =
+                calculate(
+                    expression = expression,
+                    precision = CALCULATION_PRECISION,
+                    displayScale = DISPLAY_SCALE,
+                )) {
+                is Result.Ok ->
+                    calculatedResult.value
 
-                _appState.update {
-                    it.applyResult(result)
-                }
-
-                viewModelScope.launch {
-                    when (val r: Result<Unit, HistoryError> = historyRepository.addHistory(
-                        expression = expression,
-                        result = result
-                    )) {
-                        is Result.Ok ->
-                            Unit
-
-                        is Result.Err ->
-                            _appEvent.tryEmit(AppEvent.HistoryError(r.error))
-                    }
+                is Result.Err -> {
+                    _appEvent.tryEmit(AppEvent.CalculatorError(calculatedResult.error))
+                    return
                 }
             }
 
-            is Result.Err -> {
-                _appEvent.tryEmit(AppEvent.CalculatorError(calculated.error))
+        _appState.update {
+            it.applyResult(result)
+        }
+
+        viewModelScope.launch {
+            when (val addHistoryResult: Result<Unit, HistoryError> = historyRepository.addHistory(
+                expression = expression,
+                result = result
+            )) {
+                is Result.Ok ->
+                    Unit
+
+                is Result.Err ->
+                    _appEvent.tryEmit(AppEvent.HistoryError(addHistoryResult.error))
             }
         }
     }
@@ -158,24 +159,26 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
 
     private fun deleteHistory(id: String) {
         viewModelScope.launch {
-            when (val r: Result<Unit, HistoryError> = historyRepository.deleteHistory(id)) {
+            when (val deleteHistoryResult: Result<Unit, HistoryError> =
+                historyRepository.deleteHistory(id)) {
                 is Result.Ok ->
                     Unit
 
                 is Result.Err ->
-                    _appEvent.tryEmit(AppEvent.HistoryError(r.error))
+                    _appEvent.tryEmit(AppEvent.HistoryError(deleteHistoryResult.error))
             }
         }
     }
 
     private fun deleteHistoryAll() {
         viewModelScope.launch {
-            when (val r: Result<Unit, HistoryError> = historyRepository.deleteHistoryAll()) {
+            when (val deleteHistoryAllResult: Result<Unit, HistoryError> =
+                historyRepository.deleteHistoryAll()) {
                 is Result.Ok ->
                     Unit
 
                 is Result.Err ->
-                    _appEvent.tryEmit(AppEvent.HistoryError(r.error))
+                    _appEvent.tryEmit(AppEvent.HistoryError(deleteHistoryAllResult.error))
             }
         }
     }

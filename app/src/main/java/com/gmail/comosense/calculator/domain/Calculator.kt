@@ -23,24 +23,22 @@ fun calculate(
     precision: Int,
     displayScale: Int,
 ): Result<List<Symbol>, CalculatorError> {
-    return when (val tokens: Result<List<Token>, SymbolParserError> =
-        parseTokens(expression)) {
-        is Result.Ok -> {
-            when (val calculated: Result<BigDecimal, CalculatorError> =
-                calculate(tokens.value, precision)) {
-                is Result.Ok -> {
-                    calculated.value.toSymbols(displayScale)
-                }
+    val tokens: List<Token> =
+        when (val tokensResult: Result<List<Token>, SymbolParserError> = parseTokens(expression)) {
+            is Result.Ok ->
+                tokensResult.value
 
-                is Result.Err -> {
-                    calculated
-                }
-            }
+            is Result.Err ->
+                return Result.Err(CalculatorError.InvalidExpression)
         }
 
-        is Result.Err -> {
-            Result.Err(CalculatorError.InvalidExpression)
-        }
+    return when (val calculatedResult: Result<BigDecimal, CalculatorError> =
+        calculate(tokens, precision)) {
+        is Result.Ok ->
+            calculatedResult.value.toSymbols(displayScale)
+
+        is Result.Err ->
+            calculatedResult
     }
 }
 
