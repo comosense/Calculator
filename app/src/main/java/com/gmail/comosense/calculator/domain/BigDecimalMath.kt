@@ -7,6 +7,7 @@ import java.math.MathContext
 class FactorialLargeArgumentException : ArithmeticException()
 class FactorialInvalidArgumentException : ArithmeticException()
 class SqrtInvalidArgumentException : ArithmeticException()
+class PowInvalidArgumentException : ArithmeticException()
 class LogInvalidArgumentException : ArithmeticException()
 class TanInvalidArgumentException : ArithmeticException()
 
@@ -41,7 +42,7 @@ class BigDecimalMath(private val mathContext: MathContext) {
         ln(TEN, workMathContext)
     }
     private val pi: BigDecimal by lazy {
-        pi()
+        pi(workMathContext)
     }
     private val halfPi: BigDecimal by lazy {
         pi.divide(TWO, workMathContext)
@@ -83,30 +84,7 @@ class BigDecimalMath(private val mathContext: MathContext) {
     }
 
     fun pi(): BigDecimal {
-        val arctanOneFifth: BigDecimal =
-            arctan(
-                ONE.divide(FIVE, workMathContext),
-                workMathContext,
-            )
-        val arctanOneTwoHundredThirtyNine: BigDecimal =
-            arctan(
-                ONE.divide(TWO_HUNDRED_THIRTY_NINE, workMathContext),
-                workMathContext,
-            )
-
-        return SIXTEEN
-            .multiply(
-                arctanOneFifth,
-                workMathContext,
-            )
-            .subtract(
-                FOUR.multiply(
-                    arctanOneTwoHundredThirtyNine,
-                    workMathContext,
-                ),
-                workMathContext,
-            )
-            .round(mathContext)
+        return pi(workMathContext).round(mathContext)
     }
 
     fun factorial(value: BigDecimal): BigDecimal {
@@ -139,6 +117,29 @@ class BigDecimalMath(private val mathContext: MathContext) {
         return sqrt(value, workMathContext).round(mathContext)
     }
 
+    fun pow(
+        base: BigDecimal,
+        exponent: BigDecimal,
+    ): BigDecimal {
+        return if (base <= ZERO) {
+            powNegativeBase(base, exponent)
+        } else {
+            val value: BigDecimal = exponent.multiply(
+                ln(base, workMathContext),
+                workMathContext,
+            )
+
+            exp(
+                value,
+                workMathContext,
+            ).round(mathContext)
+        }
+    }
+
+    fun ln(value: BigDecimal): BigDecimal {
+        return ln(value, workMathContext).round(mathContext)
+    }
+
     fun log(value: BigDecimal): BigDecimal {
         return ln(
             value,
@@ -147,10 +148,6 @@ class BigDecimalMath(private val mathContext: MathContext) {
             lnTen,
             workMathContext,
         ).round(mathContext)
-    }
-
-    fun ln(value: BigDecimal): BigDecimal {
-        return ln(value, workMathContext).round(mathContext)
     }
 
     fun sin(value: BigDecimal): BigDecimal {
@@ -175,42 +172,30 @@ class BigDecimalMath(private val mathContext: MathContext) {
         ).round(mathContext)
     }
 
-    private fun sqrt(
-        value: BigDecimal,
-        mc: MathContext,
-    ): BigDecimal {
-        fun initialSqrtEstimate(value: BigDecimal): BigDecimal {
-            val integerDigits: Int = value.precision() - value.scale()
-            val exponent: Int = integerDigits / 2
-
-            return TEN.pow(exponent.coerceAtLeast(0))
-        }
-
-        if (value < ZERO) {
-            throw SqrtInvalidArgumentException()
-        }
-
-        if (value.compareTo(ZERO) == 0) {
-            return ZERO
-        }
-
-        var x: BigDecimal = initialSqrtEstimate(value)
-
-        while (true) {
-            val next: BigDecimal = (
-                    x + value.divide(
-                        x,
-                        mc,
-                    )).divide(
-                TWO,
+    private fun pi(mc: MathContext): BigDecimal {
+        val arctanOneFifth: BigDecimal =
+            arctan(
+                ONE.divide(FIVE, mc),
                 mc,
             )
-            if (next.compareTo(x) == 0) {
-                return next
-            }
+        val arctanOneTwoHundredThirtyNine: BigDecimal =
+            arctan(
+                ONE.divide(TWO_HUNDRED_THIRTY_NINE, mc),
+                mc,
+            )
 
-            x = next
-        }
+        return SIXTEEN
+            .multiply(
+                arctanOneFifth,
+                mc,
+            )
+            .subtract(
+                FOUR.multiply(
+                    arctanOneTwoHundredThirtyNine,
+                    mc,
+                ),
+                mc,
+            )
     }
 
     private fun arctan(
@@ -251,6 +236,94 @@ class BigDecimalMath(private val mathContext: MathContext) {
 
             sum = nextSum
             sign = -sign
+        }
+    }
+
+    private fun sqrt(
+        value: BigDecimal,
+        mc: MathContext,
+    ): BigDecimal {
+        fun initialSqrtEstimate(value: BigDecimal): BigDecimal {
+            val integerDigits: Int = value.precision() - value.scale()
+            val exponent: Int = integerDigits / 2
+
+            return TEN.pow(exponent.coerceAtLeast(0))
+        }
+
+        if (value < ZERO) {
+            throw SqrtInvalidArgumentException()
+        }
+
+        if (value.compareTo(ZERO) == 0) {
+            return ZERO
+        }
+
+        var x: BigDecimal = initialSqrtEstimate(value)
+
+        while (true) {
+            val next: BigDecimal = (
+                    x + value.divide(
+                        x,
+                        mc,
+                    )).divide(
+                TWO,
+                mc,
+            )
+            if (next.compareTo(x) == 0) {
+                return next
+            }
+
+            x = next
+        }
+    }
+
+    private fun powNegativeBase(
+        base: BigDecimal,
+        exponent: BigDecimal,
+    ): BigDecimal {
+        if ((base == ZERO) && (exponent <= ZERO)) {
+            throw PowInvalidArgumentException()
+        }
+
+        val integerExponent: BigInteger = try {
+            exponent.toBigIntegerExact()
+        } catch (_: ArithmeticException) {
+            throw PowInvalidArgumentException()
+        }
+
+        return base.pow(
+            integerExponent.intValueExact(),
+            workMathContext
+        ).round(mathContext)
+    }
+
+    private fun exp(
+        value: BigDecimal,
+        mc: MathContext,
+    ): BigDecimal {
+        var sum: BigDecimal = ONE
+        var term: BigDecimal = ONE
+        var n = 1
+
+        while (true) {
+            term = term
+                .multiply(value, mc)
+                .divide(
+                    BigDecimal(n),
+                    mc,
+                )
+
+            val nextSum: BigDecimal = sum.add(
+                term,
+                mc,
+            )
+
+            if (nextSum.compareTo(sum) == 0) {
+                return nextSum
+            }
+
+            sum = nextSum
+            n++
         }
     }
 

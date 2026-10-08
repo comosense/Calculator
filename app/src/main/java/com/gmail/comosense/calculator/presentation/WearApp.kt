@@ -141,6 +141,7 @@ private fun CalculatorError.messageResourceId(): Int = when (this) {
     CalculatorError.FactorialInvalidArgument -> R.string.calculator_error_factorial_invalid_argument
     CalculatorError.FactorialLargeArgument -> R.string.calculator_error_factorial_large_argument
     CalculatorError.SqrtInvalidArgument -> R.string.calculator_error_sqrt_invalid_argument
+    CalculatorError.PowInvalidArgument -> R.string.calculator_error_pow_invalid_argument
     CalculatorError.LogInvalidArgument -> R.string.calculator_error_log_invalid_argument
     CalculatorError.TanInvalidArgument -> R.string.calculator_error_tan_invalid_argument
     CalculatorError.Arithmetic -> R.string.calculator_error_arithmetic
