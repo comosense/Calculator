@@ -12,6 +12,7 @@ enum class CalculatorError {
     DivisionByZero,
     LargeArgument,
     FactorialNonPositiveInteger,
+    SqrtNegativeArgument,
     Arithmetic,
     Unsupported,
 }
@@ -19,6 +20,7 @@ enum class CalculatorError {
 private class DivisionByZeroException : ArithmeticException()
 private class LargeArgumentException : ArithmeticException()
 private class FactorialNonPositiveIntegerException : ArithmeticException()
+private class SqrtNegativeArgumentException : ArithmeticException()
 
 fun calculate(
     expression: List<Symbol>,
@@ -72,6 +74,8 @@ private fun calculate(
         Result.Err(CalculatorError.LargeArgument)
     } catch (_: FactorialNonPositiveIntegerException) {
         Result.Err(CalculatorError.FactorialNonPositiveInteger)
+    } catch (_: SqrtNegativeArgumentException) {
+        Result.Err(CalculatorError.SqrtNegativeArgument)
     } catch (_: ArithmeticException) {
         Result.Err(CalculatorError.Arithmetic)
     }
@@ -252,7 +256,7 @@ private class Parser(
     }
 
     private fun applyFactorial(value: BigDecimal): BigDecimal {
-        val integerValue = try {
+        val integerValue: BigInteger = try {
             value.toBigIntegerExact()
         } catch (_: ArithmeticException) {
             throw FactorialNonPositiveIntegerException()
@@ -280,14 +284,40 @@ private class Parser(
         function: Token.Factor.Function,
         value: BigDecimal,
     ): BigDecimal {
-        val doubleValue: Double = value.toDouble()
+        return when (function) {
+            Token.Factor.Function.Sqrt ->
+                sqrt(value)
+        }
+    }
 
-        return applyResult(
-            when (function) {
-                Token.Factor.Function.Sqrt ->
-                    kotlin.math.sqrt(doubleValue)
+    private fun sqrt(value: BigDecimal): BigDecimal {
+        val two = BigDecimal(2)
+        fun initialSqrtEstimate(value: BigDecimal): BigDecimal {
+            val integerDigits: Int = value.precision() - value.scale()
+            val exponent: Int = integerDigits / 2
+            return BigDecimal.TEN.pow(exponent.coerceAtLeast(0))
+        }
+
+        if (value < BigDecimal.ZERO) {
+            throw SqrtNegativeArgumentException()
+        }
+
+        if (value.compareTo(BigDecimal.ZERO) == 0) {
+            return BigDecimal.ZERO
+        }
+
+        var x: BigDecimal = initialSqrtEstimate(value)
+
+        while (true) {
+            val next = (
+                    x + value.divide(x, mathContext)
+                    ).divide(two, mathContext)
+            if (next.compareTo(x) == 0) {
+                return next
             }
-        )
+
+            x = next
+        }
     }
 
     private fun applyFunction(

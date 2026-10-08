@@ -32,8 +32,8 @@ sealed interface AppAction {
 
 class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel() {
     companion object {
-        private const val CALCULATION_PRECISION: Int = 20
-        private const val DISPLAY_SCALE: Int = 16
+        private const val CALCULATION_PRECISION: Int = 32
+        private const val DISPLAY_SCALE: Int = 30
     }
 
     class Factory(private val application: Application) : ViewModelProvider.Factory {
