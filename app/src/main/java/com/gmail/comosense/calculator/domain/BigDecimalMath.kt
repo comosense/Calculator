@@ -13,6 +13,30 @@ class BigDecimalMath(private val mathContext: MathContext) {
         private const val MAX_FACTORIAL_ARGUMENT = 100
     }
 
+    fun e(): BigDecimal {
+        val mc = MathContext(
+            mathContext.precision + 2,
+            mathContext.roundingMode,
+        )
+        var sum: BigDecimal = BigDecimal.ONE
+        var factorial: BigDecimal = BigDecimal.ONE
+        var n = 1
+
+        while (true) {
+            factorial = factorial.multiply(BigDecimal(n), mc)
+
+            val term: BigDecimal = BigDecimal.ONE.divide(factorial, mc)
+            val next: BigDecimal = sum.add(term, mc)
+
+            if (next.compareTo(sum) == 0) {
+                return next.round(mathContext)
+            }
+
+            sum = next
+            n++
+        }
+    }
+
     fun factorial(value: BigDecimal): BigDecimal {
         val integerValue: BigInteger = try {
             value.toBigIntegerExact()

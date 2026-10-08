@@ -223,15 +223,13 @@ private class Parser(
     }
 
     private fun parseConstant(constant: Token.Constant): BigDecimal {
-        return applyResult(
-            when (constant) {
-                Token.Constant.Pi ->
-                    kotlin.math.PI
+        return when (constant) {
+            Token.Constant.Pi ->
+                applyResult(kotlin.math.PI)
 
-                Token.Constant.Euler ->
-                    kotlin.math.E
-            }
-        )
+            Token.Constant.Euler ->
+                bigDecimalMath.e()
+        }
     }
 
     private fun applyPower(
