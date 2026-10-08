@@ -2,7 +2,6 @@ package com.gmail.comosense.calculator.domain
 
 import com.gmail.comosense.calculator.common.Result
 import java.math.BigDecimal
-import java.math.BigInteger
 import java.math.MathContext
 import java.math.RoundingMode
 import kotlin.math.pow
@@ -18,9 +17,6 @@ enum class CalculatorError {
 }
 
 private class DivisionByZeroException : ArithmeticException()
-private class LargeArgumentException : ArithmeticException()
-private class FactorialNonPositiveIntegerException : ArithmeticException()
-private class SqrtNegativeArgumentException : ArithmeticException()
 
 fun calculate(
     expression: List<Symbol>,
@@ -85,14 +81,11 @@ private class Parser(
     private val tokens: List<Token>,
     precision: Int,
 ) {
-    companion object {
-        private const val MAX_FACTORIAL_ARGUMENT = 100
-    }
-
     private val mathContext: MathContext = MathContext(
         precision,
         RoundingMode.HALF_UP,
     )
+    private val bigDecimalMath = BigDecimalMath(mathContext)
 
     private var position: Int = 0
 
@@ -176,7 +169,7 @@ private class Parser(
 
         while (tokens.getOrNull(position) is Token.SpecialOperator.Factorial) {
             position++
-            value = applyFactorial(value)
+            value = bigDecimalMath.factorial(value)
         }
 
         return value
@@ -255,68 +248,13 @@ private class Parser(
         return applyResult(baseDouble.pow(exponentDouble))
     }
 
-    private fun applyFactorial(value: BigDecimal): BigDecimal {
-        val integerValue: BigInteger = try {
-            value.toBigIntegerExact()
-        } catch (_: ArithmeticException) {
-            throw FactorialNonPositiveIntegerException()
-        }
-
-        if (integerValue < BigInteger.ZERO) {
-            throw FactorialNonPositiveIntegerException()
-        }
-
-        if (integerValue > MAX_FACTORIAL_ARGUMENT.toBigInteger()) {
-            throw LargeArgumentException()
-        }
-        var result: BigInteger = BigInteger.ONE
-        var i: BigInteger = BigInteger.ONE
-
-        while (i <= integerValue) {
-            result = result.multiply(i)
-            i = i.add(BigInteger.ONE)
-        }
-
-        return BigDecimal(result).round(mathContext)
-    }
-
     private fun applyFunction(
         function: Token.Factor.Function,
         value: BigDecimal,
     ): BigDecimal {
         return when (function) {
             Token.Factor.Function.Sqrt ->
-                sqrt(value)
-        }
-    }
-
-    private fun sqrt(value: BigDecimal): BigDecimal {
-        val two = BigDecimal(2)
-        fun initialSqrtEstimate(value: BigDecimal): BigDecimal {
-            val integerDigits: Int = value.precision() - value.scale()
-            val exponent: Int = integerDigits / 2
-            return BigDecimal.TEN.pow(exponent.coerceAtLeast(0))
-        }
-
-        if (value < BigDecimal.ZERO) {
-            throw SqrtNegativeArgumentException()
-        }
-
-        if (value.compareTo(BigDecimal.ZERO) == 0) {
-            return BigDecimal.ZERO
-        }
-
-        var x: BigDecimal = initialSqrtEstimate(value)
-
-        while (true) {
-            val next = (
-                    x + value.divide(x, mathContext)
-                    ).divide(two, mathContext)
-            if (next.compareTo(x) == 0) {
-                return next
-            }
-
-            x = next
+                bigDecimalMath.sqrt(value)
         }
     }
 
