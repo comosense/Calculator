@@ -325,9 +325,16 @@ private fun ExpressionBox(
             expression,
             needScroll,
             scrollState.maxValue,
+            appState.isInputting,
         ) {
             if (needScroll) {
-                scrollState.scrollTo(scrollState.maxValue)
+                scrollState.scrollTo(
+                    if (appState.isInputting) {
+                        scrollState.maxValue
+                    } else {
+                        0
+                    }
+                )
             }
         }
 
