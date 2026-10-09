@@ -23,7 +23,7 @@ import androidx.wear.compose.foundation.rememberSwipeToDismissBoxState
 import androidx.wear.compose.material3.AppScaffold
 import androidx.wear.compose.material3.SwipeToDismissBox
 import com.gmail.comosense.calculator.R
-import com.gmail.comosense.calculator.data.HistoryError
+import com.gmail.comosense.calculator.data.HistoryRepositoryError
 import com.gmail.comosense.calculator.domain.CalculatorError
 import com.gmail.comosense.calculator.presentation.theme.AppTheme
 import kotlinx.coroutines.CoroutineScope
@@ -120,8 +120,8 @@ private fun HandleEvent(appEvent: Flow<AppEvent>) {
                     appEvent.calculatorError.messageResourceId()
                 }
 
-                is AppEvent.HistoryError -> {
-                    appEvent.historyError.messageResourceId()
+                is AppEvent.HistoryRepositoryError -> {
+                    appEvent.historyRepositoryError.messageResourceId()
                 }
             }
 
@@ -148,9 +148,9 @@ private fun CalculatorError.messageResourceId(): Int = when (this) {
     CalculatorError.Unsupported -> R.string.calculator_error_unsupported
 }
 
-private fun HistoryError.messageResourceId(): Int = when (this) {
-    HistoryError.Add -> R.string.history_error_add
-    HistoryError.Delete -> R.string.history_error_delete
-    HistoryError.DeleteAll -> R.string.history_error_delete_all
-    HistoryError.TooLarge -> R.string.history_error_too_large
+private fun HistoryRepositoryError.messageResourceId(): Int = when (this) {
+    HistoryRepositoryError.Add -> R.string.history_repository_error_add
+    HistoryRepositoryError.Delete -> R.string.history_repository_error_delete
+    HistoryRepositoryError.DeleteAll -> R.string.history_repository_error_delete_all
+    HistoryRepositoryError.TooLarge -> R.string.history_repository_error_too_large
 }

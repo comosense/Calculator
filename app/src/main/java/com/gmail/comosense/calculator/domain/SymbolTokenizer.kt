@@ -3,12 +3,12 @@ package com.gmail.comosense.calculator.domain
 import com.gmail.comosense.calculator.common.Result
 import java.math.BigDecimal
 
-sealed interface SymbolParserError {
-    data object IllegalNumeric : SymbolParserError
-    data object UnsupportedSymbol : SymbolParserError
+sealed interface SymbolTokenizerError {
+    data object IllegalNumeric : SymbolTokenizerError
+    data object UnsupportedSymbol : SymbolTokenizerError
 }
 
-fun parseTokens(symbols: List<Symbol>): Result<List<Token>, SymbolParserError> {
+fun tokenize(symbols: List<Symbol>): Result<List<Token>, SymbolTokenizerError> {
     val tokens: List<Token> = buildList {
         val numericBuffer: StringBuilder = StringBuilder()
 
@@ -35,9 +35,9 @@ fun parseTokens(symbols: List<Symbol>): Result<List<Token>, SymbolParserError> {
                     numericBuffer.append(".")
 
                 else -> {
-                    if (!flushNumeric()) return Result.Err(SymbolParserError.IllegalNumeric)
+                    if (!flushNumeric()) return Result.Err(SymbolTokenizerError.IllegalNumeric)
 
-                    when (val tokenResult: Result<Token, SymbolParserError> = symbol.toToken()) {
+                    when (val tokenResult: Result<Token, SymbolTokenizerError> = symbol.toToken()) {
                         is Result.Ok ->
                             add(tokenResult.value)
 
@@ -48,13 +48,13 @@ fun parseTokens(symbols: List<Symbol>): Result<List<Token>, SymbolParserError> {
             }
         }
 
-        if (!flushNumeric()) return Result.Err(SymbolParserError.IllegalNumeric)
+        if (!flushNumeric()) return Result.Err(SymbolTokenizerError.IllegalNumeric)
     }
 
     return Result.Ok(tokens)
 }
 
-fun Symbol.toToken(): Result<Token, SymbolParserError> = when (this) {
+fun Symbol.toToken(): Result<Token, SymbolTokenizerError> = when (this) {
     is Symbol.Sign.Positive ->
         Result.Ok(Token.Sign.Positive)
 
@@ -110,5 +110,5 @@ fun Symbol.toToken(): Result<Token, SymbolParserError> = when (this) {
         Result.Ok(Token.SpecialOperator.Factorial)
 
     else ->
-        Result.Err(SymbolParserError.UnsupportedSymbol)
+        Result.Err(SymbolTokenizerError.UnsupportedSymbol)
 }

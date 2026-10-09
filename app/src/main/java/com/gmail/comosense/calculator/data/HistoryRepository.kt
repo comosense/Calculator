@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.map
 import java.util.UUID
 import kotlin.coroutines.cancellation.CancellationException
 
-enum class HistoryError {
+enum class HistoryRepositoryError {
     Add,
     Delete,
     DeleteAll,
@@ -27,11 +27,11 @@ class HistoryRepository(private val dataStore: DataStore<HistoryStore>) {
     suspend fun addHistory(
         expression: List<Symbol>,
         result: List<Symbol>
-    ): Result<Unit, HistoryError> {
+    ): Result<Unit, HistoryRepositoryError> {
         if (expression.size > HistoryConstraints.MAX_EXPRESSION_SIZE ||
             result.size > HistoryConstraints.MAX_RESULT_SIZE
         ) {
-            return Result.Err(HistoryError.TooLarge)
+            return Result.Err(HistoryRepositoryError.TooLarge)
         }
 
         try {
@@ -53,13 +53,13 @@ class HistoryRepository(private val dataStore: DataStore<HistoryStore>) {
         } catch (e: CancellationException) {
             throw e
         } catch (_: Exception) {
-            return Result.Err(HistoryError.Add)
+            return Result.Err(HistoryRepositoryError.Add)
         }
 
         return Result.Ok(Unit)
     }
 
-    suspend fun deleteHistory(id: String): Result<Unit, HistoryError> {
+    suspend fun deleteHistory(id: String): Result<Unit, HistoryRepositoryError> {
         try {
             dataStore.updateData { store ->
                 val index: Int = store.historiesList
@@ -76,13 +76,13 @@ class HistoryRepository(private val dataStore: DataStore<HistoryStore>) {
         } catch (e: CancellationException) {
             throw e
         } catch (_: Exception) {
-            return Result.Err(HistoryError.Delete)
+            return Result.Err(HistoryRepositoryError.Delete)
         }
 
         return Result.Ok(Unit)
     }
 
-    suspend fun deleteHistoryAll(): Result<Unit, HistoryError> {
+    suspend fun deleteHistoryAll(): Result<Unit, HistoryRepositoryError> {
         try {
             dataStore.updateData { store ->
                 store.toBuilder()
@@ -92,7 +92,7 @@ class HistoryRepository(private val dataStore: DataStore<HistoryStore>) {
         } catch (e: CancellationException) {
             throw e
         } catch (_: Exception) {
-            return Result.Err(HistoryError.DeleteAll)
+            return Result.Err(HistoryRepositoryError.DeleteAll)
         }
 
         return Result.Ok(Unit)

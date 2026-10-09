@@ -29,7 +29,7 @@ fun calculate(
     require(displayScale >= 0)
 
     val tokens: List<Token> =
-        when (val tokensResult: Result<List<Token>, SymbolParserError> = parseTokens(expression)) {
+        when (val tokensResult: Result<List<Token>, SymbolTokenizerError> = tokenize(expression)) {
             is Result.Ok ->
                 tokensResult.value
 

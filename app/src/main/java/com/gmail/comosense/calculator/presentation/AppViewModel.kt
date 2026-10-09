@@ -5,8 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.gmail.comosense.calculator.common.Result
-import com.gmail.comosense.calculator.data.HistoryError
 import com.gmail.comosense.calculator.data.HistoryRepository
+import com.gmail.comosense.calculator.data.HistoryRepositoryError
 import com.gmail.comosense.calculator.data.historyDataStore
 import com.gmail.comosense.calculator.domain.CalculatorError
 import com.gmail.comosense.calculator.domain.Symbol
@@ -126,15 +126,16 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
         }
 
         viewModelScope.launch {
-            when (val addHistoryResult: Result<Unit, HistoryError> = historyRepository.addHistory(
-                expression = expression,
-                result = result
-            )) {
+            when (val addHistoryResult: Result<Unit, HistoryRepositoryError> =
+                historyRepository.addHistory(
+                    expression = expression,
+                    result = result
+                )) {
                 is Result.Ok ->
                     Unit
 
                 is Result.Err ->
-                    _appEvent.tryEmit(AppEvent.HistoryError(addHistoryResult.error))
+                    _appEvent.tryEmit(AppEvent.HistoryRepositoryError(addHistoryResult.error))
             }
         }
     }
@@ -159,26 +160,26 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
 
     private fun deleteHistory(id: String) {
         viewModelScope.launch {
-            when (val deleteHistoryResult: Result<Unit, HistoryError> =
+            when (val deleteHistoryResult: Result<Unit, HistoryRepositoryError> =
                 historyRepository.deleteHistory(id)) {
                 is Result.Ok ->
                     Unit
 
                 is Result.Err ->
-                    _appEvent.tryEmit(AppEvent.HistoryError(deleteHistoryResult.error))
+                    _appEvent.tryEmit(AppEvent.HistoryRepositoryError(deleteHistoryResult.error))
             }
         }
     }
 
     private fun deleteHistoryAll() {
         viewModelScope.launch {
-            when (val deleteHistoryAllResult: Result<Unit, HistoryError> =
+            when (val deleteHistoryAllResult: Result<Unit, HistoryRepositoryError> =
                 historyRepository.deleteHistoryAll()) {
                 is Result.Ok ->
                     Unit
 
                 is Result.Err ->
-                    _appEvent.tryEmit(AppEvent.HistoryError(deleteHistoryAllResult.error))
+                    _appEvent.tryEmit(AppEvent.HistoryRepositoryError(deleteHistoryAllResult.error))
             }
         }
     }

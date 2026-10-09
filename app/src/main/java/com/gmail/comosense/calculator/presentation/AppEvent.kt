@@ -5,7 +5,7 @@ sealed interface AppEvent {
         val calculatorError: com.gmail.comosense.calculator.domain.CalculatorError
     ) : AppEvent
 
-    data class HistoryError(
-        val historyError: com.gmail.comosense.calculator.data.HistoryError
+    data class HistoryRepositoryError(
+        val historyRepositoryError: com.gmail.comosense.calculator.data.HistoryRepositoryError
     ) : AppEvent
 }
