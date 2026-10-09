@@ -168,9 +168,9 @@ class BigDecimalMath(private val mathContext: MathContext) {
         val angle: BigDecimal = normalizeAngle(value, workMathContext)
         val tolerance: BigDecimal = ONE.scaleByPowerOfTen(-mathContext.precision + 2)
 
-        val distanceToHalfPi =
+        val distanceToHalfPi: BigDecimal =
             angle.subtract(halfPi, workMathContext).abs()
-        val distanceToThreeHalfPi =
+        val distanceToThreeHalfPi: BigDecimal =
             angle.subtract(threeHalfPi, workMathContext).abs()
 
         if (distanceToHalfPi <= tolerance ||
@@ -205,7 +205,7 @@ class BigDecimalMath(private val mathContext: MathContext) {
 
         var term: BigDecimal = value
         var sum: BigDecimal = value
-        var denominator = ONE
+        var denominator: BigDecimal = ONE
         var sign: Int = -1
 
         while (true) {
@@ -378,7 +378,7 @@ class BigDecimalMath(private val mathContext: MathContext) {
             denominator = denominator.add(TWO)
 
             val nextTerm: BigDecimal = term.divide(denominator, mc)
-            val nextSum = sum.add(nextTerm, mc)
+            val nextSum: BigDecimal = sum.add(nextTerm, mc)
 
             if (nextSum.compareTo(sum) == 0) {
                 return nextSum.multiply(TWO, mc)
