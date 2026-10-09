@@ -6,10 +6,10 @@
     <string name="calculator_error_division_by_zero">Division by zero</string>
     <string name="calculator_error_factorial_invalid_argument">Factorial require positive integer</string>
     <string name="calculator_error_factorial_large_argument">Too large argument for Factorial</string>
-    <string name="calculator_error_sqrt_invalid_argument">Sqrt require positive argument</string>
-    <string name="calculator_error_pow_invalid_argument">Invalid Pow argument</string>
-    <string name="calculator_error_log_invalid_argument">Log require positive argument</string>
-    <string name="calculator_error_tan_invalid_argument">Tan require non zero argument</string>
+    <string name="calculator_error_sqrt_invalid_argument">sqrt() require positive argument</string>
+    <string name="calculator_error_pow_invalid_argument">Invalid pow() argument</string>
+    <string name="calculator_error_log_invalid_argument">log() require positive argument</string>
+    <string name="calculator_error_tan_invalid_argument">Invalid tan() argument</string>
     <string name="calculator_error_arithmetic">Arithmetic error</string>
     <string name="calculator_error_unsupported">Unsupported error</string>
     <string name="history_repository_error_add">Failed to add history</string>
