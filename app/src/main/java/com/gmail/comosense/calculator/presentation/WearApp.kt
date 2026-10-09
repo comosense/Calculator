@@ -153,4 +153,5 @@ private fun HistoryRepositoryError.messageResourceId(): Int = when (this) {
     HistoryRepositoryError.Delete -> R.string.history_repository_error_delete
     HistoryRepositoryError.DeleteAll -> R.string.history_repository_error_delete_all
     HistoryRepositoryError.TooLarge -> R.string.history_repository_error_too_large
+    HistoryRepositoryError.InvalidHistory -> R.string.history_repository_error_invalid_history
 }

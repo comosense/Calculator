@@ -16,6 +16,7 @@
     <string name="history_repository_error_delete">Failed to delete history</string>
     <string name="history_repository_error_delete_all">Failed to delete all history</string>
     <string name="history_repository_error_too_large">Cannot add history: too large</string>
+    <string name="history_repository_error_invalid_history">Cannot add history: invalid history</string>
     <string name="content_description_positive">Positive</string>
     <string name="content_description_negative">Negative</string>
     <string name="content_description_opening_parenthesis">Opening parenthesis</string>

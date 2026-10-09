@@ -14,6 +14,7 @@ enum class HistoryRepositoryError {
     Delete,
     DeleteAll,
     TooLarge,
+    InvalidHistory,
 }
 
 class HistoryRepository(private val dataStore: DataStore<HistoryStore>) {
@@ -28,6 +29,10 @@ class HistoryRepository(private val dataStore: DataStore<HistoryStore>) {
         expression: List<Symbol>,
         result: List<Symbol>
     ): Result<Unit, HistoryRepositoryError> {
+        if (expression.isEmpty() || result.isEmpty()) {
+            return Result.Err(HistoryRepositoryError.InvalidHistory)
+        }
+
         if (expression.size > HistoryConstraints.MAX_EXPRESSION_SIZE ||
             result.size > HistoryConstraints.MAX_RESULT_SIZE
         ) {
