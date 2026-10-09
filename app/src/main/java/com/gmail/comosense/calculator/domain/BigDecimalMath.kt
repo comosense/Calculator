@@ -12,6 +12,10 @@ class LogInvalidArgumentException : ArithmeticException()
 class TanInvalidArgumentException : ArithmeticException()
 
 class BigDecimalMath(private val mathContext: MathContext) {
+    init {
+        require(mathContext.precision > 0)
+    }
+
     companion object {
         private const val MAX_FACTORIAL_ARGUMENT = 100
         private const val EXTRA_PRECISION = 8
@@ -23,6 +27,8 @@ class BigDecimalMath(private val mathContext: MathContext) {
         private val TEN = BigDecimal.TEN
         private val SIXTEEN = BigDecimal(16)
         private val TWO_HUNDRED_THIRTY_NINE = BigDecimal(239)
+        private val BIG_INTEGER_ONE = BigInteger.ONE
+        private val BIG_INTEGER_TWO = BigInteger.valueOf(2L)
     }
 
     private val workMathContext: MathContext = MathContext(
@@ -60,19 +66,10 @@ class BigDecimalMath(private val mathContext: MathContext) {
         var n = 1
 
         while (true) {
-            factorial = factorial.multiply(
-                BigDecimal(n),
-                workMathContext,
-            )
+            factorial = factorial.multiply(BigDecimal(n), workMathContext)
 
-            val term: BigDecimal = ONE.divide(
-                factorial,
-                workMathContext,
-            )
-            val next: BigDecimal = sum.add(
-                term,
-                workMathContext,
-            )
+            val term: BigDecimal = ONE.divide(factorial, workMathContext)
+            val next: BigDecimal = sum.add(term, workMathContext)
 
             if (next.compareTo(sum) == 0) {
                 return next.round(mathContext)
@@ -114,48 +111,59 @@ class BigDecimalMath(private val mathContext: MathContext) {
     }
 
     fun sqrt(value: BigDecimal): BigDecimal {
-        return sqrt(value, workMathContext).round(mathContext)
+        return sqrt(value, workMathContext)
+            .round(mathContext)
     }
 
     fun pow(
         base: BigDecimal,
         exponent: BigDecimal,
     ): BigDecimal {
-        return if (base <= ZERO) {
-            powNegativeBase(base, exponent)
-        } else {
-            val value: BigDecimal = exponent.multiply(
-                ln(base, workMathContext),
-                workMathContext,
-            )
-
-            exp(
-                value,
-                workMathContext,
-            ).round(mathContext)
+        if (base.compareTo(ZERO) == 0) {
+            return when {
+                exponent.signum() > 0 -> ZERO
+                exponent.signum() == 0 -> ONE
+                else -> throw PowInvalidArgumentException()
+            }
         }
+
+        val integerExponent: BigInteger? = try {
+            exponent.toBigIntegerExact()
+        } catch (_: ArithmeticException) {
+            null
+        }
+
+        val result: BigDecimal = if (integerExponent != null) {
+            powIntegerExponent(base, integerExponent, workMathContext)
+        } else {
+            if (base.signum() < 0) {
+                throw PowInvalidArgumentException()
+            }
+            powNonIntegerExponent(base, exponent, workMathContext)
+        }
+
+        return result
+            .round(mathContext)
     }
 
     fun ln(value: BigDecimal): BigDecimal {
-        return ln(value, workMathContext).round(mathContext)
+        return ln(value, workMathContext)
+            .round(mathContext)
     }
 
     fun log(value: BigDecimal): BigDecimal {
-        return ln(
-            value,
-            workMathContext,
-        ).divide(
-            lnTen,
-            workMathContext,
-        ).round(mathContext)
+        return ln(value, workMathContext).divide(lnTen, workMathContext)
+            .round(mathContext)
     }
 
     fun sin(value: BigDecimal): BigDecimal {
-        return sin(value, workMathContext).round(mathContext)
+        return sin(value, workMathContext)
+            .round(mathContext)
     }
 
     fun cos(value: BigDecimal): BigDecimal {
-        return cos(value, workMathContext).round(mathContext)
+        return cos(value, workMathContext)
+            .round(mathContext)
     }
 
     fun tan(value: BigDecimal): BigDecimal {
@@ -166,36 +174,19 @@ class BigDecimalMath(private val mathContext: MathContext) {
 
         val sin: BigDecimal = sin(value, workMathContext)
 
-        return sin.divide(
-            cos,
-            workMathContext,
-        ).round(mathContext)
+        return sin.divide(cos, workMathContext)
+            .round(mathContext)
     }
 
     private fun pi(mc: MathContext): BigDecimal {
         val arctanOneFifth: BigDecimal =
-            arctan(
-                ONE.divide(FIVE, mc),
-                mc,
-            )
+            arctan(ONE.divide(FIVE, mc), mc)
         val arctanOneTwoHundredThirtyNine: BigDecimal =
-            arctan(
-                ONE.divide(TWO_HUNDRED_THIRTY_NINE, mc),
-                mc,
-            )
+            arctan(ONE.divide(TWO_HUNDRED_THIRTY_NINE, mc), mc)
 
         return SIXTEEN
-            .multiply(
-                arctanOneFifth,
-                mc,
-            )
-            .subtract(
-                FOUR.multiply(
-                    arctanOneTwoHundredThirtyNine,
-                    mc,
-                ),
-                mc,
-            )
+            .multiply(arctanOneFifth, mc)
+            .subtract(FOUR.multiply(arctanOneTwoHundredThirtyNine, mc), mc)
     }
 
     private fun arctan(
@@ -213,21 +204,12 @@ class BigDecimalMath(private val mathContext: MathContext) {
             term = term.multiply(valueSquared, mc)
             denominator = denominator.add(TWO)
 
-            val nextTerm: BigDecimal = term.divide(
-                denominator,
-                mc,
-            )
+            val nextTerm: BigDecimal = term.divide(denominator, mc)
 
             val nextSum: BigDecimal = if (sign > 0) {
-                sum.add(
-                    nextTerm,
-                    mc,
-                )
+                sum.add(nextTerm, mc)
             } else {
-                sum.subtract(
-                    nextTerm,
-                    mc,
-                )
+                sum.subtract(nextTerm, mc)
             }
 
             if (nextSum.compareTo(sum) == 0) {
@@ -262,13 +244,8 @@ class BigDecimalMath(private val mathContext: MathContext) {
 
         while (true) {
             val next: BigDecimal = (
-                    x + value.divide(
-                        x,
-                        mc,
-                    )).divide(
-                TWO,
-                mc,
-            )
+                    x + value.divide(x, mc)
+                    ).divide(TWO, mc)
             if (next.compareTo(x) == 0) {
                 return next
             }
@@ -277,24 +254,28 @@ class BigDecimalMath(private val mathContext: MathContext) {
         }
     }
 
-    private fun powNegativeBase(
+    private fun powIntegerExponent(
+        base: BigDecimal,
+        exponent: BigInteger,
+        mc: MathContext,
+    ): BigDecimal {
+        val result: BigDecimal = base.pow(exponent.abs().intValueExact(), mc)
+
+        return if (exponent.signum() < 0) {
+            ONE.divide(result, mc)
+        } else {
+            result
+        }
+    }
+
+    private fun powNonIntegerExponent(
         base: BigDecimal,
         exponent: BigDecimal,
+        mc: MathContext,
     ): BigDecimal {
-        if ((base == ZERO) && (exponent <= ZERO)) {
-            throw PowInvalidArgumentException()
-        }
+        val value: BigDecimal = exponent.multiply(ln(base, mc), mc)
 
-        val integerExponent: BigInteger = try {
-            exponent.toBigIntegerExact()
-        } catch (_: ArithmeticException) {
-            throw PowInvalidArgumentException()
-        }
-
-        return base.pow(
-            integerExponent.intValueExact(),
-            workMathContext
-        ).round(mathContext)
+        return exp(value, mc)
     }
 
     private fun exp(
@@ -308,15 +289,9 @@ class BigDecimalMath(private val mathContext: MathContext) {
         while (true) {
             term = term
                 .multiply(value, mc)
-                .divide(
-                    BigDecimal(n),
-                    mc,
-                )
+                .divide(BigDecimal(n), mc)
 
-            val nextSum: BigDecimal = sum.add(
-                term,
-                mc,
-            )
+            val nextSum: BigDecimal = sum.add(term, mc)
 
             if (nextSum.compareTo(sum) == 0) {
                 return nextSum
@@ -343,72 +318,42 @@ class BigDecimalMath(private val mathContext: MathContext) {
         var exponent = 0
 
         while (x > sqrtTwo) {
-            x = x.divide(
-                TWO,
-                mc,
-            )
+            x = x.divide(TWO, mc)
             exponent++
         }
 
         while (x < inverseSqrtTwo) {
-            x = x.multiply(
-                TWO,
-                mc,
-            )
+            x = x.multiply(TWO, mc)
             exponent--
         }
 
         val lnX: BigDecimal = calculateLn(x, mc)
 
-        return lnX
-            .add(
-                BigDecimal(exponent).multiply(
-                    lnTwo,
-                    mc,
-                ),
-                mc,
-            )
+        return lnX.add(BigDecimal(exponent).multiply(lnTwo, mc), mc)
     }
 
     private fun calculateLn(
         value: BigDecimal,
         mc: MathContext,
     ): BigDecimal {
-        val z: BigDecimal = value.subtract(ONE, mc)
-            .divide(
-                value.add(ONE, mc),
-                mc,
-            )
-        val zSquared: BigDecimal = z.multiply(
-            z,
-            mc,
-        )
+        val z: BigDecimal = value
+            .subtract(ONE, mc)
+            .divide(value.add(ONE, mc), mc)
+        val zSquared: BigDecimal = z.multiply(z, mc)
 
         var term: BigDecimal = z
         var sum: BigDecimal = z
         var denominator: BigDecimal = ONE
 
         while (true) {
-            term = term.multiply(
-                zSquared,
-                mc
-            )
+            term = term.multiply(zSquared, mc)
             denominator = denominator.add(TWO)
 
-            val nextTerm: BigDecimal = term.divide(
-                denominator,
-                mc,
-            )
-            val nextSum = sum.add(
-                nextTerm,
-                mc,
-            )
+            val nextTerm: BigDecimal = term.divide(denominator, mc)
+            val nextSum = sum.add(nextTerm, mc)
 
             if (nextSum.compareTo(sum) == 0) {
-                return nextSum.multiply(
-                    TWO,
-                    mc,
-                )
+                return nextSum.multiply(TWO, mc)
             }
 
             sum = nextSum
@@ -422,42 +367,17 @@ class BigDecimalMath(private val mathContext: MathContext) {
         val angle: BigDecimal = normalizeAngle(value, mc)
 
         return when {
-            angle <= halfPi -> {
-                sinTaylor(
-                    angle,
-                    mc,
-                )
-            }
+            angle <= halfPi ->
+                sinTaylor(angle, mc)
 
-            angle <= pi -> {
-                sinTaylor(
-                    pi.subtract(
-                        angle,
-                        mc,
-                    ),
-                    mc,
-                )
-            }
+            angle <= pi ->
+                sinTaylor(pi.subtract(angle, mc), mc)
 
-            angle <= oneAndHalfPi -> {
-                sinTaylor(
-                    angle.subtract(
-                        pi,
-                        mc,
-                    ),
-                    mc,
-                ).negate(mc)
-            }
+            angle <= oneAndHalfPi ->
+                sinTaylor(angle.subtract(pi, mc), mc).negate(mc)
 
-            else -> {
-                sinTaylor(
-                    twoPi.subtract(
-                        angle,
-                        mc,
-                    ),
-                    mc,
-                ).negate(mc)
-            }
+            else ->
+                sinTaylor(twoPi.subtract(angle, mc), mc).negate(mc)
         }
     }
 
@@ -468,42 +388,17 @@ class BigDecimalMath(private val mathContext: MathContext) {
         val angle: BigDecimal = normalizeAngle(value, mc)
 
         return when {
-            angle <= halfPi -> {
-                cosTaylor(
-                    angle,
-                    mc,
-                )
-            }
+            angle <= halfPi ->
+                cosTaylor(angle, mc)
 
-            angle <= pi -> {
-                cosTaylor(
-                    pi.subtract(
-                        angle,
-                        mc,
-                    ),
-                    mc,
-                ).negate()
-            }
+            angle <= pi ->
+                cosTaylor(pi.subtract(angle, mc), mc).negate()
 
-            angle <= oneAndHalfPi -> {
-                cosTaylor(
-                    angle.subtract(
-                        pi,
-                        mc,
-                    ),
-                    mc,
-                ).negate(mc)
-            }
+            angle <= oneAndHalfPi ->
+                cosTaylor(angle.subtract(pi, mc), mc).negate(mc)
 
-            else -> {
-                cosTaylor(
-                    twoPi.subtract(
-                        angle,
-                        mc,
-                    ),
-                    mc,
-                )
-            }
+            else ->
+                cosTaylor(twoPi.subtract(angle, mc), mc)
         }
     }
 
@@ -511,29 +406,25 @@ class BigDecimalMath(private val mathContext: MathContext) {
         value: BigDecimal,
         mc: MathContext,
     ): BigDecimal {
-        val valueSquared: BigDecimal = value.multiply(
-            value,
-            mc,
-        )
+        val valueSquared: BigDecimal = value.multiply(value, mc)
 
         var term: BigDecimal = value
         var sum: BigDecimal = value
         var n = 1
 
         while (true) {
-            val denominator = BigDecimal(
-                (2 * n) * (2 * n + 1)
-            )
+            val twoN: BigInteger = BigInteger
+                .valueOf(n.toLong())
+                .multiply(BIG_INTEGER_TWO)
+            val denominator: BigInteger = twoN
+                .multiply(twoN.add(BIG_INTEGER_ONE))
 
             term = term
                 .multiply(valueSquared, mc)
-                .divide(denominator, mc)
+                .divide(BigDecimal(denominator), mc)
                 .negate()
 
-            val nextSum: BigDecimal = sum.add(
-                term,
-                mc,
-            )
+            val nextSum: BigDecimal = sum.add(term, mc)
 
             if (nextSum.compareTo(sum) == 0) {
                 return nextSum
@@ -548,29 +439,26 @@ class BigDecimalMath(private val mathContext: MathContext) {
         value: BigDecimal,
         mc: MathContext,
     ): BigDecimal {
-        val valueSquared: BigDecimal = value.multiply(
-            value,
-            mc,
-        )
+        val valueSquared: BigDecimal = value.multiply(value, mc)
 
         var term: BigDecimal = ONE
         var sum: BigDecimal = ONE
         var n = 1
 
         while (true) {
-            val denominator = BigDecimal(
-                (2 * n - 1) * (2 * n)
-            )
+            val twoN: BigInteger = BigInteger
+                .valueOf(n.toLong())
+                .multiply(BIG_INTEGER_TWO)
+            val denominator: BigInteger = twoN
+                .subtract(BIG_INTEGER_ONE)
+                .multiply(twoN)
 
             term = term
                 .multiply(valueSquared, mc)
-                .divide(denominator, mc)
+                .divide(BigDecimal(denominator), mc)
                 .negate()
 
-            val nextSum: BigDecimal = sum.add(
-                term,
-                mc,
-            )
+            val nextSum: BigDecimal = sum.add(term, mc)
 
             if (nextSum.compareTo(sum) == 0) {
                 return nextSum
