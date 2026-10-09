@@ -62,13 +62,11 @@ class BigDecimalMath(private val mathContext: MathContext) {
 
     fun e(): BigDecimal {
         var sum: BigDecimal = ONE
-        var factorial: BigDecimal = ONE
+        var term: BigDecimal = ONE
         var n = 1
 
         while (true) {
-            factorial = factorial.multiply(BigDecimal(n), workMathContext)
-
-            val term: BigDecimal = ONE.divide(factorial, workMathContext)
+            term = term.divide(BigDecimal(n), workMathContext)
             val next: BigDecimal = sum.add(term, workMathContext)
 
             if (next.compareTo(sum) == 0) {
@@ -282,24 +280,44 @@ class BigDecimalMath(private val mathContext: MathContext) {
         value: BigDecimal,
         mc: MathContext,
     ): BigDecimal {
+        var reduced: BigDecimal = value
+        var reductions = 0
+
+        while (reduced.abs() > BigDecimal("0.5")) {
+            reduced = reduced.divide(TWO)
+            reductions++
+        }
+
+        val workingMc = MathContext(
+            mc.precision + reductions,
+            mc.roundingMode,
+        )
+
         var sum: BigDecimal = ONE
         var term: BigDecimal = ONE
         var n = 1
 
         while (true) {
             term = term
-                .multiply(value, mc)
-                .divide(BigDecimal(n), mc)
+                .multiply(reduced, workingMc)
+                .divide(BigDecimal(n), workingMc)
 
-            val nextSum: BigDecimal = sum.add(term, mc)
+            val nextSum: BigDecimal = sum.add(term, workingMc)
 
             if (nextSum.compareTo(sum) == 0) {
-                return nextSum
+                sum = nextSum
+                break
             }
 
             sum = nextSum
             n++
         }
+
+        repeat(reductions) {
+            sum = sum.multiply(sum, workingMc)
+        }
+
+        return sum
     }
 
     private fun ln(
