@@ -5,6 +5,7 @@ import androidx.datastore.core.Serializer
 import com.gmail.comosense.calculator.data.proto.HistoryStore
 import java.io.InputStream
 import java.io.OutputStream
+import kotlin.coroutines.cancellation.CancellationException
 
 object HistorySerializer : Serializer<HistoryStore> {
     override val defaultValue: HistoryStore = HistoryStore.getDefaultInstance()
@@ -12,6 +13,8 @@ object HistorySerializer : Serializer<HistoryStore> {
     override suspend fun readFrom(input: InputStream): HistoryStore {
         try {
             return HistoryStore.parseFrom(input)
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
             throw CorruptionException("Cannot read history.", e)
         }
