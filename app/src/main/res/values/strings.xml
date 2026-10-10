@@ -8,6 +8,7 @@
     <string name="calculator_error_factorial_large_argument">Factorial argument is too large.</string>
     <string name="calculator_error_sqrt_invalid_argument">Square root requires a non-negative number.</string>
     <string name="calculator_error_pow_invalid_argument">Invalid exponentiation argument.</string>
+    <string name="calculator_error_pow_limit_exceeded">Exponentiation argument it too large.</string>
     <string name="calculator_error_log_invalid_argument">Logarithm requires a positive argument.</string>
     <string name="calculator_error_tan_invalid_argument">Tangent is undefined for this angle.</string>
     <string name="calculator_error_arithmetic">Arithmetic error</string>

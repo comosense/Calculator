@@ -12,6 +12,7 @@ enum class CalculatorError {
     FactorialLargeArgument,
     SqrtInvalidArgument,
     PowInvalidArgument,
+    PowLimitExceeded,
     LogInvalidArgument,
     TanInvalidArgument,
     Arithmetic,
@@ -76,6 +77,8 @@ private fun calculate(
         Result.Err(CalculatorError.SqrtInvalidArgument)
     } catch (_: PowInvalidArgumentException) {
         Result.Err(CalculatorError.PowInvalidArgument)
+    } catch (_: PowLimitExceededException) {
+        Result.Err(CalculatorError.PowLimitExceeded)
     } catch (_: LogInvalidArgumentException) {
         Result.Err(CalculatorError.LogInvalidArgument)
     } catch (_: TanInvalidArgumentException) {

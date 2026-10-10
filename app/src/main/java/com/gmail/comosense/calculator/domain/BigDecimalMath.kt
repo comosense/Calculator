@@ -8,6 +8,7 @@ class FactorialLargeArgumentException : ArithmeticException()
 class FactorialInvalidArgumentException : ArithmeticException()
 class SqrtInvalidArgumentException : ArithmeticException()
 class PowInvalidArgumentException : ArithmeticException()
+class PowLimitExceededException : ArithmeticException()
 class LogInvalidArgumentException : ArithmeticException()
 class TanInvalidArgumentException : ArithmeticException()
 
@@ -17,18 +18,19 @@ class BigDecimalMath(private val mathContext: MathContext) {
     }
 
     companion object {
-        private const val MAX_FACTORIAL_ARGUMENT = 100
         private const val EXTRA_PRECISION = 8
-        private val ZERO = BigDecimal.ZERO
-        private val ONE = BigDecimal.ONE
-        private val TWO = BigDecimal(2)
-        private val FOUR = BigDecimal(4)
-        private val FIVE = BigDecimal(5)
-        private val TEN = BigDecimal.TEN
-        private val SIXTEEN = BigDecimal(16)
-        private val TWO_HUNDRED_THIRTY_NINE = BigDecimal(239)
-        private val BIG_INTEGER_ONE = BigInteger.ONE
-        private val BIG_INTEGER_TWO = BigInteger.valueOf(2L)
+        private val ZERO: BigDecimal = BigDecimal.ZERO
+        private val ONE: BigDecimal = BigDecimal.ONE
+        private val TWO: BigDecimal = BigDecimal(2)
+        private val FOUR: BigDecimal = BigDecimal(4)
+        private val FIVE: BigDecimal = BigDecimal(5)
+        private val TEN: BigDecimal = BigDecimal.TEN
+        private val SIXTEEN: BigDecimal = BigDecimal(16)
+        private val TWO_HUNDRED_THIRTY_NINE: BigDecimal = BigDecimal(239)
+        private val BIG_INTEGER_ONE: BigInteger = BigInteger.ONE
+        private val BIG_INTEGER_TWO: BigInteger = 2.toBigInteger()
+        private val MAX_FACTORIAL_ARGUMENT: BigInteger = 146.toBigInteger()
+        private val MAX_EXPONENT: BigDecimal = BigDecimal(128)
     }
 
     private val workMathContext: MathContext = MathContext(
@@ -89,11 +91,11 @@ class BigDecimalMath(private val mathContext: MathContext) {
             throw FactorialInvalidArgumentException()
         }
 
-        if (integerValue < BigInteger.ZERO) {
+        if (integerValue.signum() < 0) {
             throw FactorialInvalidArgumentException()
         }
 
-        if (integerValue > MAX_FACTORIAL_ARGUMENT.toBigInteger()) {
+        if (integerValue > MAX_FACTORIAL_ARGUMENT) {
             throw FactorialLargeArgumentException()
         }
 
@@ -123,6 +125,10 @@ class BigDecimalMath(private val mathContext: MathContext) {
                 exponent.signum() == 0 -> ONE
                 else -> throw PowInvalidArgumentException()
             }
+        }
+
+        if (exponent.abs() > MAX_EXPONENT) {
+            throw PowLimitExceededException()
         }
 
         val integerExponent: BigInteger? = try {
@@ -441,8 +447,7 @@ class BigDecimalMath(private val mathContext: MathContext) {
         var n = 1
 
         while (true) {
-            val twoN: BigInteger = BigInteger
-                .valueOf(n.toLong())
+            val twoN: BigInteger = n.toBigInteger()
                 .multiply(BIG_INTEGER_TWO)
             val denominator: BigInteger = twoN
                 .multiply(twoN.add(BIG_INTEGER_ONE))
@@ -474,8 +479,7 @@ class BigDecimalMath(private val mathContext: MathContext) {
         var n = 1
 
         while (true) {
-            val twoN: BigInteger = BigInteger
-                .valueOf(n.toLong())
+            val twoN: BigInteger = n.toBigInteger()
                 .multiply(BIG_INTEGER_TWO)
             val denominator: BigInteger = twoN
                 .subtract(BIG_INTEGER_ONE)
