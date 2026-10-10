@@ -175,13 +175,18 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
         crossinline appStateTransition: (AppState) -> AppStateTransition,
     ) {
         while (true) {
-            val current: AppState = _appState.value
-            val next: AppStateTransition = appStateTransition(current)
+            val currentAppState: AppState = _appState.value
+            val nextAppStateTransition: AppStateTransition = appStateTransition(currentAppState)
 
-            if (_appState.compareAndSet(current, next.appState)) {
-                next.appEvent?.let { appEvent ->
+            if (_appState.compareAndSet(
+                    expect = currentAppState,
+                    update = nextAppStateTransition.appState,
+                )
+            ) {
+                nextAppStateTransition.appEvent?.let { appEvent ->
                     _appEvent.tryEmit(appEvent)
                 }
+
                 return
             }
         }
