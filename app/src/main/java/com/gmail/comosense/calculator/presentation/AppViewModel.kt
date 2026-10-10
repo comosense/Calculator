@@ -91,10 +91,10 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
     }
 
     private fun input(symbol: Symbol) {
-        updateAppState { current ->
+        updateAppState { currentAppState ->
             resolveAppStateUpdate(
-                current = current,
-                result = current.appendExpression(symbol)
+                currentAppState = currentAppState,
+                appStateUpdateResult = currentAppState.appendExpression(symbol)
             )
         }
     }
@@ -121,10 +121,10 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
                 }
             }
 
-        updateAppState { current ->
+        updateAppState { currentAppState ->
             resolveAppStateUpdate(
-                current = current,
-                result = current.applyResult(result)
+                currentAppState = currentAppState,
+                appStateUpdateResult = currentAppState.applyResult(result)
             )
         }
 
@@ -151,10 +151,10 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
     }
 
     private fun selectHistory(id: String) {
-        updateAppState { current ->
+        updateAppState { currentAppState ->
             resolveAppStateUpdate(
-                current = current,
-                result = current.applyHistory(id)
+                currentAppState = currentAppState,
+                appStateUpdateResult = currentAppState.applyHistory(id)
             )
         }
     }
@@ -188,26 +188,26 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
     }
 
     private fun resolveAppStateUpdate(
-        current: AppState,
-        result: AppStateUpdateResult,
-    ): AppStateTransition = when (result) {
+        currentAppState: AppState,
+        appStateUpdateResult: AppStateUpdateResult,
+    ): AppStateTransition = when (appStateUpdateResult) {
         is AppStateUpdateResult.Success ->
-            AppStateTransition(result.state)
+            AppStateTransition(appStateUpdateResult.state)
 
         is AppStateUpdateResult.ExpressionTooLarge ->
             AppStateTransition(
-                appState = current,
+                appState = currentAppState,
                 appEvent = AppEvent.AppViewModelError(
                     AppViewModelError.ExpressionTooLarge,
                 ),
             )
 
         is AppStateUpdateResult.UnacceptableSymbol ->
-            AppStateTransition(current)
+            AppStateTransition(currentAppState)
 
         is AppStateUpdateResult.HistoryNotFound ->
             AppStateTransition(
-                appState = current,
+                appState = currentAppState,
                 appEvent = AppEvent.AppViewModelError(
                     AppViewModelError.HistoryNotFound,
                 ),
