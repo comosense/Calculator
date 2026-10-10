@@ -20,6 +20,7 @@ class BigDecimalMath(private val mathContext: MathContext) {
     companion object {
         private const val EXTRA_PRECISION: Int = 8
         private val ZERO: BigDecimal = BigDecimal.ZERO
+        private val ONE_HALF: BigDecimal = BigDecimal("0.5")
         private val ONE: BigDecimal = BigDecimal.ONE
         private val TWO: BigDecimal = BigDecimal(2)
         private val FOUR: BigDecimal = BigDecimal(4)
@@ -299,7 +300,7 @@ class BigDecimalMath(private val mathContext: MathContext) {
         var reduced: BigDecimal = value
         var reductions = 0
 
-        while (reduced.abs() > BigDecimal("0.5")) {
+        while (reduced.abs() > ONE_HALF) {
             reduced = reduced.divide(TWO)
             reductions++
         }
