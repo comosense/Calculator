@@ -86,15 +86,15 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
 
     private fun input(symbol: Symbol) {
         when (val appendableExpressionResult = _appState.value.appendExpression(symbol)) {
-            is AppendExpressionResult.Success ->
+            is AppStateUpdateResult.Success ->
                 _appState.update { appendableExpressionResult.state }
 
 
-            is AppendExpressionResult.TooLarge ->
+            is AppStateUpdateResult.ExpressionTooLarge ->
                 _appEvent.tryEmit(AppEvent.AppViewModelError(AppViewModelError.ExpressionTooLarge))
 
 
-            is AppendExpressionResult.Invalid ->
+            is AppStateUpdateResult.UnacceptableSymbol ->
                 Unit
         }
     }
@@ -121,8 +121,18 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
                 }
             }
 
-        _appState.update { state ->
-            state.applyResult(result)
+        when (val appendableExpressionResult = state.applyResult(result)) {
+            is AppStateUpdateResult.Success ->
+                _appState.update { appendableExpressionResult.state }
+
+
+            is AppStateUpdateResult.ExpressionTooLarge -> {
+                _appEvent.tryEmit(AppEvent.AppViewModelError(AppViewModelError.ExpressionTooLarge))
+                return
+            }
+
+            is AppStateUpdateResult.UnacceptableSymbol ->
+                return
         }
 
         viewModelScope.launch {
@@ -153,8 +163,17 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
     }
 
     private fun selectHistory(id: String) {
-        _appState.update { state ->
-            state.applyHistory(id)
+        when (val appendableExpressionResult = _appState.value.applyHistory(id)) {
+            is AppStateUpdateResult.Success ->
+                _appState.update { appendableExpressionResult.state }
+
+
+            is AppStateUpdateResult.ExpressionTooLarge ->
+                _appEvent.tryEmit(AppEvent.AppViewModelError(AppViewModelError.ExpressionTooLarge))
+
+
+            is AppStateUpdateResult.UnacceptableSymbol ->
+                Unit
         }
     }
 

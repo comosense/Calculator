@@ -7,10 +7,10 @@ internal object AppStateExtensionsConstrains {
     const val MAX_EXPRESSION_SIZE: Int = Constraints.MAX_EXPRESSION_SIZE
 }
 
-sealed interface AppendExpressionResult {
-    data class Success(val state: AppState) : AppendExpressionResult
-    data object TooLarge : AppendExpressionResult
-    data object Invalid : AppendExpressionResult
+sealed interface AppStateUpdateResult {
+    data class Success(val state: AppState) : AppStateUpdateResult
+    data object ExpressionTooLarge : AppStateUpdateResult
+    data object UnacceptableSymbol : AppStateUpdateResult
 }
 
 val AppState.expression: List<Symbol>
@@ -18,15 +18,15 @@ val AppState.expression: List<Symbol>
 val AppState.isInputting: Boolean
     get() = input.isNotEmpty()
 
-fun AppState.appendExpression(symbol: Symbol): AppendExpressionResult {
+fun AppState.appendExpression(symbol: Symbol): AppStateUpdateResult {
     val symbols: List<Symbol> =
-        symbolsToAppendOrNull(symbol) ?: return AppendExpressionResult.Invalid
+        symbolsToAppendOrNull(symbol) ?: return AppStateUpdateResult.UnacceptableSymbol
 
     if (expression.size + symbols.size > AppStateExtensionsConstrains.MAX_EXPRESSION_SIZE) {
-        return AppendExpressionResult.TooLarge
+        return AppStateUpdateResult.ExpressionTooLarge
     }
 
-    return AppendExpressionResult.Success(
+    return AppStateUpdateResult.Success(
         if (symbol is Symbol.Operator || isInputting) {
             copy(
                 input = input + symbols,
@@ -40,23 +40,36 @@ fun AppState.appendExpression(symbol: Symbol): AppendExpressionResult {
     )
 }
 
-fun AppState.applyResult(result: List<Symbol>): AppState {
-    return copy(
-        result = result,
-        input = emptyList(),
+fun AppState.applyResult(result: List<Symbol>): AppStateUpdateResult {
+    if (result.size > AppStateExtensionsConstrains.MAX_EXPRESSION_SIZE) {
+        return AppStateUpdateResult.ExpressionTooLarge
+    }
+
+    return AppStateUpdateResult.Success(
+        copy(
+            result = result,
+            input = emptyList(),
+        )
     )
 }
 
-fun AppState.applyHistory(id: String): AppState {
-    val result: List<Symbol> = (histories.firstOrNull { it.id == id } ?: return this).result
+fun AppState.applyHistory(id: String): AppStateUpdateResult {
+    val result: List<Symbol> = (
+            histories.firstOrNull { it.id == id } ?: return AppStateUpdateResult.UnacceptableSymbol
+            ).result
 
     return if (isInputting) {
         if (canAppend(result)) {
-            copy(
-                input = input + result,
+            if (expression.size + result.size > AppStateExtensionsConstrains.MAX_EXPRESSION_SIZE) {
+                return AppStateUpdateResult.ExpressionTooLarge
+            }
+            AppStateUpdateResult.Success(
+                copy(
+                    input = input + result,
+                )
             )
         } else {
-            this
+            AppStateUpdateResult.UnacceptableSymbol
         }
     } else {
         applyResult(result)
