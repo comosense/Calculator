@@ -85,18 +85,7 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
     }
 
     private fun input(symbol: Symbol) {
-        when (val appendableExpressionResult = _appState.value.appendExpression(symbol)) {
-            is AppStateUpdateResult.Success ->
-                _appState.update { appendableExpressionResult.state }
-
-
-            is AppStateUpdateResult.ExpressionTooLarge ->
-                _appEvent.tryEmit(AppEvent.AppViewModelError(AppViewModelError.ExpressionTooLarge))
-
-
-            is AppStateUpdateResult.UnacceptableSymbol ->
-                Unit
-        }
+        applyUpdateResult(_appState.value.appendExpression(symbol))
     }
 
     private fun calculate() {
@@ -121,32 +110,15 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
                 }
             }
 
-        when (val appendableExpressionResult = state.applyResult(result)) {
-            is AppStateUpdateResult.Success ->
-                _appState.update { appendableExpressionResult.state }
-
-
-            is AppStateUpdateResult.ExpressionTooLarge -> {
-                _appEvent.tryEmit(AppEvent.AppViewModelError(AppViewModelError.ExpressionTooLarge))
-                return
-            }
-
-            is AppStateUpdateResult.UnacceptableSymbol ->
-                return
-        }
+        if (!applyUpdateResult(state.applyResult(result))) return
 
         viewModelScope.launch {
-            when (val addHistoryResult: Result<Unit, HistoryRepositoryError> =
+            handleHistoryRepositoryResult(
                 historyRepository.addHistory(
                     expression = expression,
                     result = result
-                )) {
-                is Result.Ok ->
-                    Unit
-
-                is Result.Err ->
-                    _appEvent.tryEmit(AppEvent.HistoryRepositoryError(addHistoryResult.error))
-            }
+                )
+            )
         }
     }
 
@@ -163,43 +135,46 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
     }
 
     private fun selectHistory(id: String) {
-        when (val appendableExpressionResult = _appState.value.applyHistory(id)) {
-            is AppStateUpdateResult.Success ->
-                _appState.update { appendableExpressionResult.state }
-
-
-            is AppStateUpdateResult.ExpressionTooLarge ->
-                _appEvent.tryEmit(AppEvent.AppViewModelError(AppViewModelError.ExpressionTooLarge))
-
-
-            is AppStateUpdateResult.UnacceptableSymbol ->
-                Unit
-        }
+        applyUpdateResult(_appState.value.applyHistory(id))
     }
 
     private fun deleteHistory(id: String) {
         viewModelScope.launch {
-            when (val deleteHistoryResult: Result<Unit, HistoryRepositoryError> =
-                historyRepository.deleteHistory(id)) {
-                is Result.Ok ->
-                    Unit
-
-                is Result.Err ->
-                    _appEvent.tryEmit(AppEvent.HistoryRepositoryError(deleteHistoryResult.error))
-            }
+            handleHistoryRepositoryResult(historyRepository.deleteHistory(id))
         }
     }
 
     private fun deleteHistoryAll() {
         viewModelScope.launch {
-            when (val deleteHistoryAllResult: Result<Unit, HistoryRepositoryError> =
-                historyRepository.deleteHistoryAll()) {
-                is Result.Ok ->
-                    Unit
+            handleHistoryRepositoryResult(historyRepository.deleteHistoryAll())
+        }
+    }
 
-                is Result.Err ->
-                    _appEvent.tryEmit(AppEvent.HistoryRepositoryError(deleteHistoryAllResult.error))
+    private fun applyUpdateResult(appStateUpdateResult: AppStateUpdateResult): Boolean {
+        return when (appStateUpdateResult) {
+            is AppStateUpdateResult.Success -> {
+                _appState.update { appStateUpdateResult.state }
+                true
             }
+
+            is AppStateUpdateResult.ExpressionTooLarge -> {
+                _appEvent.tryEmit(AppEvent.AppViewModelError(AppViewModelError.ExpressionTooLarge))
+                false
+            }
+
+            is AppStateUpdateResult.UnacceptableSymbol -> {
+                false
+            }
+        }
+    }
+
+    private fun handleHistoryRepositoryResult(historyRepositoryResult: Result<Unit, HistoryRepositoryError>) {
+        when (historyRepositoryResult) {
+            is Result.Ok ->
+                Unit
+
+            is Result.Err ->
+                _appEvent.tryEmit(AppEvent.HistoryRepositoryError(historyRepositoryResult.error))
         }
     }
 }

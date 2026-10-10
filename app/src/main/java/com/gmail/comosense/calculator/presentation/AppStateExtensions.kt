@@ -19,8 +19,8 @@ val AppState.isInputting: Boolean
     get() = input.isNotEmpty()
 
 fun AppState.appendExpression(symbol: Symbol): AppStateUpdateResult {
-    val symbols: List<Symbol> =
-        symbolsToAppendOrNull(symbol) ?: return AppStateUpdateResult.UnacceptableSymbol
+    val symbols: List<Symbol> = symbolsToAppendOrNull(symbol)
+        ?: return AppStateUpdateResult.UnacceptableSymbol
 
     if (expression.size + symbols.size > AppStateExtensionsConstrains.MAX_EXPRESSION_SIZE) {
         return AppStateUpdateResult.ExpressionTooLarge
@@ -54,26 +54,28 @@ fun AppState.applyResult(result: List<Symbol>): AppStateUpdateResult {
 }
 
 fun AppState.applyHistory(id: String): AppStateUpdateResult {
-    val result: List<Symbol> = (
-            histories.firstOrNull { it.id == id } ?: return AppStateUpdateResult.UnacceptableSymbol
-            ).result
+    val result: List<Symbol> = histories
+        .firstOrNull { it.id == id }
+        ?.result
+        ?: return AppStateUpdateResult.UnacceptableSymbol
 
-    return if (isInputting) {
-        if (canAppend(result)) {
-            if (expression.size + result.size > AppStateExtensionsConstrains.MAX_EXPRESSION_SIZE) {
-                return AppStateUpdateResult.ExpressionTooLarge
-            }
-            AppStateUpdateResult.Success(
-                copy(
-                    input = input + result,
-                )
-            )
-        } else {
-            AppStateUpdateResult.UnacceptableSymbol
-        }
-    } else {
-        applyResult(result)
+    if (!isInputting) {
+        return applyResult(result)
     }
+
+    if (!canAppend(result)) {
+        return AppStateUpdateResult.UnacceptableSymbol
+    }
+
+    if (expression.size + result.size > AppStateExtensionsConstrains.MAX_EXPRESSION_SIZE) {
+        return AppStateUpdateResult.ExpressionTooLarge
+    }
+
+    return AppStateUpdateResult.Success(
+        copy(
+            input = input + result,
+        )
+    )
 }
 
 fun AppState.clearExpression(): AppState {
