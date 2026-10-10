@@ -86,7 +86,11 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
     }
 
     private fun input(symbol: Symbol) {
-        applyUpdateResult(_appState.value.appendExpression(symbol))
+        _appState.update { state ->
+            handleAppStateUpdateResult(
+                state.appendExpression(symbol)
+            ) ?: state
+        }
     }
 
     private fun calculate() {
@@ -111,7 +115,11 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
                 }
             }
 
-        if (!applyUpdateResult(state.applyResult(result))) return
+        _appState.update { state ->
+            handleAppStateUpdateResult(
+                state.applyResult(result)
+            ) ?: return
+        }
 
         viewModelScope.launch {
             handleHistoryRepositoryResult(
@@ -136,7 +144,11 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
     }
 
     private fun selectHistory(id: String) {
-        applyUpdateResult(_appState.value.applyHistory(id))
+        _appState.update { state ->
+            handleAppStateUpdateResult(
+                state.applyHistory(id)
+            ) ?: state
+        }
     }
 
     private fun deleteHistory(id: String) {
@@ -151,25 +163,26 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
         }
     }
 
-    private fun applyUpdateResult(appStateUpdateResult: AppStateUpdateResult): Boolean {
+    private fun handleAppStateUpdateResult(
+        appStateUpdateResult: AppStateUpdateResult
+    ): AppState? {
         return when (appStateUpdateResult) {
             is AppStateUpdateResult.Success -> {
-                _appState.update { appStateUpdateResult.state }
-                true
+                appStateUpdateResult.state
             }
 
             is AppStateUpdateResult.ExpressionTooLarge -> {
                 _appEvent.tryEmit(AppEvent.AppViewModelError(AppViewModelError.ExpressionTooLarge))
-                false
+                null
             }
 
             is AppStateUpdateResult.UnacceptableSymbol -> {
-                false
+                null
             }
 
             is AppStateUpdateResult.HistoryNotFound -> {
                 _appEvent.tryEmit(AppEvent.AppViewModelError(AppViewModelError.HistoryNotFound))
-                false
+                null
             }
         }
     }
