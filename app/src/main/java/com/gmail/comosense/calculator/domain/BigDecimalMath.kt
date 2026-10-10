@@ -18,7 +18,7 @@ class BigDecimalMath(private val mathContext: MathContext) {
     }
 
     companion object {
-        private const val EXTRA_PRECISION = 8
+        private const val EXTRA_PRECISION: Int = 8
         private val ZERO: BigDecimal = BigDecimal.ZERO
         private val ONE: BigDecimal = BigDecimal.ONE
         private val TWO: BigDecimal = BigDecimal(2)
@@ -30,7 +30,7 @@ class BigDecimalMath(private val mathContext: MathContext) {
         private val BIG_INTEGER_ONE: BigInteger = BigInteger.ONE
         private val BIG_INTEGER_TWO: BigInteger = 2.toBigInteger()
         private val MAX_FACTORIAL_ARGUMENT: BigInteger = 146.toBigInteger()
-        private val MAX_EXPONENT: BigDecimal = BigDecimal(128)
+        private val MAX_EXPONENT: BigInteger = 1024.toBigInteger()
     }
 
     private val workMathContext: MathContext = MathContext(
@@ -119,16 +119,12 @@ class BigDecimalMath(private val mathContext: MathContext) {
         base: BigDecimal,
         exponent: BigDecimal,
     ): BigDecimal {
-        if (base.compareTo(ZERO) == 0) {
-            return when {
-                exponent.signum() > 0 -> ZERO
-                exponent.signum() == 0 -> ONE
-                else -> throw PowInvalidArgumentException()
+        if (base.signum() == 0) {
+            return if (exponent.signum() > 0) {
+                ZERO
+            } else {
+                throw PowInvalidArgumentException()
             }
-        }
-
-        if (exponent.abs() > MAX_EXPONENT) {
-            throw PowLimitExceededException()
         }
 
         val integerExponent: BigInteger? = try {
@@ -246,20 +242,20 @@ class BigDecimalMath(private val mathContext: MathContext) {
             return TEN.pow(exponent.coerceAtLeast(0))
         }
 
-        if (value < ZERO) {
+        if (value.signum() == -1) {
             throw SqrtInvalidArgumentException()
         }
 
-        if (value.compareTo(ZERO) == 0) {
+        if (value.signum() == 0) {
             return ZERO
         }
 
         var x: BigDecimal = initialSqrtEstimate(value)
 
         while (true) {
-            val next: BigDecimal = (
-                    x + value.divide(x, mc)
-                    ).divide(TWO, mc)
+            val next: BigDecimal = x
+                .add(value.divide(x, mc))
+                .divide(TWO, mc)
             if (next.compareTo(x) == 0) {
                 return next
             }
@@ -273,6 +269,10 @@ class BigDecimalMath(private val mathContext: MathContext) {
         exponent: BigInteger,
         mc: MathContext,
     ): BigDecimal {
+        if (exponent.abs() > MAX_EXPONENT) {
+            throw PowLimitExceededException()
+        }
+
         val result: BigDecimal = base.pow(exponent.abs().intValueExact(), mc)
 
         return if (exponent.signum() < 0) {
@@ -340,7 +340,7 @@ class BigDecimalMath(private val mathContext: MathContext) {
         value: BigDecimal,
         mc: MathContext,
     ): BigDecimal {
-        if (value <= ZERO) {
+        if (value.signum() <= 0) {
             throw LogInvalidArgumentException()
         }
 
@@ -447,8 +447,8 @@ class BigDecimalMath(private val mathContext: MathContext) {
         var n = 1
 
         while (true) {
-            val twoN: BigInteger = n.toBigInteger()
-                .multiply(BIG_INTEGER_TWO)
+            val twoN: BigInteger = BIG_INTEGER_TWO
+                .multiply(n.toBigInteger())
             val denominator: BigInteger = twoN
                 .multiply(twoN.add(BIG_INTEGER_ONE))
 
@@ -479,8 +479,8 @@ class BigDecimalMath(private val mathContext: MathContext) {
         var n = 1
 
         while (true) {
-            val twoN: BigInteger = n.toBigInteger()
-                .multiply(BIG_INTEGER_TWO)
+            val twoN: BigInteger = BIG_INTEGER_TWO
+                .multiply(n.toBigInteger())
             val denominator: BigInteger = twoN
                 .subtract(BIG_INTEGER_ONE)
                 .multiply(twoN)
@@ -507,7 +507,7 @@ class BigDecimalMath(private val mathContext: MathContext) {
     ): BigDecimal {
         var angle: BigDecimal = value.remainder(twoPi, mc)
 
-        if (angle < ZERO) {
+        if (angle.signum() == -1) {
             angle = angle.add(twoPi, mc)
         }
 

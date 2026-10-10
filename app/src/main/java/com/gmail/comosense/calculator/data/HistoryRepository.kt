@@ -21,8 +21,8 @@ class HistoryRepository(private val dataStore: DataStore<HistoryStore>) {
     val histories: Flow<List<History>> =
         dataStore.data.map { store ->
             store.historiesList
-                .mapNotNull { it.toHistoryOrNull() }
                 .take(HistoryConstraints.MAX_HISTORIES_SIZE)
+                .mapNotNull { it.toHistoryOrNull() }
         }
 
     suspend fun addHistory(

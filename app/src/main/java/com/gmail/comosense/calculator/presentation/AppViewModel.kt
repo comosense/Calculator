@@ -20,6 +20,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+enum class AppViewModelError {
+    ExpressionTooLarge,
+}
+
 sealed interface AppAction {
     data class Input(val symbol: Symbol) : AppAction
     data object Calculate : AppAction
@@ -70,32 +74,28 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
 
     fun onAction(action: AppAction) {
         when (action) {
-            is AppAction.Input
-                -> input(action.symbol)
-
-            is AppAction.Calculate
-                -> calculate()
-
-            is AppAction.Clear
-                -> clear()
-
-            is AppAction.Backspace
-                -> backspace()
-
-            is AppAction.SelectHistory
-                -> selectHistory(action.id)
-
-            is AppAction.DeleteHistory
-                -> deleteHistory(action.id)
-
-            is AppAction.DeleteHistoryAll
-                -> deleteHistoryAll()
+            is AppAction.Input -> input(action.symbol)
+            is AppAction.Calculate -> calculate()
+            is AppAction.Clear -> clear()
+            is AppAction.Backspace -> backspace()
+            is AppAction.SelectHistory -> selectHistory(action.id)
+            is AppAction.DeleteHistory -> deleteHistory(action.id)
+            is AppAction.DeleteHistoryAll -> deleteHistoryAll()
         }
     }
 
     private fun input(symbol: Symbol) {
-        _appState.update {
-            it.appendExpression(symbol)
+        when (val appendableExpressionResult = _appState.value.appendExpression(symbol)) {
+            is AppendExpressionResult.Success ->
+                _appState.update { appendableExpressionResult.state }
+
+
+            is AppendExpressionResult.TooLarge ->
+                _appEvent.tryEmit(AppEvent.AppViewModelError(AppViewModelError.ExpressionTooLarge))
+
+
+            is AppendExpressionResult.Invalid ->
+                Unit
         }
     }
 
@@ -121,8 +121,8 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
                 }
             }
 
-        _appState.update {
-            it.applyResult(result)
+        _appState.update { state ->
+            state.applyResult(result)
         }
 
         viewModelScope.launch {
@@ -141,20 +141,20 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
     }
 
     private fun clear() {
-        _appState.update {
-            it.clearExpression()
+        _appState.update { state ->
+            state.clearExpression()
         }
     }
 
     private fun backspace() {
-        _appState.update {
-            it.dropLastExpressionSymbol()
+        _appState.update { state ->
+            state.dropLastExpressionSymbol()
         }
     }
 
     private fun selectHistory(id: String) {
-        _appState.update {
-            it.applyHistory(id)
+        _appState.update { state ->
+            state.applyHistory(id)
         }
     }
 

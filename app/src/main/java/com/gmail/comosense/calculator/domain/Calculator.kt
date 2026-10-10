@@ -1,11 +1,18 @@
 package com.gmail.comosense.calculator.domain
 
+import com.gmail.comosense.calculator.common.Constraints
 import com.gmail.comosense.calculator.common.Result
 import java.math.BigDecimal
 import java.math.MathContext
 import java.math.RoundingMode
 
+internal object CalculatorConstraints {
+    const val MAX_RESULT_SIZE: Int = Constraints.MAX_RESULT_SIZE
+}
+
 enum class CalculatorError {
+    Unsupported,
+    ResultTooLarge,
     InvalidExpression,
     DivisionByZero,
     FactorialInvalidArgument,
@@ -16,6 +23,10 @@ enum class CalculatorError {
     LogInvalidArgument,
     TanInvalidArgument,
     Arithmetic,
+}
+
+enum class BigDecimalError {
+    TooLarge,
     Unsupported,
 }
 
@@ -29,22 +40,30 @@ fun calculate(
     require(precision > 0)
     require(displayScale >= 0)
 
+    fun BigDecimalError.toCalculatorError(): CalculatorError = when (this) {
+        BigDecimalError.Unsupported -> CalculatorError.Unsupported
+        BigDecimalError.TooLarge -> CalculatorError.ResultTooLarge
+    }
+
     val tokens: List<Token> =
         when (val tokensResult: Result<List<Token>, SymbolTokenizerError> = tokenize(expression)) {
-            is Result.Ok ->
-                tokensResult.value
-
-            is Result.Err ->
-                return Result.Err(CalculatorError.InvalidExpression)
+            is Result.Ok -> tokensResult.value
+            is Result.Err -> return Result.Err(CalculatorError.InvalidExpression)
         }
 
-    return when (val calculatedResult: Result<BigDecimal, CalculatorError> =
-        calculate(tokens, precision)) {
-        is Result.Ok ->
-            calculatedResult.value.toSymbols(displayScale)
+    val calculated: BigDecimal =
+        when (val calculatedResult: Result<BigDecimal, CalculatorError> =
+            calculate(tokens, precision)) {
+            is Result.Ok -> calculatedResult.value
+            is Result.Err -> return Result.Err(calculatedResult.error)
+        }
 
-        is Result.Err ->
-            calculatedResult
+    return when (val calculatedSymbolsResult = calculated.toSymbols(
+        scale = displayScale,
+        limit = CalculatorConstraints.MAX_RESULT_SIZE,
+    )) {
+        is Result.Ok -> Result.Ok(calculatedSymbolsResult.value)
+        is Result.Err -> Result.Err(calculatedSymbolsResult.error.toCalculatorError())
     }
 }
 
@@ -276,21 +295,26 @@ private class Parser(
     }
 }
 
-private fun BigDecimal.toSymbols(scale: Int): Result<List<Symbol>, CalculatorError> {
-    val displayResult: BigDecimal = if (compareTo(BigDecimal.ZERO) == 0) {
+private fun BigDecimal.toSymbols(scale: Int, limit: Int): Result<List<Symbol>, BigDecimalError> {
+    val value: BigDecimal = if (compareTo(BigDecimal.ZERO) == 0) {
         BigDecimal.ZERO
     } else {
         setScale(scale, RoundingMode.HALF_UP).stripTrailingZeros()
     }
 
+    val plainStringValue: String = value.toPlainString()
+    if (plainStringValue.length > limit) {
+        return Result.Err(BigDecimalError.TooLarge)
+    }
+
     val symbols: List<Symbol> = buildList {
-        for (c in displayResult.toPlainString()) {
+        for (c in plainStringValue) {
             add(
                 when (c) {
                     in '0'..'9' -> Symbol.Numeric.Digit(c.digitToInt())
                     '.' -> Symbol.Numeric.Point
                     '-' -> Symbol.Sign.Negative
-                    else -> return Result.Err(CalculatorError.Unsupported)
+                    else -> return Result.Err(BigDecimalError.Unsupported)
                 }
             )
         }

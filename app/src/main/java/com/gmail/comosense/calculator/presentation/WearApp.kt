@@ -116,6 +116,10 @@ private fun HandleEvent(appEvent: Flow<AppEvent>) {
     LaunchedEffect(appEvent) {
         appEvent.collect { appEvent ->
             val messageResourceId: Int = when (appEvent) {
+                is AppEvent.AppViewModelError -> {
+                    appEvent.appViewModelError.messageResourceId()
+                }
+
                 is AppEvent.CalculatorError -> {
                     appEvent.calculatorError.messageResourceId()
                 }
@@ -135,7 +139,13 @@ private fun HandleEvent(appEvent: Flow<AppEvent>) {
     }
 }
 
+private fun AppViewModelError.messageResourceId(): Int = when (this) {
+    AppViewModelError.ExpressionTooLarge -> R.string.app_view_model_error_expression_too_large
+}
+
 private fun CalculatorError.messageResourceId(): Int = when (this) {
+    CalculatorError.Unsupported -> R.string.calculator_error_unsupported
+    CalculatorError.ResultTooLarge -> R.string.calculator_error_result_too_large
     CalculatorError.InvalidExpression -> R.string.calculator_error_invalid_expression
     CalculatorError.DivisionByZero -> R.string.calculator_error_division_by_zero
     CalculatorError.FactorialInvalidArgument -> R.string.calculator_error_factorial_invalid_argument
@@ -146,7 +156,6 @@ private fun CalculatorError.messageResourceId(): Int = when (this) {
     CalculatorError.LogInvalidArgument -> R.string.calculator_error_log_invalid_argument
     CalculatorError.TanInvalidArgument -> R.string.calculator_error_tan_invalid_argument
     CalculatorError.Arithmetic -> R.string.calculator_error_arithmetic
-    CalculatorError.Unsupported -> R.string.calculator_error_unsupported
 }
 
 private fun HistoryRepositoryError.messageResourceId(): Int = when (this) {

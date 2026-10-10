@@ -1,25 +1,43 @@
 package com.gmail.comosense.calculator.presentation
 
+import com.gmail.comosense.calculator.common.Constraints
 import com.gmail.comosense.calculator.domain.Symbol
+
+internal object AppStateExtensionsConstrains {
+    const val MAX_EXPRESSION_SIZE: Int = Constraints.MAX_EXPRESSION_SIZE
+}
+
+sealed interface AppendExpressionResult {
+    data class Success(val state: AppState) : AppendExpressionResult
+    data object TooLarge : AppendExpressionResult
+    data object Invalid : AppendExpressionResult
+}
 
 val AppState.expression: List<Symbol>
     get() = result + input
 val AppState.isInputting: Boolean
     get() = input.isNotEmpty()
 
-fun AppState.appendExpression(symbol: Symbol): AppState {
-    val symbols: List<Symbol> = symbolsToAppendOrNull(symbol) ?: return this
+fun AppState.appendExpression(symbol: Symbol): AppendExpressionResult {
+    val symbols: List<Symbol> =
+        symbolsToAppendOrNull(symbol) ?: return AppendExpressionResult.Invalid
 
-    return if (symbol is Symbol.Operator || isInputting) {
-        copy(
-            input = input + symbols,
-        )
-    } else {
-        copy(
-            result = emptyList(),
-            input = input + symbols,
-        )
+    if (expression.size + symbols.size > AppStateExtensionsConstrains.MAX_EXPRESSION_SIZE) {
+        return AppendExpressionResult.TooLarge
     }
+
+    return AppendExpressionResult.Success(
+        if (symbol is Symbol.Operator || isInputting) {
+            copy(
+                input = input + symbols,
+            )
+        } else {
+            copy(
+                result = emptyList(),
+                input = input + symbols,
+            )
+        }
+    )
 }
 
 fun AppState.applyResult(result: List<Symbol>): AppState {
