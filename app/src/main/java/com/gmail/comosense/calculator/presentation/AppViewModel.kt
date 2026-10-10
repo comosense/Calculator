@@ -78,22 +78,6 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
         }
     }
 
-    private inline fun updateAppState(
-        crossinline transition: (AppState) -> AppStateTransition,
-    ) {
-        while (true) {
-            val current: AppState = _appState.value
-            val next: AppStateTransition = transition(current)
-
-            if (_appState.compareAndSet(current, next.appState)) {
-                next.appEvent?.let { appEvent ->
-                    _appEvent.tryEmit(appEvent)
-                }
-                return
-            }
-        }
-    }
-
     fun onAction(action: AppAction) {
         when (action) {
             is AppAction.Input -> input(action.symbol)
@@ -187,6 +171,22 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
         }
     }
 
+    private inline fun updateAppState(
+        crossinline appStateTransition: (AppState) -> AppStateTransition,
+    ) {
+        while (true) {
+            val current: AppState = _appState.value
+            val next: AppStateTransition = appStateTransition(current)
+
+            if (_appState.compareAndSet(current, next.appState)) {
+                next.appEvent?.let { appEvent ->
+                    _appEvent.tryEmit(appEvent)
+                }
+                return
+            }
+        }
+    }
+
     private fun resolveAppStateUpdate(
         current: AppState,
         result: AppStateUpdateResult,
@@ -194,33 +194,33 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
         is AppStateUpdateResult.Success ->
             AppStateTransition(result.state)
 
-        AppStateUpdateResult.ExpressionTooLarge ->
+        is AppStateUpdateResult.ExpressionTooLarge ->
             AppStateTransition(
                 appState = current,
                 appEvent = AppEvent.AppViewModelError(
-                    AppViewModelError.ExpressionTooLarge
+                    AppViewModelError.ExpressionTooLarge,
                 ),
             )
 
-        AppStateUpdateResult.UnacceptableSymbol ->
+        is AppStateUpdateResult.UnacceptableSymbol ->
             AppStateTransition(current)
 
-        AppStateUpdateResult.HistoryNotFound ->
+        is AppStateUpdateResult.HistoryNotFound ->
             AppStateTransition(
                 appState = current,
                 appEvent = AppEvent.AppViewModelError(
-                    AppViewModelError.HistoryNotFound
+                    AppViewModelError.HistoryNotFound,
                 ),
             )
     }
 
-    private fun handleHistoryRepositoryResult(historyRepositoryResult: Result<Unit, HistoryRepositoryError>) {
-        when (historyRepositoryResult) {
-            is Result.Ok ->
-                Unit
+    private fun handleHistoryRepositoryResult(
+        historyRepositoryResult: Result<Unit, HistoryRepositoryError>,
+    ) = when (historyRepositoryResult) {
+        is Result.Ok ->
+            Unit
 
-            is Result.Err ->
-                _appEvent.tryEmit(AppEvent.HistoryRepositoryError(historyRepositoryResult.error))
-        }
+        is Result.Err ->
+            _appEvent.tryEmit(AppEvent.HistoryRepositoryError(historyRepositoryResult.error))
     }
 }
