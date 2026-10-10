@@ -22,6 +22,7 @@ import kotlinx.coroutines.launch
 
 enum class AppViewModelError {
     ExpressionTooLarge,
+    HistoryNotFound,
 }
 
 sealed interface AppAction {
@@ -163,6 +164,11 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
             }
 
             is AppStateUpdateResult.UnacceptableSymbol -> {
+                false
+            }
+
+            is AppStateUpdateResult.HistoryNotFound -> {
+                _appEvent.tryEmit(AppEvent.AppViewModelError(AppViewModelError.HistoryNotFound))
                 false
             }
         }

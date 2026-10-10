@@ -11,6 +11,7 @@ sealed interface AppStateUpdateResult {
     data class Success(val state: AppState) : AppStateUpdateResult
     data object ExpressionTooLarge : AppStateUpdateResult
     data object UnacceptableSymbol : AppStateUpdateResult
+    data object HistoryNotFound : AppStateUpdateResult
 }
 
 val AppState.expression: List<Symbol>
@@ -57,7 +58,7 @@ fun AppState.applyHistory(id: String): AppStateUpdateResult {
     val result: List<Symbol> = histories
         .firstOrNull { it.id == id }
         ?.result
-        ?: return AppStateUpdateResult.UnacceptableSymbol
+        ?: return AppStateUpdateResult.HistoryNotFound
 
     if (!isInputting) {
         return applyResult(result)

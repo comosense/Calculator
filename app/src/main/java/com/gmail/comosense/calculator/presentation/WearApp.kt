@@ -141,6 +141,7 @@ private fun HandleEvent(appEvent: Flow<AppEvent>) {
 
 private fun AppViewModelError.messageResourceId(): Int = when (this) {
     AppViewModelError.ExpressionTooLarge -> R.string.app_view_model_error_expression_too_large
+    AppViewModelError.HistoryNotFound -> R.string.app_view_model_error_history_not_found
 }
 
 private fun CalculatorError.messageResourceId(): Int = when (this) {
