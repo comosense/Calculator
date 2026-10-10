@@ -3,7 +3,7 @@ package com.gmail.comosense.calculator.presentation
 import com.gmail.comosense.calculator.common.Constraints
 import com.gmail.comosense.calculator.domain.Symbol
 
-internal object AppStateExtensionsConstrains {
+internal object AppStateExtensionsConstraints {
     const val MAX_EXPRESSION_SIZE: Int = Constraints.MAX_EXPRESSION_SIZE
 }
 
@@ -23,7 +23,7 @@ fun AppState.appendExpression(symbol: Symbol): AppStateUpdateResult {
     val symbols: List<Symbol> = symbolsToAppendOrNull(symbol)
         ?: return AppStateUpdateResult.UnacceptableSymbol
 
-    if (expression.size + symbols.size > AppStateExtensionsConstrains.MAX_EXPRESSION_SIZE) {
+    if (expression.size + symbols.size > AppStateExtensionsConstraints.MAX_EXPRESSION_SIZE) {
         return AppStateUpdateResult.ExpressionTooLarge
     }
 
@@ -42,7 +42,7 @@ fun AppState.appendExpression(symbol: Symbol): AppStateUpdateResult {
 }
 
 fun AppState.applyResult(result: List<Symbol>): AppStateUpdateResult {
-    if (result.size > AppStateExtensionsConstrains.MAX_EXPRESSION_SIZE) {
+    if (result.size > AppStateExtensionsConstraints.MAX_EXPRESSION_SIZE) {
         return AppStateUpdateResult.ExpressionTooLarge
     }
 
@@ -68,7 +68,7 @@ fun AppState.applyHistory(id: String): AppStateUpdateResult {
         return AppStateUpdateResult.UnacceptableSymbol
     }
 
-    if (expression.size + result.size > AppStateExtensionsConstrains.MAX_EXPRESSION_SIZE) {
+    if (expression.size + result.size > AppStateExtensionsConstraints.MAX_EXPRESSION_SIZE) {
         return AppStateUpdateResult.ExpressionTooLarge
     }
 
