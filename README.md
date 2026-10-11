@@ -16,6 +16,26 @@ overlay.
 * Multiplication `×`
 * Division `÷`
 
+### Scientific functions
+
+* Square root
+* Exponentiation
+* Factorial
+* Sine
+* Cosine
+* Tangent
+* Common logarithm
+* Natural logarithm
+* Pi
+* Euler's number
+
+Trigonometric functions use radians.
+
+### Function keypad
+
+* Switch between the main keypad and the scientific function keypad
+* Access scientific functions and mathematical constants without leaving the calculator screen
+
 ### Parentheses support
 
 * Supports grouped expressions such as `(1 + 2) × 3`
@@ -26,20 +46,29 @@ overlay.
 
 ### Smart keypad
 
-* Keys change depending on the current input context
+* Keys adapt to the current input context
 * The parenthesis key switches between `(` and `)`
-* The delete key switches between backspace `←` and clear
+* The `+` and `-` keys switch between unary signs and binary arithmetic operators
+* The delete key switches between Backspace and Clear
+* Long-press Backspace to clear the current input
+* Switch between the main keypad and the scientific function keypad
 
 ### Locale-aware number formatting
 
 * Thousands separators and decimal separators follow the device locale
+* Long expressions remain accessible through horizontal scrolling
+* Text size adjusts to fit the available display area when possible
 
 ### Calculation history
 
 * Up to 50 calculations are saved
 * History is preserved across app launches
-* Tap a previous result to reuse it
+* Tap a previous calculation to reuse its result
+* When an expression is being entered, the selected result is appended to the current input
 * Delete individual entries or clear the entire history
+* Long-press a history entry to enter delete mode
+
+History is stored locally on the watch using Jetpack DataStore.
 
 ## Usage
 
@@ -66,6 +95,23 @@ For example:
 ```text
 (1 + 2) × 3
 ```
+
+### Scientific function calculation
+
+Switch to the scientific function keypad to access additional operations.
+
+Examples:
+
+```text
+√9 = 3
+2^3 = 8
+5! = 120
+sin(π / 2) = 1
+log(100) = 2
+ln(e) = 1
+```
+
+Trigonometric functions use radians. Results are rounded according to the calculator's configured precision and display scale.
 
 ### Deleting and clearing
 
@@ -110,19 +156,35 @@ The UI is designed specifically for smartwatch displays, including round screens
 
 ## Calculation engine
 
-The calculator does not rely on a general-purpose expression evaluation library.
+The calculator uses a custom expression parser and mathematical calculation engine implemented in Kotlin.
 
-The expression engine consists of:
+It does not rely on a general-purpose expression evaluation library.
 
-* Lexer / tokenizer
-* Recursive-descent parser
-* Operator precedence handling
-* Unary `+` / `-`
-* BigDecimal-based calculation
-* Custom MathContext with 50-digit precision
+The engine includes:
+
+* Tokenization and recursive-descent parsing
+* Operator precedence for arithmetic expressions
+* Unary `+` and `-`
+* Parentheses and grouped expressions
+* Arbitrary-precision decimal arithmetic using BigDecimal
+* A calculation precision of 32 significant digits
 * `HALF_UP` rounding
+* A display scale of up to 24 digits after the decimal point, with trailing zeros removed
+* Custom implementations of square root, exponentiation, factorial, trigonometric functions, logarithms, and mathematical constants
 
-This allows expressions to be parsed and calculated locally on the watch.
+### Calculation limits
+
+To keep calculations and displayed results within defined limits:
+
+* Factorial arguments must be non-negative integers no greater than 146
+* Integer exponents are limited to an absolute value of 1024
+* Non-integer exponents are limited to an absolute value of 1024
+* Results are limited to 256 characters in their plain decimal representation
+* Expressions are limited to 1,024 symbols
+
+Invalid operations, including division by zero and out-of-domain function arguments, are reported as calculation errors.
+
+All calculations are performed locally by the app.
 
 ## Privacy
 
