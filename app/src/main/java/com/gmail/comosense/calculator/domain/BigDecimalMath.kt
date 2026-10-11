@@ -306,7 +306,7 @@ class BigDecimalMath(private val mathContext: MathContext) {
         var reductions = 0
 
         while (reduced.abs() > ONE_HALF) {
-            reduced = reduced.divide(TWO)
+            reduced = reduced.divide(TWO, mc)
             reductions++
         }
 
