@@ -71,8 +71,8 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
     init {
         viewModelScope.launch {
             historyRepository.histories.collect { histories ->
-                _appState.update { state ->
-                    state.copy(histories = histories)
+                _appState.update { appState ->
+                    appState.copy(histories = histories)
                 }
             }
         }
@@ -91,10 +91,10 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
     }
 
     private fun input(symbol: Symbol) {
-        updateAppState { currentAppState ->
+        updateAppState { appState ->
             resolveAppStateUpdate(
-                currentAppState = currentAppState,
-                appStateUpdateResult = currentAppState.appendExpression(symbol)
+                appState = appState,
+                appStateUpdateResult = appState.appendExpression(symbol),
             )
         }
     }
@@ -121,53 +121,57 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
                 }
             }
 
-        updateAppState { currentAppState ->
+        updateAppState { appState ->
             resolveAppStateUpdate(
-                currentAppState = currentAppState,
-                appStateUpdateResult = currentAppState.applyResult(result)
+                appState = appState,
+                appStateUpdateResult = appState.applyResult(result),
             )
         }
 
-        viewModelScope.launch {
-            handleHistoryRepositoryResult(
-                historyRepository.addHistory(
-                    expression = expression,
-                    result = result
-                )
+        launchHistoryRepositoryAction {
+            historyRepository.addHistory(
+                expression = expression,
+                result = result,
             )
         }
     }
 
     private fun clear() {
-        _appState.update { state ->
-            state.clearExpression()
+        updateAppState { appState ->
+            resolveAppStateUpdate(
+                appState = appState,
+                appStateUpdateResult = appState.clearExpression(),
+            )
         }
     }
 
     private fun backspace() {
-        _appState.update { state ->
-            state.dropLastExpressionSymbol()
+        updateAppState { appState ->
+            resolveAppStateUpdate(
+                appState = appState,
+                appStateUpdateResult = appState.dropLastExpressionSymbol(),
+            )
         }
     }
 
     private fun selectHistory(id: String) {
-        updateAppState { currentAppState ->
+        updateAppState { appState ->
             resolveAppStateUpdate(
-                currentAppState = currentAppState,
-                appStateUpdateResult = currentAppState.applyHistory(id)
+                appState = appState,
+                appStateUpdateResult = appState.applyHistory(id)
             )
         }
     }
 
     private fun deleteHistory(id: String) {
-        viewModelScope.launch {
-            handleHistoryRepositoryResult(historyRepository.deleteHistory(id))
+        launchHistoryRepositoryAction {
+            historyRepository.deleteHistory(id)
         }
     }
 
     private fun deleteHistoryAll() {
-        viewModelScope.launch {
-            handleHistoryRepositoryResult(historyRepository.deleteHistoryAll())
+        launchHistoryRepositoryAction {
+            historyRepository.deleteHistoryAll()
         }
     }
 
@@ -193,39 +197,49 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
     }
 
     private fun resolveAppStateUpdate(
-        currentAppState: AppState,
+        appState: AppState,
         appStateUpdateResult: AppStateUpdateResult,
     ): AppStateTransition = when (appStateUpdateResult) {
         is AppStateUpdateResult.Success ->
-            AppStateTransition(appStateUpdateResult.state)
+            AppStateTransition(
+                appState = appStateUpdateResult.appState,
+            )
 
         is AppStateUpdateResult.ExpressionTooLarge ->
             AppStateTransition(
-                appState = currentAppState,
+                appState = appState,
                 appEvent = AppEvent.AppViewModelError(
                     AppViewModelError.ExpressionTooLarge,
                 ),
             )
 
         is AppStateUpdateResult.UnacceptableSymbol ->
-            AppStateTransition(currentAppState)
+            AppStateTransition(
+                appState = appState,
+            )
 
         is AppStateUpdateResult.HistoryNotFound ->
             AppStateTransition(
-                appState = currentAppState,
+                appState = appState,
                 appEvent = AppEvent.AppViewModelError(
                     AppViewModelError.HistoryNotFound,
                 ),
             )
     }
 
-    private fun handleHistoryRepositoryResult(
-        historyRepositoryResult: Result<Unit, HistoryRepositoryError>,
-    ) = when (historyRepositoryResult) {
-        is Result.Ok ->
-            Unit
+    private fun launchHistoryRepositoryAction(
+        action: suspend () -> Result<Unit, HistoryRepositoryError>,
+    ) {
+        viewModelScope.launch {
+            when (val historyRepositoryResult = action()) {
+                is Result.Ok ->
+                    Unit
 
-        is Result.Err ->
-            _appEvent.tryEmit(AppEvent.HistoryRepositoryError(historyRepositoryResult.error))
+                is Result.Err ->
+                    _appEvent.tryEmit(
+                        AppEvent.HistoryRepositoryError(historyRepositoryResult.error)
+                    )
+            }
+        }
     }
 }

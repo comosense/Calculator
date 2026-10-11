@@ -31,7 +31,8 @@ class BigDecimalMath(private val mathContext: MathContext) {
         private val BIG_INTEGER_ONE: BigInteger = BigInteger.ONE
         private val BIG_INTEGER_TWO: BigInteger = 2.toBigInteger()
         private val MAX_FACTORIAL_ARGUMENT: BigInteger = 146.toBigInteger()
-        private val MAX_EXPONENT: BigInteger = 1024.toBigInteger()
+        private val MAX_INTEGER_EXPONENT: BigInteger = 1024.toBigInteger()
+        private val MAX_NON_INTEGER_EXPONENT: BigDecimal = BigDecimal(1024)
     }
 
     private val workMathContext: MathContext = MathContext(
@@ -270,7 +271,7 @@ class BigDecimalMath(private val mathContext: MathContext) {
         exponent: BigInteger,
         mc: MathContext,
     ): BigDecimal {
-        if (exponent.abs() > MAX_EXPONENT) {
+        if (exponent.abs() > MAX_INTEGER_EXPONENT) {
             throw PowLimitExceededException()
         }
 
@@ -288,6 +289,10 @@ class BigDecimalMath(private val mathContext: MathContext) {
         exponent: BigDecimal,
         mc: MathContext,
     ): BigDecimal {
+        if (exponent.abs() > MAX_NON_INTEGER_EXPONENT) {
+            throw PowLimitExceededException()
+        }
+
         val value: BigDecimal = exponent.multiply(ln(base, mc), mc)
 
         return exp(value, mc)

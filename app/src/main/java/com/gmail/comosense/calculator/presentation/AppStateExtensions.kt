@@ -8,7 +8,7 @@ internal object AppStateExtensionsConstraints {
 }
 
 sealed interface AppStateUpdateResult {
-    data class Success(val state: AppState) : AppStateUpdateResult
+    data class Success(val appState: AppState) : AppStateUpdateResult
     data object ExpressionTooLarge : AppStateUpdateResult
     data object UnacceptableSymbol : AppStateUpdateResult
     data object HistoryNotFound : AppStateUpdateResult
@@ -28,7 +28,7 @@ fun AppState.appendExpression(symbol: Symbol): AppStateUpdateResult {
     }
 
     return AppStateUpdateResult.Success(
-        if (symbol is Symbol.Operator || isInputting) {
+        appState = if (symbol is Symbol.Operator || isInputting) {
             copy(
                 input = input + symbols,
             )
@@ -37,7 +37,7 @@ fun AppState.appendExpression(symbol: Symbol): AppStateUpdateResult {
                 result = emptyList(),
                 input = input + symbols,
             )
-        }
+        },
     )
 }
 
@@ -47,10 +47,10 @@ fun AppState.applyResult(result: List<Symbol>): AppStateUpdateResult {
     }
 
     return AppStateUpdateResult.Success(
-        copy(
+        appState = copy(
             result = result,
             input = emptyList(),
-        )
+        ),
     )
 }
 
@@ -73,27 +73,31 @@ fun AppState.applyHistory(id: String): AppStateUpdateResult {
     }
 
     return AppStateUpdateResult.Success(
-        copy(
+        appState = copy(
             input = input + result,
-        )
+        ),
     )
 }
 
-fun AppState.clearExpression(): AppState {
-    return copy(
-        result = emptyList(),
-        input = emptyList(),
+fun AppState.clearExpression(): AppStateUpdateResult {
+    return AppStateUpdateResult.Success(
+        appState = copy(
+            result = emptyList(),
+            input = emptyList(),
+        ),
     )
 }
 
-fun AppState.dropLastExpressionSymbol(): AppState {
-    return if (isInputting) {
-        copy(
-            input = input.dropLast(1),
-        )
-    } else {
-        this
-    }
+fun AppState.dropLastExpressionSymbol(): AppStateUpdateResult {
+    return AppStateUpdateResult.Success(
+        appState = if (isInputting) {
+            copy(
+                input = input.dropLast(1),
+            )
+        } else {
+            this
+        },
+    )
 }
 
 fun AppState.canAppend(symbol: Symbol): Boolean = this.canAppend(listOf(symbol))
