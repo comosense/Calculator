@@ -31,6 +31,12 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import java.util.Locale
 
+private enum class AppScreen {
+    Calculator,
+    History,
+    Settings,
+}
+
 @Composable
 fun WearApp(
     appState: AppState,
@@ -38,7 +44,7 @@ fun WearApp(
     onAction: (AppAction) -> Unit,
     locale: Locale,
 ) {
-    var showHistory: Boolean by remember { mutableStateOf(false) }
+    var currentScreen: AppScreen by remember { mutableStateOf(AppScreen.Calculator) }
     var isHistoryDeleteMode: Boolean by remember { mutableStateOf(false) }
     val swipeToDismissBoxState: SwipeToDismissBoxState = rememberSwipeToDismissBoxState()
     val coroutineScope: CoroutineScope = rememberCoroutineScope()
@@ -48,7 +54,7 @@ fun WearApp(
 
     LaunchedEffect(swipeToDismissBoxState.currentValue) {
         if (swipeToDismissBoxState.currentValue == SwipeToDismissValue.Dismissed) {
-            showHistory = false
+            currentScreen = AppScreen.Calculator
             isHistoryDeleteMode = false
         }
     }
@@ -60,14 +66,20 @@ fun WearApp(
             onShowHistory = {
                 coroutineScope.launch {
                     swipeToDismissBoxState.snapTo(SwipeToDismissValue.Default)
-                    showHistory = true
+                    currentScreen = AppScreen.History
+                }
+            },
+            onShowSettings = {
+                coroutineScope.launch {
+                    swipeToDismissBoxState.snapTo(SwipeToDismissValue.Default)
+                    currentScreen = AppScreen.Settings
                 }
             },
             symbolFormatter = symbolFormatter,
         )
 
         AnimatedVisibility(
-            visible = showHistory,
+            visible = (currentScreen != AppScreen.Calculator),
             enter = fadeIn(
                 animationSpec = tween(180),
             ) + scaleIn(
@@ -82,27 +94,47 @@ fun WearApp(
                 userSwipeEnabled = !isHistoryDeleteMode,
                 backgroundScrimColor = AppTheme.calculatorScreenColors.background,
                 backgroundKey = "CalculatorScreen",
-                contentKey = "HistoryScreen",
+                contentKey = currentScreen,
             ) { isBackground ->
                 if (isBackground) {
                     CalculatorScreen(
                         appState = appState,
                         onAction = onAction,
                         onShowHistory = {},
+                        onShowSettings = {},
                         symbolFormatter = symbolFormatter,
                     )
                 } else {
-                    HistoryScreen(
-                        histories = appState.histories,
-                        onAction = onAction,
-                        onBack = {
-                            coroutineScope.launch {
-                                swipeToDismissBoxState.snapTo(SwipeToDismissValue.Dismissed)
-                            }
-                        },
-                        onDeleteModeChanged = { isHistoryDeleteMode = it },
-                        symbolFormatter = symbolFormatter,
-                    )
+                    when (currentScreen) {
+                        AppScreen.Calculator -> {
+                        }
+
+                        AppScreen.History -> {
+                            HistoryScreen(
+                                histories = appState.histories,
+                                onAction = onAction,
+                                onBack = {
+                                    coroutineScope.launch {
+                                        swipeToDismissBoxState.snapTo(SwipeToDismissValue.Dismissed)
+                                    }
+                                },
+                                onDeleteModeChanged = { isHistoryDeleteMode = it },
+                                symbolFormatter = symbolFormatter,
+                            )
+                        }
+
+                        AppScreen.Settings -> {
+                            SettingsScreen(
+                                settings = appState.settings,
+                                onAction = onAction,
+                                onBack = {
+                                    coroutineScope.launch {
+                                        swipeToDismissBoxState.snapTo(SwipeToDismissValue.Dismissed)
+                                    }
+                                }
+                            )
+                        }
+                    }
                 }
             }
         }

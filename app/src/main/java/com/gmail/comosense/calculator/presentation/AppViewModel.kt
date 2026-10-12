@@ -7,6 +7,8 @@ import androidx.lifecycle.viewModelScope
 import com.gmail.comosense.calculator.common.Result
 import com.gmail.comosense.calculator.data.HistoryRepository
 import com.gmail.comosense.calculator.data.HistoryRepositoryError
+import com.gmail.comosense.calculator.data.Settings
+import com.gmail.comosense.calculator.data.SettingsRepository
 import com.gmail.comosense.calculator.data.historyDataStore
 import com.gmail.comosense.calculator.domain.CalculatorError
 import com.gmail.comosense.calculator.domain.Symbol
@@ -26,6 +28,8 @@ enum class AppViewModelError {
 }
 
 sealed interface AppAction {
+    data class SetCalculationPrecision(val value: Int) : AppAction
+    data class SetDisplayScale(val value: Int) : AppAction
     data class Input(val symbol: Symbol) : AppAction
     data object Calculate : AppAction
     data object Clear : AppAction
@@ -35,17 +39,18 @@ sealed interface AppAction {
     data object DeleteHistoryAll : AppAction
 }
 
-class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel() {
-    companion object {
-        private const val CALCULATION_PRECISION: Int = 32
-        private const val DISPLAY_SCALE: Int = 24
-    }
-
+class AppViewModel(
+    private val settingRepository: SettingsRepository,
+    private val historyRepository: HistoryRepository,
+) : ViewModel() {
     class Factory(private val application: Application) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             if (AppViewModel::class.java.isAssignableFrom(modelClass)) {
                 @Suppress("UNCHECKED_CAST")
-                return AppViewModel(HistoryRepository(application.historyDataStore)) as T
+                return AppViewModel(
+                    settingRepository = SettingsRepository(application),
+                    historyRepository = HistoryRepository(application.historyDataStore),
+                ) as T
             }
             throw IllegalArgumentException(
                 "Unknown ViewModel class: ${modelClass.name}"
@@ -70,6 +75,14 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
 
     init {
         viewModelScope.launch {
+            settingRepository.settings.collect { settings ->
+                _appState.update { appState ->
+                    appState.copy(settings = settings)
+                }
+            }
+        }
+
+        viewModelScope.launch {
             historyRepository.histories.collect { histories ->
                 _appState.update { appState ->
                     appState.copy(histories = histories)
@@ -80,6 +93,8 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
 
     fun onAction(action: AppAction) {
         when (action) {
+            is AppAction.SetCalculationPrecision -> updateCalculationPrecision(action.value)
+            is AppAction.SetDisplayScale -> updateDisplayScale(action.value)
             is AppAction.Input -> input(action.symbol)
             is AppAction.Calculate -> calculate()
             is AppAction.Clear -> clear()
@@ -87,6 +102,18 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
             is AppAction.SelectHistory -> selectHistory(action.id)
             is AppAction.DeleteHistory -> deleteHistory(action.id)
             is AppAction.DeleteHistoryAll -> deleteHistoryAll()
+        }
+    }
+
+    private fun updateCalculationPrecision(value: Int) {
+        viewModelScope.launch {
+            settingRepository.updateCalculationPrecision(value)
+        }
+    }
+
+    private fun updateDisplayScale(value: Int) {
+        viewModelScope.launch {
+            settingRepository.updateDisplayScale(value)
         }
     }
 
@@ -104,13 +131,14 @@ class AppViewModel(private val historyRepository: HistoryRepository) : ViewModel
 
         if (!state.isInputting) return
 
+        val settings: Settings = state.settings
         val expression: List<Symbol> = state.expression
         val result: List<Symbol> =
             when (val calculatedResult: Result<List<Symbol>, CalculatorError> =
                 calculate(
                     expression = expression,
-                    precision = CALCULATION_PRECISION,
-                    displayScale = DISPLAY_SCALE,
+                    precision = settings.calculationPrecision,
+                    displayScale = settings.displayScale,
                 )) {
                 is Result.Ok ->
                     calculatedResult.value

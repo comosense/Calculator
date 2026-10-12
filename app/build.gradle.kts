@@ -42,6 +42,7 @@ dependencies {
     implementation(libs.activity.compose)
     implementation(libs.core.splashscreen)
     implementation(libs.datastore)
+    implementation(libs.androidx.datastore.preferences)
     implementation(libs.ui)
     implementation(libs.ui.graphics)
     implementation(libs.ui.text)

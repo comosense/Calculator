@@ -10,7 +10,7 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -70,6 +70,7 @@ fun CalculatorScreen(
     appState: AppState,
     onAction: (AppAction) -> Unit,
     onShowHistory: () -> Unit,
+    onShowSettings: () -> Unit,
     symbolFormatter: SymbolFormatter,
 ) {
     ScreenScaffold {
@@ -77,6 +78,7 @@ fun CalculatorScreen(
             appState = appState,
             onAction = onAction,
             onShowHistory = onShowHistory,
+            onShowSettings = onShowSettings,
             modifier = Modifier.fillMaxSize(),
             symbolFormatter = symbolFormatter,
         )
@@ -88,6 +90,7 @@ private fun MainPanel(
     appState: AppState,
     onAction: (AppAction) -> Unit,
     onShowHistory: () -> Unit,
+    onShowSettings: () -> Unit,
     modifier: Modifier,
     symbolFormatter: SymbolFormatter,
 ) {
@@ -190,6 +193,7 @@ private fun MainPanel(
             ExpressionBox(
                 appState = appState,
                 onShowHistory = onShowHistory,
+                onShowSettings = onShowSettings,
                 modifier = Modifier.size(
                     width = inscribedLength,
                     height = inscribedLength / 5f
@@ -248,6 +252,7 @@ private fun MainPanel(
 private fun ExpressionBox(
     appState: AppState,
     onShowHistory: () -> Unit,
+    onShowSettings: () -> Unit,
     modifier: Modifier,
     symbolFormatter: SymbolFormatter,
 ) {
@@ -279,7 +284,10 @@ private fun ExpressionBox(
 
     BoxWithConstraints(
         modifier = modifier
-            .clickable { onShowHistory() }
+            .combinedClickable(
+                onClick = onShowHistory,
+                onLongClick = onShowSettings,
+            )
             .drawBehind {
                 if (blinkProgress.value > 0f) {
                     drawRoundRect(
