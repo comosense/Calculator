@@ -48,8 +48,12 @@ class AppViewModel(
             if (AppViewModel::class.java.isAssignableFrom(modelClass)) {
                 @Suppress("UNCHECKED_CAST")
                 return AppViewModel(
-                    settingRepository = SettingsRepository(application),
-                    historyRepository = HistoryRepository(application.historyDataStore),
+                    settingRepository = SettingsRepository(
+                        context = application,
+                    ),
+                    historyRepository = HistoryRepository(
+                        dataStore = application.historyDataStore,
+                    ),
                 ) as T
             }
             throw IllegalArgumentException(
@@ -91,17 +95,34 @@ class AppViewModel(
         }
     }
 
-    fun onAction(action: AppAction) {
-        when (action) {
-            is AppAction.SetCalculationPrecision -> updateCalculationPrecision(action.value)
-            is AppAction.SetDisplayScale -> updateDisplayScale(action.value)
-            is AppAction.Input -> input(action.symbol)
-            is AppAction.Calculate -> calculate()
-            is AppAction.Clear -> clear()
-            is AppAction.Backspace -> backspace()
-            is AppAction.SelectHistory -> selectHistory(action.id)
-            is AppAction.DeleteHistory -> deleteHistory(action.id)
-            is AppAction.DeleteHistoryAll -> deleteHistoryAll()
+    fun onAction(appAction: AppAction) {
+        when (appAction) {
+            is AppAction.SetCalculationPrecision ->
+                updateCalculationPrecision(appAction.value)
+
+            is AppAction.SetDisplayScale ->
+                updateDisplayScale(appAction.value)
+
+            is AppAction.Input ->
+                input(appAction.symbol)
+
+            is AppAction.Calculate ->
+                calculate()
+
+            is AppAction.Clear ->
+                clear()
+
+            is AppAction.Backspace ->
+                backspace()
+
+            is AppAction.SelectHistory ->
+                selectHistory(appAction.id)
+
+            is AppAction.DeleteHistory ->
+                deleteHistory(appAction.id)
+
+            is AppAction.DeleteHistoryAll ->
+                deleteHistoryAll()
         }
     }
 
