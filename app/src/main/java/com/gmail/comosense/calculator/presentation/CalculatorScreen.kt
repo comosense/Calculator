@@ -69,16 +69,14 @@ const val KEY_SWITCHER_LENGTH_RATIO: Float = 0.14142136f
 fun CalculatorScreen(
     appState: AppState,
     onAction: (AppAction) -> Unit,
-    onShowHistory: () -> Unit,
-    onShowSettings: () -> Unit,
+    onShow: (AppScreen) -> Unit,
     symbolFormatter: SymbolFormatter,
 ) {
     ScreenScaffold {
         MainPanel(
             appState = appState,
             onAction = onAction,
-            onShowHistory = onShowHistory,
-            onShowSettings = onShowSettings,
+            onShow = onShow,
             modifier = Modifier.fillMaxSize(),
             symbolFormatter = symbolFormatter,
         )
@@ -89,8 +87,7 @@ fun CalculatorScreen(
 private fun MainPanel(
     appState: AppState,
     onAction: (AppAction) -> Unit,
-    onShowHistory: () -> Unit,
-    onShowSettings: () -> Unit,
+    onShow: (AppScreen) -> Unit,
     modifier: Modifier,
     symbolFormatter: SymbolFormatter,
 ) {
@@ -192,8 +189,7 @@ private fun MainPanel(
 
             ExpressionBox(
                 appState = appState,
-                onShowHistory = onShowHistory,
-                onShowSettings = onShowSettings,
+                onShow = onShow,
                 modifier = Modifier.size(
                     width = inscribedLength,
                     height = inscribedLength / 5f
@@ -251,8 +247,7 @@ private fun MainPanel(
 @Composable
 private fun ExpressionBox(
     appState: AppState,
-    onShowHistory: () -> Unit,
-    onShowSettings: () -> Unit,
+    onShow: (AppScreen) -> Unit,
     modifier: Modifier,
     symbolFormatter: SymbolFormatter,
 ) {
@@ -285,8 +280,8 @@ private fun ExpressionBox(
     BoxWithConstraints(
         modifier = modifier
             .combinedClickable(
-                onClick = onShowHistory,
-                onLongClick = onShowSettings,
+                onClick = { onShow(AppScreen.History) },
+                onLongClick = { onShow(AppScreen.Settings) },
             )
             .drawBehind {
                 if (blinkProgress.value > 0f) {

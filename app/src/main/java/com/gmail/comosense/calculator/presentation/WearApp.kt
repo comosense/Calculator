@@ -31,7 +31,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import java.util.Locale
 
-private enum class AppScreen {
+enum class AppScreen {
     Calculator,
     History,
     Settings,
@@ -63,16 +63,10 @@ fun WearApp(
         CalculatorScreen(
             appState = appState,
             onAction = onAction,
-            onShowHistory = {
+            onShow = { appScreen ->
                 coroutineScope.launch {
                     swipeToDismissBoxState.snapTo(SwipeToDismissValue.Default)
-                    currentScreen = AppScreen.History
-                }
-            },
-            onShowSettings = {
-                coroutineScope.launch {
-                    swipeToDismissBoxState.snapTo(SwipeToDismissValue.Default)
-                    currentScreen = AppScreen.Settings
+                    currentScreen = appScreen
                 }
             },
             symbolFormatter = symbolFormatter,
@@ -100,14 +94,12 @@ fun WearApp(
                     CalculatorScreen(
                         appState = appState,
                         onAction = onAction,
-                        onShowHistory = {},
-                        onShowSettings = {},
+                        onShow = {},
                         symbolFormatter = symbolFormatter,
                     )
                 } else {
                     when (currentScreen) {
-                        AppScreen.Calculator -> {
-                        }
+                        AppScreen.Calculator -> {}
 
                         AppScreen.History -> {
                             HistoryScreen(
