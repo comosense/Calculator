@@ -5,43 +5,35 @@ A simple calculator app designed specifically for Wear OS smartwatches.
 Designed for small and round watch displays, with large, easy-to-tap keys and a compact operator
 overlay.
 
-[![Get it on Google Play](https://img.shields.io/badge/Google_Play-Download-414141?style=for-the-badge\&logo=google-play\&logoColor=white)](https://play.google.com/store/apps/details?id=com.gmail.comosense.calculator)
+[![Get it on Google Play](https://img.shields.io/badge/Google_Play-Download-414141?style=for-the-badge&logo=google-play&logoColor=white)](https://play.google.com/store/apps/details?id=com.gmail.comosense.calculator)
 
 ## Features
 
 ### Basic arithmetic
 
-* Addition `+`
-* Subtraction `-`
-* Multiplication `×`
-* Division `÷`
+* Addition (`+`)
+* Subtraction (`-`)
+* Multiplication (`×`)
+* Division (`÷`)
 
 ### Scientific functions
 
-* Square root
-* Exponentiation
-* Factorial
-* Sine
-* Cosine
-* Tangent
-* Common logarithm
-* Natural logarithm
-* Pi
-* Euler's number
+* Square root (`√`)
+* Exponentiation (`^`)
+* Factorial (`!`)
+* Sine (`sin`)
+* Cosine (`cos`)
+* Tangent (`tan`)
+* Common logarithm (`log`, base 10)
+* Natural logarithm (`ln`)
+* Mathematical constants: pi (`π`) and Euler's number (`e`)
 
 Trigonometric functions use radians.
 
-### Function keypad
+### Expression input
 
-* Switch between the main keypad and the scientific function keypad
-* Access scientific functions and mathematical constants without leaving the calculator screen
-
-### Parentheses support
-
+* Follows standard mathematical operator precedence
 * Supports grouped expressions such as `(1 + 2) × 3`
-
-### Positive / negative numbers
-
 * Supports unary `+` and `-`
 
 ### Smart keypad
@@ -49,26 +41,22 @@ Trigonometric functions use radians.
 * Keys adapt to the current input context
 * The parenthesis key switches between `(` and `)`
 * The `+` and `-` keys switch between unary signs and binary arithmetic operators
-* The delete key switches between Backspace and Clear
-* Long-press Backspace to clear the current input
+* The delete key switches between Backspace and Clear, depending on the input state
+* Long-press Backspace to clear the current expression
 * Switch between the main keypad and the scientific function keypad
 
-### Locale-aware number formatting
+### Display
 
-* Thousands separators and decimal separators follow the device locale
+* Locale-aware thousands and decimal separators
+* Text size automatically adjusts to fit the available display area whenever possible
 * Long expressions remain accessible through horizontal scrolling
-* Text size adjusts to fit the available display area when possible
 
 ### Calculation history
 
-* Up to 50 calculations are saved
-* History is preserved across app launches
 * Tap a previous calculation to reuse its result
 * When an expression is being entered, the selected result is appended to the current input
 * Delete individual entries or clear the entire history
 * Long-press a history entry to enter delete mode
-
-History is stored locally on the watch using Jetpack DataStore.
 
 ## Usage
 
@@ -76,24 +64,18 @@ History is stored locally on the watch using Jetpack DataStore.
 
 Enter an expression using the keypad and press `=`.
 
+The calculator follows standard mathematical operator precedence, so multiplication is performed before addition.
+
 For example:
 
 ```text
 1 + 2 × 3 = 7
 ```
 
-The calculator follows standard mathematical operator precedence, so multiplication is performed
-before addition.
-
-### Parentheses
-
-The parenthesis button automatically switches between `(` and `)` depending on the current
-expression.
-
-For example:
+Parentheses and grouped expressions are also supported.
 
 ```text
-(1 + 2) × 3
+(1 + 2) × 3 = 9
 ```
 
 ### Scientific function calculation
@@ -115,11 +97,11 @@ Trigonometric functions use radians. Results are rounded according to the calcul
 
 ### Deleting and clearing
 
-While entering an expression, the delete button works as Backspace `←`.
+While entering an expression, the delete key works as Backspace.
 
-When there is no active expression, it becomes Clear.
+When no expression is active, the delete key switches to Clear.
 
-You can also long-press the backspace button to clear the current input.
+You can also long-press the Backspace key to clear the current expression.
 
 ### Managing calculation history
 
@@ -130,14 +112,14 @@ From the history screen, you can:
 1. Tap a calculation to reuse its result.
 2. Long-press a history entry to enter delete mode.
 3. Tap individual entries to delete them.
-4. Tap **Delete All** to clear the history.
+4. Tap **Delete all** to clear the history.
 5. Swipe from the left edge or press the back button to return to the calculator.
 
 The history is stored locally on the watch using Jetpack DataStore and is limited to 50 entries.
 
 ## Supported devices
 
-The app targets Wear OS devices running Android API 30 or later.
+Compatible with Wear OS devices running Android API 30 or later.
 
 The UI is designed specifically for smartwatch displays, including round screens.
 
@@ -166,8 +148,8 @@ The engine includes:
 * Operator precedence for arithmetic expressions
 * Unary `+` and `-`
 * Parentheses and grouped expressions
-* Arbitrary-precision decimal arithmetic using BigDecimal
-* A calculation precision of 32 significant digits
+* Arbitrary-precision decimal arithmetic using `BigDecimal`
+* Calculations use 32 significant digits of precision
 * `HALF_UP` rounding
 * A display scale of up to 24 digits after the decimal point, with trailing zeros removed
 * Custom implementations of square root, exponentiation, factorial, trigonometric functions, logarithms, and mathematical constants
@@ -177,8 +159,8 @@ The engine includes:
 To keep calculations and displayed results within defined limits:
 
 * Factorial arguments must be non-negative integers no greater than 146
-* Integer exponents are limited to an absolute value of 1024
-* Non-integer exponents are limited to an absolute value of 1024
+* Integer exponents must have an absolute value of 1024 or less
+* Non-integer exponents must have an absolute value of 1024 or less
 * Results are limited to 256 characters in their plain decimal representation
 * Expressions are limited to 1,024 symbols
 
