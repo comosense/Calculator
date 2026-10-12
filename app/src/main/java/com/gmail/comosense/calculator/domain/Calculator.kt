@@ -128,12 +128,12 @@ private class Parser(
             value = when (tokens[position]) {
                 is Token.Operator.Add -> {
                     position++
-                    value.add(parseTerm(), mathContext)
+                    value.add(parseTerm())
                 }
 
                 is Token.Operator.Subtract -> {
                     position++
-                    value.subtract(parseTerm(), mathContext)
+                    value.subtract(parseTerm())
                 }
 
                 else -> return value
@@ -149,7 +149,7 @@ private class Parser(
             value = when (tokens[position]) {
                 is Token.Operator.Multiply -> {
                     position++
-                    value.multiply(parseSign(), mathContext)
+                    value.multiply(parseSign())
                 }
 
                 is Token.Operator.Divide -> {
@@ -176,7 +176,7 @@ private class Parser(
 
             Token.Sign.Negative -> {
                 position++
-                parseSign().negate(mathContext)
+                parseSign().negate()
             }
 
             else -> parsePower()
