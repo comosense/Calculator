@@ -50,6 +50,14 @@ fun WearApp(
     val coroutineScope: CoroutineScope = rememberCoroutineScope()
     val symbolFormatter: SymbolFormatter = remember(locale) { SymbolFormatter(locale) }
 
+    fun dismissOnCoroutineScope() {
+        coroutineScope.launch {
+            swipeToDismissBoxState.snapTo(
+                targetValue = SwipeToDismissValue.Dismissed
+            )
+        }
+    }
+
     HandleEvent(appEvent)
 
     LaunchedEffect(swipeToDismissBoxState.currentValue) {
@@ -65,7 +73,9 @@ fun WearApp(
             onAction = onAction,
             onShow = { appScreen ->
                 coroutineScope.launch {
-                    swipeToDismissBoxState.snapTo(SwipeToDismissValue.Default)
+                    swipeToDismissBoxState.snapTo(
+                        targetValue = SwipeToDismissValue.Default
+                    )
                     currentScreen = appScreen
                 }
             },
@@ -105,11 +115,7 @@ fun WearApp(
                             HistoryScreen(
                                 histories = appState.histories,
                                 onAction = onAction,
-                                onBack = {
-                                    coroutineScope.launch {
-                                        swipeToDismissBoxState.snapTo(SwipeToDismissValue.Dismissed)
-                                    }
-                                },
+                                onBack = { dismissOnCoroutineScope() },
                                 onDeleteModeChanged = { isHistoryDeleteMode = it },
                                 symbolFormatter = symbolFormatter,
                             )
@@ -119,11 +125,7 @@ fun WearApp(
                             SettingsScreen(
                                 settings = appState.settings,
                                 onAction = onAction,
-                                onBack = {
-                                    coroutineScope.launch {
-                                        swipeToDismissBoxState.snapTo(SwipeToDismissValue.Dismissed)
-                                    }
-                                }
+                                onBack = { dismissOnCoroutineScope() },
                             )
                         }
                     }
