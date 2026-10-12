@@ -171,8 +171,6 @@ Since $IJKL$ is a square, $IJ = JK$. Because $R$ is the projection of $J$ onto t
 $$
 \begin{aligned}
 \left( \frac{ 1 } { 2 \sqrt{ 2 } } d + QR \right)^2 + \left( \frac{ 1 }{ 2 } QR \right)^2 &= \left( \frac{ 1 }{ 2 } d \right)^2\\
-\left( \frac{ 1 }{ 8 } d^2 + \frac{ 1 } { \sqrt{ 2 } } d \cdot QR + QR^2 \right) + \left( \frac{ 1 }{ 4 } QR^2 \right) &= \left( \frac{ 1 }{ 4 } d^2 \right)\\
-\frac{ 5 }{ 4 } QR^2 + \frac{ 1 } { \sqrt{ 2 } } d \cdot QR - \frac{ 1 }{ 8 } d^2 &= 0\\
 10 \cdot QR^2 + 4 \sqrt{ 2 } \cdot d \cdot QR - d^2 &= 0\\
 \end{aligned}
 $$
@@ -182,7 +180,7 @@ Solving this equation for $QR$ gives
 $$
 \begin{aligned}
 QR &= \frac{ -4 \sqrt{ 2 } \cdot d \pm \sqrt{ ( 4 \sqrt{ 2 } \cdot d )^2 - 4 \cdot 10 (-d^2) }}{ 2 \cdot 10}\\
-QR &= \frac{ -4 \sqrt{ 2 } \pm \sqrt{ 72 }}{ 2 \cdot 10} d\\
+ &= \frac{ -4 \sqrt{ 2 } \pm \sqrt{ 72 }}{ 2 \cdot 10} d\\
  &= \frac{ -2 \sqrt{ 2 } \pm 3 \sqrt{ 2 } }{ 10 } d\\
 \end{aligned}
 $$
