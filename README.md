@@ -93,7 +93,7 @@ log(100) = 2
 ln(e) = 1
 ```
 
-Trigonometric functions use radians. Results are rounded according to the calculator's configured precision and display scale.
+Trigonometric functions use radians. Results are rounded according to the calculator's configured precision.
 
 ### Deleting and clearing
 
@@ -151,7 +151,6 @@ The engine includes:
 * Arbitrary-precision decimal arithmetic using `BigDecimal`
 * Calculations use 32 significant digits of precision
 * `HALF_UP` rounding
-* A display scale of up to 24 digits after the decimal point, with trailing zeros removed
 * Custom implementations of square root, exponentiation, factorial, trigonometric functions, logarithms, and mathematical constants
 
 ### Calculation limits
