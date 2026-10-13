@@ -28,8 +28,6 @@ overlay.
 * Natural logarithm (`ln`)
 * Mathematical constants: pi (`π`) and Euler's number (`e`)
 
-Trigonometric functions use radians.
-
 ### Expression input
 
 * Follows standard mathematical operator precedence
