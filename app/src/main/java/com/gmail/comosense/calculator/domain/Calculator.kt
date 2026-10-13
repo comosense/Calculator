@@ -152,7 +152,7 @@ private class Parser(
                 is Token.Operator.Divide -> {
                     position++
                     val divisor: BigDecimal = parseSign()
-                    if (divisor.compareTo(BigDecimal.ZERO) == 0) {
+                    if (divisor.signum() == 0) {
                         throw DivisionByZeroException()
                     }
                     value.divide(divisor, mathContext)
