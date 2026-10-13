@@ -10,7 +10,7 @@ data class History(
 )
 
 internal object HistoryConstraints {
-    const val MAX_HISTORIES_SIZE: Int = 50
+    const val MAX_HISTORIES_SIZE: Int = Constraints.MAX_HISTORY_SIZE
     const val MAX_EXPRESSION_SIZE: Int = Constraints.MAX_EXPRESSION_SIZE
     const val MAX_RESULT_SIZE: Int = Constraints.MAX_RESULT_SIZE
 }

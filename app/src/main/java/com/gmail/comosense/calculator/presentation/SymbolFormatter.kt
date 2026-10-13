@@ -16,7 +16,10 @@ class SymbolFormatter(locale: Locale) {
             maximumFractionDigits = 0
         }
 
-    val decimalSeparator: Char = DecimalFormatSymbols.getInstance(locale).decimalSeparator
+    val decimalSeparator: Char =
+        DecimalFormatSymbols
+            .getInstance(locale)
+            .decimalSeparator
 
     fun format(symbols: List<Symbol>): String {
         return buildString {
@@ -78,25 +81,64 @@ class SymbolFormatter(locale: Locale) {
 
     private val Symbol.canonicalizedText: String
         get() = when (this) {
-            is Symbol.Sign.Positive -> "+"
-            is Symbol.Sign.Negative -> "-"
-            is Symbol.Numeric.Digit -> value.toString()
-            is Symbol.Numeric.Point -> "."
-            is Symbol.Constant.Pi -> "π"
-            is Symbol.Constant.Euler -> "e"
-            is Symbol.Factor.Function.Sqrt -> "√"
-            is Symbol.FactorStart.OpeningParenthesis -> "("
-            is Symbol.FactorStart.Function.Sin -> "sin("
-            is Symbol.FactorStart.Function.Cos -> "cos("
-            is Symbol.FactorStart.Function.Tan -> "tan("
-            is Symbol.FactorStart.Function.Log -> "log("
-            is Symbol.FactorStart.Function.Ln -> "ln("
-            is Symbol.FactorEnd.ClosingParenthesis -> ")"
-            is Symbol.Operator.Add -> "+"
-            is Symbol.Operator.Subtract -> "-"
-            is Symbol.Operator.Multiply -> "×"
-            is Symbol.Operator.Divide -> "÷"
-            is Symbol.SpecialOperator.Power -> "^"
-            is Symbol.SpecialOperator.Factorial -> "!"
+            is Symbol.Sign.Positive
+                -> "+"
+
+            is Symbol.Sign.Negative
+                -> "-"
+
+            is Symbol.Numeric.Digit
+                -> value.toString()
+
+            is Symbol.Numeric.Point
+                -> "."
+
+            is Symbol.Constant.Pi
+                -> "π"
+
+            is Symbol.Constant.Euler
+                -> "e"
+
+            is Symbol.Factor.Function.Sqrt
+                -> "√"
+
+            is Symbol.FactorStart.OpeningParenthesis
+                -> "("
+
+            is Symbol.FactorStart.Function.Sin
+                -> "sin("
+
+            is Symbol.FactorStart.Function.Cos
+                -> "cos("
+
+            is Symbol.FactorStart.Function.Tan
+                -> "tan("
+
+            is Symbol.FactorStart.Function.Log
+                -> "log("
+
+            is Symbol.FactorStart.Function.Ln
+                -> "ln("
+
+            is Symbol.FactorEnd.ClosingParenthesis
+                -> ")"
+
+            is Symbol.Operator.Add
+                -> "+"
+
+            is Symbol.Operator.Subtract
+                -> "-"
+
+            is Symbol.Operator.Multiply
+                -> "×"
+
+            is Symbol.Operator.Divide
+                -> "÷"
+
+            is Symbol.SpecialOperator.Power
+                -> "^"
+
+            is Symbol.SpecialOperator.Factorial
+                -> "!"
         }
 }
