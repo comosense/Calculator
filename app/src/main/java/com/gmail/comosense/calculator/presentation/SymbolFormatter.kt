@@ -50,33 +50,24 @@ class SymbolFormatter(locale: Locale) {
 
     private fun formatNumericString(value: String): String {
         val pointIndex: Int = value.indexOf(".")
-        val integerPart: String = if (pointIndex >= 0) {
-            value.substring(0, pointIndex)
-        } else {
-            value
-        }
-        val decimalPart: String? = if (pointIndex >= 0) {
-            value.substring(pointIndex + 1)
-        } else {
-            null
-        }
-        val formattedIntegerPart: String = formatIntegerPart(integerPart)
 
-        return if (decimalPart == null) {
-            formattedIntegerPart
-        } else {
+        return if (pointIndex >= 0) {
             buildString {
-                append(formattedIntegerPart)
+                append(formatIntegerString(value.substring(0, pointIndex)))
                 append(decimalSeparator)
-                append(decimalPart)
+                append(value.substring(pointIndex + 1))
             }
+        } else {
+            formatIntegerString(value)
         }
     }
 
-    private fun formatIntegerPart(integerPart: String): String {
-        if (integerPart.isEmpty() || integerFormatter == null) return integerPart
-
-        return integerFormatter.format(BigInteger(integerPart))
+    private fun formatIntegerString(integerString: String): String {
+        return if (integerString.isNotEmpty() && integerFormatter != null) {
+            integerFormatter.format(BigInteger(integerString))
+        } else {
+            integerString
+        }
     }
 
     private val Symbol.canonicalizedText: String
