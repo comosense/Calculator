@@ -52,14 +52,17 @@ fun WearApp(
 
     fun changeScreen(
         appScreen: AppScreen? = null,
-        targetValue: SwipeToDismissValue,
     ) {
         coroutineScope.launch {
-            swipeToDismissBoxState.snapTo(
-                targetValue = targetValue
-            )
             if (appScreen != null) {
+                swipeToDismissBoxState.snapTo(
+                    targetValue = SwipeToDismissValue.Default
+                )
                 currentScreen = appScreen
+            } else {
+                swipeToDismissBoxState.snapTo(
+                    targetValue = SwipeToDismissValue.Dismissed
+                )
             }
         }
     }
@@ -77,12 +80,7 @@ fun WearApp(
         CalculatorScreen(
             appState = appState,
             onAction = onAction,
-            onShow = { appScreen ->
-                changeScreen(
-                    appScreen = appScreen,
-                    targetValue = SwipeToDismissValue.Default,
-                )
-            },
+            onShow = { appScreen -> changeScreen(appScreen) },
             symbolFormatter = symbolFormatter,
         )
 
@@ -119,11 +117,7 @@ fun WearApp(
                             HistoryScreen(
                                 histories = appState.histories,
                                 onAction = onAction,
-                                onBack = {
-                                    changeScreen(
-                                        targetValue = SwipeToDismissValue.Dismissed
-                                    )
-                                },
+                                onBack = { changeScreen(null) },
                                 onDeleteModeChanged = { isHistoryDeleteMode = it },
                                 symbolFormatter = symbolFormatter,
                             )
@@ -133,11 +127,7 @@ fun WearApp(
                             SettingsScreen(
                                 settings = appState.settings,
                                 onAction = onAction,
-                                onBack = {
-                                    changeScreen(
-                                        targetValue = SwipeToDismissValue.Dismissed
-                                    )
-                                },
+                                onBack = { changeScreen(null) },
                             )
                         }
                     }
