@@ -50,11 +50,17 @@ fun WearApp(
     val coroutineScope: CoroutineScope = rememberCoroutineScope()
     val symbolFormatter: SymbolFormatter = remember(locale) { SymbolFormatter(locale) }
 
-    fun dismissOnCoroutineScope() {
+    fun changeScreen(
+        appScreen: AppScreen? = null,
+        targetValue: SwipeToDismissValue,
+    ) {
         coroutineScope.launch {
             swipeToDismissBoxState.snapTo(
-                targetValue = SwipeToDismissValue.Dismissed
+                targetValue = targetValue
             )
+            if (appScreen != null) {
+                currentScreen = appScreen
+            }
         }
     }
 
@@ -72,12 +78,10 @@ fun WearApp(
             appState = appState,
             onAction = onAction,
             onShow = { appScreen ->
-                coroutineScope.launch {
-                    swipeToDismissBoxState.snapTo(
-                        targetValue = SwipeToDismissValue.Default
-                    )
-                    currentScreen = appScreen
-                }
+                changeScreen(
+                    appScreen = appScreen,
+                    targetValue = SwipeToDismissValue.Default,
+                )
             },
             symbolFormatter = symbolFormatter,
         )
@@ -115,7 +119,11 @@ fun WearApp(
                             HistoryScreen(
                                 histories = appState.histories,
                                 onAction = onAction,
-                                onBack = { dismissOnCoroutineScope() },
+                                onBack = {
+                                    changeScreen(
+                                        targetValue = SwipeToDismissValue.Dismissed
+                                    )
+                                },
                                 onDeleteModeChanged = { isHistoryDeleteMode = it },
                                 symbolFormatter = symbolFormatter,
                             )
@@ -125,7 +133,11 @@ fun WearApp(
                             SettingsScreen(
                                 settings = appState.settings,
                                 onAction = onAction,
-                                onBack = { dismissOnCoroutineScope() },
+                                onBack = {
+                                    changeScreen(
+                                        targetValue = SwipeToDismissValue.Dismissed
+                                    )
+                                },
                             )
                         }
                     }
