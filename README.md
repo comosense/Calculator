@@ -1,4 +1,4 @@
-# Calculator
+# [Calculator](https://github.com/comosense/Calculator/)
 
 A simple calculator app designed specifically for Wear OS smartwatches.
 
