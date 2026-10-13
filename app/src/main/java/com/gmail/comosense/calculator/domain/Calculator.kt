@@ -35,10 +35,8 @@ private class DivisionByZeroException : ArithmeticException()
 fun calculate(
     expression: List<Symbol>,
     precision: Int,
-    displayScale: Int,
 ): Result<List<Symbol>, CalculatorError> {
     require(precision > 0)
-    require(displayScale >= 0)
 
     fun BigDecimalError.toCalculatorError(): CalculatorError = when (this) {
         BigDecimalError.Unsupported -> CalculatorError.Unsupported
@@ -53,13 +51,12 @@ fun calculate(
 
     val calculated: BigDecimal =
         when (val calculatedResult: Result<BigDecimal, CalculatorError> =
-            calculate(tokens, precision)) {
+            calculateTokens(tokens, precision)) {
             is Result.Ok -> calculatedResult.value
             is Result.Err -> return Result.Err(calculatedResult.error)
         }
 
     return when (val calculatedSymbolsResult = calculated.toSymbols(
-        scale = displayScale,
         limit = CalculatorConstraints.MAX_RESULT_SIZE,
     )) {
         is Result.Ok -> Result.Ok(calculatedSymbolsResult.value)
@@ -67,7 +64,7 @@ fun calculate(
     }
 }
 
-private fun calculate(
+private fun calculateTokens(
     tokens: List<Token>,
     precision: Int,
 ): Result<BigDecimal, CalculatorError> {
@@ -295,20 +292,14 @@ private class Parser(
     }
 }
 
-private fun BigDecimal.toSymbols(scale: Int, limit: Int): Result<List<Symbol>, BigDecimalError> {
-    val value: BigDecimal = if (compareTo(BigDecimal.ZERO) == 0) {
-        BigDecimal.ZERO
-    } else {
-        setScale(scale, RoundingMode.HALF_UP).stripTrailingZeros()
-    }
-
-    val plainStringValue: String = value.toPlainString()
-    if (plainStringValue.length > limit) {
+private fun BigDecimal.toSymbols(limit: Int): Result<List<Symbol>, BigDecimalError> {
+    val valueString: String = stripTrailingZeros().toPlainString()
+    if (valueString.length > limit) {
         return Result.Err(BigDecimalError.TooLarge)
     }
 
     val symbols: List<Symbol> = buildList {
-        for (c in plainStringValue) {
+        for (c in valueString) {
             add(
                 when (c) {
                     in '0'..'9' -> Symbol.Numeric.Digit(c.digitToInt())

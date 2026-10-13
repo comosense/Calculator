@@ -26,11 +26,11 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 
 private enum class SettingsItem {
     CalculationPrecision,
-    DisplayScale,
+//    DisplayScale,
 }
 
 private val calculationPrecisionOptions: List<Int> = listOf(16, 24, 32, 48, 64)
-private val displayScaleOptions: List<Int> = listOf(8, 12, 16, 20, 24, 32, 40, 48)
+//private val displayScaleOptions: List<Int> = listOf(8, 12, 16, 20, 24, 32, 40, 48)
 
 @Composable
 fun SettingsScreen(
@@ -44,28 +44,28 @@ fun SettingsScreen(
     val calculationPrecisionIndex: Int = calculationPrecisionOptions.indexOf(
         settings.calculationPrecision
     ).coerceAtLeast(0)
-    val displayScaleIndex: Int = displayScaleOptions.indexOf(
-        settings.displayScale
-    ).coerceAtLeast(0)
+//    val displayScaleIndex: Int = displayScaleOptions.indexOf(
+//        settings.displayScale
+//    ).coerceAtLeast(0)
 
     val calculationPrecisionPicker: PickerState = rememberPickerState(
         initialNumberOfOptions = calculationPrecisionOptions.size,
         initiallySelectedIndex = calculationPrecisionIndex,
         shouldRepeatOptions = false,
     )
-    val displayScalePicker: PickerState = rememberPickerState(
-        initialNumberOfOptions = displayScaleOptions.size,
-        initiallySelectedIndex = displayScaleIndex,
-        shouldRepeatOptions = false,
-    )
+//    val displayScalePicker: PickerState = rememberPickerState(
+//        initialNumberOfOptions = displayScaleOptions.size,
+//        initiallySelectedIndex = displayScaleIndex,
+//        shouldRepeatOptions = false,
+//    )
 
     val activePicker: PickerState = when (selectedItem) {
         SettingsItem.CalculationPrecision -> calculationPrecisionPicker
-        SettingsItem.DisplayScale -> displayScalePicker
+//        SettingsItem.DisplayScale -> displayScalePicker
     }
     val options: List<Int> = when (selectedItem) {
         SettingsItem.CalculationPrecision -> calculationPrecisionOptions
-        SettingsItem.DisplayScale -> displayScaleOptions
+//        SettingsItem.DisplayScale -> displayScaleOptions
     }
     val selectedValue by remember(selectedItem, activePicker) {
         derivedStateOf {
@@ -85,17 +85,17 @@ fun SettingsScreen(
             }
     }
 
-    LaunchedEffect(displayScalePicker) {
-        snapshotFlow { displayScalePicker.selectedOptionIndex }
-            .distinctUntilChanged()
-            .collect { index ->
-                onAction(
-                    AppAction.SetDisplayScale(
-                        displayScaleOptions[index]
-                    )
-                )
-            }
-    }
+//    LaunchedEffect(displayScalePicker) {
+//        snapshotFlow { displayScalePicker.selectedOptionIndex }
+//            .distinctUntilChanged()
+//            .collect { index ->
+//                onAction(
+//                    AppAction.SetDisplayScale(
+//                        displayScaleOptions[index]
+//                    )
+//                )
+//            }
+//    }
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -110,10 +110,10 @@ fun SettingsScreen(
             onClick = {
                 selectedItem = when (selectedItem) {
                     SettingsItem.CalculationPrecision ->
-                        SettingsItem.DisplayScale
-
-                    SettingsItem.DisplayScale ->
                         SettingsItem.CalculationPrecision
+
+//                    SettingsItem.DisplayScale ->
+//                        SettingsItem.CalculationPrecision
                 }
             },
         ) {
@@ -122,8 +122,8 @@ fun SettingsScreen(
                     SettingsItem.CalculationPrecision ->
                         "TEMP_Precision"
 
-                    SettingsItem.DisplayScale ->
-                        "TEMP_DISPLAY digits"
+//                    SettingsItem.DisplayScale ->
+//                        "TEMP_DISPLAY digits"
                 }
             )
         }
@@ -133,8 +133,8 @@ fun SettingsScreen(
                 SettingsItem.CalculationPrecision ->
                     "TEMP_Calculation precision"
 
-                SettingsItem.DisplayScale ->
-                    "TEMP_Digits after decimal"
+//                SettingsItem.DisplayScale ->
+//                    "TEMP_Digits after decimal"
             }
         )
 

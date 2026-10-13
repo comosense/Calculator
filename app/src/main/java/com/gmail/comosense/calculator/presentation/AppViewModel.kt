@@ -29,7 +29,6 @@ enum class AppViewModelError {
 
 sealed interface AppAction {
     data class SetCalculationPrecision(val value: Int) : AppAction
-    data class SetDisplayScale(val value: Int) : AppAction
     data class Input(val symbol: Symbol) : AppAction
     data object Calculate : AppAction
     data object Clear : AppAction
@@ -100,9 +99,6 @@ class AppViewModel(
             is AppAction.SetCalculationPrecision ->
                 updateCalculationPrecision(appAction.value)
 
-            is AppAction.SetDisplayScale ->
-                updateDisplayScale(appAction.value)
-
             is AppAction.Input ->
                 input(appAction.symbol)
 
@@ -132,12 +128,6 @@ class AppViewModel(
         }
     }
 
-    private fun updateDisplayScale(value: Int) {
-        viewModelScope.launch {
-            settingRepository.updateDisplayScale(value)
-        }
-    }
-
     private fun input(symbol: Symbol) {
         updateAppState { appState ->
             resolveAppStateUpdate(
@@ -159,7 +149,6 @@ class AppViewModel(
                 calculate(
                     expression = expression,
                     precision = settings.calculationPrecision,
-                    displayScale = settings.displayScale,
                 )) {
                 is Result.Ok ->
                     calculatedResult.value

@@ -11,8 +11,6 @@ class SettingsRepository(private val context: Context) {
     private object SettingsKeys {
         val CALCULATION_PRECISION: Preferences.Key<Int> =
             intPreferencesKey("calculation_precision")
-        val DISPLAY_SCALE: Preferences.Key<Int> =
-            intPreferencesKey("display_scale")
     }
 
     val settings: Flow<Settings> =
@@ -21,9 +19,6 @@ class SettingsRepository(private val context: Context) {
                 calculationPrecision =
                     preferences[SettingsKeys.CALCULATION_PRECISION]
                         ?: SettingsDataStoreConstraints.DEFAULT_CALCULATION_PRECISION,
-                displayScale =
-                    preferences[SettingsKeys.DISPLAY_SCALE]
-                        ?: SettingsDataStoreConstraints.DEFAULT_DISPLAY_SCALE,
             )
         }
 
@@ -32,14 +27,6 @@ class SettingsRepository(private val context: Context) {
 
         context.settingsDataStore.edit { preferences ->
             preferences[SettingsKeys.CALCULATION_PRECISION] = value
-        }
-    }
-
-    suspend fun updateDisplayScale(value: Int) {
-        require(value > 0)
-
-        context.settingsDataStore.edit { preferences ->
-            preferences[SettingsKeys.DISPLAY_SCALE] = value
         }
     }
 }
