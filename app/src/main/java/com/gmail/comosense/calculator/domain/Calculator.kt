@@ -43,11 +43,8 @@ fun calculate(
         BigDecimalError.TooLarge -> CalculatorError.ResultTooLarge
     }
 
-    val tokens: List<Token> =
-        when (val tokensResult: Result<List<Token>, SymbolTokenizerError> = tokenize(expression)) {
-            is Result.Ok -> tokensResult.value
-            is Result.Err -> return Result.Err(CalculatorError.InvalidExpression)
-        }
+    val tokens: List<Token> = tokenize(expression)
+        ?: return Result.Err(CalculatorError.InvalidExpression)
 
     val calculated: BigDecimal =
         when (val calculatedResult: Result<BigDecimal, CalculatorError> =

@@ -1,14 +1,8 @@
 package com.gmail.comosense.calculator.domain
 
-import com.gmail.comosense.calculator.common.Result
 import java.math.BigDecimal
 
-sealed interface SymbolTokenizerError {
-    data object IllegalNumeric : SymbolTokenizerError
-    data object UnsupportedSymbol : SymbolTokenizerError
-}
-
-fun tokenize(symbols: List<Symbol>): Result<List<Token>, SymbolTokenizerError> {
+fun tokenize(symbols: List<Symbol>): List<Token>? {
     val tokens: List<Token> = buildList {
         val numericBuffer: StringBuilder = StringBuilder()
 
@@ -35,20 +29,15 @@ fun tokenize(symbols: List<Symbol>): Result<List<Token>, SymbolTokenizerError> {
                     numericBuffer.append(".")
 
                 else -> {
-                    if (!flushNumeric()) return Result.Err(SymbolTokenizerError.IllegalNumeric)
-
-                    add(
-                        symbol.toTokenOrNull()
-                            ?: return Result.Err(SymbolTokenizerError.UnsupportedSymbol)
-                    )
+                    if (!flushNumeric()) return null
+                    add(symbol.toTokenOrNull() ?: return null)
                 }
             }
         }
-
-        if (!flushNumeric()) return Result.Err(SymbolTokenizerError.IllegalNumeric)
+        if (!flushNumeric()) return null
     }
 
-    return Result.Ok(tokens)
+    return tokens
 }
 
 fun Symbol.toTokenOrNull(): Token? = when (this) {
