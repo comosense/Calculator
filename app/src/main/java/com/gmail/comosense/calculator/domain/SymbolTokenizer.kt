@@ -7,13 +7,9 @@ fun tokenize(symbols: List<Symbol>): List<Token>? {
         val numericBuffer: StringBuilder = StringBuilder()
 
         fun flushNumeric(): Boolean {
-            if (numericBuffer.isEmpty()) return true
-
-            val numericString: String = numericBuffer.toString()
-            numericBuffer.clear()
-
-            return try {
-                add(Token.Numeric(BigDecimal(numericString)))
+            return numericBuffer.isEmpty() || try {
+                add(Token.Numeric(BigDecimal(numericBuffer.toString())))
+                numericBuffer.clear()
                 true
             } catch (_: NumberFormatException) {
                 false
