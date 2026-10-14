@@ -189,14 +189,14 @@ fun ProtoHistory.toHistoryOrNull(): History? {
     }
 
     val expression: List<Symbol> = buildList {
-        for (symbol in expressionList) {
-            add(symbol.toSymbolOrNull() ?: return null)
+        for (protoSymbol in expressionList) {
+            add(protoSymbol.toSymbolOrNull() ?: return null)
         }
     }
 
     val result: List<Symbol> = buildList {
-        for (symbol in resultList) {
-            add(symbol.toSymbolOrNull() ?: return null)
+        for (protoSymbol in resultList) {
+            add(protoSymbol.toSymbolOrNull() ?: return null)
         }
     }
 

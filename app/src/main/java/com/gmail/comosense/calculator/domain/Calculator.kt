@@ -51,29 +51,28 @@ fun calculate(
 
     val calculated: BigDecimal =
         when (val calculatedResult: Result<BigDecimal, CalculatorError> =
-            calculateTokens(tokens, precision)) {
+            parse(tokens, precision)) {
             is Result.Ok -> calculatedResult.value
             is Result.Err -> return Result.Err(calculatedResult.error)
         }
 
-    return when (val calculatedSymbolsResult = calculated.toSymbols(
-        limit = CalculatorConstraints.MAX_RESULT_SIZE,
-    )) {
+    return when (val calculatedSymbolsResult: Result<List<Symbol>, BigDecimalError> =
+        calculated.toSymbols()) {
         is Result.Ok -> Result.Ok(calculatedSymbolsResult.value)
         is Result.Err -> Result.Err(calculatedSymbolsResult.error.toCalculatorError())
     }
 }
 
-private fun calculateTokens(
-    tokens: List<Token>,
+private fun parse(
+    expression: List<Token>,
     precision: Int,
 ): Result<BigDecimal, CalculatorError> {
-    if (tokens.isEmpty()) {
+    if (expression.isEmpty()) {
         return Result.Err(CalculatorError.InvalidExpression)
     }
 
     return try {
-        val parser = Parser(tokens, precision)
+        val parser = Parser(expression, precision)
         val result: BigDecimal = parser.parseExpression()
 
         if (parser.isEnd()) {
@@ -112,7 +111,7 @@ private class Parser(
         precision,
         RoundingMode.HALF_UP,
     )
-    private val bigDecimalMath = BigDecimalMath(mathContext)
+    private val math = Math(mathContext)
 
     private var position: Int = 0
 
@@ -185,7 +184,7 @@ private class Parser(
 
         return if (tokens.getOrNull(position) is Token.SpecialOperator.Power) {
             position++
-            bigDecimalMath.pow(base, parseSign())
+            math.pow(base, parseSign())
         } else {
             base
         }
@@ -196,7 +195,7 @@ private class Parser(
 
         while (tokens.getOrNull(position) is Token.SpecialOperator.Factorial) {
             position++
-            value = bigDecimalMath.factorial(value)
+            value = math.factorial(value)
         }
 
         return value
@@ -252,10 +251,10 @@ private class Parser(
     private fun parseConstant(constant: Token.Constant): BigDecimal {
         return when (constant) {
             Token.Constant.Pi ->
-                bigDecimalMath.pi()
+                math.pi()
 
             Token.Constant.Euler ->
-                bigDecimalMath.e()
+                math.e()
         }
     }
 
@@ -265,7 +264,7 @@ private class Parser(
     ): BigDecimal {
         return when (function) {
             Token.Factor.Function.Sqrt ->
-                bigDecimalMath.sqrt(value)
+                math.sqrt(value)
         }
     }
 
@@ -275,31 +274,31 @@ private class Parser(
     ): BigDecimal {
         return when (function) {
             Token.FactorStart.Function.Sin ->
-                bigDecimalMath.sin(value)
+                math.sin(value)
 
             Token.FactorStart.Function.Cos ->
-                bigDecimalMath.cos(value)
+                math.cos(value)
 
             Token.FactorStart.Function.Tan ->
-                bigDecimalMath.tan(value)
+                math.tan(value)
 
             Token.FactorStart.Function.Log ->
-                bigDecimalMath.log(value)
+                math.log(value)
 
             Token.FactorStart.Function.Ln ->
-                bigDecimalMath.ln(value)
+                math.ln(value)
         }
     }
 }
 
-private fun BigDecimal.toSymbols(limit: Int): Result<List<Symbol>, BigDecimalError> {
-    val valueString: String = stripTrailingZeros().toPlainString()
-    if (valueString.length > limit) {
+private fun BigDecimal.toSymbols(): Result<List<Symbol>, BigDecimalError> {
+    val plainString: String = stripTrailingZeros().toPlainString()
+    if (plainString.length > CalculatorConstraints.MAX_RESULT_SIZE) {
         return Result.Err(BigDecimalError.TooLarge)
     }
 
     val symbols: List<Symbol> = buildList {
-        for (c in valueString) {
+        for (c in plainString) {
             add(
                 when (c) {
                     in '0'..'9' -> Symbol.Numeric.Digit(c.digitToInt())

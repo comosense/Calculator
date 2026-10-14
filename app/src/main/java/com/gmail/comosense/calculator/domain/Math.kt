@@ -12,7 +12,7 @@ class PowLimitExceededException : ArithmeticException()
 class LogInvalidArgumentException : ArithmeticException()
 class TanInvalidArgumentException : ArithmeticException()
 
-class BigDecimalMath(private val mathContext: MathContext) {
+class Math(private val mathContext: MathContext) {
     init {
         require(mathContext.precision > 0)
     }

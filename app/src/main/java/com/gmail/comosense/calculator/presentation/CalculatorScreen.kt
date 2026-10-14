@@ -475,23 +475,21 @@ private fun KeyButton(
             contentAlignment = Alignment.Center,
         ) {
             when (val display: Display = key.display(symbolFormatter)) {
-                is Display.Text -> {
+                is Display.Text ->
                     Text(
                         text = display.text,
                         color = colors.content,
                         fontSize = AppTheme.calculatorScreenDimensions.keyTextFontSize,
                         textAlign = TextAlign.Center,
                     )
-                }
 
-                is Display.Icon -> {
+                is Display.Icon ->
                     Icon(
                         painter = painterResource(display.painterResource),
                         contentDescription = stringResource(display.stringResource),
                         modifier = Modifier.size(AppTheme.calculatorScreenDimensions.keyIconSize),
                         tint = colors.content,
                     )
-                }
             }
         }
     }

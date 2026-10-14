@@ -37,13 +37,10 @@ fun tokenize(symbols: List<Symbol>): Result<List<Token>, SymbolTokenizerError> {
                 else -> {
                     if (!flushNumeric()) return Result.Err(SymbolTokenizerError.IllegalNumeric)
 
-                    when (val tokenResult: Result<Token, SymbolTokenizerError> = symbol.toToken()) {
-                        is Result.Ok ->
-                            add(tokenResult.value)
-
-                        is Result.Err ->
-                            return tokenResult
-                    }
+                    add(
+                        symbol.toTokenOrNull()
+                            ?: return Result.Err(SymbolTokenizerError.UnsupportedSymbol)
+                    )
                 }
             }
         }
@@ -54,61 +51,61 @@ fun tokenize(symbols: List<Symbol>): Result<List<Token>, SymbolTokenizerError> {
     return Result.Ok(tokens)
 }
 
-fun Symbol.toToken(): Result<Token, SymbolTokenizerError> = when (this) {
+fun Symbol.toTokenOrNull(): Token? = when (this) {
     is Symbol.Sign.Positive ->
-        Result.Ok(Token.Sign.Positive)
+        Token.Sign.Positive
 
     is Symbol.Sign.Negative ->
-        Result.Ok(Token.Sign.Negative)
+        Token.Sign.Negative
 
     is Symbol.Constant.Pi ->
-        Result.Ok(Token.Constant.Pi)
+        Token.Constant.Pi
 
     is Symbol.Constant.Euler ->
-        Result.Ok(Token.Constant.Euler)
+        Token.Constant.Euler
 
     is Symbol.Factor.Function.Sqrt ->
-        Result.Ok(Token.Factor.Function.Sqrt)
+        Token.Factor.Function.Sqrt
 
     is Symbol.FactorStart.OpeningParenthesis ->
-        Result.Ok(Token.FactorStart.OpeningParenthesis)
+        Token.FactorStart.OpeningParenthesis
 
     is Symbol.FactorStart.Function.Sin ->
-        Result.Ok(Token.FactorStart.Function.Sin)
+        Token.FactorStart.Function.Sin
 
     is Symbol.FactorStart.Function.Cos ->
-        Result.Ok(Token.FactorStart.Function.Cos)
+        Token.FactorStart.Function.Cos
 
     is Symbol.FactorStart.Function.Tan ->
-        Result.Ok(Token.FactorStart.Function.Tan)
+        Token.FactorStart.Function.Tan
 
     is Symbol.FactorStart.Function.Log ->
-        Result.Ok(Token.FactorStart.Function.Log)
+        Token.FactorStart.Function.Log
 
     is Symbol.FactorStart.Function.Ln ->
-        Result.Ok(Token.FactorStart.Function.Ln)
+        Token.FactorStart.Function.Ln
 
     is Symbol.FactorEnd.ClosingParenthesis ->
-        Result.Ok(Token.FactorEnd.ClosingParenthesis)
+        Token.FactorEnd.ClosingParenthesis
 
     is Symbol.Operator.Add ->
-        Result.Ok(Token.Operator.Add)
+        Token.Operator.Add
 
     is Symbol.Operator.Subtract ->
-        Result.Ok(Token.Operator.Subtract)
+        Token.Operator.Subtract
 
     is Symbol.Operator.Multiply ->
-        Result.Ok(Token.Operator.Multiply)
+        Token.Operator.Multiply
 
     is Symbol.Operator.Divide ->
-        Result.Ok(Token.Operator.Divide)
+        Token.Operator.Divide
 
     is Symbol.SpecialOperator.Power ->
-        Result.Ok(Token.SpecialOperator.Power)
+        Token.SpecialOperator.Power
 
     is Symbol.SpecialOperator.Factorial ->
-        Result.Ok(Token.SpecialOperator.Factorial)
+        Token.SpecialOperator.Factorial
 
     else ->
-        Result.Err(SymbolTokenizerError.UnsupportedSymbol)
+        null
 }
