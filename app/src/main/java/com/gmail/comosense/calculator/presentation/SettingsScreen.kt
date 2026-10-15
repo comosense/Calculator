@@ -19,8 +19,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.wear.compose.material3.AlertDialogDefaults.EdgeButton
 import androidx.wear.compose.material3.ButtonDefaults
-import androidx.wear.compose.material3.EdgeButton
 import androidx.wear.compose.material3.Icon
 import androidx.wear.compose.material3.Picker
 import androidx.wear.compose.material3.ScreenScaffold
@@ -131,6 +131,44 @@ fun SettingsScreen(
                     }
                 }
 
+//                Row(
+//                    modifier = Modifier.size(
+//                        width = displayWidth,
+//                        height = buttonHeight,
+//                    ),
+//                    horizontalArrangement = Arrangement.Center,
+//                    verticalAlignment = Alignment.CenterVertically,
+//                ) {
+//                    Button(
+//                        onClick = onBack,
+//                        modifier = Modifier.weight(1f),
+//                        colors = ButtonDefaults.buttonColors(
+//                            containerColor = AppTheme.settingsScreenColors.backButtonContainer,
+//                            contentColor = AppTheme.settingsScreenColors.backButtonContent,
+//                        ),
+//                    ) {
+//                        Icon(
+//                            painter = painterResource(R.drawable.ic_undo),
+//                            contentDescription = stringResource(R.string.content_description_undo),
+//                            tint = AppTheme.settingsScreenColors.backButtonContent,
+//                        )
+//                    }
+//
+//                    Button(
+//                        onClick = onBack,
+//                        modifier = Modifier.weight(1f),
+//                        colors = ButtonDefaults.buttonColors(
+//                            containerColor = AppTheme.settingsScreenColors.backButtonContainer,
+//                            contentColor = AppTheme.settingsScreenColors.backButtonContent,
+//                        ),
+//                    ) {
+//                        Icon(
+//                            painter = painterResource(R.drawable.ic_undo),
+//                            contentDescription = stringResource(R.string.content_description_undo),
+//                            tint = AppTheme.settingsScreenColors.backButtonContent,
+//                        )
+//                    }
+//                }
                 EdgeButton(
                     onClick = onBack,
                     modifier = Modifier.size(

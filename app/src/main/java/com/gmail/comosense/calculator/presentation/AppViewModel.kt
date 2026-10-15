@@ -11,6 +11,7 @@ import com.gmail.comosense.calculator.data.Settings
 import com.gmail.comosense.calculator.data.SettingsRepository
 import com.gmail.comosense.calculator.data.SettingsRepositoryError
 import com.gmail.comosense.calculator.data.historyDataStore
+import com.gmail.comosense.calculator.data.settingsDataStore
 import com.gmail.comosense.calculator.domain.CalculatorError
 import com.gmail.comosense.calculator.domain.Symbol
 import com.gmail.comosense.calculator.domain.calculate
@@ -49,7 +50,7 @@ class AppViewModel(
                 @Suppress("UNCHECKED_CAST")
                 return AppViewModel(
                     settingRepository = SettingsRepository(
-                        context = application,
+                        dataStore = application.settingsDataStore,
                     ),
                     historyRepository = HistoryRepository(
                         dataStore = application.historyDataStore,

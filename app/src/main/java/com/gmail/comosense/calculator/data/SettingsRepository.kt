@@ -1,6 +1,6 @@
 package com.gmail.comosense.calculator.data
 
-import android.content.Context
+import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
@@ -13,14 +13,14 @@ enum class SettingsRepositoryError {
     UpdatePrecision
 }
 
-class SettingsRepository(private val context: Context) {
+class SettingsRepository(private val dataStore: DataStore<Preferences>) {
     private object SettingsKeys {
         val PRECISION: Preferences.Key<Int> =
             intPreferencesKey("precision")
     }
 
     val settings: Flow<Settings> =
-        context.settingsDataStore.data.map { preferences ->
+        dataStore.data.map { preferences ->
             Settings(
                 precision =
                     preferences[SettingsKeys.PRECISION]
@@ -32,7 +32,7 @@ class SettingsRepository(private val context: Context) {
         require(value > 0)
 
         try {
-            context.settingsDataStore.edit { preferences ->
+            dataStore.edit { preferences ->
                 preferences[SettingsKeys.PRECISION] = value
             }
         } catch (e: CancellationException) {
