@@ -91,15 +91,15 @@ fun AppTheme(
             deleteAllButtonContent = MaterialTheme.colorScheme.onErrorContainer,
         )
         val calculatorScreenColors = CalculatorScreenColors(
-            background = MaterialTheme.colorScheme.surfaceContainer,
-            expression = MaterialTheme.colorScheme.onSurface,
+            background = MaterialTheme.colorScheme.background,
+            expression = MaterialTheme.colorScheme.onBackground,
             expressionBlinkBackground = MaterialTheme.colorScheme.primaryDim,
-            digitKeyContainer = MaterialTheme.colorScheme.surfaceContainer,
-            digitKeyContent = MaterialTheme.colorScheme.onSurface,
-            operatorKeyContainer = MaterialTheme.colorScheme.tertiary,
-            operatorKeyContent = MaterialTheme.colorScheme.onTertiary,
-            commandKeyContainer = MaterialTheme.colorScheme.primary,
-            commandKeyContent = MaterialTheme.colorScheme.onPrimary,
+            digitKeyContainer = MaterialTheme.colorScheme.background,
+            digitKeyContent = MaterialTheme.colorScheme.onBackground,
+            operatorKeyContainer = MaterialTheme.colorScheme.surfaceContainerLow,
+            operatorKeyContent = MaterialTheme.colorScheme.onSurface,
+            commandKeyContainer = MaterialTheme.colorScheme.surfaceContainer,
+            commandKeyContent = MaterialTheme.colorScheme.onSurface,
             keySwitcher = MaterialTheme.colorScheme.tertiary,
         )
         val settingsScreenDimensions = SettingsScreenDimensions(
