@@ -4,6 +4,12 @@
     <string name="delete_all">Delete all</string>
     <string name="app_view_model_error_expression_too_large">Expression is too long.</string>
     <string name="app_view_model_error_history_not_found">History entry not found.</string>
+    <string name="settings_repository_error_update_precision">Failed to update precision.</string>
+    <string name="history_repository_error_add">Failed to save calculation.</string>
+    <string name="history_repository_error_delete">Failed to delete history entry.</string>
+    <string name="history_repository_error_delete_all">Failed to clear history.</string>
+    <string name="history_repository_error_too_large">Calculation too large to save.</string>
+    <string name="history_repository_error_invalid_history">Cannot save this calculation.</string>
     <string name="calculator_error_unsupported">Unsupported error</string>
     <string name="calculator_error_result_too_large">Result too large to display.</string>
     <string name="calculator_error_invalid_expression">Invalid expression</string>
@@ -16,12 +22,6 @@
     <string name="calculator_error_log_invalid_argument">Logarithm requires a positive argument.</string>
     <string name="calculator_error_tan_invalid_argument">Tangent is undefined for this angle.</string>
     <string name="calculator_error_arithmetic">Arithmetic error</string>
-    <string name="settings_repository_error_update_precision">Failed to update precision.</string>
-    <string name="history_repository_error_add">Failed to save calculation.</string>
-    <string name="history_repository_error_delete">Failed to delete history entry.</string>
-    <string name="history_repository_error_delete_all">Failed to clear history.</string>
-    <string name="history_repository_error_too_large">Calculation too large to save.</string>
-    <string name="history_repository_error_invalid_history">Cannot save this calculation.</string>
     <string name="content_description_positive">Positive sign</string>
     <string name="content_description_negative">Negative sign</string>
     <string name="content_description_opening_parenthesis">Opening parenthesis</string>
