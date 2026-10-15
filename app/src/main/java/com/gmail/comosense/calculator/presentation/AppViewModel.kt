@@ -15,6 +15,7 @@ import com.gmail.comosense.calculator.data.settingsDataStore
 import com.gmail.comosense.calculator.domain.CalculatorError
 import com.gmail.comosense.calculator.domain.Symbol
 import com.gmail.comosense.calculator.domain.calculate
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -81,7 +82,12 @@ class AppViewModel(
 
     init {
         viewModelScope.launch {
-            settingRepository.repairInvalidPrecision()
+            try {
+                settingRepository.repairInvalidPrecision()
+            } catch (e: CancellationException) {
+                throw e
+            } catch (_: Exception) {
+            }
         }
 
         viewModelScope.launch {
