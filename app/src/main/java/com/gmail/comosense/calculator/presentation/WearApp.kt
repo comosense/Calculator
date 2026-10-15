@@ -182,7 +182,8 @@ private fun AppViewModelError.messageResourceId(): Int? = when (this) {
     AppViewModelError.HistoryNotFound -> R.string.app_view_model_error_history_not_found
 }
 
-private fun SettingsRepositoryError.messageResourceId(): Int = when (this) {
+private fun SettingsRepositoryError.messageResourceId(): Int? = when (this) {
+    SettingsRepositoryError.RepairInvalidPrecision -> null
     SettingsRepositoryError.UpdatePrecision -> R.string.settings_repository_error_update_precision
 }
 

@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 enum class SettingsRepositoryError {
+    RepairInvalidPrecision,
     UpdatePrecision,
 }
 
@@ -35,19 +36,25 @@ class SettingsRepository(
             )
         }
 
-    suspend fun repairInvalidPrecision() {
-        dataStore.edit { preferences ->
-            val precision: Int? = preferences[SettingsKeys.PRECISION]
-            if (precision != null && !isValidPrecision(precision)) {
-                preferences[SettingsKeys.PRECISION] =
-                    SettingsDataStoreConstraints.DEFAULT_PRECISION
+    suspend fun repairInvalidPrecision(): Result<Unit, SettingsRepositoryError> {
+        try {
+            dataStore.edit { preferences ->
+                val precision: Int? = preferences[SettingsKeys.PRECISION]
+                if (precision != null && !isValidPrecision(precision)) {
+                    preferences[SettingsKeys.PRECISION] =
+                        SettingsDataStoreConstraints.DEFAULT_PRECISION
+                }
             }
+        } catch (e: CancellationException) {
+            throw e
+        } catch (_: Exception) {
+            return Result.Err(SettingsRepositoryError.RepairInvalidPrecision)
         }
+
+        return Result.Ok(Unit)
     }
 
-    suspend fun updatePrecision(
-        precision: Int,
-    ): Result<Unit, SettingsRepositoryError> {
+    suspend fun updatePrecision(precision: Int): Result<Unit, SettingsRepositoryError> {
         if (!isValidPrecision(precision)) {
             return Result.Err(SettingsRepositoryError.UpdatePrecision)
         }

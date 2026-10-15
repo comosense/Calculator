@@ -15,7 +15,6 @@ import com.gmail.comosense.calculator.data.settingsDataStore
 import com.gmail.comosense.calculator.domain.CalculatorError
 import com.gmail.comosense.calculator.domain.Symbol
 import com.gmail.comosense.calculator.domain.calculate
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -82,11 +81,15 @@ class AppViewModel(
 
     init {
         viewModelScope.launch {
-            try {
-                settingRepository.repairInvalidPrecision()
-            } catch (e: CancellationException) {
-                throw e
-            } catch (_: Exception) {
+            when (val repairResult: Result<Unit, SettingsRepositoryError> =
+                settingRepository.repairInvalidPrecision()) {
+                is Result.Ok ->
+                    Unit
+
+                is Result.Err ->
+                    _appEvent.tryEmit(
+                        AppEvent.SettingsRepositoryError(repairResult.error)
+                    )
             }
         }
 
