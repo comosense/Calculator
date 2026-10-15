@@ -21,21 +21,34 @@ class SettingsRepository(
             intPreferencesKey("precision")
     }
 
+    private fun isValidPrecision(precision: Int): Boolean =
+        precision in SettingsDataStoreConstraints.VALID_PRECISION_RANGE
+
     val settings: Flow<Settings> =
         dataStore.data.map { preferences ->
             val precision: Int = preferences[SettingsKeys.PRECISION]
-                ?.takeIf { it in SettingsDataStoreConstraints.VALID_PRECISION_RANGE }
+                ?.takeIf(::isValidPrecision)
                 ?: SettingsDataStoreConstraints.DEFAULT_PRECISION
 
             Settings(
-                precision = precision,
+                precision = precision
             )
         }
+
+    suspend fun repairInvalidPrecision() {
+        dataStore.edit { preferences ->
+            val precision: Int? = preferences[SettingsKeys.PRECISION]
+            if (precision != null && !isValidPrecision(precision)) {
+                preferences[SettingsKeys.PRECISION] =
+                    SettingsDataStoreConstraints.DEFAULT_PRECISION
+            }
+        }
+    }
 
     suspend fun updatePrecision(
         precision: Int,
     ): Result<Unit, SettingsRepositoryError> {
-        if (precision !in SettingsDataStoreConstraints.VALID_PRECISION_RANGE) {
+        if (!isValidPrecision(precision)) {
             return Result.Err(SettingsRepositoryError.UpdatePrecision)
         }
 

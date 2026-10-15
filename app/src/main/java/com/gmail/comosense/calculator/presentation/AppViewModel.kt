@@ -81,6 +81,10 @@ class AppViewModel(
 
     init {
         viewModelScope.launch {
+            settingRepository.repairInvalidPrecision()
+        }
+
+        viewModelScope.launch {
             settingRepository.settings.collect { settings ->
                 _appState.update { appState ->
                     appState.copy(settings = settings)

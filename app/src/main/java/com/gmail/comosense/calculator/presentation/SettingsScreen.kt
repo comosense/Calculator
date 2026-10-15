@@ -48,19 +48,12 @@ fun SettingsScreen(
         val precisionIndex: Int = PRECISION_OPTIONS
             .indexOf(settings.precision)
             .let { if (it >= 0) it else PRECISION_OPTIONS.indexOf(DEFAULT_PRECISION) }
-
         val precisionPickerState =
             rememberPickerState(
                 initialNumberOfOptions = PRECISION_OPTIONS.size,
                 initiallySelectedIndex = precisionIndex,
                 shouldRepeatOptions = false,
             )
-
-        LaunchedEffect(settings.precision) {
-            if (settings.precision !in PRECISION_OPTIONS) {
-                onAction(AppAction.SetPrecision(DEFAULT_PRECISION))
-            }
-        }
 
         LaunchedEffect(precisionPickerState) {
             snapshotFlow { precisionPickerState.selectedOptionIndex }
