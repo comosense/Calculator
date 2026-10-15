@@ -131,44 +131,6 @@ fun SettingsScreen(
                     }
                 }
 
-//                Row(
-//                    modifier = Modifier.size(
-//                        width = displayWidth,
-//                        height = buttonHeight,
-//                    ),
-//                    horizontalArrangement = Arrangement.Center,
-//                    verticalAlignment = Alignment.CenterVertically,
-//                ) {
-//                    Button(
-//                        onClick = onBack,
-//                        modifier = Modifier.weight(1f),
-//                        colors = ButtonDefaults.buttonColors(
-//                            containerColor = AppTheme.settingsScreenColors.backButtonContainer,
-//                            contentColor = AppTheme.settingsScreenColors.backButtonContent,
-//                        ),
-//                    ) {
-//                        Icon(
-//                            painter = painterResource(R.drawable.ic_undo),
-//                            contentDescription = stringResource(R.string.content_description_undo),
-//                            tint = AppTheme.settingsScreenColors.backButtonContent,
-//                        )
-//                    }
-//
-//                    Button(
-//                        onClick = onBack,
-//                        modifier = Modifier.weight(1f),
-//                        colors = ButtonDefaults.buttonColors(
-//                            containerColor = AppTheme.settingsScreenColors.backButtonContainer,
-//                            contentColor = AppTheme.settingsScreenColors.backButtonContent,
-//                        ),
-//                    ) {
-//                        Icon(
-//                            painter = painterResource(R.drawable.ic_undo),
-//                            contentDescription = stringResource(R.string.content_description_undo),
-//                            tint = AppTheme.settingsScreenColors.backButtonContent,
-//                        )
-//                    }
-//                }
                 EdgeButton(
                     onClick = onBack,
                     modifier = Modifier.size(
