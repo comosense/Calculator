@@ -51,6 +51,9 @@ class BigDecimalMath(private val mathContext: MathContext) {
     private val lnTen: BigDecimal by lazy {
         ln(TEN, workMathContext)
     }
+    private val e: BigDecimal by lazy {
+        e(workMathContext)
+    }
     private val pi: BigDecimal by lazy {
         pi(workMathContext)
     }
@@ -68,21 +71,7 @@ class BigDecimalMath(private val mathContext: MathContext) {
     }
 
     fun e(): BigDecimal {
-        var sum: BigDecimal = ONE
-        var term: BigDecimal = ONE
-        var n = 1
-
-        while (true) {
-            term = term.divide(BigDecimal(n), workMathContext)
-            val next: BigDecimal = sum.add(term, workMathContext)
-
-            if (next.compareTo(sum) == 0) {
-                return next.round(mathContext)
-            }
-
-            sum = next
-            n++
-        }
+        return e.round(mathContext)
     }
 
     fun pi(): BigDecimal {
@@ -172,29 +161,32 @@ class BigDecimalMath(private val mathContext: MathContext) {
     }
 
     fun tan(value: BigDecimal): BigDecimal {
-//        val angle: BigDecimal = normalizeAngle(value, workMathContext)
-//        val tolerance: BigDecimal = ONE.scaleByPowerOfTen(-mathContext.precision + 2)
-//
-//        val distanceToHalfPi: BigDecimal =
-//            angle.subtract(halfPi, workMathContext).abs()
-//        val distanceToThreeHalfPi: BigDecimal =
-//            angle.subtract(threeHalfPi, workMathContext).abs()
-//
-//        if (distanceToHalfPi <= tolerance ||
-//            distanceToThreeHalfPi <= tolerance
-//        ) {
-//            throw TanInvalidArgumentException()
-//        }
-//
         val cos: BigDecimal = cos(value, workMathContext)
         if (cos.signum() == 0) {
             throw TanInvalidArgumentException()
         }
-
         val sin: BigDecimal = sin(value, workMathContext)
 
         return sin.divide(cos, workMathContext)
             .round(mathContext)
+    }
+
+    private fun e(mc: MathContext): BigDecimal {
+        var sum: BigDecimal = ONE
+        var term: BigDecimal = ONE
+        var n = 1
+
+        while (true) {
+            term = term.divide(BigDecimal(n), mc)
+            val next: BigDecimal = sum.add(term, mc)
+
+            if (next.compareTo(sum) == 0) {
+                return next
+            }
+
+            sum = next
+            n++
+        }
     }
 
     private fun pi(mc: MathContext): BigDecimal {
@@ -269,7 +261,7 @@ class BigDecimalMath(private val mathContext: MathContext) {
             if (next.compareTo(x) == 0 ||
                 (previousX != null && next.compareTo(previousX) == 0)
             ) {
-                return next
+                return minOf(x, next)
             }
             previousX = x
             x = next
@@ -417,7 +409,7 @@ class BigDecimalMath(private val mathContext: MathContext) {
         val angle: BigDecimal = normalizeAngle(value, mc)
 
         val distanceToZero: BigDecimal =
-            minOf(angle, twoPi.subtract(angle, mc))
+            minOf(angle, twoPi.subtract(angle, mc).abs())
         val distanceToHalfPi: BigDecimal =
             angle.subtract(halfPi, mc).abs()
         val distanceToPi: BigDecimal =
@@ -456,7 +448,7 @@ class BigDecimalMath(private val mathContext: MathContext) {
         val angle: BigDecimal = normalizeAngle(value, mc)
 
         val distanceToZero: BigDecimal =
-            minOf(angle, twoPi.subtract(angle, mc))
+            minOf(angle, twoPi.subtract(angle, mc).abs())
         val distanceToHalfPi: BigDecimal =
             angle.subtract(halfPi, mc).abs()
         val distanceToPi: BigDecimal =
