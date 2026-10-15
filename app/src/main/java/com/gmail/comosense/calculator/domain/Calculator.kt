@@ -129,7 +129,9 @@ private class Parser(
                     value.subtract(parseTerm())
                 }
 
-                else -> return value
+                else -> {
+                    return value
+                }
             }
         }
         return value
@@ -154,7 +156,9 @@ private class Parser(
                     value.divide(divisor, mathContext)
                 }
 
-                else -> return value
+                else -> {
+                    return value
+                }
             }
         }
         return value
@@ -172,7 +176,9 @@ private class Parser(
                 parseSign().negate()
             }
 
-            else -> parsePower()
+            else -> {
+                parsePower()
+            }
         }
     }
 
