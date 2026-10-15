@@ -63,6 +63,9 @@ class BigDecimalMath(private val mathContext: MathContext) {
     private val twoPi: BigDecimal by lazy {
         pi.multiply(TWO, workMathContext)
     }
+    private val tolerance: BigDecimal by lazy {
+        ONE.scaleByPowerOfTen(-mathContext.precision + 2)
+    }
 
     fun e(): BigDecimal {
         var sum: BigDecimal = ONE
@@ -169,21 +172,25 @@ class BigDecimalMath(private val mathContext: MathContext) {
     }
 
     fun tan(value: BigDecimal): BigDecimal {
-        val angle: BigDecimal = normalizeAngle(value, workMathContext)
-        val tolerance: BigDecimal = ONE.scaleByPowerOfTen(-mathContext.precision + 2)
-
-        val distanceToHalfPi: BigDecimal =
-            angle.subtract(halfPi, workMathContext).abs()
-        val distanceToThreeHalfPi: BigDecimal =
-            angle.subtract(threeHalfPi, workMathContext).abs()
-
-        if (distanceToHalfPi <= tolerance ||
-            distanceToThreeHalfPi <= tolerance
-        ) {
+//        val angle: BigDecimal = normalizeAngle(value, workMathContext)
+//        val tolerance: BigDecimal = ONE.scaleByPowerOfTen(-mathContext.precision + 2)
+//
+//        val distanceToHalfPi: BigDecimal =
+//            angle.subtract(halfPi, workMathContext).abs()
+//        val distanceToThreeHalfPi: BigDecimal =
+//            angle.subtract(threeHalfPi, workMathContext).abs()
+//
+//        if (distanceToHalfPi <= tolerance ||
+//            distanceToThreeHalfPi <= tolerance
+//        ) {
+//            throw TanInvalidArgumentException()
+//        }
+//
+        val cos: BigDecimal = cos(value, workMathContext)
+        if (cos.signum() == 0) {
             throw TanInvalidArgumentException()
         }
 
-        val cos: BigDecimal = cos(value, workMathContext)
         val sin: BigDecimal = sin(value, workMathContext)
 
         return sin.divide(cos, workMathContext)
@@ -409,7 +416,25 @@ class BigDecimalMath(private val mathContext: MathContext) {
     ): BigDecimal {
         val angle: BigDecimal = normalizeAngle(value, mc)
 
+        val distanceToZero: BigDecimal =
+            minOf(angle, twoPi.subtract(angle, mc))
+        val distanceToHalfPi: BigDecimal =
+            angle.subtract(halfPi, mc).abs()
+        val distanceToPi: BigDecimal =
+            angle.subtract(pi, mc).abs()
+        val distanceToThreeHalfPi: BigDecimal =
+            angle.subtract(threeHalfPi, mc).abs()
+
         return when {
+            distanceToZero <= tolerance || distanceToPi <= tolerance ->
+                ZERO
+
+            distanceToHalfPi <= tolerance ->
+                ONE
+
+            distanceToThreeHalfPi <= tolerance ->
+                ONE.negate()
+
             angle <= halfPi ->
                 sinTaylor(angle, mc)
 
@@ -430,7 +455,25 @@ class BigDecimalMath(private val mathContext: MathContext) {
     ): BigDecimal {
         val angle: BigDecimal = normalizeAngle(value, mc)
 
+        val distanceToZero: BigDecimal =
+            minOf(angle, twoPi.subtract(angle, mc))
+        val distanceToHalfPi: BigDecimal =
+            angle.subtract(halfPi, mc).abs()
+        val distanceToPi: BigDecimal =
+            angle.subtract(pi, mc).abs()
+        val distanceToThreeHalfPi: BigDecimal =
+            angle.subtract(threeHalfPi, mc).abs()
+
         return when {
+            distanceToHalfPi <= tolerance || distanceToThreeHalfPi <= tolerance ->
+                ZERO
+
+            distanceToZero <= tolerance ->
+                ONE
+
+            distanceToPi <= tolerance ->
+                ONE.negate()
+
             angle <= halfPi ->
                 cosTaylor(angle, mc)
 
