@@ -5,9 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -41,7 +39,9 @@ fun SettingsScreen(
     onAction: (AppAction) -> Unit,
     onBack: () -> Unit,
 ) {
-    ScreenScaffold {
+    ScreenScaffold(
+        timeText = {},
+    ) {
         val precisionOptions: List<Int> = listOf(8, 16, 24, 32, 40, 48, 56, 64)
         val precisionIndex: Int =
             precisionOptions.indexOf(settings.precision).coerceAtLeast(0)
@@ -69,15 +69,16 @@ fun SettingsScreen(
         ) {
             val displayWidth: Dp = maxWidth
             val displayHeight: Dp = maxHeight
+
             val inscribedLength: Dp =
                 minOf(displayWidth, displayHeight) * INSCRIBED_LENGTH_RATIO
-
-            val headerHeight: Dp =
+            val topOrBottomMargin: Dp =
                 (displayHeight - inscribedLength) / 2f
-            val buttonHeight: Dp =
-                headerHeight * 1.5f
-            val bodyHeight: Dp =
-                (displayHeight - (headerHeight + buttonHeight))
+
+            val labelHeight: Dp = topOrBottomMargin
+            val buttonHeight: Dp = topOrBottomMargin * 1.5f
+            val pickerHeight: Dp =
+                (displayHeight - (labelHeight + buttonHeight))
                     .coerceAtLeast(0.dp)
 
             Column(
@@ -85,50 +86,36 @@ fun SettingsScreen(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Spacer(
+                Box(
                     modifier = Modifier.size(
                         width = displayWidth,
-                        height = headerHeight,
+                        height = labelHeight,
+                    ),
+                    contentAlignment = Alignment.BottomCenter,
+                ) {
+                    Text(
+                        text = stringResource(R.string.settings_screen_label_precision),
+                        color = AppTheme.settingsScreenColors.label,
+                        fontSize = AppTheme.settingsScreenDimensions.labelFontSize,
+                        textAlign = TextAlign.Center,
                     )
-                )
+                }
 
-                Column(
+                Picker(
+                    state = precisionPickerState,
+                    contentDescription = {
+                        precisionOptions[precisionPickerState.selectedOptionIndex].toString()
+                    },
                     modifier = Modifier.size(
                         width = inscribedLength,
-                        height = bodyHeight,
+                        height = pickerHeight,
                     ),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .weight(1f),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        Text(
-                            text = stringResource(R.string.settings_screen_label_precision),
-                            color = AppTheme.settingsScreenColors.label,
-                            fontSize = AppTheme.settingsScreenDimensions.labelFontSize,
-                            textAlign = TextAlign.Center,
-                        )
-                    }
-
-                    Picker(
-                        state = precisionPickerState,
-                        contentDescription = {
-                            precisionOptions[precisionPickerState.selectedOptionIndex].toString()
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .weight(4f),
-                    ) {
-                        Text(
-                            text = precisionOptions[it].toString(),
-                            color = AppTheme.settingsScreenColors.picker,
-                            fontSize = AppTheme.settingsScreenDimensions.pickerFontSize,
-                        )
-                    }
+                    Text(
+                        text = precisionOptions[it].toString(),
+                        color = AppTheme.settingsScreenColors.picker,
+                        fontSize = AppTheme.settingsScreenDimensions.pickerFontSize,
+                    )
                 }
 
                 EdgeButton(

@@ -103,7 +103,7 @@ fun AppTheme(
             keySwitcher = MaterialTheme.colorScheme.tertiary,
         )
         val settingsScreenDimensions = SettingsScreenDimensions(
-            labelFontSize = 24.sp,
+            labelFontSize = 18.sp,
             pickerFontSize = 32.sp,
         )
         val historyScreenDimensions = HistoryScreenDimensions(
