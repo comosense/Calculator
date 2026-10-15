@@ -112,9 +112,14 @@ fun WearApp(
                     )
                 } else {
                     when (currentScreen) {
-                        AppScreen.Calculator -> {}
+                        AppScreen.Settings ->
+                            SettingsScreen(
+                                settings = appState.settings,
+                                onAction = onAction,
+                                onBack = { changeScreen(null) },
+                            )
 
-                        AppScreen.History -> {
+                        AppScreen.History ->
                             HistoryScreen(
                                 histories = appState.histories,
                                 onAction = onAction,
@@ -122,15 +127,8 @@ fun WearApp(
                                 onDeleteModeChanged = { isHistoryDeleteMode = it },
                                 symbolFormatter = symbolFormatter,
                             )
-                        }
 
-                        AppScreen.Settings -> {
-                            SettingsScreen(
-                                settings = appState.settings,
-                                onAction = onAction,
-                                onBack = { changeScreen(null) },
-                            )
-                        }
+                        AppScreen.Calculator -> Unit
                     }
                 }
             }
