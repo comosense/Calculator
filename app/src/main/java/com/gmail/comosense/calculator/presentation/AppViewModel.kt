@@ -29,14 +29,14 @@ enum class AppViewModelError {
 }
 
 sealed interface AppAction {
-    data class Input(val symbol: Symbol) : AppAction
-    data object Calculate : AppAction
-    data object Clear : AppAction
-    data object Backspace : AppAction
     data class SetPrecision(val value: Int) : AppAction
     data class SelectHistory(val id: String) : AppAction
     data class DeleteHistory(val id: String) : AppAction
     data object DeleteHistoryAll : AppAction
+    data object Calculate : AppAction
+    data class Input(val symbol: Symbol) : AppAction
+    data object Clear : AppAction
+    data object Backspace : AppAction
 }
 
 class AppViewModel(
@@ -100,18 +100,6 @@ class AppViewModel(
             is AppAction.SetPrecision ->
                 updatePrecision(appAction.value)
 
-            is AppAction.Input ->
-                input(appAction.symbol)
-
-            is AppAction.Calculate ->
-                calculate()
-
-            is AppAction.Clear ->
-                clear()
-
-            is AppAction.Backspace ->
-                backspace()
-
             is AppAction.SelectHistory ->
                 selectHistory(appAction.id)
 
@@ -120,15 +108,46 @@ class AppViewModel(
 
             is AppAction.DeleteHistoryAll ->
                 deleteHistoryAll()
+
+            is AppAction.Calculate ->
+                calculate()
+
+            is AppAction.Input ->
+                input(appAction.symbol)
+
+            is AppAction.Clear ->
+                clear()
+
+            is AppAction.Backspace ->
+                backspace()
+
         }
     }
 
-    private fun input(symbol: Symbol) {
+    private fun updatePrecision(value: Int) {
+        launchSettingsRepositoryAction {
+            settingRepository.updatePrecision(value)
+        }
+    }
+
+    private fun selectHistory(id: String) {
         updateAppState { appState ->
             resolveAppStateUpdate(
                 appState = appState,
-                appStateUpdateResult = appState.appendExpression(symbol),
+                appStateUpdateResult = appState.applyHistory(id)
             )
+        }
+    }
+
+    private fun deleteHistory(id: String) {
+        launchHistoryRepositoryAction {
+            historyRepository.deleteHistory(id)
+        }
+    }
+
+    private fun deleteHistoryAll() {
+        launchHistoryRepositoryAction {
+            historyRepository.deleteHistoryAll()
         }
     }
 
@@ -169,6 +188,15 @@ class AppViewModel(
         }
     }
 
+    private fun input(symbol: Symbol) {
+        updateAppState { appState ->
+            resolveAppStateUpdate(
+                appState = appState,
+                appStateUpdateResult = appState.appendExpression(symbol),
+            )
+        }
+    }
+
     private fun clear() {
         updateAppState { appState ->
             resolveAppStateUpdate(
@@ -184,33 +212,6 @@ class AppViewModel(
                 appState = appState,
                 appStateUpdateResult = appState.dropLastExpressionSymbol(),
             )
-        }
-    }
-
-    private fun updatePrecision(value: Int) {
-        launchSettingsRepositoryAction {
-            settingRepository.updatePrecision(value)
-        }
-    }
-
-    private fun selectHistory(id: String) {
-        updateAppState { appState ->
-            resolveAppStateUpdate(
-                appState = appState,
-                appStateUpdateResult = appState.applyHistory(id)
-            )
-        }
-    }
-
-    private fun deleteHistory(id: String) {
-        launchHistoryRepositoryAction {
-            historyRepository.deleteHistory(id)
-        }
-    }
-
-    private fun deleteHistoryAll() {
-        launchHistoryRepositoryAction {
-            historyRepository.deleteHistoryAll()
         }
     }
 
