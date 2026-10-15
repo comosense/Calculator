@@ -9,6 +9,7 @@ import com.gmail.comosense.calculator.data.HistoryRepository
 import com.gmail.comosense.calculator.data.HistoryRepositoryError
 import com.gmail.comosense.calculator.data.Settings
 import com.gmail.comosense.calculator.data.SettingsRepository
+import com.gmail.comosense.calculator.data.SettingsRepositoryError
 import com.gmail.comosense.calculator.data.historyDataStore
 import com.gmail.comosense.calculator.domain.CalculatorError
 import com.gmail.comosense.calculator.domain.Symbol
@@ -28,11 +29,11 @@ enum class AppViewModelError {
 }
 
 sealed interface AppAction {
-    data class SetCalculationPrecision(val value: Int) : AppAction
     data class Input(val symbol: Symbol) : AppAction
     data object Calculate : AppAction
     data object Clear : AppAction
     data object Backspace : AppAction
+    data class SetPrecision(val value: Int) : AppAction
     data class SelectHistory(val id: String) : AppAction
     data class DeleteHistory(val id: String) : AppAction
     data object DeleteHistoryAll : AppAction
@@ -96,8 +97,8 @@ class AppViewModel(
 
     fun onAction(appAction: AppAction) {
         when (appAction) {
-            is AppAction.SetCalculationPrecision ->
-                updateCalculationPrecision(appAction.value)
+            is AppAction.SetPrecision ->
+                updatePrecision(appAction.value)
 
             is AppAction.Input ->
                 input(appAction.symbol)
@@ -122,12 +123,6 @@ class AppViewModel(
         }
     }
 
-    private fun updateCalculationPrecision(value: Int) {
-        viewModelScope.launch {
-            settingRepository.updateCalculationPrecision(value)
-        }
-    }
-
     private fun input(symbol: Symbol) {
         updateAppState { appState ->
             resolveAppStateUpdate(
@@ -148,7 +143,7 @@ class AppViewModel(
             when (val calculatedResult: Result<List<Symbol>, CalculatorError> =
                 calculate(
                     expression = expression,
-                    precision = settings.calculationPrecision,
+                    precision = settings.precision,
                 )) {
                 is Result.Ok ->
                     calculatedResult.value
@@ -189,6 +184,12 @@ class AppViewModel(
                 appState = appState,
                 appStateUpdateResult = appState.dropLastExpressionSymbol(),
             )
+        }
+    }
+
+    private fun updatePrecision(value: Int) {
+        launchSettingsRepositoryAction {
+            settingRepository.updatePrecision(value)
         }
     }
 
@@ -263,6 +264,22 @@ class AppViewModel(
                     AppViewModelError.HistoryNotFound,
                 ),
             )
+    }
+
+    private fun launchSettingsRepositoryAction(
+        action: suspend () -> Result<Unit, SettingsRepositoryError>,
+    ) {
+        viewModelScope.launch {
+            when (val settingsRepositoryResult = action()) {
+                is Result.Ok ->
+                    Unit
+
+                is Result.Err ->
+                    _appEvent.tryEmit(
+                        AppEvent.SettingsRepositoryError(settingsRepositoryResult.error)
+                    )
+            }
+        }
     }
 
     private fun launchHistoryRepositoryAction(

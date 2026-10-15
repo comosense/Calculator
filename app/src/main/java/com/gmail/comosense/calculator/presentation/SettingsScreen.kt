@@ -42,7 +42,7 @@ fun SettingsScreen(
     var selectedItem: SettingsItem by remember { mutableStateOf(initialItem) }
 
     val calculationPrecisionIndex: Int = calculationPrecisionOptions.indexOf(
-        settings.calculationPrecision
+        settings.precision
     ).coerceAtLeast(0)
 //    val displayScaleIndex: Int = displayScaleOptions.indexOf(
 //        settings.displayScale
@@ -78,7 +78,7 @@ fun SettingsScreen(
             .distinctUntilChanged()
             .collect { index ->
                 onAction(
-                    AppAction.SetCalculationPrecision(
+                    AppAction.SetPrecision(
                         calculationPrecisionOptions[index]
                     )
                 )

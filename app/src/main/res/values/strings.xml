@@ -16,6 +16,7 @@
     <string name="calculator_error_log_invalid_argument">Logarithm requires a positive argument.</string>
     <string name="calculator_error_tan_invalid_argument">Tangent is undefined for this angle.</string>
     <string name="calculator_error_arithmetic">Arithmetic error</string>
+    <string name="settings_repository_error_update_precision">Failed to update precision.</string>
     <string name="history_repository_error_add">Failed to save calculation.</string>
     <string name="history_repository_error_delete">Failed to delete history entry.</string>
     <string name="history_repository_error_delete_all">Failed to clear history.</string>

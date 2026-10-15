@@ -24,6 +24,7 @@ import androidx.wear.compose.material3.AppScaffold
 import androidx.wear.compose.material3.SwipeToDismissBox
 import com.gmail.comosense.calculator.R
 import com.gmail.comosense.calculator.data.HistoryRepositoryError
+import com.gmail.comosense.calculator.data.SettingsRepositoryError
 import com.gmail.comosense.calculator.domain.CalculatorError
 import com.gmail.comosense.calculator.presentation.theme.AppTheme
 import kotlinx.coroutines.CoroutineScope
@@ -152,6 +153,10 @@ private fun HandleEvent(appEvent: Flow<AppEvent>) {
                     appEvent.calculatorError.messageResourceId()
                 }
 
+                is AppEvent.SettingsRepositoryError -> {
+                    appEvent.settingsRepositoryError.messageResourceId()
+                }
+
                 is AppEvent.HistoryRepositoryError -> {
                     appEvent.historyRepositoryError.messageResourceId()
                 }
@@ -185,6 +190,10 @@ private fun CalculatorError.messageResourceId(): Int = when (this) {
     CalculatorError.LogInvalidArgument -> R.string.calculator_error_log_invalid_argument
     CalculatorError.TanInvalidArgument -> R.string.calculator_error_tan_invalid_argument
     CalculatorError.Arithmetic -> R.string.calculator_error_arithmetic
+}
+
+private fun SettingsRepositoryError.messageResourceId(): Int = when (this) {
+    SettingsRepositoryError.UpdatePrecision -> R.string.settings_repository_error_update_precision
 }
 
 private fun HistoryRepositoryError.messageResourceId(): Int = when (this) {
