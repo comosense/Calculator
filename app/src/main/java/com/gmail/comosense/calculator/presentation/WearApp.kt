@@ -33,9 +33,9 @@ import kotlinx.coroutines.launch
 import java.util.Locale
 
 enum class AppScreen {
-    Calculator,
-    History,
     Settings,
+    History,
+    Calculator,
 }
 
 @Composable
@@ -145,21 +145,17 @@ private fun HandleEvent(appEvent: Flow<AppEvent>) {
     LaunchedEffect(appEvent) {
         appEvent.collect { appEvent ->
             val messageResourceId: Int = when (appEvent) {
-                is AppEvent.AppViewModelError -> {
+                is AppEvent.AppViewModelError ->
                     appEvent.appViewModelError.messageResourceId()
-                }
 
-                is AppEvent.CalculatorError -> {
-                    appEvent.calculatorError.messageResourceId()
-                }
-
-                is AppEvent.SettingsRepositoryError -> {
+                is AppEvent.SettingsRepositoryError ->
                     appEvent.settingsRepositoryError.messageResourceId()
-                }
 
-                is AppEvent.HistoryRepositoryError -> {
+                is AppEvent.HistoryRepositoryError ->
                     appEvent.historyRepositoryError.messageResourceId()
-                }
+
+                is AppEvent.CalculatorError ->
+                    appEvent.calculatorError.messageResourceId()
             }
 
             Toast.makeText(
@@ -177,6 +173,18 @@ private fun AppViewModelError.messageResourceId(): Int = when (this) {
     AppViewModelError.HistoryNotFound -> R.string.app_view_model_error_history_not_found
 }
 
+private fun SettingsRepositoryError.messageResourceId(): Int = when (this) {
+    SettingsRepositoryError.UpdatePrecision -> R.string.settings_repository_error_update_precision
+}
+
+private fun HistoryRepositoryError.messageResourceId(): Int = when (this) {
+    HistoryRepositoryError.Add -> R.string.history_repository_error_add
+    HistoryRepositoryError.Delete -> R.string.history_repository_error_delete
+    HistoryRepositoryError.DeleteAll -> R.string.history_repository_error_delete_all
+    HistoryRepositoryError.TooLarge -> R.string.history_repository_error_too_large
+    HistoryRepositoryError.InvalidHistory -> R.string.history_repository_error_invalid_history
+}
+
 private fun CalculatorError.messageResourceId(): Int = when (this) {
     CalculatorError.Unsupported -> R.string.calculator_error_unsupported
     CalculatorError.ResultTooLarge -> R.string.calculator_error_result_too_large
@@ -190,16 +198,4 @@ private fun CalculatorError.messageResourceId(): Int = when (this) {
     CalculatorError.LogInvalidArgument -> R.string.calculator_error_log_invalid_argument
     CalculatorError.TanInvalidArgument -> R.string.calculator_error_tan_invalid_argument
     CalculatorError.Arithmetic -> R.string.calculator_error_arithmetic
-}
-
-private fun SettingsRepositoryError.messageResourceId(): Int = when (this) {
-    SettingsRepositoryError.UpdatePrecision -> R.string.settings_repository_error_update_precision
-}
-
-private fun HistoryRepositoryError.messageResourceId(): Int = when (this) {
-    HistoryRepositoryError.Add -> R.string.history_repository_error_add
-    HistoryRepositoryError.Delete -> R.string.history_repository_error_delete
-    HistoryRepositoryError.DeleteAll -> R.string.history_repository_error_delete_all
-    HistoryRepositoryError.TooLarge -> R.string.history_repository_error_too_large
-    HistoryRepositoryError.InvalidHistory -> R.string.history_repository_error_invalid_history
 }
