@@ -23,17 +23,21 @@ class SettingsRepository(
 
     val settings: Flow<Settings> =
         dataStore.data.map { preferences ->
+            val precision: Int = preferences[SettingsKeys.PRECISION]
+                ?.takeIf { it in SettingsDataStoreConstraints.VALID_PRECISION_RANGE }
+                ?: SettingsDataStoreConstraints.DEFAULT_PRECISION
+
             Settings(
-                precision =
-                    preferences[SettingsKeys.PRECISION]
-                        ?: SettingsDataStoreConstraints.DEFAULT_PRECISION,
+                precision = precision,
             )
         }
 
     suspend fun updatePrecision(
         precision: Int,
     ): Result<Unit, SettingsRepositoryError> {
-        require(precision > 0)
+        if (precision !in SettingsDataStoreConstraints.VALID_PRECISION_RANGE) {
+            return Result.Err(SettingsRepositoryError.UpdatePrecision)
+        }
 
         try {
             dataStore.edit { preferences ->
