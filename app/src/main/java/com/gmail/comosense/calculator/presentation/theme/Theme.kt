@@ -9,40 +9,40 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.wear.compose.material3.MaterialTheme
 
-private val LocalCalculatorScreenColors: ProvidableCompositionLocal<CalculatorScreenColors> =
-    staticCompositionLocalOf {
-        error("CalculatorScreenColors is not provided")
-    }
 private val LocalHistoryScreenColors: ProvidableCompositionLocal<HistoryScreenColors> =
     staticCompositionLocalOf {
         error("HistoryScreenColors is not provided")
     }
-private val LocalCalculatorScreenDimensions: ProvidableCompositionLocal<CalculatorScreenDimensions> =
+private val LocalCalculatorScreenColors: ProvidableCompositionLocal<CalculatorScreenColors> =
     staticCompositionLocalOf {
-        error("CalculatorScreenDimensions is not provided")
+        error("CalculatorScreenColors is not provided")
     }
 private val LocalHistoryScreenDimensions: ProvidableCompositionLocal<HistoryScreenDimensions> =
     staticCompositionLocalOf {
         error("HistoryScreenDimensions is not provided")
     }
+private val LocalCalculatorScreenDimensions: ProvidableCompositionLocal<CalculatorScreenDimensions> =
+    staticCompositionLocalOf {
+        error("CalculatorScreenDimensions is not provided")
+    }
 
 object AppTheme {
-    val calculatorScreenColors: CalculatorScreenColors
-        @Composable
-        @ReadOnlyComposable
-        get() = LocalCalculatorScreenColors.current
     val historyScreenColors: HistoryScreenColors
         @Composable
         @ReadOnlyComposable
         get() = LocalHistoryScreenColors.current
-    val calculatorScreenDimensions: CalculatorScreenDimensions
+    val calculatorScreenColors: CalculatorScreenColors
         @Composable
         @ReadOnlyComposable
-        get() = LocalCalculatorScreenDimensions.current
+        get() = LocalCalculatorScreenColors.current
     val historyScreenDimensions: HistoryScreenDimensions
         @Composable
         @ReadOnlyComposable
         get() = LocalHistoryScreenDimensions.current
+    val calculatorScreenDimensions: CalculatorScreenDimensions
+        @Composable
+        @ReadOnlyComposable
+        get() = LocalCalculatorScreenDimensions.current
 }
 
 @Composable
@@ -50,19 +50,6 @@ fun AppTheme(
     content: @Composable () -> Unit
 ) {
     MaterialTheme {
-        val calculatorScreenColors = CalculatorScreenColors(
-            background = MaterialTheme.colorScheme.surfaceContainer,
-            expression = MaterialTheme.colorScheme.onSurface,
-            expressionBlinkBackground = MaterialTheme.colorScheme.primaryDim,
-            digitKeyContainer = MaterialTheme.colorScheme.surfaceContainer,
-            digitKeyContent = MaterialTheme.colorScheme.onSurface,
-            operatorKeyContainer = MaterialTheme.colorScheme.tertiary,
-            operatorKeyContent = MaterialTheme.colorScheme.onTertiary,
-            commandKeyContainer = MaterialTheme.colorScheme.primary,
-            commandKeyContent = MaterialTheme.colorScheme.onPrimary,
-            keySwitcher = MaterialTheme.colorScheme.tertiary,
-        )
-
         val historyScreenColors = HistoryScreenColors(
             background = MaterialTheme.colorScheme.background,
             textContent = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
@@ -81,11 +68,17 @@ fun AppTheme(
             deleteAllButtonContent = MaterialTheme.colorScheme.onErrorContainer,
         )
 
-        val calculatorScreenDimensions = CalculatorScreenDimensions(
-            expressionMaxFontSize = 32.sp,
-            expressionMinFontSize = 16.sp,
-            keyTextFontSize = 18.sp,
-            keyIconSize = 20.dp,
+        val calculatorScreenColors = CalculatorScreenColors(
+            background = MaterialTheme.colorScheme.surfaceContainer,
+            expression = MaterialTheme.colorScheme.onSurface,
+            expressionBlinkBackground = MaterialTheme.colorScheme.primaryDim,
+            digitKeyContainer = MaterialTheme.colorScheme.surfaceContainer,
+            digitKeyContent = MaterialTheme.colorScheme.onSurface,
+            operatorKeyContainer = MaterialTheme.colorScheme.tertiary,
+            operatorKeyContent = MaterialTheme.colorScheme.onTertiary,
+            commandKeyContainer = MaterialTheme.colorScheme.primary,
+            commandKeyContent = MaterialTheme.colorScheme.onPrimary,
+            keySwitcher = MaterialTheme.colorScheme.tertiary,
         )
 
         val historyScreenDimensions = HistoryScreenDimensions(
@@ -95,11 +88,18 @@ fun AppTheme(
             buttonFontSize = 18.sp,
         )
 
+        val calculatorScreenDimensions = CalculatorScreenDimensions(
+            expressionMaxFontSize = 32.sp,
+            expressionMinFontSize = 16.sp,
+            keyTextFontSize = 18.sp,
+            keyIconSize = 20.dp,
+        )
+
         CompositionLocalProvider(
-            LocalCalculatorScreenColors provides calculatorScreenColors,
             LocalHistoryScreenColors provides historyScreenColors,
-            LocalCalculatorScreenDimensions provides calculatorScreenDimensions,
+            LocalCalculatorScreenColors provides calculatorScreenColors,
             LocalHistoryScreenDimensions provides historyScreenDimensions,
+            LocalCalculatorScreenDimensions provides calculatorScreenDimensions,
         ) {
             content()
         }

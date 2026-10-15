@@ -4,20 +4,6 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
 
 @Immutable
-data class CalculatorScreenColors(
-    val background: Color,
-    val expression: Color,
-    val expressionBlinkBackground: Color,
-    val digitKeyContainer: Color,
-    val digitKeyContent: Color,
-    val operatorKeyContainer: Color,
-    val operatorKeyContent: Color,
-    val commandKeyContainer: Color,
-    val commandKeyContent: Color,
-    val keySwitcher: Color,
-)
-
-@Immutable
 data class HistoryScreenColors(
     val background: Color,
     val textContent: Color,
@@ -34,4 +20,18 @@ data class HistoryScreenColors(
     val backButtonContent: Color,
     val deleteAllButtonContainer: Color,
     val deleteAllButtonContent: Color,
+)
+
+@Immutable
+data class CalculatorScreenColors(
+    val background: Color,
+    val expression: Color,
+    val expressionBlinkBackground: Color,
+    val digitKeyContainer: Color,
+    val digitKeyContent: Color,
+    val operatorKeyContainer: Color,
+    val operatorKeyContent: Color,
+    val commandKeyContainer: Color,
+    val commandKeyContent: Color,
+    val keySwitcher: Color,
 )

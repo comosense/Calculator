@@ -24,8 +24,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 enum class AppViewModelError {
-    ExpressionTooLarge,
     HistoryNotFound,
+    ExpressionTooLarge,
 }
 
 sealed interface AppAction {
