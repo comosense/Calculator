@@ -5,6 +5,12 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 
 @Immutable
+data class SettingsScreenDimensions(
+    val labelFontSize: TextUnit,
+    val pickerFontSize: TextUnit,
+)
+
+@Immutable
 data class HistoryScreenDimensions(
     val textFontSize: TextUnit,
     val expressionFontSize: TextUnit,

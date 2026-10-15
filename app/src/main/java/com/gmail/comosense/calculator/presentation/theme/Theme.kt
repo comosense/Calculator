@@ -9,6 +9,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.wear.compose.material3.MaterialTheme
 
+private val LocalSettingsScreenColors: ProvidableCompositionLocal<SettingsScreenColors> =
+    staticCompositionLocalOf {
+        error("SettingsScreenColors is not provided")
+    }
 private val LocalHistoryScreenColors: ProvidableCompositionLocal<HistoryScreenColors> =
     staticCompositionLocalOf {
         error("HistoryScreenColors is not provided")
@@ -16,6 +20,10 @@ private val LocalHistoryScreenColors: ProvidableCompositionLocal<HistoryScreenCo
 private val LocalCalculatorScreenColors: ProvidableCompositionLocal<CalculatorScreenColors> =
     staticCompositionLocalOf {
         error("CalculatorScreenColors is not provided")
+    }
+private val LocalSettingsScreenDimensions: ProvidableCompositionLocal<SettingsScreenDimensions> =
+    staticCompositionLocalOf {
+        error("SettingsScreenDimensions is not provided")
     }
 private val LocalHistoryScreenDimensions: ProvidableCompositionLocal<HistoryScreenDimensions> =
     staticCompositionLocalOf {
@@ -27,6 +35,10 @@ private val LocalCalculatorScreenDimensions: ProvidableCompositionLocal<Calculat
     }
 
 object AppTheme {
+    val settingsScreenColors: SettingsScreenColors
+        @Composable
+        @ReadOnlyComposable
+        get() = LocalSettingsScreenColors.current
     val historyScreenColors: HistoryScreenColors
         @Composable
         @ReadOnlyComposable
@@ -35,6 +47,10 @@ object AppTheme {
         @Composable
         @ReadOnlyComposable
         get() = LocalCalculatorScreenColors.current
+    val settingsScreenDimensions: SettingsScreenDimensions
+        @Composable
+        @ReadOnlyComposable
+        get() = LocalSettingsScreenDimensions.current
     val historyScreenDimensions: HistoryScreenDimensions
         @Composable
         @ReadOnlyComposable
@@ -50,6 +66,13 @@ fun AppTheme(
     content: @Composable () -> Unit
 ) {
     MaterialTheme {
+        val settingsScreenColors = SettingsScreenColors(
+            background = MaterialTheme.colorScheme.background,
+            label = MaterialTheme.colorScheme.onBackground,
+            picker = MaterialTheme.colorScheme.onBackground,
+            backButtonContainer = MaterialTheme.colorScheme.primaryContainer,
+            backButtonContent = MaterialTheme.colorScheme.onPrimaryContainer,
+        )
         val historyScreenColors = HistoryScreenColors(
             background = MaterialTheme.colorScheme.background,
             textContent = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
@@ -67,7 +90,6 @@ fun AppTheme(
             deleteAllButtonContainer = MaterialTheme.colorScheme.errorContainer,
             deleteAllButtonContent = MaterialTheme.colorScheme.onErrorContainer,
         )
-
         val calculatorScreenColors = CalculatorScreenColors(
             background = MaterialTheme.colorScheme.surfaceContainer,
             expression = MaterialTheme.colorScheme.onSurface,
@@ -80,24 +102,27 @@ fun AppTheme(
             commandKeyContent = MaterialTheme.colorScheme.onPrimary,
             keySwitcher = MaterialTheme.colorScheme.tertiary,
         )
-
+        val settingsScreenDimensions = SettingsScreenDimensions(
+            labelFontSize = 24.sp,
+            pickerFontSize = 32.sp,
+        )
         val historyScreenDimensions = HistoryScreenDimensions(
             textFontSize = 18.sp,
             expressionFontSize = 16.sp,
             resultFontSize = 18.sp,
             buttonFontSize = 18.sp,
         )
-
         val calculatorScreenDimensions = CalculatorScreenDimensions(
             expressionMaxFontSize = 32.sp,
             expressionMinFontSize = 16.sp,
             keyTextFontSize = 18.sp,
             keyIconSize = 20.dp,
         )
-
         CompositionLocalProvider(
+            LocalSettingsScreenColors provides settingsScreenColors,
             LocalHistoryScreenColors provides historyScreenColors,
             LocalCalculatorScreenColors provides calculatorScreenColors,
+            LocalSettingsScreenDimensions provides settingsScreenDimensions,
             LocalHistoryScreenDimensions provides historyScreenDimensions,
             LocalCalculatorScreenDimensions provides calculatorScreenDimensions,
         ) {

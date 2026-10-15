@@ -91,7 +91,7 @@ fun HistoryScreen(
                     ),
                 ) {
                     Text(
-                        text = stringResource(R.string.delete_all),
+                        text = stringResource(R.string.history_screen_delete_all),
                         fontSize = AppTheme.historyScreenDimensions.buttonFontSize,
                     )
                 }
@@ -204,7 +204,7 @@ private fun HistoryList(
                     contentAlignment = Alignment.Center,
                 ) {
                     Text(
-                        text = stringResource(R.string.no_history),
+                        text = stringResource(R.string.history_screen_no_history),
                         color = AppTheme.historyScreenColors.textContent,
                         fontSize = AppTheme.historyScreenDimensions.textFontSize,
                     )

@@ -1,7 +1,8 @@
 <resources>
     <string name="app_name">Calculator</string>
-    <string name="no_history">No history yet</string>
-    <string name="delete_all">Delete all</string>
+    <string name="settings_screen_label_precision">precision</string>
+    <string name="history_screen_no_history">No history yet</string>
+    <string name="history_screen_delete_all">Delete all</string>
     <string name="app_view_model_error_expression_too_large">Expression is too long.</string>
     <string name="app_view_model_error_history_not_found">History entry not found.</string>
     <string name="settings_repository_error_update_precision">Failed to update precision.</string>

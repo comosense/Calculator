@@ -4,6 +4,15 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
 
 @Immutable
+data class SettingsScreenColors(
+    val background: Color,
+    val label: Color,
+    val picker: Color,
+    val backButtonContainer: Color,
+    val backButtonContent: Color,
+)
+
+@Immutable
 data class HistoryScreenColors(
     val background: Color,
     val textContent: Color,
