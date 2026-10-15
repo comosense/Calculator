@@ -22,7 +22,7 @@ class SymbolFormatter(locale: Locale) {
             .decimalSeparator
 
     fun format(symbols: List<Symbol>): String {
-        val formatted: String = buildString {
+        return buildString {
             val numericBuffer: StringBuilder = StringBuilder()
 
             fun flushNumeric() {
@@ -46,8 +46,6 @@ class SymbolFormatter(locale: Locale) {
             }
             flushNumeric()
         }
-
-        return formatted
     }
 
     private fun formatNumericString(value: String): String {
