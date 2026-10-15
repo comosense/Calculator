@@ -26,6 +26,7 @@ import kotlinx.coroutines.launch
 
 enum class AppViewModelError {
     HistoryNotFound,
+    UnacceptableSymbol,
     ExpressionTooLarge,
 }
 
@@ -257,6 +258,9 @@ class AppViewModel(
         is AppStateUpdateResult.UnacceptableSymbol ->
             AppStateTransition(
                 appState = appState,
+                appEvent = AppEvent.AppViewModelError(
+                    AppViewModelError.UnacceptableSymbol,
+                ),
             )
 
         is AppStateUpdateResult.HistoryNotFound ->

@@ -1,6 +1,8 @@
 package com.gmail.comosense.calculator.presentation
 
 import android.content.Context
+import android.view.HapticFeedbackConstants
+import android.view.View
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExitTransition
@@ -17,6 +19,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.wear.compose.foundation.SwipeToDismissBoxState
 import androidx.wear.compose.foundation.SwipeToDismissValue
 import androidx.wear.compose.foundation.rememberSwipeToDismissBoxState
@@ -139,10 +142,16 @@ fun WearApp(
 @Composable
 private fun HandleEvent(appEvent: Flow<AppEvent>) {
     val context: Context = LocalContext.current
+    val view: View = LocalView.current
 
     LaunchedEffect(appEvent) {
         appEvent.collect { appEvent ->
-            val messageResourceId: Int = when (appEvent) {
+            view.performHapticFeedback(
+                HapticFeedbackConstants.REJECT,
+                HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING,
+            )
+
+            val messageResourceId: Int? = when (appEvent) {
                 is AppEvent.AppViewModelError ->
                     appEvent.appViewModelError.messageResourceId()
 
@@ -156,18 +165,20 @@ private fun HandleEvent(appEvent: Flow<AppEvent>) {
                     appEvent.calculatorError.messageResourceId()
             }
 
-            Toast.makeText(
-                context,
-                messageResourceId,
-                Toast.LENGTH_SHORT
-            ).show()
-
+            if (messageResourceId != null) {
+                Toast.makeText(
+                    context,
+                    messageResourceId,
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
     }
 }
 
-private fun AppViewModelError.messageResourceId(): Int = when (this) {
+private fun AppViewModelError.messageResourceId(): Int? = when (this) {
     AppViewModelError.ExpressionTooLarge -> R.string.app_view_model_error_expression_too_large
+    AppViewModelError.UnacceptableSymbol -> null
     AppViewModelError.HistoryNotFound -> R.string.app_view_model_error_history_not_found
 }
 
