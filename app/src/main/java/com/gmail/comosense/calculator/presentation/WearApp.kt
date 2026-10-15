@@ -183,7 +183,7 @@ private fun AppViewModelError.messageResourceId(): Int? = when (this) {
 }
 
 private fun SettingsRepositoryError.messageResourceId(): Int? = when (this) {
-    SettingsRepositoryError.RepairInvalidPrecision -> null
+    SettingsRepositoryError.RepairInvalidSettings -> null
     SettingsRepositoryError.UpdatePrecision -> R.string.settings_repository_error_update_precision
 }
 

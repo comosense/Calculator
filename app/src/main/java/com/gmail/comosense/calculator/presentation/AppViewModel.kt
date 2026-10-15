@@ -80,17 +80,8 @@ class AppViewModel(
         _appEvent.asSharedFlow()
 
     init {
-        viewModelScope.launch {
-            when (val repairResult: Result<Unit, SettingsRepositoryError> =
-                settingRepository.repairInvalidPrecision()) {
-                is Result.Ok ->
-                    Unit
-
-                is Result.Err ->
-                    _appEvent.tryEmit(
-                        AppEvent.SettingsRepositoryError(repairResult.error)
-                    )
-            }
+        launchSettingsRepositoryAction {
+            settingRepository.repairInvalidSettings()
         }
 
         viewModelScope.launch {

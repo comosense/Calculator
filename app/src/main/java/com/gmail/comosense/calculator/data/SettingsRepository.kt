@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 enum class SettingsRepositoryError {
-    RepairInvalidPrecision,
+    RepairInvalidSettings,
     UpdatePrecision,
 }
 
@@ -21,9 +21,6 @@ class SettingsRepository(
         val PRECISION: Preferences.Key<Int> =
             intPreferencesKey("precision")
     }
-
-    private fun isValidPrecision(precision: Int): Boolean =
-        precision in SettingsDataStoreConstraints.VALID_PRECISION_RANGE
 
     val settings: Flow<Settings> =
         dataStore.data.map { preferences ->
@@ -36,7 +33,7 @@ class SettingsRepository(
             )
         }
 
-    suspend fun repairInvalidPrecision(): Result<Unit, SettingsRepositoryError> {
+    suspend fun repairInvalidSettings(): Result<Unit, SettingsRepositoryError> {
         try {
             dataStore.edit { preferences ->
                 val precision: Int? = preferences[SettingsKeys.PRECISION]
@@ -48,13 +45,15 @@ class SettingsRepository(
         } catch (e: CancellationException) {
             throw e
         } catch (_: Exception) {
-            return Result.Err(SettingsRepositoryError.RepairInvalidPrecision)
+            return Result.Err(SettingsRepositoryError.RepairInvalidSettings)
         }
 
         return Result.Ok(Unit)
     }
 
-    suspend fun updatePrecision(precision: Int): Result<Unit, SettingsRepositoryError> {
+    suspend fun updatePrecision(
+        precision: Int,
+    ): Result<Unit, SettingsRepositoryError> {
         if (!isValidPrecision(precision)) {
             return Result.Err(SettingsRepositoryError.UpdatePrecision)
         }
@@ -71,4 +70,7 @@ class SettingsRepository(
 
         return Result.Ok(Unit)
     }
+
+    private fun isValidPrecision(precision: Int): Boolean =
+        precision in SettingsDataStoreConstraints.VALID_PRECISION_RANGE
 }
