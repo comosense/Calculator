@@ -1,6 +1,7 @@
 package com.gmail.comosense.calculator.data
 
 import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.MutablePreferences
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
@@ -34,21 +35,13 @@ class SettingsRepository(
         }
 
     suspend fun repairInvalidSettings(): Result<Unit, SettingsRepositoryError> {
-        try {
-            dataStore.edit { preferences ->
-                val precision: Int? = preferences[SettingsKeys.PRECISION]
-                if (precision != null && !isValidPrecision(precision)) {
-                    preferences[SettingsKeys.PRECISION] =
-                        SettingsDataStoreConstraints.DEFAULT_PRECISION
-                }
+        return edit(SettingsRepositoryError.RepairInvalidSettings) { preferences ->
+            val precision: Int? = preferences[SettingsKeys.PRECISION]
+            if (precision != null && !isValidPrecision(precision)) {
+                preferences[SettingsKeys.PRECISION] =
+                    SettingsDataStoreConstraints.DEFAULT_PRECISION
             }
-        } catch (e: CancellationException) {
-            throw e
-        } catch (_: Exception) {
-            return Result.Err(SettingsRepositoryError.RepairInvalidSettings)
         }
-
-        return Result.Ok(Unit)
     }
 
     suspend fun updatePrecision(
@@ -58,17 +51,23 @@ class SettingsRepository(
             return Result.Err(SettingsRepositoryError.UpdatePrecision)
         }
 
+        return edit(SettingsRepositoryError.UpdatePrecision) { preferences ->
+            preferences[SettingsKeys.PRECISION] = precision
+        }
+    }
+
+    private suspend fun edit(
+        error: SettingsRepositoryError,
+        transform: suspend (MutablePreferences) -> Unit,
+    ): Result<Unit, SettingsRepositoryError> {
         try {
-            dataStore.edit { preferences ->
-                preferences[SettingsKeys.PRECISION] = precision
-            }
+            dataStore.edit(transform)
+            return Result.Ok(Unit)
         } catch (e: CancellationException) {
             throw e
         } catch (_: Exception) {
-            return Result.Err(SettingsRepositoryError.UpdatePrecision)
+            return Result.Err(error)
         }
-
-        return Result.Ok(Unit)
     }
 
     private fun isValidPrecision(precision: Int): Boolean =
