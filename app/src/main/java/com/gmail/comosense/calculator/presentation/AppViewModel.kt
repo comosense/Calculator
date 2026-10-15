@@ -279,31 +279,30 @@ class AppViewModel(
     private fun launchSettingsRepositoryAction(
         action: suspend () -> Result<Unit, SettingsRepositoryError>,
     ) {
-        viewModelScope.launch {
-            when (val settingsRepositoryResult = action()) {
-                is Result.Ok ->
-                    Unit
-
-                is Result.Err ->
-                    _appEvent.tryEmit(
-                        AppEvent.SettingsRepositoryError(settingsRepositoryResult.error)
-                    )
-            }
+        launchRepositoryAction(action) { error ->
+            AppEvent.SettingsRepositoryError(error)
         }
     }
 
     private fun launchHistoryRepositoryAction(
         action: suspend () -> Result<Unit, HistoryRepositoryError>,
     ) {
+        launchRepositoryAction(action) { error ->
+            AppEvent.HistoryRepositoryError(error)
+        }
+    }
+
+    private fun <E> launchRepositoryAction(
+        action: suspend () -> Result<Unit, E>,
+        toAppEvent: (E) -> AppEvent,
+    ) {
         viewModelScope.launch {
-            when (val historyRepositoryResult = action()) {
+            when (val result = action()) {
                 is Result.Ok ->
                     Unit
 
                 is Result.Err ->
-                    _appEvent.tryEmit(
-                        AppEvent.HistoryRepositoryError(historyRepositoryResult.error)
-                    )
+                    _appEvent.tryEmit(toAppEvent(result.error))
             }
         }
     }
