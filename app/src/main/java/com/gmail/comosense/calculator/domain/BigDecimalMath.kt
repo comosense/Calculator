@@ -12,7 +12,7 @@ class PowLimitExceededException : ArithmeticException()
 class LogInvalidArgumentException : ArithmeticException()
 class TanInvalidArgumentException : ArithmeticException()
 
-class Math(private val mathContext: MathContext) {
+class BigDecimalMath(private val mathContext: MathContext) {
     init {
         require(mathContext.precision > 0)
     }
@@ -83,7 +83,7 @@ class Math(private val mathContext: MathContext) {
     }
 
     fun pi(): BigDecimal {
-        return pi(workMathContext).round(mathContext)
+        return pi.round(mathContext)
     }
 
     fun factorial(value: BigDecimal): BigDecimal {
@@ -237,11 +237,11 @@ class Math(private val mathContext: MathContext) {
         value: BigDecimal,
         mc: MathContext,
     ): BigDecimal {
-        fun initialSqrtEstimate(value: BigDecimal): BigDecimal {
-            val integerDigits: Int = value.precision() - value.scale()
-            val exponent: Int = integerDigits / 2
+        fun initialSqrtEstimate(v: BigDecimal): BigDecimal {
+            val orderOfMagnitude: Int = v.precision() - v.scale() - 1
+            val sqrtExponent: Int = Math.floorDiv(orderOfMagnitude, 2)
 
-            return TEN.pow(exponent.coerceAtLeast(0))
+            return BigDecimal.ONE.scaleByPowerOfTen(sqrtExponent)
         }
 
         if (value.signum() == -1) {
@@ -254,14 +254,17 @@ class Math(private val mathContext: MathContext) {
 
         var x: BigDecimal = initialSqrtEstimate(value)
 
+        var previousX: BigDecimal? = null
         while (true) {
             val next: BigDecimal = x
                 .add(value.divide(x, mc))
                 .divide(TWO, mc)
-            if (next.compareTo(x) == 0) {
+            if (next.compareTo(x) == 0 ||
+                (previousX != null && next.compareTo(previousX) == 0)
+            ) {
                 return next
             }
-
+            previousX = x
             x = next
         }
     }

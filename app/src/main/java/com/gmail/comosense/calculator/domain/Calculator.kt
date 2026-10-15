@@ -108,7 +108,7 @@ private class Parser(
         precision,
         RoundingMode.HALF_UP,
     )
-    private val math = Math(mathContext)
+    private val bigDecimalMath = BigDecimalMath(mathContext)
 
     private var position: Int = 0
 
@@ -187,7 +187,7 @@ private class Parser(
 
         return if (tokens.getOrNull(position) is Token.SpecialOperator.Power) {
             position++
-            math.pow(base, parseSign())
+            bigDecimalMath.pow(base, parseSign())
         } else {
             base
         }
@@ -198,7 +198,7 @@ private class Parser(
 
         while (tokens.getOrNull(position) is Token.SpecialOperator.Factorial) {
             position++
-            value = math.factorial(value)
+            value = bigDecimalMath.factorial(value)
         }
 
         return value
@@ -254,10 +254,10 @@ private class Parser(
     private fun parseConstant(constant: Token.Constant): BigDecimal {
         return when (constant) {
             Token.Constant.Pi ->
-                math.pi()
+                bigDecimalMath.pi()
 
             Token.Constant.Euler ->
-                math.e()
+                bigDecimalMath.e()
         }
     }
 
@@ -267,7 +267,7 @@ private class Parser(
     ): BigDecimal {
         return when (function) {
             Token.Factor.Function.Sqrt ->
-                math.sqrt(value)
+                bigDecimalMath.sqrt(value)
         }
     }
 
@@ -277,19 +277,19 @@ private class Parser(
     ): BigDecimal {
         return when (function) {
             Token.FactorStart.Function.Sin ->
-                math.sin(value)
+                bigDecimalMath.sin(value)
 
             Token.FactorStart.Function.Cos ->
-                math.cos(value)
+                bigDecimalMath.cos(value)
 
             Token.FactorStart.Function.Tan ->
-                math.tan(value)
+                bigDecimalMath.tan(value)
 
             Token.FactorStart.Function.Log ->
-                math.log(value)
+                bigDecimalMath.log(value)
 
             Token.FactorStart.Function.Ln ->
-                math.ln(value)
+                bigDecimalMath.ln(value)
         }
     }
 }
