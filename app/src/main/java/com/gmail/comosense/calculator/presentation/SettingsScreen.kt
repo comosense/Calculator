@@ -18,6 +18,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import androidx.wear.compose.material3.ButtonDefaults
 import androidx.wear.compose.material3.EdgeButton
 import androidx.wear.compose.material3.Icon
@@ -29,6 +30,10 @@ import com.gmail.comosense.calculator.R
 import com.gmail.comosense.calculator.data.Settings
 import com.gmail.comosense.calculator.presentation.theme.AppTheme
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.flow.map
+
+private const val INSCRIBED_LENGTH_RATIO: Float = 0.70710677f
 
 @Composable
 fun SettingsScreen(
@@ -37,8 +42,7 @@ fun SettingsScreen(
     onBack: () -> Unit,
 ) {
     ScreenScaffold {
-        val precisionOptions: List<Int> =
-            listOf(8, 16, 24, 32, 40, 48, 56, 64)
+        val precisionOptions: List<Int> = listOf(8, 16, 24, 32, 40, 48, 56, 64)
         val precisionIndex: Int =
             precisionOptions.indexOf(settings.precision).coerceAtLeast(0)
         val precisionPickerState =
@@ -50,13 +54,11 @@ fun SettingsScreen(
 
         LaunchedEffect(precisionPickerState) {
             snapshotFlow { precisionPickerState.selectedOptionIndex }
+                .map { precisionOptions[it] }
                 .distinctUntilChanged()
-                .collect { index ->
-                    onAction(
-                        AppAction.SetPrecision(
-                            precisionOptions[index]
-                        )
-                    )
+                .drop(1)
+                .collect { precision ->
+                    onAction(AppAction.SetPrecision(precision))
                 }
         }
 
@@ -65,14 +67,18 @@ fun SettingsScreen(
                 .fillMaxSize()
                 .background(AppTheme.settingsScreenColors.background),
         ) {
-            val inscribedLengthRatio = 0.70710677f
             val displayWidth: Dp = maxWidth
             val displayHeight: Dp = maxHeight
-            val inscribedLength: Dp = minOf(displayWidth, displayHeight) * inscribedLengthRatio
+            val inscribedLength: Dp =
+                minOf(displayWidth, displayHeight) * INSCRIBED_LENGTH_RATIO
 
-            val headerHeight: Dp = (displayHeight - inscribedLength) / 2f
-            val buttonHeight: Dp = headerHeight * 1.5f
-            val bodyHeight: Dp = displayHeight - (headerHeight + buttonHeight)
+            val headerHeight: Dp =
+                (displayHeight - inscribedLength) / 2f
+            val buttonHeight: Dp =
+                headerHeight * 1.5f
+            val bodyHeight: Dp =
+                (displayHeight - (headerHeight + buttonHeight))
+                    .coerceAtLeast(0.dp)
 
             Column(
                 modifier = Modifier.fillMaxSize(),
@@ -110,7 +116,9 @@ fun SettingsScreen(
 
                     Picker(
                         state = precisionPickerState,
-                        contentDescription = { "${precisionPickerState.selectedOptionIndex + 1}" },
+                        contentDescription = {
+                            precisionOptions[precisionPickerState.selectedOptionIndex].toString()
+                        },
                         modifier = Modifier
                             .fillMaxWidth()
                             .weight(4f),

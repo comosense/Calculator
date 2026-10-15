@@ -228,7 +228,7 @@ The application stores these values as `Float`, so the values are rounded to `Fl
 the source code:
 
 ```kotlin
-const val INSCRIBED_LENGTH_RATIO: Float = 0.70710677f
-const val PANEL_WIDTH_RATIO: Float = 0.9055385f
-const val KEY_SWITCHER_LENGTH_RATIO: Float = 0.14142136f
+private const val INSCRIBED_LENGTH_RATIO: Float = 0.70710677f
+private const val PANEL_WIDTH_RATIO: Float = 0.9055385f
+private const val KEY_SWITCHER_LENGTH_RATIO: Float = 0.14142136f
 ```
