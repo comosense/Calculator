@@ -17,17 +17,19 @@ enum class HistoryRepositoryError {
     InvalidHistory,
 }
 
-class HistoryRepository(private val dataStore: DataStore<HistoryStore>) {
+class HistoryRepository(
+    private val dataStore: DataStore<HistoryStore>,
+) {
     val histories: Flow<List<History>> =
         dataStore.data.map { store ->
             store.historiesList
-                .take(HistoryConstraints.MAX_HISTORIES_SIZE)
+                .take(HistoryConstraints.MAX_HISTORY_COUNT)
                 .mapNotNull { it.toHistoryOrNull() }
         }
 
     suspend fun addHistory(
         expression: List<Symbol>,
-        result: List<Symbol>
+        result: List<Symbol>,
     ): Result<Unit, HistoryRepositoryError> {
         if (expression.isEmpty() || result.isEmpty()) {
             return Result.Err(HistoryRepositoryError.InvalidHistory)
@@ -50,7 +52,7 @@ class HistoryRepository(private val dataStore: DataStore<HistoryStore>) {
                 val builder: HistoryStore.Builder = store
                     .toBuilder()
                     .addHistories(0, newHistory.toProto())
-                while (builder.historiesCount > HistoryConstraints.MAX_HISTORIES_SIZE) {
+                while (builder.historiesCount > HistoryConstraints.MAX_HISTORY_COUNT) {
                     builder.removeHistories(builder.historiesCount - 1)
                 }
                 builder.build()
@@ -64,7 +66,9 @@ class HistoryRepository(private val dataStore: DataStore<HistoryStore>) {
         return Result.Ok(Unit)
     }
 
-    suspend fun deleteHistory(id: String): Result<Unit, HistoryRepositoryError> {
+    suspend fun deleteHistory(
+        id: String,
+    ): Result<Unit, HistoryRepositoryError> {
         try {
             dataStore.updateData { store ->
                 val index: Int = store.historiesList

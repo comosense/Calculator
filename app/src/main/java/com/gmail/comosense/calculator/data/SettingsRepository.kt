@@ -10,10 +10,12 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 enum class SettingsRepositoryError {
-    UpdatePrecision
+    UpdatePrecision,
 }
 
-class SettingsRepository(private val dataStore: DataStore<Preferences>) {
+class SettingsRepository(
+    private val dataStore: DataStore<Preferences>,
+) {
     private object SettingsKeys {
         val PRECISION: Preferences.Key<Int> =
             intPreferencesKey("precision")
@@ -28,12 +30,14 @@ class SettingsRepository(private val dataStore: DataStore<Preferences>) {
             )
         }
 
-    suspend fun updatePrecision(value: Int): Result<Unit, SettingsRepositoryError> {
-        require(value > 0)
+    suspend fun updatePrecision(
+        precision: Int,
+    ): Result<Unit, SettingsRepositoryError> {
+        require(precision > 0)
 
         try {
             dataStore.edit { preferences ->
-                preferences[SettingsKeys.PRECISION] = value
+                preferences[SettingsKeys.PRECISION] = precision
             }
         } catch (e: CancellationException) {
             throw e
