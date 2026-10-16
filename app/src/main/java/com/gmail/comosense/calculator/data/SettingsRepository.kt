@@ -35,13 +35,16 @@ class SettingsRepository(
         }
 
     suspend fun repairInvalidSettings(): Result<Unit, SettingsRepositoryError> {
-        return edit(SettingsRepositoryError.RepairInvalidSettings) { preferences ->
-            val precision: Int? = preferences[SettingsKeys.PRECISION]
-            if (precision != null && !isValidPrecision(precision)) {
-                preferences[SettingsKeys.PRECISION] =
-                    SettingsDataStoreConstraints.DEFAULT_PRECISION
-            }
-        }
+        return edit(
+            error = SettingsRepositoryError.RepairInvalidSettings,
+            transform = { preferences ->
+                val precision: Int? = preferences[SettingsKeys.PRECISION]
+                if (precision != null && !isValidPrecision(precision)) {
+                    preferences[SettingsKeys.PRECISION] =
+                        SettingsDataStoreConstraints.DEFAULT_PRECISION
+                }
+            },
+        )
     }
 
     suspend fun updatePrecision(
@@ -51,10 +54,16 @@ class SettingsRepository(
             return Result.Err(SettingsRepositoryError.UpdatePrecision)
         }
 
-        return edit(SettingsRepositoryError.UpdatePrecision) { preferences ->
-            preferences[SettingsKeys.PRECISION] = precision
-        }
+        return edit(
+            error = SettingsRepositoryError.UpdatePrecision,
+            transform = { preferences ->
+                preferences[SettingsKeys.PRECISION] = precision
+            },
+        )
     }
+
+    private fun isValidPrecision(precision: Int): Boolean =
+        precision in SettingsDataStoreConstraints.VALID_PRECISION_RANGE
 
     private suspend fun edit(
         error: SettingsRepositoryError,
@@ -69,7 +78,4 @@ class SettingsRepository(
             return Result.Err(error)
         }
     }
-
-    private fun isValidPrecision(precision: Int): Boolean =
-        precision in SettingsDataStoreConstraints.VALID_PRECISION_RANGE
 }

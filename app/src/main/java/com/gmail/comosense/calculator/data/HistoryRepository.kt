@@ -41,8 +41,9 @@ class HistoryRepository(
             return Result.Err(HistoryRepositoryError.TooLarge)
         }
 
-        try {
-            dataStore.updateData { store ->
+        return updateData(
+            error = HistoryRepositoryError.Add,
+            transform = { store ->
                 val newHistory = History(
                     id = UUID.randomUUID().toString(),
                     expression = expression,
@@ -57,20 +58,15 @@ class HistoryRepository(
                 }
                 builder.build()
             }
-        } catch (e: CancellationException) {
-            throw e
-        } catch (_: Exception) {
-            return Result.Err(HistoryRepositoryError.Add)
-        }
-
-        return Result.Ok(Unit)
+        )
     }
 
     suspend fun deleteHistory(
         id: String,
     ): Result<Unit, HistoryRepositoryError> {
-        try {
-            dataStore.updateData { store ->
+        return updateData(
+            error = HistoryRepositoryError.Delete,
+            transform = { store ->
                 val index: Int = store.historiesList
                     .indexOfFirst { it.id == id }
 
@@ -82,28 +78,31 @@ class HistoryRepository(
                         .build()
                 }
             }
-        } catch (e: CancellationException) {
-            throw e
-        } catch (_: Exception) {
-            return Result.Err(HistoryRepositoryError.Delete)
-        }
-
-        return Result.Ok(Unit)
+        )
     }
 
     suspend fun deleteHistoryAll(): Result<Unit, HistoryRepositoryError> {
-        try {
-            dataStore.updateData { store ->
+        return updateData(
+            error = HistoryRepositoryError.DeleteAll,
+            transform = { store ->
                 store.toBuilder()
                     .clearHistories()
                     .build()
             }
+        )
+    }
+
+    private suspend fun updateData(
+        error: HistoryRepositoryError,
+        transform: suspend (HistoryStore) -> HistoryStore,
+    ): Result<Unit, HistoryRepositoryError> {
+        try {
+            dataStore.updateData(transform)
+            return Result.Ok(Unit)
         } catch (e: CancellationException) {
             throw e
         } catch (_: Exception) {
-            return Result.Err(HistoryRepositoryError.DeleteAll)
+            return Result.Err(error)
         }
-
-        return Result.Ok(Unit)
     }
 }
