@@ -96,9 +96,11 @@ Start-Sleep -MIlliseconds 200
 
 # 2
 & $adb -s $serial shell input tap 144 308
+Start-Sleep -MIlliseconds 200
 
 # +
 & $adb -s $serial shell input tap 336 308
+Start-Sleep -MIlliseconds 200
 
 # 0
 & $adb -s $serial shell input tap 144 377
@@ -134,7 +136,7 @@ Start-Sleep -MIlliseconds 200
 
 # 2
 & $adb -s $serial shell input tap 144 308
-Start-Sleep -MIlliseconds 200
+Start-Sleep -Seconds 1
 
 # =
 & $adb -s $serial shell input tap 432 171
@@ -194,7 +196,7 @@ Start-Sleep -MIlliseconds 200
 
 # ()
 & $adb -s $serial shell input tap 336 377
-Start-Sleep -MIlliseconds 200
+Start-Sleep -Seconds 1
 
 # =
 & $adb -s $serial shell input tap 432 171
