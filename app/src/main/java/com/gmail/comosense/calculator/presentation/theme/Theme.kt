@@ -76,7 +76,7 @@ fun AppTheme(
         val historyScreenColors = HistoryScreenColors(
             background = MaterialTheme.colorScheme.background,
             textContent = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
-            historyContainer = MaterialTheme.colorScheme.surfaceContainer,
+            historyContainer = MaterialTheme.colorScheme.surfaceContainerLow,
             historyContent = MaterialTheme.colorScheme.onSurface,
             historyExpression = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
             historyResult = MaterialTheme.colorScheme.onSurface,
