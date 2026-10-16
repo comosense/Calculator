@@ -42,9 +42,7 @@ fun SettingsScreen(
     onAction: (AppAction) -> Unit,
     onBack: () -> Unit,
 ) {
-    ScreenScaffold(
-        timeText = {},
-    ) {
+    ScreenScaffold(timeText = {}) {
         val precisionIndex: Int = PRECISION_OPTIONS
             .indexOf(settings.precision)
             .let { if (it >= 0) it else PRECISION_OPTIONS.indexOf(DEFAULT_PRECISION) }
