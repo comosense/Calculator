@@ -1,6 +1,6 @@
 # Constants in `CalculatorScreen.kt`
 
-This document describes how the following constants used in `CalculatorScreen.kt` are derived:
+This document explains the derivation of the following constants defined in `CalculatorScreen.kt` are derived:
 
 * `INSCRIBED_LENGTH_RATIO`
 * `PANEL_WIDTH_RATIO`
@@ -185,7 +185,7 @@ QR &= \frac{ -4 \sqrt{ 2 } \cdot d \pm \sqrt{ ( 4 \sqrt{ 2 } \cdot d )^2 - 4 \cd
 \end{aligned}
 $$
 
-Since $QR$ represents a length, we take the positive solution:
+Since $QR$ is a length, we take the positive root:
 
 $$
 \begin{aligned}
