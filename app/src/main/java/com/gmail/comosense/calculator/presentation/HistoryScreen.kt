@@ -28,10 +28,10 @@ import androidx.compose.ui.unit.dp
 import androidx.wear.compose.foundation.lazy.TransformingLazyColumn
 import androidx.wear.compose.foundation.lazy.TransformingLazyColumnState
 import androidx.wear.compose.foundation.lazy.rememberTransformingLazyColumnState
-import androidx.wear.compose.material3.Button
 import androidx.wear.compose.material3.ButtonDefaults
 import androidx.wear.compose.material3.EdgeButton
 import androidx.wear.compose.material3.Icon
+import androidx.wear.compose.material3.OutlinedButton
 import androidx.wear.compose.material3.ScreenScaffold
 import androidx.wear.compose.material3.SurfaceTransformation
 import androidx.wear.compose.material3.Text
@@ -227,7 +227,7 @@ private fun HistoryItem(
     val expressionScrollState: ScrollState = rememberScrollState()
     val resultScrollState: ScrollState = rememberScrollState()
 
-    Button(
+    OutlinedButton(
         onClick = { onClick(history.id) },
         onLongClick = onLongClick,
         modifier = modifier,
