@@ -2,8 +2,7 @@
 
 A simple calculator app designed specifically for Wear OS smartwatches.
 
-Designed for small and round watch displays, with large, easy-to-tap keys and a compact operator
-overlay.
+Designed for small, round watch displays, with large, easy-to-tap keys and a compact operator overlay.
 
 [![Get it on Google Play](https://img.shields.io/badge/Google_Play-Download-414141?style=for-the-badge&logo=google-play&logoColor=white)](https://play.google.com/store/apps/details?id=com.gmail.comosense.calculator)
 
@@ -37,16 +36,16 @@ overlay.
 ### Smart keypad
 
 * Keys adapt to the current input context
-* The parenthesis key switches between `(` and `)`
+* The parentheses key switches between `(` and `)`
 * The `+` and `-` keys switch between unary signs and binary arithmetic operators
 * The delete key switches between Backspace and Clear, depending on the input state
-* Long-press Backspace to clear the current expression
+* Long-press the Backspace key to clear the current expression
 * Switch between the main keypad and the scientific function keypad
 
 ### Display
 
 * Locale-aware thousands and decimal separators
-* Text size automatically adjusts to fit the available display area whenever possible
+* Text size adjust automatically to fit the available display area
 * Long expressions remain accessible through horizontal scrolling
 
 ### Calculation history
@@ -54,7 +53,11 @@ overlay.
 * Tap a previous calculation to reuse its result
 * When an expression is being entered, the selected result is appended to the current input
 * Delete individual entries or clear the entire history
-* Long-press a history entry to enter delete mode
+* Long-press a history entry to enter deletion mode
+
+### Settings
+
+* Set the number of significant digit used in calculations
 
 ## Usage
 
@@ -78,7 +81,7 @@ Parentheses and grouped expressions are also supported.
 
 ### Scientific function calculation
 
-Switch to the scientific function keypad to access additional operations.
+Switch to the scientific keypad to access additional functions.
 
 Examples:
 
@@ -115,11 +118,15 @@ From the history screen, you can:
 
 The history is stored locally on the watch using Jetpack DataStore and is limited to 50 entries.
 
+### Changing settings
+
+Long-press the expression display at the top of the calculator to open the settings.
+
 ## Supported devices
 
 Compatible with Wear OS devices running Android API 30 or later.
 
-The UI is designed specifically for smartwatch displays, including round screens.
+The UI is optimized for smartwatch displays, including round screens.
 
 ## Technology stack
 
@@ -147,7 +154,6 @@ The engine includes:
 * Unary `+` and `-`
 * Parentheses and grouped expressions
 * Arbitrary-precision decimal arithmetic using `BigDecimal`
-* Calculations use 32 significant digits of precision
 * `HALF_UP` rounding
 * Custom implementations of square root, exponentiation, factorial, trigonometric functions, logarithms, and mathematical constants
 
@@ -158,7 +164,7 @@ To keep calculations and displayed results within defined limits:
 * Factorial arguments must be non-negative integers no greater than 146
 * Integer exponents must have an absolute value of 1024 or less
 * Non-integer exponents must have an absolute value of 1024 or less
-* Results are limited to 256 characters in their plain decimal representation
+* Results are limited to 256 characters when represented in plain decimal nation
 * Expressions are limited to 1,024 symbols
 
 Invalid operations, including division by zero and out-of-domain function arguments, are reported as calculation errors.
