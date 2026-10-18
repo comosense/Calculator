@@ -14,8 +14,15 @@ sealed interface AppStateUpdateResult {
     data object HistoryNotFound : AppStateUpdateResult
 }
 
-val AppState.expression: List<Symbol>
+val AppState.fixedExpression: List<Symbol>
     get() = result + input
+val AppState.expectedInput: List<Symbol>
+    get() = List(
+        input.count { it is Symbol.FactorStart } -
+                input.count { it is Symbol.FactorEnd }
+    ) { Symbol.FactorEnd.ClosingParenthesis }
+val AppState.expression: List<Symbol>
+    get() = fixedExpression + expectedInput
 val AppState.isInputting: Boolean
     get() = input.isNotEmpty()
 

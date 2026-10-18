@@ -41,11 +41,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextMeasurer
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
@@ -254,7 +258,20 @@ private fun ExpressionBox(
 ) {
     val scrollState: ScrollState = rememberScrollState()
     val textMeasurer: TextMeasurer = rememberTextMeasurer()
-    val expression: String = symbolFormatter.format(appState.expression).ifEmpty { "0" }
+    val expression: AnnotatedString = buildAnnotatedString {
+        withStyle(style = SpanStyle(color = AppTheme.calculatorScreenColors.expression)) {
+            append(symbolFormatter.format(appState.fixedExpression))
+        }
+        withStyle(style = SpanStyle(color = AppTheme.calculatorScreenColors.expression.copy(alpha = 0.35f))) {
+            append(symbolFormatter.format(appState.expectedInput))
+        }
+    }.ifEmpty {
+        buildAnnotatedString {
+            withStyle(style = SpanStyle(color = AppTheme.calculatorScreenColors.expression)) {
+                append("0")
+            }
+        }
+    }
 
     val blinkProgress: Animatable<Float, AnimationVector1D> = remember { Animatable(0f) }
     val blinkColor: Color = AppTheme.calculatorScreenColors.expressionBlinkBackground
