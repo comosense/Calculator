@@ -9,4 +9,5 @@ data class AppState(
     val histories: List<History> = emptyList(),
     val result: List<Symbol> = emptyList(),
     val input: List<Symbol> = emptyList(),
+    val isCalculating: Boolean = false,
 )

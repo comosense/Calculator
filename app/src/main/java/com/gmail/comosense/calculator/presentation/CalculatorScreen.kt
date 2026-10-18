@@ -52,6 +52,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.material3.Button
 import androidx.wear.compose.material3.ButtonDefaults
+import androidx.wear.compose.material3.CircularProgressIndicator
 import androidx.wear.compose.material3.Icon
 import androidx.wear.compose.material3.IconButton
 import androidx.wear.compose.material3.ScreenScaffold
@@ -341,6 +342,11 @@ private fun ExpressionBox(
             }
         }
 
+        val expressionColor: Color = if (appState.isCalculating) {
+            AppTheme.calculatorScreenColors.expression.copy(alpha = 0.35f)
+        } else {
+            AppTheme.calculatorScreenColors.expression
+        }
         if (needScroll) {
             Row(
                 modifier = Modifier
@@ -349,7 +355,7 @@ private fun ExpressionBox(
             ) {
                 Text(
                     text = expression,
-                    color = AppTheme.calculatorScreenColors.expression,
+                    color = expressionColor,
                     fontSize = AppTheme.calculatorScreenDimensions.expressionMinFontSize,
                     maxLines = 1,
                 )
@@ -357,12 +363,18 @@ private fun ExpressionBox(
         } else {
             Text(
                 text = expression,
+                color = expressionColor,
                 autoSize = TextAutoSize.StepBased(
                     maxFontSize = AppTheme.calculatorScreenDimensions.expressionMaxFontSize,
                     minFontSize = AppTheme.calculatorScreenDimensions.expressionMinFontSize,
                 ),
                 maxLines = 1,
-                color = AppTheme.calculatorScreenColors.expression,
+            )
+        }
+
+        if (appState.isCalculating) {
+            CircularProgressIndicator(
+                modifier = Modifier.size(maxHeight * 0.75f),
             )
         }
     }

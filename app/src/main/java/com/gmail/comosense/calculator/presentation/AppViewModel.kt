@@ -15,6 +15,7 @@ import com.gmail.comosense.calculator.data.settingsDataStore
 import com.gmail.comosense.calculator.domain.CalculatorError
 import com.gmail.comosense.calculator.domain.Symbol
 import com.gmail.comosense.calculator.domain.calculate
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -23,6 +24,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 enum class AppViewModelError {
     HistoryNotFound,
@@ -71,13 +73,8 @@ class AppViewModel(
 
     private val _appState: MutableStateFlow<AppState> =
         MutableStateFlow(AppState())
-    val appState: StateFlow<AppState> =
-        _appState.asStateFlow()
-
     private val _appEvent: MutableSharedFlow<AppEvent> =
         MutableSharedFlow(extraBufferCapacity = 1)
-    val appEvent: SharedFlow<AppEvent> =
-        _appEvent.asSharedFlow()
 
     init {
         launchSettingsRepositoryAction {
@@ -101,7 +98,24 @@ class AppViewModel(
         }
     }
 
+    val appState: StateFlow<AppState> = _appState.asStateFlow()
+    val appEvent: SharedFlow<AppEvent> = _appEvent.asSharedFlow()
+
     fun onAction(appAction: AppAction) {
+        if (_appState.value.isCalculating) {
+            when (appAction) {
+                is AppAction.SelectHistory,
+                is AppAction.Calculate,
+                is AppAction.Input,
+                is AppAction.Clear,
+                is AppAction.Backspace ->
+                    return
+
+                else ->
+                    Unit
+            }
+        }
+
         when (appAction) {
             is AppAction.SetPrecision ->
                 updatePrecision(appAction.value)
@@ -160,37 +174,55 @@ class AppViewModel(
     private fun calculate() {
         val state: AppState = _appState.value
 
-        if (!state.isInputting) return
+        if (!state.isInputting || state.isCalculating) return
 
         val settings: Settings = state.settings
         val expression: List<Symbol> = state.expression
-        val result: List<Symbol> =
-            when (val calculatedResult: Result<List<Symbol>, CalculatorError> =
-                calculate(
-                    expression = expression,
-                    precision = settings.precision,
-                )) {
-                is Result.Ok ->
-                    calculatedResult.value
 
-                is Result.Err -> {
-                    _appEvent.tryEmit(AppEvent.CalculatorError(calculatedResult.error))
-                    return
+        if (!_appState.compareAndSet(
+                expect = state,
+                update = state.copy(isCalculating = true)
+            )
+        ) return
+
+        viewModelScope.launch {
+            try {
+                val calculatedResult: Result<List<Symbol>, CalculatorError> =
+                    withContext(Dispatchers.Default) {
+                        calculate(
+                            expression = expression,
+                            precision = settings.precision,
+                        )
+                    }
+
+                val result: List<Symbol> = when (calculatedResult) {
+                    is Result.Ok ->
+                        calculatedResult.value
+
+                    is Result.Err -> {
+                        _appEvent.tryEmit(AppEvent.CalculatorError(calculatedResult.error))
+                        return@launch
+                    }
+                }
+
+                updateAppState { appState ->
+                    resolveAppStateUpdate(
+                        appState = appState,
+                        appStateUpdateResult = appState.applyResult(result),
+                    )
+                }
+
+                launchHistoryRepositoryAction {
+                    historyRepository.addHistory(
+                        expression = expression,
+                        result = result,
+                    )
+                }
+            } finally {
+                _appState.update { appState ->
+                    appState.copy(isCalculating = false)
                 }
             }
-
-        updateAppState { appState ->
-            resolveAppStateUpdate(
-                appState = appState,
-                appStateUpdateResult = appState.applyResult(result),
-            )
-        }
-
-        launchHistoryRepositoryAction {
-            historyRepository.addHistory(
-                expression = expression,
-                result = result,
-            )
         }
     }
 
