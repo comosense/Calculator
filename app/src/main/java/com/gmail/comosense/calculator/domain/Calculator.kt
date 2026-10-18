@@ -34,6 +34,7 @@ private class DivisionByZeroException : ArithmeticException()
 
 fun calculate(
     expression: List<Symbol>,
+    isRadians: Boolean,
     precision: Int,
 ): Result<List<Symbol>, CalculatorError> {
     require(precision > 0)
@@ -48,7 +49,11 @@ fun calculate(
 
     val calculated: BigDecimal =
         when (val calculatedResult: Result<BigDecimal, CalculatorError> =
-            parse(tokens, precision)) {
+            parse(
+                expression = tokens,
+                isRadians = isRadians,
+                precision = precision,
+            )) {
             is Result.Ok -> calculatedResult.value
             is Result.Err -> return Result.Err(calculatedResult.error)
         }
@@ -62,6 +67,7 @@ fun calculate(
 
 private fun parse(
     expression: List<Token>,
+    isRadians: Boolean,
     precision: Int,
 ): Result<BigDecimal, CalculatorError> {
     if (expression.isEmpty()) {
@@ -69,7 +75,11 @@ private fun parse(
     }
 
     return try {
-        val parser = Parser(expression, precision)
+        val parser = Parser(
+            tokens = expression,
+            isRadians = isRadians,
+            precision = precision,
+        )
         val result: BigDecimal = parser.parseExpression()
 
         if (parser.isEnd()) {
@@ -102,6 +112,7 @@ private fun parse(
 
 private class Parser(
     private val tokens: List<Token>,
+    private val isRadians: Boolean,
     precision: Int,
 ) {
     private val mathContext: MathContext = MathContext(
@@ -277,13 +288,13 @@ private class Parser(
     ): BigDecimal {
         return when (function) {
             Token.FactorStart.Function.Sin ->
-                bigDecimalMath.sin(value)
+                bigDecimalMath.sin(value, isRadians)
 
             Token.FactorStart.Function.Cos ->
-                bigDecimalMath.cos(value)
+                bigDecimalMath.cos(value, isRadians)
 
             Token.FactorStart.Function.Tan ->
-                bigDecimalMath.tan(value)
+                bigDecimalMath.tan(value, isRadians)
 
             Token.FactorStart.Function.Log ->
                 bigDecimalMath.log(value)

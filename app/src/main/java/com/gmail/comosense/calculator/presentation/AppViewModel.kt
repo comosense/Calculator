@@ -191,6 +191,7 @@ class AppViewModel(
                     withContext(Dispatchers.Default) {
                         calculate(
                             expression = expression,
+                            isRadians = true,
                             precision = settings.precision,
                         )
                     }

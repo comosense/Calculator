@@ -150,22 +150,32 @@ class BigDecimalMath(private val mathContext: MathContext) {
             .round(mathContext)
     }
 
-    fun sin(value: BigDecimal): BigDecimal {
-        return sin(value, workMathContext)
-            .round(mathContext)
+    fun sin(value: BigDecimal, isRadians: Boolean): BigDecimal {
+        return sin(
+            canonicalizedAngle(value, isRadians),
+            workMathContext
+        ).round(mathContext)
     }
 
-    fun cos(value: BigDecimal): BigDecimal {
-        return cos(value, workMathContext)
-            .round(mathContext)
+    fun cos(value: BigDecimal, isRadians: Boolean): BigDecimal {
+        return cos(
+            canonicalizedAngle(value, isRadians),
+            workMathContext
+        ).round(mathContext)
     }
 
-    fun tan(value: BigDecimal): BigDecimal {
-        val cos: BigDecimal = cos(value, workMathContext)
+    fun tan(value: BigDecimal, isRadians: Boolean): BigDecimal {
+        val cos: BigDecimal = cos(
+            canonicalizedAngle(value, isRadians),
+            workMathContext
+        )
         if (cos.signum() == 0) {
             throw TanInvalidArgumentException()
         }
-        val sin: BigDecimal = sin(value, workMathContext)
+        val sin: BigDecimal = sin(
+            canonicalizedAngle(value, isRadians),
+            workMathContext
+        )
 
         return sin.divide(cos, workMathContext)
             .round(mathContext)
@@ -556,5 +566,14 @@ class BigDecimalMath(private val mathContext: MathContext) {
         }
 
         return angle
+    }
+
+    private fun canonicalizedAngle(value: BigDecimal, isRadians: Boolean): BigDecimal {
+        return if (isRadians) {
+            value
+        } else {
+            value.divide(BigDecimal(180), workMathContext)
+                .multiply(pi)
+        }
     }
 }
