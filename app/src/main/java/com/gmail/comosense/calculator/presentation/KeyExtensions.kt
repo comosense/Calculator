@@ -227,7 +227,7 @@ fun Key.display(symbolFormatter: SymbolFormatter): Display = when (this) {
 
     is Key.ToDegrees ->
         Display.Icon(
-            painterResource = R.drawable.ic_to_dgrees,
+            painterResource = R.drawable.ic_to_degrees,
             stringResource = R.string.content_description_to_degrees
         )
 
