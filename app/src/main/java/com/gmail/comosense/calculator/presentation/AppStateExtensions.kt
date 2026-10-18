@@ -5,6 +5,7 @@ import com.gmail.comosense.calculator.domain.Symbol
 
 internal object AppStateExtensionsConstraints {
     const val MAX_EXPRESSION_SIZE: Int = Constraints.MAX_EXPRESSION_SIZE
+    const val MAX_NESTING_DEPTH: Int = Constraints.MAX_NESTING_DEPTH
 }
 
 sealed interface AppStateUpdateResult {
@@ -135,6 +136,8 @@ private fun AppState.symbolsToAppendOrNull(symbol: Symbol): List<Symbol>? {
 fun AppState.canAppend(symbol: Symbol): Boolean = this.canAppend(listOf(symbol))
 fun AppState.canAppend(symbols: List<Symbol>): Boolean {
     val tempInput: MutableList<Symbol> = input.toMutableList()
+    val nestingDepth: Int =
+        tempInput.count { it is Symbol.FactorStart } - tempInput.count { it is Symbol.FactorEnd }
 
     for (symbol in symbols) {
         if (when (symbol) {
@@ -144,10 +147,13 @@ fun AppState.canAppend(symbols: List<Symbol>): Boolean {
                                 .takeLastWhile { it is Symbol.Numeric }
                                 .none { it is Symbol.Numeric.Point }
 
-                is Symbol.FactorEnd.ClosingParenthesis ->
+                is Symbol.FactorStart ->
                     symbol.isAppendableAfter(tempInput.lastOrNull()) &&
-                            (tempInput.count { it is Symbol.FactorStart }
-                                    > tempInput.count { it is Symbol.FactorEnd })
+                            nestingDepth < AppStateExtensionsConstraints.MAX_NESTING_DEPTH
+
+                is Symbol.FactorEnd ->
+                    symbol.isAppendableAfter(tempInput.lastOrNull()) &&
+                            nestingDepth > 0
 
                 is Symbol.Operator ->
                     symbol.isAppendableAfter((result + tempInput).lastOrNull())
