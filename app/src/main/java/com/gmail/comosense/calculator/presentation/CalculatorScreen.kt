@@ -98,10 +98,14 @@ private fun MainPanel(
 ) {
     var showFunctionKeyGrid by remember { mutableStateOf(false) }
     val deleteKey: Key =
-        if (appState.isInputting) {
-            Key.Backspace
+        if (appState.isCalculating) {
+            Key.Cancel
         } else {
-            Key.Clear
+            if (appState.isInputting) {
+                Key.Backspace
+            } else {
+                Key.Clear
+            }
         }
     val parenthesisKey: Key =
         if (appState.canAppend(Symbol.FactorEnd.ClosingParenthesis)) {

@@ -16,6 +16,7 @@ import com.gmail.comosense.calculator.domain.CalculatorError
 import com.gmail.comosense.calculator.domain.Symbol
 import com.gmail.comosense.calculator.domain.calculate
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -42,6 +43,7 @@ sealed interface AppAction {
     data object Clear : AppAction
     data object Backspace : AppAction
     data class Angle(val isRadians: Boolean) : AppAction
+    data object Cancel : AppAction
 }
 
 class AppViewModel(
@@ -76,6 +78,7 @@ class AppViewModel(
         MutableStateFlow(AppState())
     private val _appEvent: MutableSharedFlow<AppEvent> =
         MutableSharedFlow(extraBufferCapacity = 1)
+    private var calculationJob: Job? = null
 
     init {
         launchSettingsRepositoryAction {
@@ -145,6 +148,9 @@ class AppViewModel(
 
             is AppAction.Angle ->
                 angle(appAction.isRadians)
+
+            is AppAction.Cancel ->
+                cancel()
         }
     }
 
@@ -190,7 +196,7 @@ class AppViewModel(
             )
         ) return
 
-        viewModelScope.launch {
+        calculationJob = viewModelScope.launch {
             try {
                 val calculatedResult: Result<List<Symbol>, CalculatorError> =
                     withContext(Dispatchers.Default) {
@@ -266,6 +272,10 @@ class AppViewModel(
                 appStateUpdateResult = appState.angle(isRadians),
             )
         }
+    }
+
+    private fun cancel() {
+        calculationJob?.cancel()
     }
 
     private inline fun updateAppState(
