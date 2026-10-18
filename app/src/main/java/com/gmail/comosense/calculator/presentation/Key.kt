@@ -14,9 +14,9 @@ sealed interface Key {
     data object Power : Key
     data object Factorial : Key
     data object Equal : Key
+    data object Cancel : Key
     data object Clear : Key
     data object Backspace : Key
-    data object Cancel : Key
     data object ToDegrees : Key
     data object ToRadians : Key
     data object Pi : Key

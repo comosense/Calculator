@@ -32,9 +32,9 @@
     <string name="content_description_multiply">Multiply</string>
     <string name="content_description_divide">Divide</string>
     <string name="content_description_equal">Equals</string>
+    <string name="content_description_cancel">Cancel</string>
     <string name="content_description_clear">Clear</string>
     <string name="content_description_backspace">Backspace</string>
-    <string name="content_description_cancel">Cancel</string>
     <string name="content_description_to_degrees">To degrees</string>
     <string name="content_description_to_radians">To radians</string>
     <string name="content_description_undo">Back</string>

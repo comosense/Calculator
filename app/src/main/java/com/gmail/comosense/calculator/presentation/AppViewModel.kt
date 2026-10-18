@@ -39,11 +39,11 @@ sealed interface AppAction {
     data class DeleteHistory(val id: String) : AppAction
     data object DeleteHistoryAll : AppAction
     data object Calculate : AppAction
+    data object CalculateCancel : AppAction
     data class Input(val symbol: Symbol) : AppAction
     data object Clear : AppAction
     data object Backspace : AppAction
     data class Angle(val isRadians: Boolean) : AppAction
-    data object Cancel : AppAction
 }
 
 class AppViewModel(
@@ -78,7 +78,7 @@ class AppViewModel(
         MutableStateFlow(AppState())
     private val _appEvent: MutableSharedFlow<AppEvent> =
         MutableSharedFlow(extraBufferCapacity = 1)
-    private var calculationJob: Job? = null
+    private var calculateJob: Job? = null
 
     init {
         launchSettingsRepositoryAction {
@@ -137,6 +137,9 @@ class AppViewModel(
             is AppAction.Calculate ->
                 calculate()
 
+            is AppAction.CalculateCancel ->
+                calculateCancel()
+
             is AppAction.Input ->
                 input(appAction.symbol)
 
@@ -148,9 +151,6 @@ class AppViewModel(
 
             is AppAction.Angle ->
                 angle(appAction.isRadians)
-
-            is AppAction.Cancel ->
-                cancel()
         }
     }
 
@@ -196,7 +196,7 @@ class AppViewModel(
             )
         ) return
 
-        calculationJob = viewModelScope.launch {
+        calculateJob = viewModelScope.launch {
             try {
                 val calculatedResult: Result<List<Symbol>, CalculatorError> =
                     withContext(Dispatchers.Default) {
@@ -238,6 +238,10 @@ class AppViewModel(
         }
     }
 
+    private fun calculateCancel() {
+        calculateJob?.cancel()
+    }
+
     private fun input(symbol: Symbol) {
         updateAppState { appState ->
             resolveAppStateUpdate(
@@ -272,10 +276,6 @@ class AppViewModel(
                 appStateUpdateResult = appState.angle(isRadians),
             )
         }
-    }
-
-    private fun cancel() {
-        calculationJob?.cancel()
     }
 
     private inline fun updateAppState(

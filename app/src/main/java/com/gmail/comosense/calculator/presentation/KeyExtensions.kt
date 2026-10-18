@@ -61,14 +61,14 @@ val Key.appAction: AppAction
         is Key.Equal ->
             AppAction.Calculate
 
+        is Key.Cancel ->
+            AppAction.CalculateCancel
+
         is Key.Clear ->
             AppAction.Clear
 
         is Key.Backspace ->
             AppAction.Backspace
-
-        is Key.Cancel ->
-            AppAction.Cancel
 
         is Key.ToDegrees ->
             AppAction.Angle(false)
@@ -130,9 +130,9 @@ val Key.style: Style
             Style.Operator
 
         is Key.Equal,
+        is Key.Cancel,
         is Key.Clear,
-        is Key.Backspace,
-        is Key.Cancel ->
+        is Key.Backspace ->
             Style.Command
 
         is Key.Power,
@@ -217,6 +217,12 @@ fun Key.display(symbolFormatter: SymbolFormatter): Display = when (this) {
             stringResource = R.string.content_description_equal,
         )
 
+    is Key.Cancel ->
+        Display.Icon(
+            painterResource = R.drawable.ic_cancel,
+            stringResource = R.string.content_description_cancel,
+        )
+
     is Key.Clear ->
         Display.Icon(
             painterResource = R.drawable.ic_clear,
@@ -227,12 +233,6 @@ fun Key.display(symbolFormatter: SymbolFormatter): Display = when (this) {
         Display.Icon(
             painterResource = R.drawable.ic_backspace,
             stringResource = R.string.content_description_backspace,
-        )
-
-    is Key.Cancel ->
-        Display.Icon(
-            painterResource = R.drawable.ic_cancel,
-            stringResource = R.string.content_description_cancel,
         )
 
     is Key.ToDegrees ->
