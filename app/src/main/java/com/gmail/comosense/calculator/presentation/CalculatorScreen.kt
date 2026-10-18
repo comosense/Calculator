@@ -266,23 +266,27 @@ private fun ExpressionBox(
 ) {
     val scrollState: ScrollState = rememberScrollState()
     val textMeasurer: TextMeasurer = rememberTextMeasurer()
+    val blinkProgress: Animatable<Float, AnimationVector1D> = remember { Animatable(0f) }
+    val blinkColor: Color = AppTheme.calculatorScreenColors.expressionBlinkBackground
+    val expressionColor: Color = if (appState.isCalculating) {
+        AppTheme.calculatorScreenColors.expression.copy(alpha = 0.35f)
+    } else {
+        AppTheme.calculatorScreenColors.expression
+    }
     val expression: AnnotatedString = buildAnnotatedString {
-        withStyle(style = SpanStyle(color = AppTheme.calculatorScreenColors.expression)) {
+        withStyle(style = SpanStyle(color = expressionColor)) {
             append(symbolFormatter.format(appState.fixedExpression))
         }
-        withStyle(style = SpanStyle(color = AppTheme.calculatorScreenColors.expression.copy(alpha = 0.35f))) {
+        withStyle(style = SpanStyle(color = expressionColor.copy(alpha = 0.35f))) {
             append(symbolFormatter.format(appState.expectedInput))
         }
     }.ifEmpty {
         buildAnnotatedString {
-            withStyle(style = SpanStyle(color = AppTheme.calculatorScreenColors.expression)) {
+            withStyle(style = SpanStyle(color = expressionColor)) {
                 append("0")
             }
         }
     }
-
-    val blinkProgress: Animatable<Float, AnimationVector1D> = remember { Animatable(0f) }
-    val blinkColor: Color = AppTheme.calculatorScreenColors.expressionBlinkBackground
 
     LaunchedEffect(appState.histories) {
         repeat(2) {
@@ -367,11 +371,6 @@ private fun ExpressionBox(
             }
         }
 
-        val expressionColor: Color = if (appState.isCalculating) {
-            AppTheme.calculatorScreenColors.expression.copy(alpha = 0.35f)
-        } else {
-            AppTheme.calculatorScreenColors.expression
-        }
         if (needScroll) {
             Row(
                 modifier = Modifier
