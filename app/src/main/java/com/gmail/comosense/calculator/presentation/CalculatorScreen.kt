@@ -121,6 +121,12 @@ private fun MainPanel(
         } else {
             Key.Negative
         }
+    val angleKey: Key =
+        if (appState.isRadians) {
+            Key.ToDegrees
+        } else {
+            Key.ToRadians
+        }
     val mainKeyGrid: List<List<Key?>> = listOf(
         listOf(
             Key.Digit(7),
@@ -169,7 +175,9 @@ private fun MainPanel(
         ),
         listOf(
             null,
+            angleKey,
             Key.Pi,
+            null,
             null,
         ),
     )

@@ -67,6 +67,12 @@ val Key.appAction: AppAction
         is Key.Backspace ->
             AppAction.Backspace
 
+        is Key.ToRadians ->
+            AppAction.Angle(true)
+
+        is Key.ToDegrees ->
+            AppAction.Angle(false)
+
         is Key.Pi ->
             AppAction.Input(Symbol.Constant.Pi)
 
@@ -127,6 +133,8 @@ val Key.style: Style
 
         is Key.Power,
         is Key.Factorial,
+        is Key.ToRadians,
+        is Key.ToDegrees,
         is Key.Pi,
         is Key.Euler,
         is Key.Sqrt,
@@ -216,6 +224,12 @@ fun Key.display(symbolFormatter: SymbolFormatter): Display = when (this) {
             painterResource = R.drawable.ic_backspace,
             stringResource = R.string.content_description_backspace,
         )
+
+    is Key.ToRadians ->
+        Display.Text("R")
+
+    is Key.ToDegrees ->
+        Display.Text("D")
 
     is Key.Pi ->
         Display.Text("π")

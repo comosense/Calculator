@@ -107,6 +107,14 @@ fun AppState.dropLastExpressionSymbol(): AppStateUpdateResult {
     )
 }
 
+fun AppState.angle(isRadians: Boolean): AppStateUpdateResult {
+    return AppStateUpdateResult.Success(
+        appState = copy(
+            isRadians = isRadians,
+        ),
+    )
+}
+
 private fun AppState.symbolsToAppendOrNull(symbol: Symbol): List<Symbol>? {
     if (canAppend(symbol)) return listOf(symbol)
 

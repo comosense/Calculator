@@ -41,6 +41,7 @@ sealed interface AppAction {
     data class Input(val symbol: Symbol) : AppAction
     data object Clear : AppAction
     data object Backspace : AppAction
+    data class Angle(val isRadians: Boolean) : AppAction
 }
 
 class AppViewModel(
@@ -108,7 +109,8 @@ class AppViewModel(
                 is AppAction.Calculate,
                 is AppAction.Input,
                 is AppAction.Clear,
-                is AppAction.Backspace ->
+                is AppAction.Backspace,
+                is AppAction.Angle ->
                     return
 
                 else ->
@@ -141,6 +143,8 @@ class AppViewModel(
             is AppAction.Backspace ->
                 backspace()
 
+            is AppAction.Angle ->
+                angle(appAction.isRadians)
         }
     }
 
@@ -178,6 +182,7 @@ class AppViewModel(
 
         val settings: Settings = state.settings
         val expression: List<Symbol> = state.expression
+        val isRadians: Boolean = state.isRadians
 
         if (!_appState.compareAndSet(
                 expect = state,
@@ -191,7 +196,7 @@ class AppViewModel(
                     withContext(Dispatchers.Default) {
                         calculate(
                             expression = expression,
-                            isRadians = true,
+                            isRadians = isRadians,
                             precision = settings.precision,
                         )
                     }
@@ -250,6 +255,15 @@ class AppViewModel(
             resolveAppStateUpdate(
                 appState = appState,
                 appStateUpdateResult = appState.dropLastExpressionSymbol(),
+            )
+        }
+    }
+
+    private fun angle(isRadians: Boolean) {
+        updateAppState { appState ->
+            resolveAppStateUpdate(
+                appState = appState,
+                appStateUpdateResult = appState.angle(isRadians),
             )
         }
     }
