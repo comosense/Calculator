@@ -128,13 +128,13 @@ val Key.style: Style
 
         is Key.Equal,
         is Key.Clear,
-        is Key.Backspace,
-        is Key.ToDegrees,
-        is Key.ToRadians ->
+        is Key.Backspace ->
             Style.Command
 
         is Key.Power,
         is Key.Factorial,
+        is Key.ToDegrees,
+        is Key.ToRadians,
         is Key.Pi,
         is Key.Euler,
         is Key.Sqrt,
