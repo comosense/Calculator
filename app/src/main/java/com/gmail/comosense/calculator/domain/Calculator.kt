@@ -188,13 +188,13 @@ private class Parser(
             }
 
             else -> {
-                parsePower()
+                parseBinaryOperation()
             }
         }
     }
 
-    private fun parsePower(): BigDecimal {
-        val base: BigDecimal = parseFactorial()
+    private fun parseBinaryOperation(): BigDecimal {
+        val base: BigDecimal = parsePostfixOperation()
 
         return if (tokens.getOrNull(position) is Token.SpecialOperator.Power) {
             position++
@@ -204,7 +204,7 @@ private class Parser(
         }
     }
 
-    private fun parseFactorial(): BigDecimal {
+    private fun parsePostfixOperation(): BigDecimal {
         var value: BigDecimal = parseFactor()
 
         while (tokens.getOrNull(position) is Token.SpecialOperator.Factorial) {
