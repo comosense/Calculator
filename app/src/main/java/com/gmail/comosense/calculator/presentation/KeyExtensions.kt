@@ -7,6 +7,7 @@ enum class Style {
     Digit,
     Operator,
     Command,
+    Special,
 }
 
 sealed interface Display {
@@ -130,7 +131,6 @@ val Key.style: Style
             Style.Operator
 
         is Key.Equal,
-        is Key.Cancel,
         is Key.Clear,
         is Key.Backspace ->
             Style.Command
@@ -148,6 +148,9 @@ val Key.style: Style
         is Key.Log,
         is Key.Ln ->
             Style.Digit
+
+        is Key.Cancel ->
+            Style.Special
     }
 
 fun Key.display(symbolFormatter: SymbolFormatter): Display = when (this) {

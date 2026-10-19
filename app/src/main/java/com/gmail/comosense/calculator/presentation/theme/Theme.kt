@@ -100,6 +100,8 @@ fun AppTheme(
             operatorKeyContent = MaterialTheme.colorScheme.onSurface,
             commandKeyContainer = MaterialTheme.colorScheme.surfaceContainer,
             commandKeyContent = MaterialTheme.colorScheme.onSurface,
+            specialKeyContainer = MaterialTheme.colorScheme.errorContainer,
+            specialKeyContent = MaterialTheme.colorScheme.onErrorContainer,
             keySwitcher = MaterialTheme.colorScheme.tertiary,
         )
         val settingsScreenDimensions = SettingsScreenDimensions(

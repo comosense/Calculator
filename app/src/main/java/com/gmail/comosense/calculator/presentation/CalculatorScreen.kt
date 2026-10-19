@@ -494,6 +494,12 @@ private fun KeyButton(
                 container = AppTheme.calculatorScreenColors.commandKeyContainer,
                 content = AppTheme.calculatorScreenColors.commandKeyContent,
             )
+
+        Style.Special ->
+            Colors(
+                container = AppTheme.calculatorScreenColors.specialKeyContainer,
+                content = AppTheme.calculatorScreenColors.specialKeyContent,
+            )
     }
 
     Button(
