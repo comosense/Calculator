@@ -79,10 +79,10 @@ fun CalculatorScreen(
 ) {
     ScreenScaffold {
         MainPanel(
+            modifier = Modifier.fillMaxSize(),
             appState = appState,
             onAction = onAction,
             onShow = onShow,
-            modifier = Modifier.fillMaxSize(),
             symbolFormatter = symbolFormatter,
         )
     }
@@ -90,22 +90,20 @@ fun CalculatorScreen(
 
 @Composable
 private fun MainPanel(
+    modifier: Modifier,
     appState: AppState,
     onAction: (AppAction) -> Unit,
     onShow: (AppScreen) -> Unit,
-    modifier: Modifier,
     symbolFormatter: SymbolFormatter,
 ) {
     var showFunctionKeyGrid by remember { mutableStateOf(false) }
     val deleteKey: Key =
         if (appState.isCalculating) {
             Key.Cancel
+        } else if (appState.isInputting) {
+            Key.Backspace
         } else {
-            if (appState.isInputting) {
-                Key.Backspace
-            } else {
-                Key.Clear
-            }
+            Key.Clear
         }
     val parenthesisKey: Key =
         if (appState.canAppend(Symbol.FactorEnd.ClosingParenthesis)) {
@@ -205,12 +203,12 @@ private fun MainPanel(
             )
 
             ExpressionBox(
-                appState = appState,
-                onShow = onShow,
                 modifier = Modifier.size(
                     width = inscribedLength,
                     height = inscribedLength / 5f
                 ),
+                appState = appState,
+                onShow = onShow,
                 symbolFormatter = symbolFormatter,
             )
 
@@ -237,11 +235,9 @@ private fun MainPanel(
                     } else {
                         mainKeyGrid
                     },
-                    onClick = { key ->
-                        onAction(key.appAction)
-                    },
-                    modifier = Modifier.fillMaxSize(),
                     arrangementSpace = 2.dp,
+                    modifier = Modifier.fillMaxSize(),
+                    onAction = onAction,
                     symbolFormatter = symbolFormatter,
                 )
             }
@@ -263,9 +259,9 @@ private fun MainPanel(
 
 @Composable
 private fun ExpressionBox(
+    modifier: Modifier,
     appState: AppState,
     onShow: (AppScreen) -> Unit,
-    modifier: Modifier,
     symbolFormatter: SymbolFormatter,
 ) {
     val scrollState: ScrollState = rememberScrollState()
@@ -411,9 +407,9 @@ private fun ExpressionBox(
 @Composable
 private fun KeyGrid(
     keyGrid: List<List<Key?>>,
-    onClick: (Key) -> Unit,
-    modifier: Modifier,
     arrangementSpace: Dp,
+    modifier: Modifier,
+    onAction: (AppAction) -> Unit,
     symbolFormatter: SymbolFormatter,
 ) {
     Column(
@@ -423,11 +419,11 @@ private fun KeyGrid(
         keyGrid.forEach { keys ->
             KeysRow(
                 keys = keys,
-                onClick = onClick,
+                arrangementSpace = arrangementSpace,
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f),
-                arrangementSpace = arrangementSpace,
+                onAction = onAction,
                 symbolFormatter = symbolFormatter,
             )
         }
@@ -437,9 +433,9 @@ private fun KeyGrid(
 @Composable
 private fun KeysRow(
     keys: List<Key?>,
-    onClick: (Key) -> Unit,
-    modifier: Modifier,
     arrangementSpace: Dp,
+    modifier: Modifier,
+    onAction: (AppAction) -> Unit,
     symbolFormatter: SymbolFormatter,
 ) {
     Row(
@@ -451,10 +447,10 @@ private fun KeysRow(
             if (key != null) {
                 KeyButton(
                     key = key,
-                    onClick = onClick,
                     modifier = Modifier
                         .fillMaxHeight()
                         .weight(1f),
+                    onAction = onAction,
                     symbolFormatter = symbolFormatter,
                 )
             } else {
@@ -471,8 +467,8 @@ private fun KeysRow(
 @Composable
 private fun KeyButton(
     key: Key,
-    onClick: (Key) -> Unit,
     modifier: Modifier,
+    onAction: (AppAction) -> Unit,
     symbolFormatter: SymbolFormatter,
 ) {
     data class Colors(
@@ -501,8 +497,8 @@ private fun KeyButton(
     }
 
     Button(
-        onClick = { onClick(key) },
-        onLongClick = { key.longClickKeyOrNull?.let { onClick(it) } },
+        onClick = { onAction(key.appAction) },
+        onLongClick = { key.longClickKeyOrNull?.let { onAction(it.appAction) } },
         modifier = modifier,
         colors = ButtonDefaults.buttonColors(
             containerColor = colors.container,

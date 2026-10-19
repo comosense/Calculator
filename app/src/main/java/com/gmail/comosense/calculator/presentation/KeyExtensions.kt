@@ -9,7 +9,7 @@ enum class Style {
     Command,
 }
 
-interface Display {
+sealed interface Display {
     data class Text(
         val text: String,
     ) : Display
