@@ -7,7 +7,7 @@ enum class Style {
     Digit,
     Operator,
     Command,
-    Special,
+    Attention,
 }
 
 sealed interface Display {
@@ -150,7 +150,7 @@ val Key.style: Style
             Style.Digit
 
         is Key.Cancel ->
-            Style.Special
+            Style.Attention
     }
 
 fun Key.display(symbolFormatter: SymbolFormatter): Display = when (this) {

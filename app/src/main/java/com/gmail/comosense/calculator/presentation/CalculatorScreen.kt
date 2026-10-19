@@ -495,10 +495,10 @@ private fun KeyButton(
                 content = AppTheme.calculatorScreenColors.commandKeyContent,
             )
 
-        Style.Special ->
+        Style.Attention ->
             Colors(
-                container = AppTheme.calculatorScreenColors.specialKeyContainer,
-                content = AppTheme.calculatorScreenColors.specialKeyContent,
+                container = AppTheme.calculatorScreenColors.attentionKeyContainer,
+                content = AppTheme.calculatorScreenColors.attentionKeyContent,
             )
     }
 
