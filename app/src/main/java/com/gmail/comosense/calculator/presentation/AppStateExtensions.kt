@@ -17,13 +17,13 @@ sealed interface AppStateUpdateResult {
 
 val AppState.fixedExpression: List<Symbol>
     get() = result + input
-val AppState.expectedInput: List<Symbol>
+val AppState.completionInput: List<Symbol>
     get() = List(
         input.count { it is Symbol.FactorStart } -
                 input.count { it is Symbol.FactorEnd }
     ) { Symbol.FactorEnd.ClosingParenthesis }
 val AppState.expression: List<Symbol>
-    get() = fixedExpression + expectedInput
+    get() = fixedExpression + completionInput
 val AppState.isInputting: Boolean
     get() = input.isNotEmpty()
 

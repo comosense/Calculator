@@ -282,7 +282,7 @@ private fun ExpressionBox(
             append(symbolFormatter.format(appState.fixedExpression))
         }
         withStyle(style = SpanStyle(color = expressionColor.copy(alpha = 0.35f))) {
-            append(symbolFormatter.format(appState.expectedInput))
+            append(symbolFormatter.format(appState.completionInput))
         }
     }.ifEmpty {
         buildAnnotatedString {
