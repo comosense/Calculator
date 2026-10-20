@@ -63,7 +63,7 @@ class SettingsRepository(
     }
 
     private fun isValidPrecision(precision: Int): Boolean =
-        precision in SettingsDataStoreConstraints.VALID_PRECISION_RANGE
+        precision in SettingsDataStoreConstraints.VALID_PRECISIONS
 
     private suspend fun edit(
         error: SettingsRepositoryError,

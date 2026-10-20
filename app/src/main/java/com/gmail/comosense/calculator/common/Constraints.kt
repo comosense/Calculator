@@ -2,8 +2,7 @@ package com.gmail.comosense.calculator.common
 
 internal object Constraints {
     const val DEFAULT_PRECISION: Int = 16
-    const val MIN_PRECISION: Int = 8
-    const val MAX_PRECISION: Int = 64
+    val VALID_PRECISIONS: List<Int> = listOf(8, 16, 24, 32, 40, 48, 56, 64)
     const val MAX_HISTORY_COUNT: Int = 50
     const val MAX_RESULT_SIZE: Int = 512
     const val MAX_EXPRESSION_SIZE: Int = 1024

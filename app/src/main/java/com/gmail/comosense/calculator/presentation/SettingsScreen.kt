@@ -36,8 +36,6 @@ import kotlinx.coroutines.flow.map
 import kotlin.time.Duration.Companion.milliseconds
 
 private const val INSCRIBED_LENGTH_RATIO: Float = 0.70710677f
-private const val DEFAULT_PRECISION = SettingsDataStoreConstraints.DEFAULT_PRECISION
-private val PRECISION_OPTIONS: List<Int> = listOf(8, 16, 24, 32, 40, 48, 56, 64)
 
 @OptIn(FlowPreview::class)
 @Composable
@@ -47,21 +45,29 @@ fun SettingsScreen(
     onBack: () -> Unit,
 ) {
     ScreenScaffold(timeText = {}) {
-        val precisionIndex: Int = PRECISION_OPTIONS
-            .indexOf(settings.precision)
-            .let { index ->
-                if (index >= 0) index else PRECISION_OPTIONS.indexOf(DEFAULT_PRECISION)
-            }
+        val precisionOptions: List<Int> =
+            SettingsDataStoreConstraints.VALID_PRECISIONS
+        val precisionIndex: Int =
+            precisionOptions.indexOf(settings.precision)
+                .let { index ->
+                    if (index >= 0) {
+                        index
+                    } else {
+                        precisionOptions.indexOf(
+                            SettingsDataStoreConstraints.DEFAULT_PRECISION
+                        )
+                    }
+                }
         val precisionPickerState =
             rememberPickerState(
-                initialNumberOfOptions = PRECISION_OPTIONS.size,
+                initialNumberOfOptions = precisionOptions.size,
                 initiallySelectedIndex = precisionIndex,
                 shouldRepeatOptions = false,
             )
 
         LaunchedEffect(precisionPickerState) {
             snapshotFlow { precisionPickerState.selectedOptionIndex }
-                .map { index -> PRECISION_OPTIONS[index] }
+                .map { index -> precisionOptions[index] }
                 .distinctUntilChanged()
                 .drop(1)
                 .debounce(500.milliseconds)
@@ -112,7 +118,7 @@ fun SettingsScreen(
                 Picker(
                     state = precisionPickerState,
                     contentDescription = {
-                        PRECISION_OPTIONS[precisionPickerState.selectedOptionIndex].toString()
+                        precisionOptions[precisionPickerState.selectedOptionIndex].toString()
                     },
                     modifier = Modifier.size(
                         width = inscribedLength,
@@ -120,7 +126,7 @@ fun SettingsScreen(
                     ),
                 ) { index ->
                     Text(
-                        text = PRECISION_OPTIONS[index].toString(),
+                        text = precisionOptions[index].toString(),
                         color = AppTheme.settingsScreenColors.picker,
                         fontSize = AppTheme.settingsScreenDimensions.pickerFontSize,
                     )

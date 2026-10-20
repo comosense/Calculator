@@ -143,7 +143,8 @@ private fun AppState.symbolsToAppendOrNull(symbol: Symbol): List<Symbol>? {
 fun AppState.canAppend(symbol: Symbol): Boolean = this.canAppend(listOf(symbol))
 fun AppState.canAppend(symbols: List<Symbol>): Boolean {
     val tempInput: MutableList<Symbol> = input.toMutableList()
-    val nestingDepth: Int =
+
+    fun nestingDepth(): Int =
         tempInput.count { symbol -> symbol is Symbol.FactorStart } -
                 tempInput.count { symbol -> symbol is Symbol.FactorEnd }
 
@@ -157,11 +158,11 @@ fun AppState.canAppend(symbols: List<Symbol>): Boolean {
 
                 is Symbol.FactorStart ->
                     symbol.isAppendableAfter(tempInput.lastOrNull()) &&
-                            nestingDepth < AppStateExtensionsConstraints.MAX_NESTING_DEPTH
+                            nestingDepth() < AppStateExtensionsConstraints.MAX_NESTING_DEPTH
 
                 is Symbol.FactorEnd ->
                     symbol.isAppendableAfter(tempInput.lastOrNull()) &&
-                            nestingDepth > 0
+                            nestingDepth() > 0
 
                 is Symbol.Operator,
                 is Symbol.SpecialOperator ->
