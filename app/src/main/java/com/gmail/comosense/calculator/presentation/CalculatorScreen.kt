@@ -418,7 +418,11 @@ private fun KeyButton(
 
     Button(
         onClick = { onAction(key.appAction) },
-        onLongClick = { key.longClickKeyOrNull?.let { onAction(it.appAction) } },
+        onLongClick = {
+            key.altKeyOrNull?.let { altKey ->
+                onAction(altKey.appAction)
+            }
+        },
         modifier = modifier,
         colors = ButtonDefaults.buttonColors(
             containerColor = colors.container,

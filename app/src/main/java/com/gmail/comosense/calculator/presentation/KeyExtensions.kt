@@ -102,7 +102,7 @@ val Key.appAction: AppAction
             AppAction.Input(Symbol.FactorStart.Function.Ln)
     }
 
-val Key.longClickKeyOrNull: Key?
+val Key.altKeyOrNull: Key?
     get() = when (this) {
         is Key.ClosingParenthesis
             -> Key.OpeningParenthesis
