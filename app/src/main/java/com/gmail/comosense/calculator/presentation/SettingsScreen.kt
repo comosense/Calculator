@@ -28,14 +28,18 @@ import com.gmail.comosense.calculator.R
 import com.gmail.comosense.calculator.data.Settings
 import com.gmail.comosense.calculator.data.SettingsDataStoreConstraints
 import com.gmail.comosense.calculator.presentation.theme.AppTheme
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.map
+import kotlin.time.Duration.Companion.milliseconds
 
 private const val INSCRIBED_LENGTH_RATIO: Float = 0.70710677f
 private const val DEFAULT_PRECISION = SettingsDataStoreConstraints.DEFAULT_PRECISION
 private val PRECISION_OPTIONS: List<Int> = listOf(8, 16, 24, 32, 40, 48, 56, 64)
 
+@OptIn(FlowPreview::class)
 @Composable
 fun SettingsScreen(
     settings: Settings,
@@ -60,6 +64,7 @@ fun SettingsScreen(
                 .map { index -> PRECISION_OPTIONS[index] }
                 .distinctUntilChanged()
                 .drop(1)
+                .debounce(500.milliseconds)
                 .collect { precision ->
                     onAction(AppAction.SetPrecision(precision))
                 }
