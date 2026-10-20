@@ -19,8 +19,9 @@ val AppState.fixedExpression: List<Symbol>
     get() = result + input
 val AppState.completionInput: List<Symbol>
     get() = List(
-        input.count { symbol -> symbol is Symbol.FactorStart } -
-                input.count { symbol -> symbol is Symbol.FactorEnd }
+        (input.count { symbol -> symbol is Symbol.FactorStart } -
+                input.count { symbol -> symbol is Symbol.FactorEnd })
+            .coerceAtLeast(0)
     ) { Symbol.FactorEnd.ClosingParenthesis }
 val AppState.expression: List<Symbol>
     get() = fixedExpression + completionInput
@@ -31,7 +32,9 @@ fun AppState.appendExpression(symbol: Symbol): AppStateUpdateResult {
     val symbols: List<Symbol> = symbolsToAppendOrNull(symbol)
         ?: return AppStateUpdateResult.UnacceptableSymbol
 
-    if (expression.size + symbols.size > AppStateExtensionsConstraints.MAX_EXPRESSION_SIZE) {
+    if (expression.size + symbols.size
+        > AppStateExtensionsConstraints.MAX_EXPRESSION_SIZE
+    ) {
         return AppStateUpdateResult.ExpressionTooLarge
     }
 

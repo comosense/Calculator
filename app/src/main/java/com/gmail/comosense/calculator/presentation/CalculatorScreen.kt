@@ -59,6 +59,7 @@ import androidx.wear.compose.material3.ButtonDefaults
 import androidx.wear.compose.material3.CircularProgressIndicator
 import androidx.wear.compose.material3.Icon
 import androidx.wear.compose.material3.IconButton
+import androidx.wear.compose.material3.LocalTextStyle
 import androidx.wear.compose.material3.ScreenScaffold
 import com.gmail.comosense.calculator.R
 import com.gmail.comosense.calculator.domain.Symbol
@@ -251,6 +252,7 @@ private fun ExpressionBox(
     ) {
         val density: Density = LocalDensity.current
         val minFontSize: TextUnit = AppTheme.calculatorScreenDimensions.expressionMinFontSize
+        val style: TextStyle = LocalTextStyle.current.copy(fontSize = minFontSize)
         val measured: TextLayoutResult = remember(
             expression,
             minFontSize,
@@ -258,9 +260,7 @@ private fun ExpressionBox(
         ) {
             textMeasurer.measure(
                 text = expression,
-                style = TextStyle(
-                    fontSize = minFontSize,
-                ),
+                style = style
             )
         }
 
