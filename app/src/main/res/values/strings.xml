@@ -35,8 +35,8 @@
     <string name="content_description_cancel">Cancel</string>
     <string name="content_description_clear">Clear</string>
     <string name="content_description_backspace">Backspace</string>
-    <string name="content_description_to_degrees">To degrees</string>
-    <string name="content_description_to_radians">To radians</string>
+    <string name="content_description_degrees">degrees to radians</string>
+    <string name="content_description_radians">radians to degrees</string>
     <string name="content_description_undo">Back</string>
     <string name="content_description_delete">Delete</string>
     <string name="content_description_key_switcher">Switch keypad</string>

@@ -7,6 +7,7 @@ enum class Style {
     Digit,
     Operator,
     Command,
+    Mode,
     Attention,
 }
 
@@ -71,11 +72,11 @@ val Key.appAction: AppAction
         is Key.Backspace ->
             AppAction.Backspace
 
-        is Key.ToDegrees ->
-            AppAction.Angle(false)
-
-        is Key.ToRadians ->
+        is Key.Degrees ->
             AppAction.Angle(true)
+
+        is Key.Radians ->
+            AppAction.Angle(false)
 
         is Key.Pi ->
             AppAction.Input(Symbol.Constant.Pi)
@@ -137,8 +138,6 @@ val Key.style: Style
 
         is Key.Power,
         is Key.Factorial,
-        is Key.ToDegrees,
-        is Key.ToRadians,
         is Key.Pi,
         is Key.Euler,
         is Key.Sqrt,
@@ -148,6 +147,10 @@ val Key.style: Style
         is Key.Log,
         is Key.Ln ->
             Style.Digit
+
+        is Key.Degrees,
+        is Key.Radians ->
+            Style.Mode
 
         is Key.Cancel ->
             Style.Attention
@@ -238,16 +241,16 @@ fun Key.display(symbolFormatter: SymbolFormatter): Display = when (this) {
             stringResource = R.string.content_description_backspace,
         )
 
-    is Key.ToDegrees ->
+    is Key.Degrees ->
         Display.Icon(
-            painterResource = R.drawable.ic_to_degrees,
-            stringResource = R.string.content_description_to_degrees
+            painterResource = R.drawable.ic_degrees,
+            stringResource = R.string.content_description_degrees
         )
 
-    is Key.ToRadians ->
+    is Key.Radians ->
         Display.Icon(
-            painterResource = R.drawable.ic_to_radians,
-            stringResource = R.string.content_description_to_radians
+            painterResource = R.drawable.ic_radians,
+            stringResource = R.string.content_description_radians
         )
 
     is Key.Pi ->

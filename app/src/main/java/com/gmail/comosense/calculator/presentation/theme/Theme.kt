@@ -100,6 +100,8 @@ fun AppTheme(
             operatorKeyContent = MaterialTheme.colorScheme.onSurface,
             commandKeyContainer = MaterialTheme.colorScheme.surfaceContainer,
             commandKeyContent = MaterialTheme.colorScheme.onSurface,
+            modeKeyContainer = MaterialTheme.colorScheme.background,
+            modeKeyContent = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
             attentionKeyContainer = MaterialTheme.colorScheme.tertiaryContainer,
             attentionKeyContent = MaterialTheme.colorScheme.onTertiaryContainer,
             keySwitcher = MaterialTheme.colorScheme.tertiary,

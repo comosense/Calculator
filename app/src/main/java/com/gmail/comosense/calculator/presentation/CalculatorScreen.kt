@@ -409,6 +409,12 @@ private fun KeyButton(
                 content = AppTheme.calculatorScreenColors.commandKeyContent,
             )
 
+        Style.Mode ->
+            Colors(
+                container = AppTheme.calculatorScreenColors.modeKeyContainer,
+                content = AppTheme.calculatorScreenColors.modeKeyContent,
+            )
+
         Style.Attention ->
             Colors(
                 container = AppTheme.calculatorScreenColors.attentionKeyContainer,
@@ -518,9 +524,9 @@ private fun mainKeyGrid(appState: AppState): List<List<Key?>> {
 private fun functionKeyGrid(appState: AppState): List<List<Key?>> {
     val angleKey: Key =
         if (appState.isRadians) {
-            Key.ToDegrees
+            Key.Radians
         } else {
-            Key.ToRadians
+            Key.Degrees
         }
 
     return listOf(

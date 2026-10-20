@@ -17,8 +17,8 @@ sealed interface Key {
     data object Cancel : Key
     data object Clear : Key
     data object Backspace : Key
-    data object ToDegrees : Key
-    data object ToRadians : Key
+    data object Degrees : Key
+    data object Radians : Key
     data object Pi : Key
     data object Euler : Key
     data object Sqrt : Key
