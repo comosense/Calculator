@@ -20,11 +20,9 @@ Designed for small, round watch displays, with large, easy-to-tap keys and a com
 * Square root (`√`)
 * Exponentiation (`^`)
 * Factorial (`!`)
-* Sine (`sin`)
-* Cosine (`cos`)
-* Tangent (`tan`)
-* Common logarithm (`log`, base 10)
-* Natural logarithm (`ln`)
+* Trigonometric functions: Sine (`sin`), Cosine (`cos`), Tangent (`tan`)
+* Angle modes: Switchable between Radians (`RAD`) and Degrees (`DEG`)
+* Logarithm functions: Common logarithm (`log`, base 10), Natural logarithm (`ln`)
 * Mathematical constants: pi (`π`) and Euler's number (`e`)
 
 ### Expression input
@@ -32,11 +30,16 @@ Designed for small, round watch displays, with large, easy-to-tap keys and a com
 * Follows standard mathematical operator precedence
 * Supports grouped expressions such as `(1 + 2) × 3`
 * Supports unary `+` and `-`
+* **Continuous calculation**: Pressing an operator or special operator (`+`, `-`, `×`, `÷`, `^`, `!`) immediately after evaluating an expression continues calculation using the previous result
+* **Implicit multiplication**: Automatically inserts `×` when entering constants, functions, or opening parentheses after numbers (e.g., entering `π` after `2` becomes `2×π`)
+* **Auto-completion**: Unclosed parentheses are displayed with a semi-transparent preview and automatically closed when evaluating
+* **Smart decimal point**: Automatically prefixes with `0` when `.` is entered at the beginning of an input or after an operator
 
 ### Smart keypad
 
 * Keys adapt to the current input context
 * The parentheses key switches between `(` and `)`
+* Long-press the closing parenthesis key `)` to input an opening parenthesis `(`
 * The `+` and `-` keys switch between unary signs and binary arithmetic operators
 * The delete key switches between Backspace and Clear, depending on the input state
 * Long-press the Backspace key to clear the current expression
@@ -45,7 +48,7 @@ Designed for small, round watch displays, with large, easy-to-tap keys and a com
 ### Display
 
 * Locale-aware thousands and decimal separators
-* Text size adjust automatically to fit the available display area
+* Text size adjusts automatically to fit the available display area
 * Long expressions remain accessible through horizontal scrolling
 
 ### Calculation history
@@ -54,10 +57,11 @@ Designed for small, round watch displays, with large, easy-to-tap keys and a com
 * When an expression is being entered, the selected result is appended to the current input
 * Delete individual entries or clear the entire history
 * Long-press a history entry to enter deletion mode
+* Independent horizontal scrolling for lengthy expressions and results within history items
 
 ### Settings
 
-* Set the number of significant digit used in calculations
+* Adjust calculation precision from 8 to 64 significant digits
 
 ## Usage
 
@@ -94,46 +98,41 @@ log(100) = 2
 ln(e) = 1
 ```
 
-Trigonometric functions use radians. Results are rounded according to the calculator's configured precision.
+* Tap the RAD / DEG key on the scientific keypad to toggle between radian and degree angle modes.
+* **Precision and rounding:** Calculations involving irrational constants and transcendental functions (such as `ln(e)`) are subject to the configured precision. At certain settings (such as 8 or 16 digits), results may display slight rounding discrepancies (e.g., `0.999999...` instead of an exact `1`) due to finite series approximations.
 
 ### Deleting and clearing
 
-While entering an expression, the delete key works as Backspace.
-
-When no expression is active, the delete key switches to Clear.
-
-You can also long-press the Backspace key to clear the current expression.
+* While entering an expression, the delete key works as Backspace.
+* When no expression is active, the delete key switches to Clear.
+* Long-press the Backspace key at any time to instantly clear the entire expression.
 
 ### Managing calculation history
 
-Tap the expression display at the top of the calculator to open the history.
+Tap the expression display at the top of the calculator to open calculation history.
 
 From the history screen, you can:
 
-1. Tap a calculation to reuse its result.
-2. Long-press a history entry to enter delete mode.
-3. Tap individual entries to delete them.
-4. Tap **Delete all** to clear the history.
-5. Swipe from the left edge or press the back button to return to the calculator.
+* **Reuse result:** Tap a history item to paste its result into the current input.
+* **Deletion mode:** Long-press any item to enter deletion mode. Tap individual items to delete them, or tap Delete all at the bottom.
+* **Return:** Swipe from the left edge, press the undo button, or use the watch's physical back button.
 
 The history is stored locally on the watch using Jetpack DataStore and is limited to 50 entries.
 
 ### Changing settings
 
-Long-press the expression display at the top of the calculator to open the settings.
+Long-press the expression display at the top of the calculator to open settings.
 
 ## Supported devices
 
-Compatible with Wear OS devices running Android API 30 or later.
-
-The UI is optimized for smartwatch displays, including round screens.
+* Platform: Wear OS
+* Minimum SDK: Android API 30 (Wear OS 3.0+)
+* Target SDK: Android API 37
+* Form factor: Optimized for circular smartwatch displays, including rotary/crown hardware controls.
 
 ## Technology stack
 
 * Language: Kotlin
-* Platform: Wear OS
-* Minimum SDK: Android API 30
-* Target SDK: Android API 37
 * UI: Jetpack Compose
 * Wear UI: Compose for Wear OS / Wear Compose Material 3
 * State management: ViewModel, StateFlow, SharedFlow
@@ -153,23 +152,21 @@ The engine includes:
 * Operator precedence for arithmetic expressions
 * Unary `+` and `-`
 * Parentheses and grouped expressions
-* Arbitrary-precision decimal arithmetic using `BigDecimal`
-* `HALF_UP` rounding
+* Arbitrary-precision decimal arithmetic via `BigDecimal` using `HALF_UP` rounding
 * Custom implementations of square root, exponentiation, factorial, trigonometric functions, logarithms, and mathematical constants
 
 ### Calculation limits
 
 To keep calculations and displayed results within defined limits:
 
-* Factorial arguments must be non-negative integers no greater than 146
-* Integer exponents must have an absolute value of 1024 or less
-* Non-integer exponents must have an absolute value of 1024 or less
-* Results are limited to 256 characters when represented in plain decimal nation
-* Expressions are limited to 1,024 symbols
+* Factorial arguments: Non-negative integers up to 253
+* Integer exponents: Absolute value of 1024 or less
+* Non-integer exponents: Absolute value of 1024 or less
+* Nesting depth: Up to 64 nested levels of parentheses and function calls
+* Result size: Limited to 512 characters when represented in plain decimal notation
+* Expression length: Up to 1024 input symbols
 
-Invalid operations, including division by zero and out-of-domain function arguments, are reported as calculation errors.
-
-All calculations are performed locally by the app.
+Invalid operations (such as division by zero or negative arguments for square roots/logarithms) are gracefully handled and reported via subtle tactile and visual error messages.
 
 ## Privacy
 
