@@ -45,7 +45,9 @@ fun SettingsScreen(
     ScreenScaffold(timeText = {}) {
         val precisionIndex: Int = PRECISION_OPTIONS
             .indexOf(settings.precision)
-            .let { if (it >= 0) it else PRECISION_OPTIONS.indexOf(DEFAULT_PRECISION) }
+            .let { index ->
+                if (index >= 0) index else PRECISION_OPTIONS.indexOf(DEFAULT_PRECISION)
+            }
         val precisionPickerState =
             rememberPickerState(
                 initialNumberOfOptions = PRECISION_OPTIONS.size,
@@ -55,7 +57,7 @@ fun SettingsScreen(
 
         LaunchedEffect(precisionPickerState) {
             snapshotFlow { precisionPickerState.selectedOptionIndex }
-                .map { PRECISION_OPTIONS[it] }
+                .map { index -> PRECISION_OPTIONS[index] }
                 .distinctUntilChanged()
                 .drop(1)
                 .collect { precision ->
