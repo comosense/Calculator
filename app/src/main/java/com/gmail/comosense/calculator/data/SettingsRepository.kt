@@ -27,7 +27,7 @@ class SettingsRepository(
         dataStore.data.map { preferences ->
             val precision: Int = preferences[SettingsKeys.PRECISION]
                 ?.takeIf(::isValidPrecision)
-                ?: SettingsDataStoreConstraints.DEFAULT_PRECISION
+                ?: SettingsConstraints.DEFAULT_PRECISION
 
             Settings(
                 precision = precision
@@ -41,7 +41,7 @@ class SettingsRepository(
                 val precision: Int? = preferences[SettingsKeys.PRECISION]
                 if (precision != null && !isValidPrecision(precision)) {
                     preferences[SettingsKeys.PRECISION] =
-                        SettingsDataStoreConstraints.DEFAULT_PRECISION
+                        SettingsConstraints.DEFAULT_PRECISION
                 }
             },
         )
@@ -63,7 +63,7 @@ class SettingsRepository(
     }
 
     private fun isValidPrecision(precision: Int): Boolean =
-        precision in SettingsDataStoreConstraints.VALID_PRECISIONS
+        precision in SettingsConstraints.VALID_PRECISIONS
 
     private suspend fun edit(
         error: SettingsRepositoryError,

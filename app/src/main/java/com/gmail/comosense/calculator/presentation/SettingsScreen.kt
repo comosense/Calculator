@@ -26,7 +26,7 @@ import androidx.wear.compose.material3.Text
 import androidx.wear.compose.material3.rememberPickerState
 import com.gmail.comosense.calculator.R
 import com.gmail.comosense.calculator.data.Settings
-import com.gmail.comosense.calculator.data.SettingsDataStoreConstraints
+import com.gmail.comosense.calculator.data.SettingsConstraints
 import com.gmail.comosense.calculator.presentation.theme.AppTheme
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce
@@ -45,29 +45,26 @@ fun SettingsScreen(
     onBack: () -> Unit,
 ) {
     ScreenScaffold(timeText = {}) {
-        val precisionOptions: List<Int> =
-            SettingsDataStoreConstraints.VALID_PRECISIONS
-        val precisionIndex: Int =
-            precisionOptions.indexOf(settings.precision)
-                .let { index ->
-                    if (index >= 0) {
-                        index
-                    } else {
-                        precisionOptions.indexOf(
-                            SettingsDataStoreConstraints.DEFAULT_PRECISION
-                        )
-                    }
+        val precisionIndex: Int = SettingsConstraints.VALID_PRECISIONS
+            .indexOf(settings.precision)
+            .let { index ->
+                if (index >= 0) {
+                    index
+                } else {
+                    SettingsConstraints.VALID_PRECISIONS
+                        .indexOf(SettingsConstraints.DEFAULT_PRECISION)
                 }
+            }
         val precisionPickerState =
             rememberPickerState(
-                initialNumberOfOptions = precisionOptions.size,
+                initialNumberOfOptions = SettingsConstraints.VALID_PRECISIONS.size,
                 initiallySelectedIndex = precisionIndex,
                 shouldRepeatOptions = false,
             )
 
         LaunchedEffect(precisionPickerState) {
             snapshotFlow { precisionPickerState.selectedOptionIndex }
-                .map { index -> precisionOptions[index] }
+                .map { index -> SettingsConstraints.VALID_PRECISIONS[index] }
                 .distinctUntilChanged()
                 .drop(1)
                 .debounce(500.milliseconds)
@@ -118,7 +115,9 @@ fun SettingsScreen(
                 Picker(
                     state = precisionPickerState,
                     contentDescription = {
-                        precisionOptions[precisionPickerState.selectedOptionIndex].toString()
+                        SettingsConstraints.VALID_PRECISIONS[
+                            precisionPickerState.selectedOptionIndex
+                        ].toString()
                     },
                     modifier = Modifier.size(
                         width = inscribedLength,
@@ -126,7 +125,7 @@ fun SettingsScreen(
                     ),
                 ) { index ->
                     Text(
-                        text = precisionOptions[index].toString(),
+                        text = SettingsConstraints.VALID_PRECISIONS[index].toString(),
                         color = AppTheme.settingsScreenColors.picker,
                         fontSize = AppTheme.settingsScreenDimensions.pickerFontSize,
                     )

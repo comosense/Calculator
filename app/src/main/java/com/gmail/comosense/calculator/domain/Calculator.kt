@@ -1,14 +1,9 @@
 package com.gmail.comosense.calculator.domain
 
-import com.gmail.comosense.calculator.common.Constraints
 import com.gmail.comosense.calculator.common.Result
 import java.math.BigDecimal
 import java.math.MathContext
 import java.math.RoundingMode
-
-internal object CalculatorConstraints {
-    const val MAX_RESULT_SIZE: Int = Constraints.MAX_RESULT_SIZE
-}
 
 enum class CalculatorError {
     Unsupported,
@@ -25,11 +20,6 @@ enum class CalculatorError {
     Arithmetic,
 }
 
-enum class BigDecimalError {
-    TooLarge,
-    Unsupported,
-}
-
 private class DivisionByZeroException : ArithmeticException()
 
 fun calculate(
@@ -38,12 +28,6 @@ fun calculate(
     precision: Int,
 ): Result<List<Symbol>, CalculatorError> {
     require(precision > 0)
-
-    fun BigDecimalError.toCalculatorError(): CalculatorError = when (this) {
-        BigDecimalError.Unsupported -> CalculatorError.Unsupported
-        BigDecimalError.TooLarge -> CalculatorError.ResultTooLarge
-    }
-
     val tokens: List<Token> = tokenize(expression)
         ?: return Result.Err(CalculatorError.InvalidExpression)
 
@@ -303,26 +287,4 @@ private class Parser(
                 bigDecimalMath.ln(value)
         }
     }
-}
-
-private fun BigDecimal.toSymbols(): Result<List<Symbol>, BigDecimalError> {
-    val plainString: String = stripTrailingZeros().toPlainString()
-    if (plainString.length > CalculatorConstraints.MAX_RESULT_SIZE) {
-        return Result.Err(BigDecimalError.TooLarge)
-    }
-
-    val symbols: List<Symbol> = buildList {
-        for (c in plainString) {
-            add(
-                when (c) {
-                    in '0'..'9' -> Symbol.Numeric.Digit(c.digitToInt())
-                    '.' -> Symbol.Numeric.Point
-                    '-' -> Symbol.Sign.Negative
-                    else -> return Result.Err(BigDecimalError.Unsupported)
-                }
-            )
-        }
-    }
-
-    return Result.Ok(symbols)
 }
