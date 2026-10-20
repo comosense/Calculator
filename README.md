@@ -115,7 +115,7 @@ From the history screen, you can:
 
 * **Reuse result:** Tap a history item to paste its result into the current input.
 * **Deletion mode:** Long-press any item to enter deletion mode. Tap individual items to delete them, or tap Delete all at the bottom.
-* **Return:** Swipe from the left edge, press the undo button, or use the watch's physical back button.
+* **Return:** Swipe from the left edge, or press the undo button.
 
 The history is stored locally on the watch using Jetpack DataStore and is limited to 50 entries.
 
