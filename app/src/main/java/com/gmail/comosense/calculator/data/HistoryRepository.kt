@@ -24,7 +24,7 @@ class HistoryRepository(
         dataStore.data.map { store ->
             store.historiesList
                 .take(HistoryConstraints.MAX_HISTORY_COUNT)
-                .mapNotNull { it.toHistoryOrNull() }
+                .mapNotNull { protoHistory -> protoHistory.toHistoryOrNull() }
         }
 
     suspend fun addHistory(
@@ -68,7 +68,7 @@ class HistoryRepository(
             error = HistoryRepositoryError.Delete,
             transform = { store ->
                 val index: Int = store.historiesList
-                    .indexOfFirst { it.id == id }
+                    .indexOfFirst { history -> history.id == id }
 
                 if (index < 0) {
                     store

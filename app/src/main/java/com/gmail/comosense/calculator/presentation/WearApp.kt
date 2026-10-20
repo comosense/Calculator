@@ -127,7 +127,9 @@ fun WearApp(
                                 histories = appState.histories,
                                 onAction = onAction,
                                 onBack = { changeScreen(null) },
-                                onDeleteModeChanged = { isHistoryDeleteMode = it },
+                                onDeleteModeChanged = { deleteMode ->
+                                    isHistoryDeleteMode = deleteMode
+                                },
                                 symbolFormatter = symbolFormatter,
                             )
 

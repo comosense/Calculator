@@ -113,9 +113,9 @@ fun SettingsScreen(
                         width = inscribedLength,
                         height = pickerHeight,
                     ),
-                ) {
+                ) { index ->
                     Text(
-                        text = PRECISION_OPTIONS[it].toString(),
+                        text = PRECISION_OPTIONS[index].toString(),
                         color = AppTheme.settingsScreenColors.picker,
                         fontSize = AppTheme.settingsScreenDimensions.pickerFontSize,
                     )

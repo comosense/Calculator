@@ -19,8 +19,8 @@ val AppState.fixedExpression: List<Symbol>
     get() = result + input
 val AppState.completionInput: List<Symbol>
     get() = List(
-        input.count { it is Symbol.FactorStart } -
-                input.count { it is Symbol.FactorEnd }
+        input.count { symbol -> symbol is Symbol.FactorStart } -
+                input.count { symbol -> symbol is Symbol.FactorEnd }
     ) { Symbol.FactorEnd.ClosingParenthesis }
 val AppState.expression: List<Symbol>
     get() = fixedExpression + completionInput
@@ -64,7 +64,7 @@ fun AppState.applyResult(result: List<Symbol>): AppStateUpdateResult {
 
 fun AppState.applyHistory(id: String): AppStateUpdateResult {
     val result: List<Symbol> = histories
-        .firstOrNull { it.id == id }
+        .firstOrNull { history -> history.id == id }
         ?.result
         ?: return AppStateUpdateResult.HistoryNotFound
 
@@ -137,15 +137,16 @@ fun AppState.canAppend(symbol: Symbol): Boolean = this.canAppend(listOf(symbol))
 fun AppState.canAppend(symbols: List<Symbol>): Boolean {
     val tempInput: MutableList<Symbol> = input.toMutableList()
     val nestingDepth: Int =
-        tempInput.count { it is Symbol.FactorStart } - tempInput.count { it is Symbol.FactorEnd }
+        tempInput.count { symbol -> symbol is Symbol.FactorStart } -
+                tempInput.count { symbol -> symbol is Symbol.FactorEnd }
 
     for (symbol in symbols) {
         if (when (symbol) {
                 is Symbol.Numeric.Point ->
                     symbol.isAppendableAfter(tempInput.lastOrNull()) &&
                             tempInput
-                                .takeLastWhile { it is Symbol.Numeric }
-                                .none { it is Symbol.Numeric.Point }
+                                .takeLastWhile { symbol -> symbol is Symbol.Numeric }
+                                .none { symbol -> symbol is Symbol.Numeric.Point }
 
                 is Symbol.FactorStart ->
                     symbol.isAppendableAfter(tempInput.lastOrNull()) &&
