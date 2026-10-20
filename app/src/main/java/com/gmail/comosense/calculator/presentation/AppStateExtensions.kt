@@ -39,7 +39,11 @@ fun AppState.appendExpression(symbol: Symbol): AppStateUpdateResult {
     }
 
     return AppStateUpdateResult.Success(
-        appState = if (symbol is Symbol.Operator || isInputting) {
+        appState = if (
+            symbol is Symbol.Operator ||
+            symbol is Symbol.SpecialOperator ||
+            isInputting
+        ) {
             copy(
                 input = input + symbols,
             )
@@ -159,7 +163,8 @@ fun AppState.canAppend(symbols: List<Symbol>): Boolean {
                     symbol.isAppendableAfter(tempInput.lastOrNull()) &&
                             nestingDepth > 0
 
-                is Symbol.Operator ->
+                is Symbol.Operator,
+                is Symbol.SpecialOperator ->
                     symbol.isAppendableAfter((result + tempInput).lastOrNull())
 
                 else ->
