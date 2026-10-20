@@ -115,7 +115,9 @@ fun HistoryScreen(
         },
     ) { contentPadding ->
         HistoryList(
-            histories = histories,
+            listState = listState,
+            transformationSpec = transformationSpec,
+            contentPadding = contentPadding,
             historyItemContent = if (deleteMode) {
                 HistoryItemContent(
                     containerColor = AppTheme.historyScreenColors.deleteContainer,
@@ -148,9 +150,7 @@ fun HistoryScreen(
             onLongClick = {
                 deleteMode = !deleteMode
             },
-            listState = listState,
-            transformationSpec = transformationSpec,
-            contentPadding = contentPadding,
+            histories = histories,
             symbolFormatter = symbolFormatter,
         )
     }
@@ -158,13 +158,13 @@ fun HistoryScreen(
 
 @Composable
 private fun HistoryList(
-    histories: List<History>,
-    historyItemContent: HistoryItemContent,
-    onClick: (String) -> Unit,
-    onLongClick: () -> Unit,
     listState: TransformingLazyColumnState,
     transformationSpec: TransformationSpec,
     contentPadding: PaddingValues,
+    historyItemContent: HistoryItemContent,
+    onClick: (String) -> Unit,
+    onLongClick: () -> Unit,
+    histories: List<History>,
     symbolFormatter: SymbolFormatter,
 ) {
     TransformingLazyColumn(
@@ -185,15 +185,15 @@ private fun HistoryList(
                 val history: History = histories[index]
 
                 HistoryItem(
-                    history = history,
-                    historyItemContent = historyItemContent,
-                    onClick = onClick,
-                    onLongClick = onLongClick,
                     modifier = Modifier
                         .fillMaxWidth()
                         .transformedHeight(this, transformationSpec)
                         .padding(horizontal = 8.dp),
                     transformation = SurfaceTransformation(transformationSpec),
+                    history = history,
+                    historyItemContent = historyItemContent,
+                    onClick = onClick,
+                    onLongClick = onLongClick,
                     symbolFormatter = symbolFormatter,
                 )
             }
@@ -216,12 +216,12 @@ private fun HistoryList(
 
 @Composable
 private fun HistoryItem(
+    modifier: Modifier,
+    transformation: SurfaceTransformation,
     history: History,
     historyItemContent: HistoryItemContent,
     onClick: (String) -> Unit,
     onLongClick: () -> Unit,
-    modifier: Modifier,
-    transformation: SurfaceTransformation,
     symbolFormatter: SymbolFormatter,
 ) {
     val expressionScrollState: ScrollState = rememberScrollState()
