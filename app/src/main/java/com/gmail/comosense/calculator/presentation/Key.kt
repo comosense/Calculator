@@ -17,8 +17,7 @@ sealed interface Key {
     data object Cancel : Key
     data object Clear : Key
     data object Backspace : Key
-    data object Degrees : Key
-    data object Radians : Key
+    data class AngleMode(val isRadians: Boolean) : Key
     data object Pi : Key
     data object Euler : Key
     data object Sqrt : Key

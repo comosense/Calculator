@@ -115,10 +115,10 @@ fun AppState.dropLastExpressionSymbol(): AppStateUpdateResult {
     )
 }
 
-fun AppState.angle(isRadians: Boolean): AppStateUpdateResult {
+fun AppState.toggleAngle(): AppStateUpdateResult {
     return AppStateUpdateResult.Success(
         appState = copy(
-            isRadians = isRadians,
+            isRadians = !isRadians,
         ),
     )
 }

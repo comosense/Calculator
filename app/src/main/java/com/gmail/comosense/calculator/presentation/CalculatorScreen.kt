@@ -522,13 +522,6 @@ private fun mainKeyGrid(appState: AppState): List<List<Key?>> {
 }
 
 private fun functionKeyGrid(appState: AppState): List<List<Key?>> {
-    val angleKey: Key =
-        if (appState.isRadians) {
-            Key.Radians
-        } else {
-            Key.Degrees
-        }
-
     return listOf(
         listOf(
             Key.Sqrt,
@@ -547,7 +540,7 @@ private fun functionKeyGrid(appState: AppState): List<List<Key?>> {
         ),
         listOf(
             null,
-            angleKey,
+            Key.AngleMode(appState.isRadians),
             Key.Pi,
             null,
             null,

@@ -72,11 +72,8 @@ val Key.appAction: AppAction
         is Key.Backspace ->
             AppAction.Backspace
 
-        is Key.Degrees ->
-            AppAction.Angle(true)
-
-        is Key.Radians ->
-            AppAction.Angle(false)
+        is Key.AngleMode ->
+            AppAction.ToggleAngle
 
         is Key.Pi ->
             AppAction.Input(Symbol.Constant.Pi)
@@ -148,8 +145,7 @@ val Key.style: Style
         is Key.Ln ->
             Style.Digit
 
-        is Key.Degrees,
-        is Key.Radians ->
+        is Key.AngleMode ->
             Style.Mode
 
         is Key.Cancel ->
@@ -241,16 +237,14 @@ fun Key.display(symbolFormatter: SymbolFormatter): Display = when (this) {
             stringResource = R.string.content_description_backspace,
         )
 
-    is Key.Degrees ->
+    is Key.AngleMode ->
         Display.Icon(
-            painterResource = R.drawable.ic_degrees,
-            stringResource = R.string.content_description_degrees
-        )
-
-    is Key.Radians ->
-        Display.Icon(
-            painterResource = R.drawable.ic_radians,
-            stringResource = R.string.content_description_radians
+            painterResource = if (isRadians) {
+                R.drawable.ic_radians
+            } else {
+                R.drawable.ic_degrees
+            },
+            stringResource = R.string.content_description_angle_mode
         )
 
     is Key.Pi ->
