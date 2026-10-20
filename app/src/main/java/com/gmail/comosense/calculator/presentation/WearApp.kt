@@ -93,7 +93,7 @@ fun WearApp(
             enter = fadeIn(
                 animationSpec = tween(180),
             ) + scaleIn(
-                initialScale = 0.96f,
+                initialScale = 0.875f,
                 animationSpec = tween(180),
             ),
             exit = ExitTransition.None,

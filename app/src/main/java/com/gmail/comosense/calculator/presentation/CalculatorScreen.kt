@@ -97,92 +97,6 @@ private fun MainPanel(
     symbolFormatter: SymbolFormatter,
 ) {
     var showFunctionKeyGrid by remember { mutableStateOf(false) }
-    val deleteKey: Key =
-        if (appState.isCalculating) {
-            Key.Cancel
-        } else if (appState.isInputting) {
-            Key.Backspace
-        } else {
-            Key.Clear
-        }
-    val parenthesisKey: Key =
-        if (appState.canAppend(Symbol.FactorEnd.ClosingParenthesis)) {
-            Key.ClosingParenthesis
-        } else {
-            Key.OpeningParenthesis
-        }
-    val plusKey: Key =
-        if (appState.canAppend(Symbol.Operator.Add)) {
-            Key.Add
-        } else {
-            Key.Positive
-        }
-    val minusKey: Key =
-        if (appState.canAppend(Symbol.Operator.Subtract)) {
-            Key.Subtract
-        } else {
-            Key.Negative
-        }
-    val angleKey: Key =
-        if (appState.isRadians) {
-            Key.ToDegrees
-        } else {
-            Key.ToRadians
-        }
-    val mainKeyGrid: List<List<Key?>> = listOf(
-        listOf(
-            Key.Digit(7),
-            Key.Digit(8),
-            Key.Digit(9),
-            deleteKey,
-            Key.Equal,
-        ),
-        listOf(
-            Key.Digit(4),
-            Key.Digit(5),
-            Key.Digit(6),
-            Key.Multiply,
-            Key.Divide,
-        ),
-        listOf(
-            Key.Digit(1),
-            Key.Digit(2),
-            Key.Digit(3),
-            plusKey,
-            minusKey,
-        ),
-        listOf(
-            null,
-            Key.Digit(0),
-            Key.Point,
-            parenthesisKey,
-            null,
-        ),
-    )
-    val functionKeyGrid: List<List<Key?>> = listOf(
-        listOf(
-            Key.Sqrt,
-            Key.Power,
-            Key.Factorial,
-        ),
-        listOf(
-            Key.Log,
-            Key.Ln,
-            Key.Euler,
-        ),
-        listOf(
-            Key.Sin,
-            Key.Cos,
-            Key.Tan,
-        ),
-        listOf(
-            null,
-            angleKey,
-            Key.Pi,
-            null,
-            null,
-        ),
-    )
 
     BoxWithConstraints(
         modifier = modifier.background(AppTheme.calculatorScreenColors.background),
@@ -231,9 +145,9 @@ private fun MainPanel(
                 ) { isShowFunctionKeyGrid ->
                 KeyGrid(
                     keyGrid = if (isShowFunctionKeyGrid) {
-                        functionKeyGrid
+                        functionKeyGrid(appState)
                     } else {
-                        mainKeyGrid
+                        mainKeyGrid(appState)
                     },
                     arrangementSpace = 2.dp,
                     modifier = Modifier.fillMaxSize(),
@@ -269,7 +183,7 @@ private fun ExpressionBox(
     val blinkProgress: Animatable<Float, AnimationVector1D> = remember { Animatable(0f) }
     val blinkColor: Color = AppTheme.calculatorScreenColors.expressionBlinkBackground
     val expressionColor: Color = if (appState.isCalculating) {
-        AppTheme.calculatorScreenColors.expression.copy(alpha = 0.35f)
+        AppTheme.calculatorScreenColors.expression.copy(alpha = 0.375f)
     } else {
         AppTheme.calculatorScreenColors.expression
     }
@@ -277,7 +191,7 @@ private fun ExpressionBox(
         withStyle(style = SpanStyle(color = expressionColor)) {
             append(symbolFormatter.format(appState.fixedExpression))
         }
-        withStyle(style = SpanStyle(color = expressionColor.copy(alpha = 0.35f))) {
+        withStyle(style = SpanStyle(color = expressionColor.copy(alpha = 0.375f))) {
             append(symbolFormatter.format(appState.completionInput))
         }
     }.ifEmpty {
@@ -318,9 +232,9 @@ private fun ExpressionBox(
                     drawRoundRect(
                         brush = Brush.radialGradient(
                             colors = listOf(
-                                blinkColor.copy(alpha = 0.38f * blinkProgress.value),
-                                blinkColor.copy(alpha = 0.20f * blinkProgress.value),
-                                blinkColor.copy(alpha = 0.05f * blinkProgress.value),
+                                blinkColor.copy(alpha = 0.375f * blinkProgress.value),
+                                blinkColor.copy(alpha = 0.25f * blinkProgress.value),
+                                blinkColor.copy(alpha = 0.125f * blinkProgress.value),
                                 Color.Transparent
                             ),
                             center = center,
@@ -535,4 +449,98 @@ private fun KeyButton(
             }
         }
     }
+}
+
+private fun mainKeyGrid(appState: AppState): List<List<Key?>> {
+    val deleteKey: Key =
+        if (appState.isCalculating) {
+            Key.Cancel
+        } else if (appState.isInputting) {
+            Key.Backspace
+        } else {
+            Key.Clear
+        }
+    val plusKey: Key =
+        if (appState.canAppend(Symbol.Operator.Add)) {
+            Key.Add
+        } else {
+            Key.Positive
+        }
+    val minusKey: Key =
+        if (appState.canAppend(Symbol.Operator.Subtract)) {
+            Key.Subtract
+        } else {
+            Key.Negative
+        }
+    val parenthesisKey: Key =
+        if (appState.canAppend(Symbol.FactorEnd.ClosingParenthesis)) {
+            Key.ClosingParenthesis
+        } else {
+            Key.OpeningParenthesis
+        }
+
+    return listOf(
+        listOf(
+            Key.Digit(7),
+            Key.Digit(8),
+            Key.Digit(9),
+            deleteKey,
+            Key.Equal,
+        ),
+        listOf(
+            Key.Digit(4),
+            Key.Digit(5),
+            Key.Digit(6),
+            Key.Multiply,
+            Key.Divide,
+        ),
+        listOf(
+            Key.Digit(1),
+            Key.Digit(2),
+            Key.Digit(3),
+            plusKey,
+            minusKey,
+        ),
+        listOf(
+            null,
+            Key.Digit(0),
+            Key.Point,
+            parenthesisKey,
+            null,
+        ),
+    )
+}
+
+private fun functionKeyGrid(appState: AppState): List<List<Key?>> {
+    val angleKey: Key =
+        if (appState.isRadians) {
+            Key.ToDegrees
+        } else {
+            Key.ToRadians
+        }
+
+    return listOf(
+        listOf(
+            Key.Sqrt,
+            Key.Power,
+            Key.Factorial,
+        ),
+        listOf(
+            Key.Log,
+            Key.Ln,
+            Key.Euler,
+        ),
+        listOf(
+            Key.Sin,
+            Key.Cos,
+            Key.Tan,
+        ),
+        listOf(
+            null,
+            angleKey,
+            Key.Pi,
+            null,
+            null,
+        ),
+    )
 }
