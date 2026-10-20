@@ -5,7 +5,10 @@ internal object Constraints {
     const val MIN_PRECISION: Int = 8
     const val MAX_PRECISION: Int = 64
     const val MAX_HISTORY_COUNT: Int = 50
-    const val MAX_RESULT_SIZE: Int = 256
-    const val MAX_EXPRESSION_SIZE: Int = MAX_RESULT_SIZE * 4
-    const val MAX_NESTING_DEPTH: Int = 16
+    const val MAX_RESULT_SIZE: Int = 512
+    const val MAX_EXPRESSION_SIZE: Int = 1024
+    const val MAX_NESTING_DEPTH: Int = 64
+    const val MAX_FACTORIAL_ARGUMENT: Int = 253
+    const val MAX_INTEGER_EXPONENT: Int = 1024
+    const val MAX_NON_INTEGER_EXPONENT: Int = 1024
 }

@@ -1,8 +1,15 @@
 package com.gmail.comosense.calculator.domain
 
+import com.gmail.comosense.calculator.common.Constraints
 import java.math.BigDecimal
 import java.math.BigInteger
 import java.math.MathContext
+
+internal object BigDecimalMathConstraints {
+    const val MAX_FACTORIAL_ARGUMENT: Int = Constraints.MAX_FACTORIAL_ARGUMENT
+    const val MAX_INTEGER_EXPONENT: Int = Constraints.MAX_INTEGER_EXPONENT
+    const val MAX_NON_INTEGER_EXPONENT: Int = Constraints.MAX_NON_INTEGER_EXPONENT
+}
 
 class FactorialLargeArgumentException : ArithmeticException()
 class FactorialInvalidArgumentException : ArithmeticException()
@@ -30,9 +37,12 @@ class BigDecimalMath(private val mathContext: MathContext) {
         private val TWO_HUNDRED_THIRTY_NINE: BigDecimal = BigDecimal(239)
         private val BIG_INTEGER_ONE: BigInteger = BigInteger.ONE
         private val BIG_INTEGER_TWO: BigInteger = 2.toBigInteger()
-        private val MAX_FACTORIAL_ARGUMENT: BigInteger = 146.toBigInteger()
-        private val MAX_INTEGER_EXPONENT: BigInteger = 1024.toBigInteger()
-        private val MAX_NON_INTEGER_EXPONENT: BigDecimal = BigDecimal(1024)
+        private val MAX_FACTORIAL_ARGUMENT: BigInteger =
+            BigDecimalMathConstraints.MAX_FACTORIAL_ARGUMENT.toBigInteger()
+        private val MAX_INTEGER_EXPONENT: BigInteger =
+            BigDecimalMathConstraints.MAX_INTEGER_EXPONENT.toBigInteger()
+        private val MAX_NON_INTEGER_EXPONENT: BigDecimal =
+            BigDecimal(BigDecimalMathConstraints.MAX_NON_INTEGER_EXPONENT)
     }
 
     private val workMathContext: MathContext = MathContext(
