@@ -115,7 +115,7 @@ fun AppState.dropLastExpressionSymbol(): AppStateUpdateResult {
     )
 }
 
-fun AppState.toggleAngle(): AppStateUpdateResult {
+fun AppState.toggleAngleMode(): AppStateUpdateResult {
     return AppStateUpdateResult.Success(
         appState = copy(
             isRadians = !isRadians,

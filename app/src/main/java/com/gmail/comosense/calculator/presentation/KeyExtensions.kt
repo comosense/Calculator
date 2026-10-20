@@ -73,7 +73,7 @@ val Key.appAction: AppAction
             AppAction.Backspace
 
         is Key.AngleMode ->
-            AppAction.ToggleAngle
+            AppAction.ToggleAngleMode
 
         is Key.Pi ->
             AppAction.Input(Symbol.Constant.Pi)

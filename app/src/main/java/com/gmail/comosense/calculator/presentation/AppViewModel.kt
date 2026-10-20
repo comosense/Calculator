@@ -43,7 +43,7 @@ sealed interface AppAction {
     data class Input(val symbol: Symbol) : AppAction
     data object Clear : AppAction
     data object Backspace : AppAction
-    data object ToggleAngle : AppAction
+    data object ToggleAngleMode : AppAction
 }
 
 class AppViewModel(
@@ -113,7 +113,7 @@ class AppViewModel(
                 is AppAction.Input,
                 is AppAction.Clear,
                 is AppAction.Backspace,
-                is AppAction.ToggleAngle ->
+                is AppAction.ToggleAngleMode ->
                     return
 
                 else ->
@@ -149,8 +149,8 @@ class AppViewModel(
             is AppAction.Backspace ->
                 backspace()
 
-            is AppAction.ToggleAngle ->
-                toggleAngle()
+            is AppAction.ToggleAngleMode ->
+                toggleAngleMode()
         }
     }
 
@@ -269,11 +269,11 @@ class AppViewModel(
         }
     }
 
-    private fun toggleAngle() {
+    private fun toggleAngleMode() {
         updateAppState { appState ->
             resolveAppStateUpdate(
                 appState = appState,
-                appStateUpdateResult = appState.toggleAngle(),
+                appStateUpdateResult = appState.toggleAngleMode(),
             )
         }
     }
