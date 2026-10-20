@@ -75,7 +75,7 @@ fun ProtoSymbol.toSymbolOrNull(): Symbol? {
     }
 }
 
-fun Symbol.toProto(): ProtoSymbol {
+fun Symbol.toProtoSymbol(): ProtoSymbol {
     return when (this) {
         Symbol.Sign.Positive ->
             ProtoSymbol.newBuilder()
@@ -209,11 +209,11 @@ fun ProtoHistory.toHistoryOrNull(): History? {
     )
 }
 
-fun History.toProto(): ProtoHistory {
+fun History.toProtoHistory(): ProtoHistory {
     return ProtoHistory
         .newBuilder()
         .setId(id)
-        .addAllExpression(expression.map { it.toProto() })
-        .addAllResult(result.map { it.toProto() })
+        .addAllExpression(expression.map { symbol -> symbol.toProtoSymbol() })
+        .addAllResult(result.map { symbol -> symbol.toProtoSymbol() })
         .build()
 }

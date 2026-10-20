@@ -52,7 +52,7 @@ class HistoryRepository(
 
                 val builder: HistoryStore.Builder = store
                     .toBuilder()
-                    .addHistories(0, newHistory.toProto())
+                    .addHistories(0, newHistory.toProtoHistory())
                 while (builder.historiesCount > HistoryConstraints.MAX_HISTORY_COUNT) {
                     builder.removeHistories(builder.historiesCount - 1)
                 }
