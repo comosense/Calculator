@@ -22,6 +22,12 @@ enum class CalculatorError {
 
 private class DivisionByZeroException : ArithmeticException()
 
+private val SymbolizerError.calculatorError: CalculatorError
+    get() = when (this) {
+        SymbolizerError.Unsupported -> CalculatorError.Unsupported
+        SymbolizerError.TooLarge -> CalculatorError.ResultTooLarge
+    }
+
 fun calculate(
     expression: List<Symbol>,
     isRadians: Boolean,
@@ -42,10 +48,10 @@ fun calculate(
             is Result.Err -> return Result.Err(calculatedResult.error)
         }
 
-    return when (val calculatedSymbolsResult: Result<List<Symbol>, BigDecimalError> =
+    return when (val calculatedSymbolsResult: Result<List<Symbol>, SymbolizerError> =
         calculated.toSymbols()) {
         is Result.Ok -> Result.Ok(calculatedSymbolsResult.value)
-        is Result.Err -> Result.Err(calculatedSymbolsResult.error.toCalculatorError())
+        is Result.Err -> Result.Err(calculatedSymbolsResult.error.calculatorError)
     }
 }
 
