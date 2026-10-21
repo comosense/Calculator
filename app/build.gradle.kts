@@ -1,0 +1,83 @@
+plugins {
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.compose)
+    id("com.google.protobuf") version "0.10.0"
+}
+
+android {
+    namespace = "com.gmail.comosense.calculator"
+    compileSdk {
+        version = release(37)
+    }
+
+    defaultConfig {
+        applicationId = "com.gmail.comosense.calculator"
+        minSdk = 30
+        targetSdk = 37
+        versionCode = 1
+        versionName = "yyyy.mm.dd.hhmm"
+
+    }
+
+    buildTypes {
+        release {
+            signingConfig = signingConfigs.getByName("debug")
+            optimization {
+                enable = true
+            }
+        }
+    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+    useLibrary("wear-sdk")
+    buildFeatures {
+        compose = true
+    }
+}
+
+dependencies {
+    implementation(platform(libs.compose.bom))
+    implementation(libs.activity.compose)
+    implementation(libs.core.splashscreen)
+    implementation(libs.datastore)
+    implementation(libs.androidx.datastore.preferences)
+    implementation(libs.ui)
+    implementation(libs.ui.graphics)
+    implementation(libs.ui.text)
+    implementation(libs.ui.tooling.preview)
+    implementation(libs.runtime)
+    implementation(libs.androidx.animation)
+    implementation(libs.androidx.foundation)
+    implementation(libs.androidx.foundation.layout)
+    implementation(libs.androidx.ui.unit)
+    implementation(libs.material3)
+    implementation(libs.compose.foundation)
+    implementation(libs.compose.material3)
+    implementation(libs.compose.ui.tooling)
+    implementation(libs.wear.tooling.preview)
+    implementation(libs.protobuf.kotlin.lite)
+    implementation(libs.androidx.lifecycle.runtime.compose)
+    androidTestImplementation(platform(libs.compose.bom))
+    androidTestImplementation(libs.ui.test.junit4)
+    debugImplementation(libs.ui.test.manifest)
+    debugImplementation(libs.ui.tooling)
+}
+
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:${libs.versions.protobufKotlinLite.get()}"
+    }
+
+    generateProtoTasks {
+        all().forEach { task ->
+            task.builtins {
+                create("java") {
+                    option("lite")
+                }
+                create("kotlin")
+            }
+        }
+    }
+}
