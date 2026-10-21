@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+option java_package = "com.gmail.comosense.calculator.data.proto";
+option java_multiple_files = true;
+
+message HistoryStore {
+  repeated History histories = 1;
+}
+
+message History {
+  string id = 1;
+  repeated Symbol expression = 2;
+  repeated Symbol result = 3;
+}
+
+message Symbol {
+  oneof value {
+    bool positive = 1;
+    bool negative = 2;
+
+    int32 digit = 3;
+    bool point = 4;
+
+    bool opening_parenthesis = 9;
+    bool closing_parenthesis = 10;
+
+    bool add = 11;
+    bool subtract = 12;
+    bool multiply = 13;
+    bool divide = 14;
+
+    bool power = 16;
+    bool factorial = 17;
+
+    bool pi = 24;
+    bool euler = 25;
+    bool sqrt = 32;
+    bool sin = 40;
+    bool cos = 41;
+    bool tan = 42;
+    bool log = 48;
+    bool ln = 49;
+  }
+}

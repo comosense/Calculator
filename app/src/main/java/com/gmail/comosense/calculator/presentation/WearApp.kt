@@ -1,0 +1,213 @@
+package com.gmail.comosense.calculator.presentation
+
+import android.content.Context
+import android.view.HapticFeedbackConstants
+import android.view.View
+import android.widget.Toast
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.scaleIn
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
+import androidx.wear.compose.foundation.SwipeToDismissBoxState
+import androidx.wear.compose.foundation.SwipeToDismissValue
+import androidx.wear.compose.foundation.rememberSwipeToDismissBoxState
+import androidx.wear.compose.material3.AppScaffold
+import androidx.wear.compose.material3.SwipeToDismissBox
+import com.gmail.comosense.calculator.R
+import com.gmail.comosense.calculator.data.HistoryRepositoryError
+import com.gmail.comosense.calculator.data.SettingsRepositoryError
+import com.gmail.comosense.calculator.domain.CalculatorError
+import com.gmail.comosense.calculator.presentation.theme.AppTheme
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
+import java.util.Locale
+
+enum class AppScreen {
+    Settings,
+    History,
+    Calculator,
+}
+
+@Composable
+fun WearApp(
+    appState: AppState,
+    appEvent: Flow<AppEvent>,
+    onAction: (AppAction) -> Unit,
+    locale: Locale,
+) {
+    var currentScreen: AppScreen by remember { mutableStateOf(AppScreen.Calculator) }
+    var isHistoryDeleteMode: Boolean by remember { mutableStateOf(false) }
+    val swipeToDismissBoxState: SwipeToDismissBoxState = rememberSwipeToDismissBoxState()
+    val coroutineScope: CoroutineScope = rememberCoroutineScope()
+    val symbolFormatter: SymbolFormatter = remember(locale) { SymbolFormatter(locale) }
+
+    fun changeScreen(
+        appScreen: AppScreen? = null,
+    ) {
+        coroutineScope.launch {
+            if (appScreen != null) {
+                swipeToDismissBoxState.snapTo(
+                    targetValue = SwipeToDismissValue.Default
+                )
+                currentScreen = appScreen
+            } else {
+                swipeToDismissBoxState.snapTo(
+                    targetValue = SwipeToDismissValue.Dismissed
+                )
+            }
+        }
+    }
+
+    HandleEvent(appEvent)
+
+    LaunchedEffect(swipeToDismissBoxState.currentValue) {
+        if (swipeToDismissBoxState.currentValue == SwipeToDismissValue.Dismissed) {
+            currentScreen = AppScreen.Calculator
+            isHistoryDeleteMode = false
+        }
+    }
+
+    AppScaffold {
+        CalculatorScreen(
+            appState = appState,
+            onAction = onAction,
+            onShow = { appScreen -> changeScreen(appScreen) },
+            symbolFormatter = symbolFormatter,
+        )
+
+        AnimatedVisibility(
+            visible = (currentScreen != AppScreen.Calculator),
+            enter = fadeIn(
+                animationSpec = tween(180),
+            ) + scaleIn(
+                initialScale = 0.875f,
+                animationSpec = tween(180),
+            ),
+            exit = ExitTransition.None,
+            modifier = Modifier.fillMaxSize(),
+        ) {
+            SwipeToDismissBox(
+                state = swipeToDismissBoxState,
+                userSwipeEnabled = !isHistoryDeleteMode,
+                backgroundScrimColor = AppTheme.calculatorScreenColors.background,
+                backgroundKey = "CalculatorScreen",
+                contentKey = currentScreen,
+            ) { isBackground ->
+                if (isBackground) {
+                    CalculatorScreen(
+                        appState = appState,
+                        onAction = onAction,
+                        onShow = {},
+                        symbolFormatter = symbolFormatter,
+                    )
+                } else {
+                    when (currentScreen) {
+                        AppScreen.Settings ->
+                            SettingsScreen(
+                                settings = appState.settings,
+                                onAction = onAction,
+                                onBack = { changeScreen(null) },
+                            )
+
+                        AppScreen.History ->
+                            HistoryScreen(
+                                histories = appState.histories,
+                                onAction = onAction,
+                                onBack = { changeScreen(null) },
+                                onDeleteModeChanged = { deleteMode ->
+                                    isHistoryDeleteMode = deleteMode
+                                },
+                                symbolFormatter = symbolFormatter,
+                            )
+
+                        AppScreen.Calculator -> Unit
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun HandleEvent(appEvent: Flow<AppEvent>) {
+    val context: Context = LocalContext.current
+    val view: View = LocalView.current
+
+    LaunchedEffect(appEvent) {
+        appEvent.collect { appEvent ->
+            view.performHapticFeedback(
+                HapticFeedbackConstants.REJECT,
+                HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING,
+            )
+
+            val messageResourceId: Int? = when (appEvent) {
+                is AppEvent.AppViewModelError ->
+                    appEvent.appViewModelError.messageResourceId()
+
+                is AppEvent.SettingsRepositoryError ->
+                    appEvent.settingsRepositoryError.messageResourceId()
+
+                is AppEvent.HistoryRepositoryError ->
+                    appEvent.historyRepositoryError.messageResourceId()
+
+                is AppEvent.CalculatorError ->
+                    appEvent.calculatorError.messageResourceId()
+            }
+
+            if (messageResourceId != null) {
+                Toast.makeText(
+                    context,
+                    messageResourceId,
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+    }
+}
+
+private fun AppViewModelError.messageResourceId(): Int? = when (this) {
+    AppViewModelError.ExpressionTooLarge -> R.string.app_view_model_error_expression_too_large
+    AppViewModelError.UnacceptableSymbol -> null
+    AppViewModelError.HistoryNotFound -> R.string.app_view_model_error_history_not_found
+}
+
+private fun SettingsRepositoryError.messageResourceId(): Int? = when (this) {
+    SettingsRepositoryError.RepairInvalidSettings -> null
+    SettingsRepositoryError.UpdatePrecision -> R.string.settings_repository_error_update_precision
+}
+
+private fun HistoryRepositoryError.messageResourceId(): Int = when (this) {
+    HistoryRepositoryError.Add -> R.string.history_repository_error_add
+    HistoryRepositoryError.Delete -> R.string.history_repository_error_delete
+    HistoryRepositoryError.DeleteAll -> R.string.history_repository_error_delete_all
+    HistoryRepositoryError.TooLarge -> R.string.history_repository_error_too_large
+    HistoryRepositoryError.InvalidHistory -> R.string.history_repository_error_invalid_history
+}
+
+private fun CalculatorError.messageResourceId(): Int = when (this) {
+    CalculatorError.Unsupported -> R.string.calculator_error_unsupported
+    CalculatorError.ResultTooLarge -> R.string.calculator_error_result_too_large
+    CalculatorError.InvalidExpression -> R.string.calculator_error_invalid_expression
+    CalculatorError.DivisionByZero -> R.string.calculator_error_division_by_zero
+    CalculatorError.FactorialInvalidArgument -> R.string.calculator_error_factorial_invalid_argument
+    CalculatorError.FactorialLargeArgument -> R.string.calculator_error_factorial_large_argument
+    CalculatorError.SqrtInvalidArgument -> R.string.calculator_error_sqrt_invalid_argument
+    CalculatorError.PowInvalidArgument -> R.string.calculator_error_pow_invalid_argument
+    CalculatorError.PowLimitExceeded -> R.string.calculator_error_pow_limit_exceeded
+    CalculatorError.LogInvalidArgument -> R.string.calculator_error_log_invalid_argument
+    CalculatorError.TanInvalidArgument -> R.string.calculator_error_tan_invalid_argument
+    CalculatorError.Arithmetic -> R.string.calculator_error_arithmetic
+}
