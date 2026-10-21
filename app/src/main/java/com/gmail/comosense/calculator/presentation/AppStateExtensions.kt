@@ -123,25 +123,6 @@ fun AppState.toggleAngleMode(): AppStateUpdateResult {
     )
 }
 
-private fun AppState.symbolsToAppendOrNull(symbol: Symbol): List<Symbol>? {
-    return if (canAppend(symbol)) {
-        listOf(symbol)
-    } else {
-        when (symbol) {
-            is Symbol.Numeric.Point ->
-                listOf(Symbol.Numeric.Digit(0), symbol)
-
-            is Symbol.Constant,
-            is Symbol.Factor,
-            is Symbol.FactorStart ->
-                listOf(Symbol.Operator.Multiply, symbol)
-
-            else ->
-                return null
-        }.takeIf(::canAppend)
-    }
-}
-
 fun AppState.canAppend(symbol: Symbol): Boolean = this.canAppend(listOf(symbol))
 fun AppState.canAppend(symbols: List<Symbol>): Boolean {
     val tempInput: MutableList<Symbol> = input.toMutableList()
@@ -180,6 +161,25 @@ fun AppState.canAppend(symbols: List<Symbol>): Boolean {
         }
     }
     return true
+}
+
+private fun AppState.symbolsToAppendOrNull(symbol: Symbol): List<Symbol>? {
+    return if (canAppend(symbol)) {
+        listOf(symbol)
+    } else {
+        when (symbol) {
+            is Symbol.Numeric.Point ->
+                listOf(Symbol.Numeric.Digit(0), symbol)
+
+            is Symbol.Constant,
+            is Symbol.Factor,
+            is Symbol.FactorStart ->
+                listOf(Symbol.Operator.Multiply, symbol)
+
+            else ->
+                return null
+        }.takeIf(::canAppend)
+    }
 }
 
 private fun Symbol.isAppendableAfter(previous: Symbol?): Boolean = when (this) {
