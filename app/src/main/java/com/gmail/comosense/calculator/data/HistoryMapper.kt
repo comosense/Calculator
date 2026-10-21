@@ -180,7 +180,9 @@ fun Symbol.toProtoSymbol(): ProtoSymbol {
 }
 
 fun ProtoHistory.toHistoryOrNull(): History? {
-    if (id.isEmpty()) return null
+    if (id.isEmpty()) {
+        return null
+    }
 
     if (expressionCount > HistoryConstraints.MAX_EXPRESSION_SIZE ||
         resultCount > HistoryConstraints.MAX_RESULT_SIZE
@@ -200,7 +202,9 @@ fun ProtoHistory.toHistoryOrNull(): History? {
         }
     }
 
-    if (expression.isEmpty() || result.isEmpty()) return null
+    if (expression.isEmpty() || result.isEmpty()) {
+        return null
+    }
 
     return History(
         id = id,

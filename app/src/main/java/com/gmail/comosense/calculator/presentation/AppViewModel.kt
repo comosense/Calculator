@@ -184,7 +184,9 @@ class AppViewModel(
     private fun calculate() {
         val state: AppState = _appState.value
 
-        if (!state.isInputting || state.isCalculating) return
+        if (!state.isInputting || state.isCalculating) {
+            return
+        }
 
         val settings: Settings = state.settings
         val expression: List<Symbol> = state.expression

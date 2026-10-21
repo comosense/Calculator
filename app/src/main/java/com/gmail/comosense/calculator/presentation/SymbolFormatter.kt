@@ -26,7 +26,9 @@ class SymbolFormatter(locale: Locale) {
             val numericBuffer: StringBuilder = StringBuilder()
 
             fun flushNumeric() {
-                if (numericBuffer.isEmpty()) return
+                if (numericBuffer.isEmpty()) {
+                    return
+                }
 
                 append(formatNumericString(numericBuffer.toString()))
                 numericBuffer.clear()

@@ -124,20 +124,22 @@ fun AppState.toggleAngleMode(): AppStateUpdateResult {
 }
 
 private fun AppState.symbolsToAppendOrNull(symbol: Symbol): List<Symbol>? {
-    if (canAppend(symbol)) return listOf(symbol)
+    return if (canAppend(symbol)) {
+        listOf(symbol)
+    } else {
+        when (symbol) {
+            is Symbol.Numeric.Point ->
+                listOf(Symbol.Numeric.Digit(0), symbol)
 
-    return when (symbol) {
-        is Symbol.Numeric.Point ->
-            listOf(Symbol.Numeric.Digit(0), symbol)
+            is Symbol.Constant,
+            is Symbol.Factor,
+            is Symbol.FactorStart ->
+                listOf(Symbol.Operator.Multiply, symbol)
 
-        is Symbol.Constant,
-        is Symbol.Factor,
-        is Symbol.FactorStart ->
-            listOf(Symbol.Operator.Multiply, symbol)
-
-        else ->
-            return null
-    }.takeIf(::canAppend)
+            else ->
+                return null
+        }.takeIf(::canAppend)
+    }
 }
 
 fun AppState.canAppend(symbol: Symbol): Boolean = this.canAppend(listOf(symbol))

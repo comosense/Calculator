@@ -25,12 +25,16 @@ fun tokenize(symbols: List<Symbol>): List<Token>? {
                     numericBuffer.append(".")
 
                 else -> {
-                    if (!flushNumeric()) return null
+                    if (!flushNumeric()) {
+                        return null
+                    }
                     add(symbol.toTokenOrNull() ?: return null)
                 }
             }
         }
-        if (!flushNumeric()) return null
+        if (!flushNumeric()) {
+            return null
+        }
     }
 
     return tokens
