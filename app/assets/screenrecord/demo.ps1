@@ -274,18 +274,6 @@ Start-Sleep -MIlliseconds 200
 & $adb -s $serial shell input swipe 240 240 240 102 500
 Start-Sleep -MIlliseconds 200
 
-# swipe
-& $adb -s $serial shell input swipe 240 240 240 102 500
-Start-Sleep -MIlliseconds 200
-
-# swipe
-& $adb -s $serial shell input swipe 240 240 240 102 500
-Start-Sleep -MIlliseconds 200
-
-# swipe
-& $adb -s $serial shell input swipe 240 240 240 102 500
-Start-Sleep -MIlliseconds 200
-
 # back
 & $adb -s $serial shell input tap 240 445
 Start-Sleep -Seconds 1
