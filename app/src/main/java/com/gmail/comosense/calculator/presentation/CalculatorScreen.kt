@@ -123,6 +123,7 @@ private fun MainPanel(
                     height = inscribedLength / 5f
                 ),
                 appState = appState,
+                onAction = onAction,
                 onShow = onShow,
                 symbolFormatter = symbolFormatter,
             )
@@ -176,6 +177,7 @@ private fun MainPanel(
 private fun ExpressionBox(
     modifier: Modifier,
     appState: AppState,
+    onAction: (AppAction) -> Unit,
     onShow: (AppScreen) -> Unit,
     symbolFormatter: SymbolFormatter,
 ) {
@@ -311,6 +313,16 @@ private fun ExpressionBox(
         }
 
         if (appState.isCalculating) {
+            IconButton(
+                onClick = { onAction(AppAction.CalculateCancel) },
+                modifier = Modifier.fillMaxHeight(),
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_cancel),
+                    contentDescription = stringResource(R.string.content_description_cancel),
+                    tint = AppTheme.calculatorScreenColors.cancelButton,
+                )
+            }
             CircularProgressIndicator(
                 modifier = Modifier.size(maxHeight * 0.75f),
             )
@@ -414,12 +426,6 @@ private fun KeyButton(
                 container = AppTheme.calculatorScreenColors.modeKeyContainer,
                 content = AppTheme.calculatorScreenColors.modeKeyContent,
             )
-
-        Style.Attention ->
-            Colors(
-                container = AppTheme.calculatorScreenColors.attentionKeyContainer,
-                content = AppTheme.calculatorScreenColors.attentionKeyContent,
-            )
     }
 
     Button(
@@ -463,9 +469,7 @@ private fun KeyButton(
 
 private fun mainKeyGrid(appState: AppState): List<List<Key?>> {
     val deleteKey: Key =
-        if (appState.isCalculating) {
-            Key.Cancel
-        } else if (appState.isInputting) {
+        if (appState.isInputting) {
             Key.Backspace
         } else {
             Key.Clear

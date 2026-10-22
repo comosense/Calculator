@@ -44,7 +44,6 @@ data class CalculatorScreenColors(
     val commandKeyContent: Color,
     val modeKeyContainer: Color,
     val modeKeyContent: Color,
-    val attentionKeyContainer: Color,
-    val attentionKeyContent: Color,
+    val cancelButton: Color,
     val keySwitcher: Color,
 )

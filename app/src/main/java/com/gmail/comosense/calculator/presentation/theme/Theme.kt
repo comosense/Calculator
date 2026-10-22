@@ -102,8 +102,7 @@ fun AppTheme(
             commandKeyContent = MaterialTheme.colorScheme.onSurface,
             modeKeyContainer = MaterialTheme.colorScheme.background,
             modeKeyContent = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
-            attentionKeyContainer = MaterialTheme.colorScheme.tertiaryContainer,
-            attentionKeyContent = MaterialTheme.colorScheme.onTertiaryContainer,
+            cancelButton = MaterialTheme.colorScheme.primary,
             keySwitcher = MaterialTheme.colorScheme.tertiary,
         )
         val settingsScreenDimensions = SettingsScreenDimensions(

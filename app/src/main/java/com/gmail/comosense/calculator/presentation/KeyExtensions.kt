@@ -8,7 +8,6 @@ enum class Style {
     Operator,
     Command,
     Mode,
-    Attention,
 }
 
 sealed interface Display {
@@ -62,9 +61,6 @@ val Key.appAction: AppAction
 
         is Key.Equal ->
             AppAction.Calculate
-
-        is Key.Cancel ->
-            AppAction.CalculateCancel
 
         is Key.Clear ->
             AppAction.Clear
@@ -147,9 +143,6 @@ val Key.style: Style
 
         is Key.AngleMode ->
             Style.Mode
-
-        is Key.Cancel ->
-            Style.Attention
     }
 
 fun Key.display(symbolFormatter: SymbolFormatter): Display = when (this) {
@@ -217,12 +210,6 @@ fun Key.display(symbolFormatter: SymbolFormatter): Display = when (this) {
         Display.Icon(
             painterResource = R.drawable.ic_equal,
             stringResource = R.string.content_description_equal,
-        )
-
-    is Key.Cancel ->
-        Display.Icon(
-            painterResource = R.drawable.ic_cancel,
-            stringResource = R.string.content_description_cancel,
         )
 
     is Key.Clear ->

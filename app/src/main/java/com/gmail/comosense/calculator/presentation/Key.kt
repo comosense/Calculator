@@ -14,7 +14,6 @@ sealed interface Key {
     data object Power : Key
     data object Factorial : Key
     data object Equal : Key
-    data object Cancel : Key
     data object Clear : Key
     data object Backspace : Key
     data class AngleMode(val isRadians: Boolean) : Key
