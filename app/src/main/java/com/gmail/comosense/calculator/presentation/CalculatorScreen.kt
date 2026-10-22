@@ -313,18 +313,20 @@ private fun ExpressionBox(
         }
 
         if (appState.isCalculating) {
+            val size: Dp = maxHeight * 0.75f
             IconButton(
                 onClick = { onAction(AppAction.CalculateCancel) },
-                modifier = Modifier.fillMaxHeight(),
+                modifier = Modifier.size(size),
             ) {
                 Icon(
                     painter = painterResource(R.drawable.ic_cancel),
                     contentDescription = stringResource(R.string.content_description_cancel),
+                    modifier = Modifier.fillMaxSize(),
                     tint = AppTheme.calculatorScreenColors.cancelButton,
                 )
             }
             CircularProgressIndicator(
-                modifier = Modifier.size(maxHeight * 0.75f),
+                modifier = Modifier.size(size),
             )
         }
     }
