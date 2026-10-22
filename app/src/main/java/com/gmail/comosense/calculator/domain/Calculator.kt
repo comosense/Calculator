@@ -1,9 +1,13 @@
 package com.gmail.comosense.calculator.domain
 
 import com.gmail.comosense.calculator.common.Result
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.ensureActive
 import java.math.BigDecimal
 import java.math.MathContext
 import java.math.RoundingMode
+import kotlin.coroutines.CoroutineContext
 
 enum class CalculatorError {
     Unsupported,
@@ -28,7 +32,7 @@ private val SymbolizerError.calculatorError: CalculatorError
         SymbolizerError.TooLarge -> CalculatorError.ResultTooLarge
     }
 
-fun calculate(
+suspend fun calculate(
     expression: List<Symbol>,
     isRadians: Boolean,
     precision: Int,
@@ -55,7 +59,7 @@ fun calculate(
     }
 }
 
-private fun parse(
+private suspend fun parse(
     expression: List<Token>,
     isRadians: Boolean,
     precision: Int,
@@ -77,6 +81,8 @@ private fun parse(
         } else {
             Result.Err(CalculatorError.InvalidExpression)
         }
+    } catch (e: CancellationException) {
+        throw e
     } catch (_: IllegalArgumentException) {
         Result.Err(CalculatorError.InvalidExpression)
     } catch (_: DivisionByZeroException) {
@@ -115,10 +121,14 @@ private class Parser(
 
     fun isEnd(): Boolean = (position >= tokens.size)
 
-    fun parseExpression(): BigDecimal {
+    suspend fun parseExpression(): BigDecimal {
+        val coroutineContext: CoroutineContext = currentCoroutineContext()
+
         var value: BigDecimal = parseTerm()
 
         while (!isEnd()) {
+            coroutineContext.ensureActive()
+
             value = when (tokens[position]) {
                 is Token.Operator.Add -> {
                     position++
@@ -138,10 +148,14 @@ private class Parser(
         return value
     }
 
-    private fun parseTerm(): BigDecimal {
+    private suspend fun parseTerm(): BigDecimal {
+        val coroutineContext: CoroutineContext = currentCoroutineContext()
+
         var value: BigDecimal = parseSign()
 
         while (!isEnd()) {
+            coroutineContext.ensureActive()
+
             value = when (tokens[position]) {
                 is Token.Operator.Multiply -> {
                     position++
@@ -165,7 +179,7 @@ private class Parser(
         return value
     }
 
-    private fun parseSign(): BigDecimal {
+    private suspend fun parseSign(): BigDecimal {
         return when (tokens.getOrNull(position)) {
             Token.Sign.Positive -> {
                 position++
@@ -183,7 +197,7 @@ private class Parser(
         }
     }
 
-    private fun parseBinaryOperation(): BigDecimal {
+    private suspend fun parseBinaryOperation(): BigDecimal {
         val base: BigDecimal = parsePostfixOperation()
 
         return if (tokens.getOrNull(position) is Token.SpecialOperator.Power) {
@@ -194,10 +208,14 @@ private class Parser(
         }
     }
 
-    private fun parsePostfixOperation(): BigDecimal {
+    private suspend fun parsePostfixOperation(): BigDecimal {
+        val coroutineContext: CoroutineContext = currentCoroutineContext()
+
         var value: BigDecimal = parseFactor()
 
         while (tokens.getOrNull(position) is Token.SpecialOperator.Factorial) {
+            coroutineContext.ensureActive()
+
             position++
             value = bigDecimalMath.factorial(value)
         }
@@ -205,7 +223,7 @@ private class Parser(
         return value
     }
 
-    private fun parseFactor(): BigDecimal {
+    private suspend fun parseFactor(): BigDecimal {
         if (isEnd()) {
             throw IllegalArgumentException("Expected factor")
         }
@@ -242,7 +260,7 @@ private class Parser(
         }
     }
 
-    private fun parseFactorBody(): BigDecimal {
+    private suspend fun parseFactorBody(): BigDecimal {
         val value: BigDecimal = parseExpression()
         if (isEnd() || tokens[position] !is Token.FactorEnd) {
             throw IllegalArgumentException("Missing FactorEnd")
@@ -252,7 +270,7 @@ private class Parser(
         return value
     }
 
-    private fun parseConstant(constant: Token.Constant): BigDecimal {
+    private suspend fun parseConstant(constant: Token.Constant): BigDecimal {
         return when (constant) {
             Token.Constant.Pi ->
                 bigDecimalMath.pi()
@@ -262,7 +280,7 @@ private class Parser(
         }
     }
 
-    private fun applyFunction(
+    private suspend fun applyFunction(
         function: Token.Factor.Function,
         value: BigDecimal,
     ): BigDecimal {
@@ -272,7 +290,7 @@ private class Parser(
         }
     }
 
-    private fun applyFunction(
+    private suspend fun applyFunction(
         function: Token.FactorStart.Function,
         value: BigDecimal,
     ): BigDecimal {
