@@ -38,10 +38,11 @@ class SettingsRepository(
         return edit(
             error = SettingsRepositoryError.RepairInvalidSettings,
             transform = { preferences ->
-                val precision: Int? = preferences[SettingsKeys.PRECISION]
-                if (precision != null && !isValidPrecision(precision)) {
-                    preferences[SettingsKeys.PRECISION] =
-                        SettingsConstraints.DEFAULT_PRECISION
+                preferences[SettingsKeys.PRECISION]?.let { precision ->
+                    if (!isValidPrecision(precision)) {
+                        preferences[SettingsKeys.PRECISION] =
+                            SettingsConstraints.DEFAULT_PRECISION
+                    }
                 }
             },
         )

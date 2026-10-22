@@ -78,7 +78,7 @@ class AppViewModel(
         MutableStateFlow(AppState())
     private val _appEvent: MutableSharedFlow<AppEvent> =
         MutableSharedFlow(extraBufferCapacity = 1)
-    private var calculateJob: Job? = null
+    private var calculateJobOrNull: Job? = null
 
     init {
         launchSettingsRepositoryAction {
@@ -198,7 +198,7 @@ class AppViewModel(
             )
         ) return
 
-        calculateJob = viewModelScope.launch {
+        calculateJobOrNull = viewModelScope.launch {
             try {
                 val calculatedResult: Result<List<Symbol>, CalculatorError> =
                     withContext(Dispatchers.Default) {
@@ -241,7 +241,7 @@ class AppViewModel(
     }
 
     private fun calculateCancel() {
-        calculateJob?.cancel()
+        calculateJobOrNull?.cancel()
     }
 
     private fun input(symbol: Symbol) {

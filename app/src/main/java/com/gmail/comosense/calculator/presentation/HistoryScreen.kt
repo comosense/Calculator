@@ -240,9 +240,9 @@ private fun HistoryItem(
         Box(
             modifier = Modifier.fillMaxWidth(),
         ) {
-            if (historyItemContent.icon != null) {
+            historyItemContent.icon?.let { painter ->
                 Icon(
-                    painter = historyItemContent.icon,
+                    painter = painter,
                     contentDescription = historyItemContent.iconDescription,
                     modifier = Modifier.align(Alignment.Center),
                     tint = historyItemContent.iconColor,

@@ -167,12 +167,13 @@ private fun HandleEvent(appEvent: Flow<AppEvent>) {
                     appEvent.calculatorError.messageResourceId()
             }
 
-            if (messageResourceId != null) {
+            messageResourceId?.let { resId ->
                 Toast.makeText(
                     context,
-                    messageResourceId,
+                    resId,
                     Toast.LENGTH_SHORT
                 ).show()
+
             }
         }
     }
