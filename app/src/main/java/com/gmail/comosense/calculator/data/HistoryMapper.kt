@@ -31,6 +31,9 @@ fun ProtoSymbol.toSymbolOrNull(): Symbol? {
         ProtoSymbol.ValueCase.SQRT ->
             Symbol.Factor.Function.Sqrt
 
+        ProtoSymbol.ValueCase.POW10 ->
+            Symbol.Factor.Function.Pow10
+
         ProtoSymbol.ValueCase.OPENING_PARENTHESIS ->
             Symbol.FactorStart.OpeningParenthesis
 
@@ -122,6 +125,11 @@ fun Symbol.toProtoSymbol(): ProtoSymbol {
         Symbol.Factor.Function.Sqrt ->
             ProtoSymbol.newBuilder()
                 .setSqrt(true)
+                .build()
+
+        Symbol.Factor.Function.Pow10 ->
+            ProtoSymbol.newBuilder()
+                .setPow10(true)
                 .build()
 
         Symbol.FactorStart.OpeningParenthesis ->

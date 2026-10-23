@@ -56,35 +56,6 @@ fun AppState.appendExpression(symbol: Symbol): AppStateUpdateResult {
     )
 }
 
-fun AppState.appendExpression(symbols: List<Symbol>): AppStateUpdateResult {
-    if (!canAppend(symbols)) {
-        return AppStateUpdateResult.UnacceptableSymbol
-    }
-
-    if (expression.size + symbols.size
-        > AppStateExtensionsConstraints.MAX_EXPRESSION_SIZE
-    ) {
-        return AppStateUpdateResult.ExpressionTooLarge
-    }
-
-    return AppStateUpdateResult.Success(
-        appState = if (
-            symbols[0] is Symbol.Operator ||
-            symbols[0] is Symbol.SpecialOperator ||
-            isInputting
-        ) {
-            copy(
-                input = input + symbols,
-            )
-        } else {
-            copy(
-                result = emptyList(),
-                input = input + symbols,
-            )
-        },
-    )
-}
-
 fun AppState.applyResult(result: List<Symbol>): AppStateUpdateResult {
     if (result.size > AppStateExtensionsConstraints.MAX_EXPRESSION_SIZE) {
         return AppStateUpdateResult.ExpressionTooLarge

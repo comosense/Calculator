@@ -238,7 +238,7 @@ class BigDecimalMath(private val mathContext: MathContext) {
     }
 
     suspend fun exp(value: BigDecimal): BigDecimal {
-        return exp(value, workMathContext)
+        return pow(oneE(), value)
             .round(mathContext)
     }
 

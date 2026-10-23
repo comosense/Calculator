@@ -56,6 +56,9 @@ fun Symbol.toTokenOrNull(): Token? = when (this) {
     is Symbol.Factor.Function.Sqrt ->
         Token.Factor.Function.Sqrt
 
+    is Symbol.Factor.Function.Pow10 ->
+        Token.Factor.Function.Pow10
+
     is Symbol.FactorStart.OpeningParenthesis ->
         Token.FactorStart.OpeningParenthesis
 

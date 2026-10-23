@@ -111,15 +111,7 @@ val Key.action: Action
             Action.App(AppAction.Input(Symbol.FactorStart.Function.Exp))
 
         is Key.Pow10 ->
-            Action.App(
-                AppAction.Inputs(
-                    listOf(
-                        Symbol.Numeric.Digit(1),
-                        Symbol.Numeric.Digit(0),
-                        Symbol.SpecialOperator.Power,
-                    )
-                )
-            )
+            Action.App(AppAction.Input(Symbol.Factor.Function.Pow10))
 
         is Key.Arcsin ->
             Action.App(AppAction.Input(Symbol.FactorStart.Function.Arcsin))

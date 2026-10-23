@@ -293,6 +293,9 @@ private class Parser(
         return when (function) {
             Token.Factor.Function.Sqrt ->
                 bigDecimalMath.sqrt(value)
+
+            Token.Factor.Function.Pow10 ->
+                bigDecimalMath.pow(BigDecimal(10), value)
         }
     }
 

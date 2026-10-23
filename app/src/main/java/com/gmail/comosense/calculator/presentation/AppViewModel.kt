@@ -41,7 +41,6 @@ sealed interface AppAction {
     data object Calculate : AppAction
     data object CalculateCancel : AppAction
     data class Input(val symbol: Symbol) : AppAction
-    data class Inputs(val symbols: List<Symbol>) : AppAction
     data object Clear : AppAction
     data object Backspace : AppAction
     data object ToggleAngleMode : AppAction
@@ -143,9 +142,6 @@ class AppViewModel(
 
             is AppAction.Input ->
                 input(appAction.symbol)
-
-            is AppAction.Inputs ->
-                inputs(appAction.symbols)
 
             is AppAction.Clear ->
                 clear()
@@ -253,15 +249,6 @@ class AppViewModel(
             resolveAppStateUpdate(
                 appState = appState,
                 appStateUpdateResult = appState.appendExpression(symbol),
-            )
-        }
-    }
-
-    private fun inputs(symbols: List<Symbol>) {
-        updateAppState { appState ->
-            resolveAppStateUpdate(
-                appState = appState,
-                appStateUpdateResult = appState.appendExpression(symbols),
             )
         }
     }

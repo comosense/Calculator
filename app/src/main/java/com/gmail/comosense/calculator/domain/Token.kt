@@ -18,6 +18,7 @@ sealed interface Token {
     sealed interface Factor : Token {
         sealed interface Function : Factor {
             data object Sqrt : Function
+            data object Pow10 : Function
         }
     }
 

@@ -95,6 +95,9 @@ class SymbolFormatter(locale: Locale) {
             is Symbol.Factor.Function.Sqrt
                 -> "√"
 
+            is Symbol.Factor.Function.Pow10
+                -> "10^"
+
             is Symbol.FactorStart.OpeningParenthesis
                 -> "("
 
