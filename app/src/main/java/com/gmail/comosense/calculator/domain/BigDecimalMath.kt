@@ -344,7 +344,11 @@ class BigDecimalMath(private val mathContext: MathContext) {
 
         return SIXTEEN
             .multiply(arctanOneFifth)
-            .subtract(FOUR.multiply(arctanOneTwoHundredThirtyNine))
+            .subtract(
+                FOUR.multiply(
+                    arctanOneTwoHundredThirtyNine
+                )
+            )
     }
 
     private suspend fun sqrt(
@@ -396,7 +400,8 @@ class BigDecimalMath(private val mathContext: MathContext) {
             throw PowLimitExceededException()
         }
 
-        val result: BigDecimal = base.pow(exponent.abs().intValueExact(), mc)
+        val result: BigDecimal =
+            base.pow(exponent.abs().intValueExact(), mc)
 
         return if (exponent.signum() < 0) {
             ONE.divide(result, mc)
@@ -414,7 +419,8 @@ class BigDecimalMath(private val mathContext: MathContext) {
             throw PowLimitExceededException()
         }
 
-        val value: BigDecimal = exponent.multiply(ln(base, mc))
+        val value: BigDecimal =
+            exponent.multiply(ln(base, mc))
 
         return exp(value, mc)
     }
@@ -649,14 +655,9 @@ class BigDecimalMath(private val mathContext: MathContext) {
         val oneMinusXSquared: BigDecimal = ONE
             .subtract(absValue)
             .multiply(ONE.add(absValue))
-
         val root: BigDecimal = sqrt(oneMinusXSquared, mc)
-        val result: BigDecimal = arctan(
-            value.divide(root, mc),
-            mc
-        )
 
-        return result
+        return arctan(value.divide(root, mc), mc)
     }
 
     private suspend fun arccos(
