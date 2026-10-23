@@ -156,7 +156,7 @@ class BigDecimalMath(private val mathContext: MathContext) {
     }
 
     suspend fun pi(): BigDecimal {
-        return pi(workMathContext)
+        return piConstants(workMathContext).pi
             .round(mathContext)
     }
 
