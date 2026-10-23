@@ -52,6 +52,14 @@ class BigDecimalMath(private val mathContext: MathContext) {
             BigDecimal(BigDecimalMathConstraints.MAX_NON_INTEGER_EXPONENT)
     }
 
+    private data class PiConstants(
+        val mathContext: MathContext,
+        val pi: BigDecimal,
+        val halfPi: BigDecimal,
+        val threeHalfPi: BigDecimal,
+        val twoPi: BigDecimal,
+    )
+
     private val workMathContext: MathContext = MathContext(
         mathContext.precision + EXTRA_PRECISION,
         mathContext.roundingMode,
@@ -60,7 +68,7 @@ class BigDecimalMath(private val mathContext: MathContext) {
     @Volatile
     private var cachedSqrtTwo: BigDecimal? = null
     private suspend fun sqrtTwo(): BigDecimal {
-        cachedSqrtTwo?.let { sqrtTwo -> return sqrtTwo }
+        cachedSqrtTwo?.let { cached -> return cached }
 
         val result: BigDecimal = sqrt(TWO, workMathContext)
         cachedSqrtTwo = result
@@ -71,7 +79,7 @@ class BigDecimalMath(private val mathContext: MathContext) {
     @Volatile
     private var cachedInverseSqrtTwo: BigDecimal? = null
     private suspend fun inverseSqrtTwo(): BigDecimal {
-        cachedInverseSqrtTwo?.let { inverseSqrtTwo -> return inverseSqrtTwo }
+        cachedInverseSqrtTwo?.let { cached -> return cached }
 
         val result: BigDecimal = ONE.divide(sqrtTwo(), workMathContext)
         cachedInverseSqrtTwo = result
@@ -82,7 +90,7 @@ class BigDecimalMath(private val mathContext: MathContext) {
     @Volatile
     private var cachedLnTwo: BigDecimal? = null
     private suspend fun lnTwo(): BigDecimal {
-        cachedLnTwo?.let { lnTwo -> return lnTwo }
+        cachedLnTwo?.let { cached -> return cached }
 
         val result: BigDecimal = calculateLn(TWO, workMathContext)
         cachedLnTwo = result
@@ -93,7 +101,7 @@ class BigDecimalMath(private val mathContext: MathContext) {
     @Volatile
     private var cachedLnTen: BigDecimal? = null
     private suspend fun lnTen(): BigDecimal {
-        cachedLnTen?.let { lnTen -> return lnTen }
+        cachedLnTen?.let { cached -> return cached }
 
         val result: BigDecimal = ln(TEN, workMathContext)
         cachedLnTen = result
@@ -104,12 +112,38 @@ class BigDecimalMath(private val mathContext: MathContext) {
     @Volatile
     private var cachedOneE: BigDecimal? = null
     private suspend fun oneE(): BigDecimal {
-        cachedOneE?.let { oneE -> return oneE }
+        cachedOneE?.let { cached -> return cached }
 
         val result: BigDecimal = e(workMathContext)
         cachedOneE = result
 
         return result
+    }
+
+    @Volatile
+    private var cachedPiConstants: PiConstants? = null
+    private suspend fun piConstants(mc: MathContext): PiConstants {
+        cachedPiConstants?.let { cached ->
+            if (cached.mathContext == mc) {
+                return cached
+            }
+        }
+
+        val pi: BigDecimal = pi(mc)
+        val halfPi: BigDecimal = pi.divide(TWO, mc)
+        val threeHalfPi: BigDecimal = pi.add(halfPi)
+        val twoPi: BigDecimal = pi.multiply(TWO)
+
+        val piConstants = PiConstants(
+            mathContext = mc,
+            pi = pi,
+            halfPi = halfPi,
+            threeHalfPi = threeHalfPi,
+            twoPi = twoPi,
+        )
+        cachedPiConstants = piConstants
+
+        return piConstants
     }
 
     private val tolerance: BigDecimal by lazy {
@@ -512,20 +546,16 @@ class BigDecimalMath(private val mathContext: MathContext) {
         mc: MathContext,
     ): BigDecimal {
         val angle: BigDecimal = normalizeAngle(value, mc)
-
-        val pi: BigDecimal = pi(mc)
-        val halfPi: BigDecimal = pi.divide(TWO)
-        val twoPi: BigDecimal = pi.multiply(TWO)
-        val threeHalfPi: BigDecimal = pi.add(halfPi)
+        val piConstants: PiConstants = piConstants(mc)
 
         val distanceToZero: BigDecimal =
-            minOf(angle, twoPi.subtract(angle).abs())
+            minOf(angle, piConstants.twoPi.subtract(angle).abs())
         val distanceToHalfPi: BigDecimal =
-            angle.subtract(halfPi).abs()
+            angle.subtract(piConstants.halfPi).abs()
         val distanceToPi: BigDecimal =
-            angle.subtract(pi).abs()
+            angle.subtract(piConstants.pi).abs()
         val distanceToThreeHalfPi: BigDecimal =
-            angle.subtract(threeHalfPi).abs()
+            angle.subtract(piConstants.threeHalfPi).abs()
 
         return when {
             distanceToZero <= tolerance || distanceToPi <= tolerance ->
@@ -537,18 +567,18 @@ class BigDecimalMath(private val mathContext: MathContext) {
             distanceToThreeHalfPi <= tolerance ->
                 NEGATIVE_ONE
 
-            angle <= halfPi ->
+            angle <= piConstants.halfPi ->
                 sinTaylor(angle, mc)
 
-            angle <= pi ->
-                sinTaylor(pi.subtract(angle), mc)
+            angle <= piConstants.pi ->
+                sinTaylor(piConstants.pi.subtract(angle), mc)
 
-            angle <= threeHalfPi ->
-                sinTaylor(angle.subtract(pi), mc)
+            angle <= piConstants.threeHalfPi ->
+                sinTaylor(angle.subtract(piConstants.pi), mc)
                     .negate()
 
             else ->
-                sinTaylor(twoPi.subtract(angle), mc)
+                sinTaylor(piConstants.twoPi.subtract(angle), mc)
                     .negate()
         }
     }
@@ -558,20 +588,16 @@ class BigDecimalMath(private val mathContext: MathContext) {
         mc: MathContext,
     ): BigDecimal {
         val angle: BigDecimal = normalizeAngle(value, mc)
-
-        val pi: BigDecimal = pi(mc)
-        val halfPi: BigDecimal = pi.divide(TWO)
-        val twoPi: BigDecimal = pi.multiply(TWO)
-        val threeHalfPi: BigDecimal = pi.add(halfPi)
+        val piConstants: PiConstants = piConstants(mc)
 
         val distanceToZero: BigDecimal =
-            minOf(angle, twoPi.subtract(angle).abs())
+            minOf(angle, piConstants.twoPi.subtract(angle).abs())
         val distanceToHalfPi: BigDecimal =
-            angle.subtract(halfPi).abs()
+            angle.subtract(piConstants.halfPi).abs()
         val distanceToPi: BigDecimal =
-            angle.subtract(pi).abs()
+            angle.subtract(piConstants.pi).abs()
         val distanceToThreeHalfPi: BigDecimal =
-            angle.subtract(threeHalfPi).abs()
+            angle.subtract(piConstants.threeHalfPi).abs()
 
         return when {
             distanceToHalfPi <= tolerance || distanceToThreeHalfPi <= tolerance ->
@@ -583,19 +609,19 @@ class BigDecimalMath(private val mathContext: MathContext) {
             distanceToPi <= tolerance ->
                 NEGATIVE_ONE
 
-            angle <= halfPi ->
+            angle <= piConstants.halfPi ->
                 cosTaylor(angle, mc)
 
-            angle <= pi ->
-                cosTaylor(pi.subtract(angle), mc)
+            angle <= piConstants.pi ->
+                cosTaylor(piConstants.pi.subtract(angle), mc)
                     .negate()
 
-            angle <= threeHalfPi ->
-                cosTaylor(angle.subtract(pi), mc)
+            angle <= piConstants.threeHalfPi ->
+                cosTaylor(angle.subtract(piConstants.pi), mc)
                     .negate()
 
             else ->
-                cosTaylor(twoPi.subtract(angle), mc)
+                cosTaylor(piConstants.twoPi.subtract(angle), mc)
         }
     }
 
@@ -608,11 +634,11 @@ class BigDecimalMath(private val mathContext: MathContext) {
         }
 
         if (value.compareTo(ONE) == 0) {
-            return pi(mc).divide(TWO, mc)
+            return piConstants(mc).pi.divide(TWO, mc)
         }
 
         if (value.compareTo(NEGATIVE_ONE) == 0) {
-            return pi(mc).divide(TWO, mc).negate()
+            return piConstants(mc).pi.divide(TWO, mc).negate()
         }
 
         if (value.signum() == 0) {
@@ -646,15 +672,15 @@ class BigDecimalMath(private val mathContext: MathContext) {
         }
 
         if (value.compareTo(NEGATIVE_ONE) == 0) {
-            return pi(mc)
+            return piConstants(mc).pi
         }
 
         if (value.signum() == 0) {
-            return pi(mc).divide(TWO, mc)
+            return piConstants(mc).pi.divide(TWO, mc)
         }
 
         if (value.signum() < 0) {
-            return pi(mc).subtract(arccos(value.negate(), mc))
+            return piConstants(mc).pi.subtract(arccos(value.negate(), mc))
         }
 
         val numerator: BigDecimal = ONE.subtract(value)
@@ -674,7 +700,7 @@ class BigDecimalMath(private val mathContext: MathContext) {
         }
 
         if (value > ONE) {
-            return pi(mc).divide(TWO, mc)
+            return piConstants(mc).pi.divide(TWO, mc)
                 .subtract(
                     arctan(ONE.divide(value, mc), mc)
                 )
@@ -684,7 +710,7 @@ class BigDecimalMath(private val mathContext: MathContext) {
             val reduced: BigDecimal = value.subtract(ONE)
                 .divide(value.add(ONE), mc)
 
-            return pi(mc).divide(FOUR, mc)
+            return piConstants(mc).pi.divide(FOUR, mc)
                 .add(arctan(reduced, mc))
         }
 
@@ -801,7 +827,7 @@ class BigDecimalMath(private val mathContext: MathContext) {
         mc: MathContext,
     ): BigDecimal {
         return this
-            .multiply(pi(mc))
+            .multiply(piConstants(mc).pi)
             .divide(ONE_HUNDRED_EIGHTY, mc)
     }
 
@@ -810,18 +836,19 @@ class BigDecimalMath(private val mathContext: MathContext) {
     ): BigDecimal {
         return this
             .multiply(ONE_HUNDRED_EIGHTY)
-            .divide(pi(mc), mc)
+            .divide(piConstants(mc).pi, mc)
     }
 
     private suspend fun normalizeAngle(
         value: BigDecimal,
         mc: MathContext,
     ): BigDecimal {
-        val twoPi: BigDecimal = pi(mc).multiply(TWO)
-        var angle: BigDecimal = value.remainder(twoPi, mc)
+        val piConstants: PiConstants = piConstants(mc)
+
+        var angle: BigDecimal = value.remainder(piConstants.twoPi, mc)
 
         if (angle.signum() == -1) {
-            angle = angle.add(twoPi)
+            angle = angle.add(piConstants.twoPi)
         }
 
         return angle
