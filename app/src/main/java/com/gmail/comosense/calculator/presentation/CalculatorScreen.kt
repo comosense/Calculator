@@ -98,7 +98,7 @@ private fun MainPanel(
     symbolFormatter: SymbolFormatter,
 ) {
     var showFunctionKeyGrid by remember { mutableStateOf(false) }
-    var isInverseFunction by remember { mutableStateOf(false) }
+    var isInverseFunctionMode by remember { mutableStateOf(false) }
 
     BoxWithConstraints(
         modifier = modifier.background(AppTheme.calculatorScreenColors.background),
@@ -148,16 +148,24 @@ private fun MainPanel(
                 ) { isShowFunctionKeyGrid ->
                 KeyGrid(
                     keyGrid = if (isShowFunctionKeyGrid) {
-                        functionKeyGrid(appState)
+                        functionKeyGrid(
+                            isInverseFunctionMode = isInverseFunctionMode,
+                            appState = appState,
+                        )
                     } else {
-                        mainKeyGrid(appState)
+                        mainKeyGrid(
+                            appState = appState,
+                        )
                     },
                     arrangementSpace = 2.dp,
                     modifier = Modifier.fillMaxSize(),
                     onAction = { action ->
                         when (action) {
                             is Action.App -> onAppAction(action.appAction)
-                            is Action.Screen -> Unit
+                            is Action.Screen -> when (action.screenAction) {
+                                ScreenAction.ToggleFunctionMode ->
+                                    isInverseFunctionMode = !isInverseFunctionMode
+                            }
                         }
                     },
                     symbolFormatter = symbolFormatter,
@@ -475,7 +483,9 @@ private fun KeyButton(
     }
 }
 
-private fun mainKeyGrid(appState: AppState): List<List<Key?>> {
+private fun mainKeyGrid(
+    appState: AppState
+): List<List<Key?>> {
     val deleteKey: Key =
         if (appState.isInputting) {
             Key.Backspace
@@ -533,7 +543,10 @@ private fun mainKeyGrid(appState: AppState): List<List<Key?>> {
     )
 }
 
-private fun functionKeyGrid(appState: AppState): List<List<Key?>> {
+private fun functionKeyGrid(
+    isInverseFunctionMode: Boolean,
+    appState: AppState,
+): List<List<Key?>> {
     return listOf(
         listOf(
             Key.Sqrt,
@@ -545,16 +558,24 @@ private fun functionKeyGrid(appState: AppState): List<List<Key?>> {
             Key.Ln,
             Key.Euler,
         ),
-        listOf(
-            Key.Sin,
-            Key.Cos,
-            Key.Tan,
-        ),
+        if (isInverseFunctionMode) {
+            listOf(
+                Key.Arcsin,
+                Key.Arccos,
+                Key.Arctan,
+            )
+        } else {
+            listOf(
+                Key.Sin,
+                Key.Cos,
+                Key.Tan,
+            )
+        },
         listOf(
             null,
             Key.AngleMode(appState.isRadians),
             Key.Pi,
-            null,
+            Key.FunctionMode(isInverseFunctionMode),
             null,
         ),
     )

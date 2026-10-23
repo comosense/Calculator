@@ -16,7 +16,7 @@ sealed interface Key {
     data object Equal : Key
     data object Clear : Key
     data object Backspace : Key
-    data class FunctionMode(val isInversed: Boolean) : Key
+    data class FunctionMode(val isInverseFunctionMode: Boolean) : Key
     data class AngleMode(val isRadians: Boolean) : Key
     data object Euler : Key
     data object Pi : Key
