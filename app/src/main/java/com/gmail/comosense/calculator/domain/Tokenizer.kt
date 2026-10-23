@@ -59,6 +59,12 @@ fun Symbol.toTokenOrNull(): Token? = when (this) {
     is Symbol.FactorStart.OpeningParenthesis ->
         Token.FactorStart.OpeningParenthesis
 
+    is Symbol.FactorStart.Function.Ln ->
+        Token.FactorStart.Function.Ln
+
+    is Symbol.FactorStart.Function.Log ->
+        Token.FactorStart.Function.Log
+
     is Symbol.FactorStart.Function.Sin ->
         Token.FactorStart.Function.Sin
 
@@ -68,11 +74,14 @@ fun Symbol.toTokenOrNull(): Token? = when (this) {
     is Symbol.FactorStart.Function.Tan ->
         Token.FactorStart.Function.Tan
 
-    is Symbol.FactorStart.Function.Log ->
-        Token.FactorStart.Function.Log
+    is Symbol.FactorStart.Function.Arcsin ->
+        Token.FactorStart.Function.Arcsin
 
-    is Symbol.FactorStart.Function.Ln ->
-        Token.FactorStart.Function.Ln
+    is Symbol.FactorStart.Function.Arccos ->
+        Token.FactorStart.Function.Arccos
+
+    is Symbol.FactorStart.Function.Arctan ->
+        Token.FactorStart.Function.Arctan
 
     is Symbol.FactorEnd.ClosingParenthesis ->
         Token.FactorEnd.ClosingParenthesis

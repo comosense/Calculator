@@ -21,6 +21,8 @@ enum class CalculatorError {
     PowLimitExceeded,
     LogInvalidArgument,
     TanInvalidArgument,
+    ArcsinInvalidArgument,
+    ArccosInvalidArgument,
     Arithmetic,
 }
 
@@ -101,6 +103,10 @@ private suspend fun parse(
         Result.Err(CalculatorError.LogInvalidArgument)
     } catch (_: TanInvalidArgumentException) {
         Result.Err(CalculatorError.TanInvalidArgument)
+    } catch (_: ArcsinInvalidArgumentException) {
+        Result.Err(CalculatorError.ArcsinInvalidArgument)
+    } catch (_: ArccosInvalidArgumentException) {
+        Result.Err(CalculatorError.ArccosInvalidArgument)
     } catch (_: ArithmeticException) {
         Result.Err(CalculatorError.Arithmetic)
     }
@@ -295,6 +301,12 @@ private class Parser(
         value: BigDecimal,
     ): BigDecimal {
         return when (function) {
+            Token.FactorStart.Function.Ln ->
+                bigDecimalMath.ln(value)
+
+            Token.FactorStart.Function.Log ->
+                bigDecimalMath.log(value)
+
             Token.FactorStart.Function.Sin ->
                 bigDecimalMath.sin(value, isRadians)
 
@@ -304,11 +316,14 @@ private class Parser(
             Token.FactorStart.Function.Tan ->
                 bigDecimalMath.tan(value, isRadians)
 
-            Token.FactorStart.Function.Log ->
-                bigDecimalMath.log(value)
+            Token.FactorStart.Function.Arcsin ->
+                bigDecimalMath.arcsin(value)
 
-            Token.FactorStart.Function.Ln ->
-                bigDecimalMath.ln(value)
+            Token.FactorStart.Function.Arccos ->
+                bigDecimalMath.arccos(value)
+
+            Token.FactorStart.Function.Arctan ->
+                bigDecimalMath.arctan(value)
         }
     }
 }

@@ -16,13 +16,17 @@ sealed interface Key {
     data object Equal : Key
     data object Clear : Key
     data object Backspace : Key
+    data class FunctionMode(val isInversed: Boolean) : Key
     data class AngleMode(val isRadians: Boolean) : Key
-    data object Pi : Key
     data object Euler : Key
+    data object Pi : Key
     data object Sqrt : Key
+    data object Ln : Key
+    data object Log : Key
     data object Sin : Key
     data object Cos : Key
     data object Tan : Key
-    data object Log : Key
-    data object Ln : Key
+    data object Arcsin : Key
+    data object Arccos : Key
+    data object Arctan : Key
 }

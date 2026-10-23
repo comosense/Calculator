@@ -10,6 +10,15 @@ enum class Style {
     Mode,
 }
 
+enum class ScreenAction {
+    ToggleFunctionMode,
+}
+
+sealed interface Action {
+    data class App(val appAction: AppAction) : Action
+    data class Screen(val screenAction: ScreenAction) : Action
+}
+
 sealed interface Display {
     data class Text(
         val text: String,
@@ -21,79 +30,91 @@ sealed interface Display {
     ) : Display
 }
 
-val Key.appAction: AppAction
+val Key.action: Action
     get() = when (this) {
         is Key.Positive ->
-            AppAction.Input(Symbol.Sign.Positive)
+            Action.App(AppAction.Input(Symbol.Sign.Positive))
 
         is Key.Negative ->
-            AppAction.Input(Symbol.Sign.Negative)
+            Action.App(AppAction.Input(Symbol.Sign.Negative))
 
         is Key.Digit ->
-            AppAction.Input(Symbol.Numeric.Digit(value))
+            Action.App(AppAction.Input(Symbol.Numeric.Digit(value)))
 
         is Key.Point ->
-            AppAction.Input(Symbol.Numeric.Point)
+            Action.App(AppAction.Input(Symbol.Numeric.Point))
 
         is Key.OpeningParenthesis ->
-            AppAction.Input(Symbol.FactorStart.OpeningParenthesis)
+            Action.App(AppAction.Input(Symbol.FactorStart.OpeningParenthesis))
 
         is Key.ClosingParenthesis ->
-            AppAction.Input(Symbol.FactorEnd.ClosingParenthesis)
+            Action.App(AppAction.Input(Symbol.FactorEnd.ClosingParenthesis))
 
         is Key.Add ->
-            AppAction.Input(Symbol.Operator.Add)
+            Action.App(AppAction.Input(Symbol.Operator.Add))
 
         is Key.Subtract ->
-            AppAction.Input(Symbol.Operator.Subtract)
+            Action.App(AppAction.Input(Symbol.Operator.Subtract))
 
         is Key.Multiply ->
-            AppAction.Input(Symbol.Operator.Multiply)
+            Action.App(AppAction.Input(Symbol.Operator.Multiply))
 
         is Key.Divide ->
-            AppAction.Input(Symbol.Operator.Divide)
+            Action.App(AppAction.Input(Symbol.Operator.Divide))
 
         is Key.Power ->
-            AppAction.Input(Symbol.SpecialOperator.Power)
+            Action.App(AppAction.Input(Symbol.SpecialOperator.Power))
 
         is Key.Factorial ->
-            AppAction.Input(Symbol.SpecialOperator.Factorial)
+            Action.App(AppAction.Input(Symbol.SpecialOperator.Factorial))
 
         is Key.Equal ->
-            AppAction.Calculate
+            Action.App(AppAction.Calculate)
 
         is Key.Clear ->
-            AppAction.Clear
+            Action.App(AppAction.Clear)
 
         is Key.Backspace ->
-            AppAction.Backspace
+            Action.App(AppAction.Backspace)
+
+        is Key.FunctionMode ->
+            Action.Screen(ScreenAction.ToggleFunctionMode)
 
         is Key.AngleMode ->
-            AppAction.ToggleAngleMode
-
-        is Key.Pi ->
-            AppAction.Input(Symbol.Constant.Pi)
+            Action.App(AppAction.ToggleAngleMode)
 
         is Key.Euler ->
-            AppAction.Input(Symbol.Constant.Euler)
+            Action.App(AppAction.Input(Symbol.Constant.Euler))
+
+        is Key.Pi ->
+            Action.App(AppAction.Input(Symbol.Constant.Pi))
 
         is Key.Sqrt ->
-            AppAction.Input(Symbol.Factor.Function.Sqrt)
-
-        is Key.Sin ->
-            AppAction.Input(Symbol.FactorStart.Function.Sin)
-
-        is Key.Cos ->
-            AppAction.Input(Symbol.FactorStart.Function.Cos)
-
-        is Key.Tan ->
-            AppAction.Input(Symbol.FactorStart.Function.Tan)
-
-        is Key.Log ->
-            AppAction.Input(Symbol.FactorStart.Function.Log)
+            Action.App(AppAction.Input(Symbol.Factor.Function.Sqrt))
 
         is Key.Ln ->
-            AppAction.Input(Symbol.FactorStart.Function.Ln)
+            Action.App(AppAction.Input(Symbol.FactorStart.Function.Ln))
+
+        is Key.Log ->
+            Action.App(AppAction.Input(Symbol.FactorStart.Function.Log))
+
+        is Key.Sin ->
+            Action.App(AppAction.Input(Symbol.FactorStart.Function.Sin))
+
+        is Key.Cos ->
+            Action.App(AppAction.Input(Symbol.FactorStart.Function.Cos))
+
+        is Key.Tan ->
+            Action.App(AppAction.Input(Symbol.FactorStart.Function.Tan))
+
+        is Key.Arcsin ->
+            Action.App(AppAction.Input(Symbol.FactorStart.Function.Arcsin))
+
+        is Key.Arccos ->
+            Action.App(AppAction.Input(Symbol.FactorStart.Function.Arccos))
+
+        is Key.Arctan ->
+            Action.App(AppAction.Input(Symbol.FactorStart.Function.Arctan))
     }
 
 val Key.altKeyOrNull: Key?
@@ -131,16 +152,20 @@ val Key.style: Style
 
         is Key.Power,
         is Key.Factorial,
-        is Key.Pi,
         is Key.Euler,
+        is Key.Pi,
         is Key.Sqrt,
+        is Key.Ln,
+        is Key.Log,
         is Key.Sin,
         is Key.Cos,
         is Key.Tan,
-        is Key.Log,
-        is Key.Ln ->
+        is Key.Arcsin,
+        is Key.Arccos,
+        is Key.Arctan ->
             Style.Digit
 
+        is Key.FunctionMode,
         is Key.AngleMode ->
             Style.Mode
     }
@@ -224,6 +249,16 @@ fun Key.display(symbolFormatter: SymbolFormatter): Display = when (this) {
             stringResource = R.string.content_description_backspace,
         )
 
+    is Key.FunctionMode ->
+        Display.Icon(
+            painterResource = if (isInversed) {
+                R.drawable.ic_function
+            } else {
+                R.drawable.ic_inverse_function
+            },
+            stringResource = R.string.content_description_function_mode,
+        )
+
     is Key.AngleMode ->
         Display.Icon(
             painterResource = if (isRadians) {
@@ -231,17 +266,23 @@ fun Key.display(symbolFormatter: SymbolFormatter): Display = when (this) {
             } else {
                 R.drawable.ic_degrees
             },
-            stringResource = R.string.content_description_angle_mode
+            stringResource = R.string.content_description_angle_mode,
         )
-
-    is Key.Pi ->
-        Display.Text("π")
 
     is Key.Euler ->
         Display.Text("e")
 
+    is Key.Pi ->
+        Display.Text("π")
+
     is Key.Sqrt ->
         Display.Text("√")
+
+    is Key.Ln ->
+        Display.Text("ln")
+
+    is Key.Log ->
+        Display.Text("log")
 
     is Key.Sin ->
         Display.Text("sin")
@@ -252,9 +293,12 @@ fun Key.display(symbolFormatter: SymbolFormatter): Display = when (this) {
     is Key.Tan ->
         Display.Text("tan")
 
-    is Key.Log ->
-        Display.Text("log")
+    is Key.Arcsin ->
+        Display.Text("asin")
 
-    is Key.Ln ->
-        Display.Text("ln")
+    is Key.Arccos ->
+        Display.Text("acos")
+
+    is Key.Arctan ->
+        Display.Text("atan")
 }

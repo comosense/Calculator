@@ -40,5 +40,8 @@ message Symbol {
     bool tan = 42;
     bool log = 48;
     bool ln = 49;
+    bool arcsin = 50;
+    bool arccos = 51;
+    bool arctan = 52;
   }
 }

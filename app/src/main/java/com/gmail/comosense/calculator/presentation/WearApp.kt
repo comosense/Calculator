@@ -45,7 +45,7 @@ enum class AppScreen {
 fun WearApp(
     appState: AppState,
     appEvent: Flow<AppEvent>,
-    onAction: (AppAction) -> Unit,
+    onAppAction: (AppAction) -> Unit,
     locale: Locale,
 ) {
     var currentScreen: AppScreen by remember { mutableStateOf(AppScreen.Calculator) }
@@ -83,7 +83,7 @@ fun WearApp(
     AppScaffold {
         CalculatorScreen(
             appState = appState,
-            onAction = onAction,
+            onAppAction = onAppAction,
             onShow = { appScreen -> changeScreen(appScreen) },
             symbolFormatter = symbolFormatter,
         )
@@ -109,7 +109,7 @@ fun WearApp(
                 if (isBackground) {
                     CalculatorScreen(
                         appState = appState,
-                        onAction = onAction,
+                        onAppAction = onAppAction,
                         onShow = {},
                         symbolFormatter = symbolFormatter,
                     )
@@ -118,14 +118,14 @@ fun WearApp(
                         AppScreen.Settings ->
                             SettingsScreen(
                                 settings = appState.settings,
-                                onAction = onAction,
+                                onAppAction = onAppAction,
                                 onBack = { changeScreen(null) },
                             )
 
                         AppScreen.History ->
                             HistoryScreen(
                                 histories = appState.histories,
-                                onAction = onAction,
+                                onAppAction = onAppAction,
                                 onBack = { changeScreen(null) },
                                 onDeleteModeChanged = { deleteMode ->
                                     isHistoryDeleteMode = deleteMode
@@ -210,5 +210,7 @@ private fun CalculatorError.messageResourceId(): Int = when (this) {
     CalculatorError.PowLimitExceeded -> R.string.calculator_error_pow_limit_exceeded
     CalculatorError.LogInvalidArgument -> R.string.calculator_error_log_invalid_argument
     CalculatorError.TanInvalidArgument -> R.string.calculator_error_tan_invalid_argument
+    CalculatorError.ArcsinInvalidArgument -> R.string.calculator_error_arcsin_invalid_argument
+    CalculatorError.ArccosInvalidArgument -> R.string.calculator_error_arccos_invalid_argument
     CalculatorError.Arithmetic -> R.string.calculator_error_arithmetic
 }

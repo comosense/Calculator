@@ -22,6 +22,8 @@
     <string name="calculator_error_pow_limit_exceeded">Exponent exceeds supported limit</string>
     <string name="calculator_error_log_invalid_argument">Logarithm requires a positive number</string>
     <string name="calculator_error_tan_invalid_argument">Tangent is undefined for this angle</string>
+    <string name="calculator_error_arcsin_invalid_argument">Arcsine is undefined for this input</string>
+    <string name="calculator_error_arccos_invalid_argument">Arccosine is undefined for this input</string>
     <string name="calculator_error_arithmetic">Arithmetic error</string>
     <string name="content_description_positive">Positive sign</string>
     <string name="content_description_negative">Negative sign</string>
@@ -34,6 +36,7 @@
     <string name="content_description_equal">Equals</string>
     <string name="content_description_clear">Clear</string>
     <string name="content_description_backspace">Backspace</string>
+    <string name="content_description_function_mode">Function mode</string>
     <string name="content_description_angle_mode">Angle mode</string>
     <string name="content_description_undo">Back</string>
     <string name="content_description_delete">Delete</string>

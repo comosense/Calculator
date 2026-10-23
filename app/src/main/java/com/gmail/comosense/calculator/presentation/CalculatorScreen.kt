@@ -74,7 +74,7 @@ private const val KEY_SWITCHER_LENGTH_RATIO: Float = 0.14142136f
 @Composable
 fun CalculatorScreen(
     appState: AppState,
-    onAction: (AppAction) -> Unit,
+    onAppAction: (AppAction) -> Unit,
     onShow: (AppScreen) -> Unit,
     symbolFormatter: SymbolFormatter,
 ) {
@@ -82,7 +82,7 @@ fun CalculatorScreen(
         MainPanel(
             modifier = Modifier.fillMaxSize(),
             appState = appState,
-            onAction = onAction,
+            onAppAction = onAppAction,
             onShow = onShow,
             symbolFormatter = symbolFormatter,
         )
@@ -93,11 +93,12 @@ fun CalculatorScreen(
 private fun MainPanel(
     modifier: Modifier,
     appState: AppState,
-    onAction: (AppAction) -> Unit,
+    onAppAction: (AppAction) -> Unit,
     onShow: (AppScreen) -> Unit,
     symbolFormatter: SymbolFormatter,
 ) {
     var showFunctionKeyGrid by remember { mutableStateOf(false) }
+    var isInverseFunction by remember { mutableStateOf(false) }
 
     BoxWithConstraints(
         modifier = modifier.background(AppTheme.calculatorScreenColors.background),
@@ -123,7 +124,7 @@ private fun MainPanel(
                     height = inscribedLength / 5f
                 ),
                 appState = appState,
-                onAction = onAction,
+                onAppAction = onAppAction,
                 onShow = onShow,
                 symbolFormatter = symbolFormatter,
             )
@@ -153,7 +154,12 @@ private fun MainPanel(
                     },
                     arrangementSpace = 2.dp,
                     modifier = Modifier.fillMaxSize(),
-                    onAction = onAction,
+                    onAction = { action ->
+                        when (action) {
+                            is Action.App -> onAppAction(action.appAction)
+                            is Action.Screen -> Unit
+                        }
+                    },
                     symbolFormatter = symbolFormatter,
                 )
             }
@@ -177,7 +183,7 @@ private fun MainPanel(
 private fun ExpressionBox(
     modifier: Modifier,
     appState: AppState,
-    onAction: (AppAction) -> Unit,
+    onAppAction: (AppAction) -> Unit,
     onShow: (AppScreen) -> Unit,
     symbolFormatter: SymbolFormatter,
 ) {
@@ -315,7 +321,7 @@ private fun ExpressionBox(
         if (appState.isCalculating) {
             val size: Dp = maxHeight * 0.75f
             IconButton(
-                onClick = { onAction(AppAction.CalculateCancel) },
+                onClick = { onAppAction(AppAction.CalculateCancel) },
                 modifier = Modifier.size(size),
             ) {
                 Icon(
@@ -337,7 +343,7 @@ private fun KeyGrid(
     keyGrid: List<List<Key?>>,
     arrangementSpace: Dp,
     modifier: Modifier,
-    onAction: (AppAction) -> Unit,
+    onAction: (Action) -> Unit,
     symbolFormatter: SymbolFormatter,
 ) {
     Column(
@@ -363,7 +369,7 @@ private fun KeysRow(
     keys: List<Key?>,
     arrangementSpace: Dp,
     modifier: Modifier,
-    onAction: (AppAction) -> Unit,
+    onAction: (Action) -> Unit,
     symbolFormatter: SymbolFormatter,
 ) {
     Row(
@@ -396,7 +402,7 @@ private fun KeysRow(
 private fun KeyButton(
     key: Key,
     modifier: Modifier,
-    onAction: (AppAction) -> Unit,
+    onAction: (Action) -> Unit,
     symbolFormatter: SymbolFormatter,
 ) {
     data class Colors(
@@ -431,10 +437,10 @@ private fun KeyButton(
     }
 
     Button(
-        onClick = { onAction(key.appAction) },
+        onClick = { onAction(key.action) },
         onLongClick = {
             key.altKeyOrNull?.let { altKey ->
-                onAction(altKey.appAction)
+                onAction(altKey.action)
             }
         },
         modifier = modifier,

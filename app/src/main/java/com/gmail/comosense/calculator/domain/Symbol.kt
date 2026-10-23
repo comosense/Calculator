@@ -17,8 +17,8 @@ sealed interface Symbol {
     }
 
     sealed interface Constant : Symbol {
-        data object Pi : Constant
         data object Euler : Constant
+        data object Pi : Constant
     }
 
     sealed interface Factor : Symbol {
@@ -30,11 +30,14 @@ sealed interface Symbol {
     sealed interface FactorStart : Symbol {
         data object OpeningParenthesis : FactorStart
         sealed interface Function : FactorStart {
+            data object Ln : Function
+            data object Log : Function
             data object Sin : Function
             data object Cos : Function
             data object Tan : Function
-            data object Log : Function
-            data object Ln : Function
+            data object Arcsin : Function
+            data object Arccos : Function
+            data object Arctan : Function
         }
     }
 

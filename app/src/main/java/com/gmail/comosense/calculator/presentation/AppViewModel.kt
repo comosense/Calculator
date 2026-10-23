@@ -105,7 +105,7 @@ class AppViewModel(
     val appState: StateFlow<AppState> = _appState.asStateFlow()
     val appEvent: SharedFlow<AppEvent> = _appEvent.asSharedFlow()
 
-    fun onAction(appAction: AppAction) {
+    fun onAppAction(appAction: AppAction) {
         if (_appState.value.isCalculating) {
             when (appAction) {
                 is AppAction.SelectHistory,

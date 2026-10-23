@@ -32,7 +32,7 @@ class MainActivity : ComponentActivity() {
                 WearApp(
                     appState = appState,
                     appEvent = viewModel.appEvent,
-                    onAction = viewModel::onAction,
+                    onAppAction = viewModel::onAppAction,
                     locale = LocalLocale.current.platformLocale,
                 )
             }
@@ -54,7 +54,7 @@ fun DefaultPreview() {
                 ),
             ),
             appEvent = emptyFlow(),
-            onAction = {},
+            onAppAction = {},
             locale = LocalLocale.current.platformLocale,
         )
     }

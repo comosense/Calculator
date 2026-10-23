@@ -98,6 +98,12 @@ class SymbolFormatter(locale: Locale) {
             is Symbol.FactorStart.OpeningParenthesis
                 -> "("
 
+            is Symbol.FactorStart.Function.Ln
+                -> "ln("
+
+            is Symbol.FactorStart.Function.Log
+                -> "log("
+
             is Symbol.FactorStart.Function.Sin
                 -> "sin("
 
@@ -107,11 +113,14 @@ class SymbolFormatter(locale: Locale) {
             is Symbol.FactorStart.Function.Tan
                 -> "tan("
 
-            is Symbol.FactorStart.Function.Log
-                -> "log("
+            is Symbol.FactorStart.Function.Arcsin
+                -> "asin("
 
-            is Symbol.FactorStart.Function.Ln
-                -> "ln("
+            is Symbol.FactorStart.Function.Arccos
+                -> "acos("
+
+            is Symbol.FactorStart.Function.Arctan
+                -> "atan("
 
             is Symbol.FactorEnd.ClosingParenthesis
                 -> ")"

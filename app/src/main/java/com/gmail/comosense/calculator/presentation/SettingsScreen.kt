@@ -41,7 +41,7 @@ private const val INSCRIBED_LENGTH_RATIO: Float = 0.70710677f
 @Composable
 fun SettingsScreen(
     settings: Settings,
-    onAction: (AppAction) -> Unit,
+    onAppAction: (AppAction) -> Unit,
     onBack: () -> Unit,
 ) {
     ScreenScaffold(timeText = {}) {
@@ -69,7 +69,7 @@ fun SettingsScreen(
                 .drop(1)
                 .debounce(500.milliseconds)
                 .collect { precision ->
-                    onAction(AppAction.SetPrecision(precision))
+                    onAppAction(AppAction.SetPrecision(precision))
                 }
         }
 

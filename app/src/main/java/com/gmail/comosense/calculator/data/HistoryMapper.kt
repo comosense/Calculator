@@ -22,17 +22,23 @@ fun ProtoSymbol.toSymbolOrNull(): Symbol? {
         ProtoSymbol.ValueCase.POINT ->
             Symbol.Numeric.Point
 
-        ProtoSymbol.ValueCase.PI ->
-            Symbol.Constant.Pi
-
         ProtoSymbol.ValueCase.EULER ->
             Symbol.Constant.Euler
+
+        ProtoSymbol.ValueCase.PI ->
+            Symbol.Constant.Pi
 
         ProtoSymbol.ValueCase.SQRT ->
             Symbol.Factor.Function.Sqrt
 
         ProtoSymbol.ValueCase.OPENING_PARENTHESIS ->
             Symbol.FactorStart.OpeningParenthesis
+
+        ProtoSymbol.ValueCase.LN ->
+            Symbol.FactorStart.Function.Ln
+
+        ProtoSymbol.ValueCase.LOG ->
+            Symbol.FactorStart.Function.Log
 
         ProtoSymbol.ValueCase.SIN ->
             Symbol.FactorStart.Function.Sin
@@ -43,11 +49,14 @@ fun ProtoSymbol.toSymbolOrNull(): Symbol? {
         ProtoSymbol.ValueCase.TAN ->
             Symbol.FactorStart.Function.Tan
 
-        ProtoSymbol.ValueCase.LOG ->
-            Symbol.FactorStart.Function.Log
+        ProtoSymbol.ValueCase.ARCSIN ->
+            Symbol.FactorStart.Function.Arcsin
 
-        ProtoSymbol.ValueCase.LN ->
-            Symbol.FactorStart.Function.Ln
+        ProtoSymbol.ValueCase.ARCCOS ->
+            Symbol.FactorStart.Function.Arccos
+
+        ProtoSymbol.ValueCase.ARCTAN ->
+            Symbol.FactorStart.Function.Arctan
 
         ProtoSymbol.ValueCase.CLOSING_PARENTHESIS ->
             Symbol.FactorEnd.ClosingParenthesis
@@ -97,14 +106,14 @@ fun Symbol.toProtoSymbol(): ProtoSymbol {
                 .setPoint(true)
                 .build()
 
-        Symbol.Constant.Pi ->
-            ProtoSymbol.newBuilder()
-                .setPi(true)
-                .build()
-
         Symbol.Constant.Euler ->
             ProtoSymbol.newBuilder()
                 .setEuler(true)
+                .build()
+
+        Symbol.Constant.Pi ->
+            ProtoSymbol.newBuilder()
+                .setPi(true)
                 .build()
 
         Symbol.Factor.Function.Sqrt ->
@@ -115,6 +124,16 @@ fun Symbol.toProtoSymbol(): ProtoSymbol {
         Symbol.FactorStart.OpeningParenthesis ->
             ProtoSymbol.newBuilder()
                 .setOpeningParenthesis(true)
+                .build()
+
+        Symbol.FactorStart.Function.Ln ->
+            ProtoSymbol.newBuilder()
+                .setLn(true)
+                .build()
+
+        Symbol.FactorStart.Function.Log ->
+            ProtoSymbol.newBuilder()
+                .setLog(true)
                 .build()
 
         Symbol.FactorStart.Function.Sin ->
@@ -132,14 +151,19 @@ fun Symbol.toProtoSymbol(): ProtoSymbol {
                 .setTan(true)
                 .build()
 
-        Symbol.FactorStart.Function.Log ->
+        Symbol.FactorStart.Function.Arcsin ->
             ProtoSymbol.newBuilder()
-                .setLog(true)
+                .setArcsin(true)
                 .build()
 
-        Symbol.FactorStart.Function.Ln ->
+        Symbol.FactorStart.Function.Arccos ->
             ProtoSymbol.newBuilder()
-                .setLn(true)
+                .setArccos(true)
+                .build()
+
+        Symbol.FactorStart.Function.Arctan ->
+            ProtoSymbol.newBuilder()
+                .setArctan(true)
                 .build()
 
         Symbol.FactorEnd.ClosingParenthesis ->

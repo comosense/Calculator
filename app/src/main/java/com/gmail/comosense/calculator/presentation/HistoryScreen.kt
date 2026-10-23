@@ -55,7 +55,7 @@ data class HistoryItemContent(
 @Composable
 fun HistoryScreen(
     histories: List<History>,
-    onAction: (AppAction) -> Unit,
+    onAppAction: (AppAction) -> Unit,
     onBack: () -> Unit,
     onDeleteModeChanged: (Boolean) -> Unit,
     symbolFormatter: SymbolFormatter,
@@ -83,7 +83,7 @@ fun HistoryScreen(
                 EdgeButton(
                     onClick = {
                         deleteMode = false
-                        onAction(AppAction.DeleteHistoryAll)
+                        onAppAction(AppAction.DeleteHistoryAll)
                     },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = AppTheme.historyScreenColors.deleteAllButtonContainer,
@@ -138,12 +138,12 @@ fun HistoryScreen(
             },
             onClick = { id ->
                 if (deleteMode) {
-                    onAction(AppAction.DeleteHistory(id))
+                    onAppAction(AppAction.DeleteHistory(id))
                     if (histories.size == 1) {
                         deleteMode = false
                     }
                 } else {
-                    onAction(AppAction.SelectHistory(id))
+                    onAppAction(AppAction.SelectHistory(id))
                     onBack()
                 }
             },
