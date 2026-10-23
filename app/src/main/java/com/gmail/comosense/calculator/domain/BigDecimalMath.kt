@@ -31,7 +31,7 @@ class BigDecimalMath(private val mathContext: MathContext) {
 
     companion object {
         private const val EXTRA_PRECISION: Int = 8
-        private val MINUS_ONE: BigDecimal = BigDecimal.ONE.negate()
+        private val NEGATIVE_ONE: BigDecimal = BigDecimal.ONE.negate()
         private val ZERO: BigDecimal = BigDecimal.ZERO
         private val ONE_HALF: BigDecimal = BigDecimal("0.5")
         private val ONE: BigDecimal = BigDecimal.ONE
@@ -504,7 +504,7 @@ class BigDecimalMath(private val mathContext: MathContext) {
                 ONE
 
             distanceToThreeHalfPi <= tolerance ->
-                MINUS_ONE
+                NEGATIVE_ONE
 
             angle <= halfPi ->
                 sinTaylor(angle, mc)
@@ -550,7 +550,7 @@ class BigDecimalMath(private val mathContext: MathContext) {
                 ONE
 
             distanceToPi <= tolerance ->
-                MINUS_ONE
+                NEGATIVE_ONE
 
             angle <= halfPi ->
                 cosTaylor(angle, mc)
@@ -572,7 +572,7 @@ class BigDecimalMath(private val mathContext: MathContext) {
         value: BigDecimal,
         mc: MathContext,
     ): BigDecimal {
-        if (value !in MINUS_ONE..ONE) {
+        if (value !in NEGATIVE_ONE..ONE) {
             throw ArcsinInvalidArgumentException()
         }
 
@@ -580,7 +580,7 @@ class BigDecimalMath(private val mathContext: MathContext) {
             return pi(mc).divide(TWO, mc)
         }
 
-        if (value.compareTo(MINUS_ONE) == 0) {
+        if (value.compareTo(NEGATIVE_ONE) == 0) {
             return pi(mc).divide(TWO, mc).negate()
         }
 
@@ -606,7 +606,7 @@ class BigDecimalMath(private val mathContext: MathContext) {
         value: BigDecimal,
         mc: MathContext,
     ): BigDecimal {
-        if (value !in MINUS_ONE..ONE) {
+        if (value !in NEGATIVE_ONE..ONE) {
             throw ArccosInvalidArgumentException()
         }
 
@@ -614,7 +614,7 @@ class BigDecimalMath(private val mathContext: MathContext) {
             return ZERO
         }
 
-        if (value.compareTo(MINUS_ONE) == 0) {
+        if (value.compareTo(NEGATIVE_ONE) == 0) {
             return pi(mc)
         }
 
