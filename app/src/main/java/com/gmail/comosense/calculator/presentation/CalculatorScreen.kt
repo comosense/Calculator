@@ -162,8 +162,8 @@ private fun MainPanel(
                     onAction = { action ->
                         when (action) {
                             is Action.App -> onAppAction(action.appAction)
-                            is Action.Screen -> when (action.screenAction) {
-                                ScreenAction.ToggleFunctionMode ->
+                            is Action.Ui -> when (action.uiAction) {
+                                UiAction.ToggleFunctionMode ->
                                     isInverseFunctionMode = !isInverseFunctionMode
                             }
                         }

@@ -10,13 +10,13 @@ enum class Style {
     Mode,
 }
 
-enum class ScreenAction {
+enum class UiAction {
     ToggleFunctionMode,
 }
 
 sealed interface Action {
     data class App(val appAction: AppAction) : Action
-    data class Screen(val screenAction: ScreenAction) : Action
+    data class Ui(val uiAction: UiAction) : Action
 }
 
 sealed interface Display {
@@ -78,7 +78,7 @@ val Key.action: Action
             Action.App(AppAction.Backspace)
 
         is Key.FunctionMode ->
-            Action.Screen(ScreenAction.ToggleFunctionMode)
+            Action.Ui(UiAction.ToggleFunctionMode)
 
         is Key.AngleMode ->
             Action.App(AppAction.ToggleAngleMode)
