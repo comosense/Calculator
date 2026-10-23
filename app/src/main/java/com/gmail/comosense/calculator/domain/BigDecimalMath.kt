@@ -21,6 +21,8 @@ class PowInvalidArgumentException : ArithmeticException()
 class PowLimitExceededException : ArithmeticException()
 class LogInvalidArgumentException : ArithmeticException()
 class TanInvalidArgumentException : ArithmeticException()
+class ArcsinInvalidArgumentException : ArithmeticException()
+class ArccosInvalidArgumentException : ArithmeticException()
 
 class BigDecimalMath(private val mathContext: MathContext) {
     init {
@@ -29,6 +31,7 @@ class BigDecimalMath(private val mathContext: MathContext) {
 
     companion object {
         private const val EXTRA_PRECISION: Int = 8
+        private val MINUS_ONE: BigDecimal = BigDecimal.ONE.negate()
         private val ZERO: BigDecimal = BigDecimal.ZERO
         private val ONE_HALF: BigDecimal = BigDecimal("0.5")
         private val ONE: BigDecimal = BigDecimal.ONE
@@ -109,51 +112,6 @@ class BigDecimalMath(private val mathContext: MathContext) {
         return result
     }
 
-    @Volatile
-    private var cachedOnePi: BigDecimal? = null
-    private suspend fun onePi(): BigDecimal {
-        cachedOnePi?.let { onePi -> return onePi }
-
-        val result: BigDecimal = pi(workMathContext)
-        cachedOnePi = result
-
-        return result
-    }
-
-    @Volatile
-    private var cachedHalfPi: BigDecimal? = null
-    private suspend fun halfPi(): BigDecimal {
-        cachedHalfPi?.let { halfPi -> return halfPi }
-
-        val result: BigDecimal = onePi()
-            .divide(TWO, workMathContext)
-        cachedHalfPi = result
-
-        return result
-    }
-
-    @Volatile
-    private var cachedThreeHalfPi: BigDecimal? = null
-    private suspend fun threeHalfPi(): BigDecimal {
-        cachedThreeHalfPi?.let { threeHalfPi -> return threeHalfPi }
-
-        val result: BigDecimal = onePi().add(halfPi())
-        cachedThreeHalfPi = result
-
-        return result
-    }
-
-    @Volatile
-    private var cachedTwoPi: BigDecimal? = null
-    private suspend fun twoPi(): BigDecimal {
-        cachedTwoPi?.let { twoPi -> return twoPi }
-
-        val result: BigDecimal = onePi().multiply(TWO)
-        cachedTwoPi = result
-
-        return result
-    }
-
     private val tolerance: BigDecimal by lazy {
         ONE.scaleByPowerOfTen(-mathContext.precision + 2)
     }
@@ -164,7 +122,7 @@ class BigDecimalMath(private val mathContext: MathContext) {
     }
 
     suspend fun pi(): BigDecimal {
-        return onePi()
+        return pi(workMathContext)
             .round(mathContext)
     }
 
@@ -247,32 +205,47 @@ class BigDecimalMath(private val mathContext: MathContext) {
 
     suspend fun sin(value: BigDecimal, isRadians: Boolean): BigDecimal {
         return sin(
-            canonicalizedAngle(value, isRadians),
+            canonicalizedAngle(value, isRadians, workMathContext),
             workMathContext
         ).round(mathContext)
     }
 
     suspend fun cos(value: BigDecimal, isRadians: Boolean): BigDecimal {
         return cos(
-            canonicalizedAngle(value, isRadians),
+            canonicalizedAngle(value, isRadians, workMathContext),
             workMathContext
         ).round(mathContext)
     }
 
     suspend fun tan(value: BigDecimal, isRadians: Boolean): BigDecimal {
         val cos: BigDecimal = cos(
-            canonicalizedAngle(value, isRadians),
+            canonicalizedAngle(value, isRadians, workMathContext),
             workMathContext
         )
         if (cos.signum() == 0) {
             throw TanInvalidArgumentException()
         }
         val sin: BigDecimal = sin(
-            canonicalizedAngle(value, isRadians),
+            canonicalizedAngle(value, isRadians, workMathContext),
             workMathContext
         )
 
         return sin.divide(cos, workMathContext)
+            .round(mathContext)
+    }
+
+    suspend fun arcsin(value: BigDecimal): BigDecimal {
+        return arcsin(value, workMathContext)
+            .round(mathContext)
+    }
+
+    suspend fun arccos(value: BigDecimal): BigDecimal {
+        return arccos(value, workMathContext)
+            .round(mathContext)
+    }
+
+    suspend fun arctan(value: BigDecimal): BigDecimal {
+        return arctan(value, workMathContext)
             .round(mathContext)
     }
 
@@ -300,74 +273,13 @@ class BigDecimalMath(private val mathContext: MathContext) {
 
     private suspend fun pi(mc: MathContext): BigDecimal {
         val arctanOneFifth: BigDecimal =
-            arctan(ONE.divide(FIVE, mc), mc)
+            arctanTaylor(ONE.divide(FIVE, mc), mc)
         val arctanOneTwoHundredThirtyNine: BigDecimal =
-            arctan(ONE.divide(TWO_HUNDRED_THIRTY_NINE, mc), mc)
+            arctanTaylor(ONE.divide(TWO_HUNDRED_THIRTY_NINE, mc), mc)
 
         return SIXTEEN
             .multiply(arctanOneFifth)
             .subtract(FOUR.multiply(arctanOneTwoHundredThirtyNine))
-    }
-
-    private suspend fun arctan(
-        value: BigDecimal,
-        mc: MathContext,
-    ): BigDecimal {
-        if (value.signum() < 0) {
-            return arctan(value.negate(), mc).negate()
-        }
-
-        if (value > ONE) {
-            return pi().divide(TWO, mc)
-                .subtract(
-                    arctan(ONE.divide(value, mc), mc)
-                )
-        }
-
-        if (value > ONE_HALF) {
-            val reduced: BigDecimal = value.subtract(ONE)
-                .divide(value.add(ONE), mc)
-
-            return pi().divide(FOUR, mc)
-                .add(arctan(reduced, mc))
-        }
-
-        return arctanTaylor(value, mc)
-    }
-
-    private suspend fun arctanTaylor(
-        value: BigDecimal,
-        mc: MathContext,
-    ): BigDecimal {
-        val coroutineContext: CoroutineContext = currentCoroutineContext()
-        val valueSquared: BigDecimal = value.multiply(value)
-
-        var term: BigDecimal = value
-        var sum: BigDecimal = value
-        var denominator: BigDecimal = ONE
-        var sign: Int = -1
-
-        while (true) {
-            coroutineContext.ensureActive()
-
-            term = term.multiply(valueSquared)
-            denominator = denominator.add(TWO)
-
-            val nextTerm: BigDecimal = term.divide(denominator, mc)
-
-            val nextSum: BigDecimal = if (sign > 0) {
-                sum.add(nextTerm)
-            } else {
-                sum.subtract(nextTerm)
-            }.round(mc)
-
-            if (nextSum.compareTo(sum) == 0) {
-                return nextSum
-            }
-
-            sum = nextSum
-            sign = -sign
-        }
     }
 
     private suspend fun sqrt(
@@ -570,14 +482,19 @@ class BigDecimalMath(private val mathContext: MathContext) {
     ): BigDecimal {
         val angle: BigDecimal = normalizeAngle(value, mc)
 
+        val pi: BigDecimal = pi(mc)
+        val halfPi: BigDecimal = pi.divide(TWO)
+        val twoPi: BigDecimal = pi.multiply(TWO)
+        val threeHalfPi: BigDecimal = pi.add(halfPi)
+
         val distanceToZero: BigDecimal =
-            minOf(angle, twoPi().subtract(angle).abs())
+            minOf(angle, twoPi.subtract(angle).abs())
         val distanceToHalfPi: BigDecimal =
-            angle.subtract(halfPi()).abs()
+            angle.subtract(halfPi).abs()
         val distanceToPi: BigDecimal =
-            angle.subtract(onePi()).abs()
+            angle.subtract(pi).abs()
         val distanceToThreeHalfPi: BigDecimal =
-            angle.subtract(threeHalfPi()).abs()
+            angle.subtract(threeHalfPi).abs()
 
         return when {
             distanceToZero <= tolerance || distanceToPi <= tolerance ->
@@ -587,20 +504,20 @@ class BigDecimalMath(private val mathContext: MathContext) {
                 ONE
 
             distanceToThreeHalfPi <= tolerance ->
-                ONE.negate()
+                MINUS_ONE
 
-            angle <= halfPi() ->
+            angle <= halfPi ->
                 sinTaylor(angle, mc)
 
-            angle <= onePi() ->
-                sinTaylor(onePi().subtract(angle), mc)
+            angle <= pi ->
+                sinTaylor(pi.subtract(angle), mc)
 
-            angle <= threeHalfPi() ->
-                sinTaylor(angle.subtract(onePi()), mc)
+            angle <= threeHalfPi ->
+                sinTaylor(angle.subtract(pi), mc)
                     .negate()
 
             else ->
-                sinTaylor(twoPi().subtract(angle), mc)
+                sinTaylor(twoPi.subtract(angle), mc)
                     .negate()
         }
     }
@@ -611,14 +528,19 @@ class BigDecimalMath(private val mathContext: MathContext) {
     ): BigDecimal {
         val angle: BigDecimal = normalizeAngle(value, mc)
 
+        val pi: BigDecimal = pi(mc)
+        val halfPi: BigDecimal = pi.divide(TWO)
+        val twoPi: BigDecimal = pi.multiply(TWO)
+        val threeHalfPi: BigDecimal = pi.add(halfPi)
+
         val distanceToZero: BigDecimal =
-            minOf(angle, twoPi().subtract(angle).abs())
+            minOf(angle, twoPi.subtract(angle).abs())
         val distanceToHalfPi: BigDecimal =
-            angle.subtract(halfPi()).abs()
+            angle.subtract(halfPi).abs()
         val distanceToPi: BigDecimal =
-            angle.subtract(onePi()).abs()
+            angle.subtract(pi).abs()
         val distanceToThreeHalfPi: BigDecimal =
-            angle.subtract(threeHalfPi()).abs()
+            angle.subtract(threeHalfPi).abs()
 
         return when {
             distanceToHalfPi <= tolerance || distanceToThreeHalfPi <= tolerance ->
@@ -628,22 +550,114 @@ class BigDecimalMath(private val mathContext: MathContext) {
                 ONE
 
             distanceToPi <= tolerance ->
-                ONE.negate()
+                MINUS_ONE
 
-            angle <= halfPi() ->
+            angle <= halfPi ->
                 cosTaylor(angle, mc)
 
-            angle <= onePi() ->
-                cosTaylor(onePi().subtract(angle), mc)
+            angle <= pi ->
+                cosTaylor(pi.subtract(angle), mc)
                     .negate()
 
-            angle <= threeHalfPi() ->
-                cosTaylor(angle.subtract(onePi()), mc)
+            angle <= threeHalfPi ->
+                cosTaylor(angle.subtract(pi), mc)
                     .negate()
 
             else ->
-                cosTaylor(twoPi().subtract(angle), mc)
+                cosTaylor(twoPi.subtract(angle), mc)
         }
+    }
+
+    private suspend fun arcsin(
+        value: BigDecimal,
+        mc: MathContext,
+    ): BigDecimal {
+        if (value !in MINUS_ONE..ONE) {
+            throw ArcsinInvalidArgumentException()
+        }
+
+        if (value.compareTo(ONE) == 0) {
+            return pi(mc).divide(TWO, mc)
+        }
+
+        if (value.compareTo(MINUS_ONE) == 0) {
+            return pi(mc).divide(TWO, mc).negate()
+        }
+
+        if (value.signum() == 0) {
+            return ZERO
+        }
+
+        val absValue: BigDecimal = value.abs()
+        val oneMinusXSquared: BigDecimal = ONE
+            .subtract(absValue)
+            .multiply(ONE.add(absValue))
+
+        val root: BigDecimal = sqrt(oneMinusXSquared, mc)
+        val result: BigDecimal = arctan(
+            value.divide(root, mc),
+            mc
+        )
+
+        return result
+    }
+
+    private suspend fun arccos(
+        value: BigDecimal,
+        mc: MathContext,
+    ): BigDecimal {
+        if (value !in MINUS_ONE..ONE) {
+            throw ArccosInvalidArgumentException()
+        }
+
+        if (value.compareTo(ONE) == 0) {
+            return ZERO
+        }
+
+        if (value.compareTo(MINUS_ONE) == 0) {
+            return pi(mc)
+        }
+
+        if (value.signum() == 0) {
+            return pi(mc).divide(TWO, mc)
+        }
+
+        if (value.signum() < 0) {
+            return pi(mc).subtract(arccos(value.negate(), mc))
+        }
+
+        val numerator: BigDecimal = ONE.subtract(value)
+        val denominator: BigDecimal = ONE.add(value)
+        val ratio: BigDecimal = numerator.divide(denominator, mc)
+        val root: BigDecimal = sqrt(ratio, mc)
+
+        return TWO.multiply(arctan(root, mc))
+    }
+
+    private suspend fun arctan(
+        value: BigDecimal,
+        mc: MathContext,
+    ): BigDecimal {
+        if (value.signum() < 0) {
+            return arctan(value.negate(), mc).negate()
+        }
+
+        if (value > ONE) {
+            return pi(mc).divide(TWO, mc)
+                .subtract(
+                    arctan(ONE.divide(value, mc), mc)
+                )
+        }
+
+        if (value > ONE_HALF) {
+            val reduced: BigDecimal = value.subtract(ONE)
+                .divide(value.add(ONE), mc)
+
+            return pi(mc).divide(FOUR, mc)
+                .add(arctan(reduced, mc))
+        }
+
+        return arctanTaylor(value, mc)
     }
 
     private suspend fun sinTaylor(
@@ -717,25 +731,65 @@ class BigDecimalMath(private val mathContext: MathContext) {
         }
     }
 
+    private suspend fun arctanTaylor(
+        value: BigDecimal,
+        mc: MathContext,
+    ): BigDecimal {
+        val coroutineContext: CoroutineContext = currentCoroutineContext()
+        val valueSquared: BigDecimal = value.multiply(value)
+
+        var term: BigDecimal = value
+        var sum: BigDecimal = value
+        var denominator: BigDecimal = ONE
+        var sign: Int = -1
+
+        while (true) {
+            coroutineContext.ensureActive()
+
+            term = term.multiply(valueSquared)
+            denominator = denominator.add(TWO)
+
+            val nextTerm: BigDecimal = term.divide(denominator, mc)
+
+            val nextSum: BigDecimal = if (sign > 0) {
+                sum.add(nextTerm)
+            } else {
+                sum.subtract(nextTerm)
+            }.round(mc)
+
+            if (nextSum.compareTo(sum) == 0) {
+                return nextSum
+            }
+
+            sum = nextSum
+            sign = -sign
+        }
+    }
+
+    private suspend fun canonicalizedAngle(
+        value: BigDecimal,
+        isRadians: Boolean,
+        mc: MathContext,
+    ): BigDecimal {
+        return if (isRadians) {
+            value
+        } else {
+            value.divide(ONE_HUNDRED_EIGHTY, mc)
+                .multiply(pi(mc))
+        }
+    }
+
     private suspend fun normalizeAngle(
         value: BigDecimal,
         mc: MathContext,
     ): BigDecimal {
-        var angle: BigDecimal = value.remainder(twoPi(), mc)
+        val twoPi: BigDecimal = pi(mc).multiply(TWO)
+        var angle: BigDecimal = value.remainder(twoPi, mc)
 
         if (angle.signum() == -1) {
-            angle = angle.add(twoPi())
+            angle = angle.add(twoPi)
         }
 
         return angle
-    }
-
-    private suspend fun canonicalizedAngle(value: BigDecimal, isRadians: Boolean): BigDecimal {
-        return if (isRadians) {
-            value
-        } else {
-            value.divide(ONE_HUNDRED_EIGHTY, workMathContext)
-                .multiply(onePi())
-        }
     }
 }
