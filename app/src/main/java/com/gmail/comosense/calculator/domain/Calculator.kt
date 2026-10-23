@@ -317,13 +317,13 @@ private class Parser(
                 bigDecimalMath.tan(value, isRadians)
 
             Token.FactorStart.Function.Arcsin ->
-                bigDecimalMath.arcsin(value)
+                bigDecimalMath.arcsin(value, isRadians)
 
             Token.FactorStart.Function.Arccos ->
-                bigDecimalMath.arccos(value)
+                bigDecimalMath.arccos(value, isRadians)
 
             Token.FactorStart.Function.Arctan ->
-                bigDecimalMath.arctan(value)
+                bigDecimalMath.arctan(value, isRadians)
         }
     }
 }

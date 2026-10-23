@@ -205,28 +205,44 @@ class BigDecimalMath(private val mathContext: MathContext) {
 
     suspend fun sin(value: BigDecimal, isRadians: Boolean): BigDecimal {
         return sin(
-            canonicalizedAngle(value, isRadians, workMathContext),
+            value = if (isRadians) {
+                value
+            } else {
+                value.toRadians(workMathContext)
+            },
             workMathContext
         ).round(mathContext)
     }
 
     suspend fun cos(value: BigDecimal, isRadians: Boolean): BigDecimal {
         return cos(
-            canonicalizedAngle(value, isRadians, workMathContext),
+            value = if (isRadians) {
+                value
+            } else {
+                value.toRadians(workMathContext)
+            },
             workMathContext
         ).round(mathContext)
     }
 
     suspend fun tan(value: BigDecimal, isRadians: Boolean): BigDecimal {
         val cos: BigDecimal = cos(
-            canonicalizedAngle(value, isRadians, workMathContext),
+            value = if (isRadians) {
+                value
+            } else {
+                value.toRadians(workMathContext)
+            },
             workMathContext
         )
         if (cos.signum() == 0) {
             throw TanInvalidArgumentException()
         }
         val sin: BigDecimal = sin(
-            canonicalizedAngle(value, isRadians, workMathContext),
+            value = if (isRadians) {
+                value
+            } else {
+                value.toRadians(workMathContext)
+            },
             workMathContext
         )
 
@@ -234,19 +250,34 @@ class BigDecimalMath(private val mathContext: MathContext) {
             .round(mathContext)
     }
 
-    suspend fun arcsin(value: BigDecimal): BigDecimal {
-        return arcsin(value, workMathContext)
-            .round(mathContext)
+    suspend fun arcsin(value: BigDecimal, isRadians: Boolean): BigDecimal {
+        val result: BigDecimal = arcsin(value, workMathContext)
+
+        return if (isRadians) {
+            result
+        } else {
+            result.toDegrees(workMathContext)
+        }.round(mathContext)
     }
 
-    suspend fun arccos(value: BigDecimal): BigDecimal {
-        return arccos(value, workMathContext)
-            .round(mathContext)
+    suspend fun arccos(value: BigDecimal, isRadians: Boolean): BigDecimal {
+        val result: BigDecimal = arccos(value, workMathContext)
+
+        return if (isRadians) {
+            result
+        } else {
+            result.toDegrees(workMathContext)
+        }.round(mathContext)
     }
 
-    suspend fun arctan(value: BigDecimal): BigDecimal {
-        return arctan(value, workMathContext)
-            .round(mathContext)
+    suspend fun arctan(value: BigDecimal, isRadians: Boolean): BigDecimal {
+        val result: BigDecimal = arctan(value, workMathContext)
+
+        return if (isRadians) {
+            result
+        } else {
+            result.toDegrees(workMathContext)
+        }.round(mathContext)
     }
 
     private suspend fun e(mc: MathContext): BigDecimal {
@@ -766,17 +797,20 @@ class BigDecimalMath(private val mathContext: MathContext) {
         }
     }
 
-    private suspend fun canonicalizedAngle(
-        value: BigDecimal,
-        isRadians: Boolean,
+    private suspend fun BigDecimal.toRadians(
         mc: MathContext,
     ): BigDecimal {
-        return if (isRadians) {
-            value
-        } else {
-            value.divide(ONE_HUNDRED_EIGHTY, mc)
-                .multiply(pi(mc))
-        }
+        return this
+            .multiply(pi(mc))
+            .divide(ONE_HUNDRED_EIGHTY, mc)
+    }
+
+    private suspend fun BigDecimal.toDegrees(
+        mc: MathContext,
+    ): BigDecimal {
+        return this
+            .multiply(ONE_HUNDRED_EIGHTY)
+            .divide(pi(mc), mc)
     }
 
     private suspend fun normalizeAngle(
