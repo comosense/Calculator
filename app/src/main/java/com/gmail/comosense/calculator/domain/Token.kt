@@ -29,6 +29,7 @@ sealed interface Token {
             data object Sin : Function
             data object Cos : Function
             data object Tan : Function
+            data object Exp : Function
             data object Arcsin : Function
             data object Arccos : Function
             data object Arctan : Function

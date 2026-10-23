@@ -26,6 +26,8 @@ sealed interface Key {
     data object Sin : Key
     data object Cos : Key
     data object Tan : Key
+    data object Exp : Key
+    data object Pow10 : Key
     data object Arcsin : Key
     data object Arccos : Key
     data object Arctan : Key

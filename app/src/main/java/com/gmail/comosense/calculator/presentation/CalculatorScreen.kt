@@ -553,11 +553,19 @@ private fun functionKeyGrid(
             Key.Power,
             Key.Factorial,
         ),
-        listOf(
-            Key.Log,
-            Key.Ln,
-            Key.Euler,
-        ),
+        if (isInverseFunctionMode) {
+            listOf(
+                Key.Pow10,
+                Key.Exp,
+                Key.Euler,
+            )
+        } else {
+            listOf(
+                Key.Log,
+                Key.Ln,
+                Key.Euler,
+            )
+        },
         if (isInverseFunctionMode) {
             listOf(
                 Key.Arcsin,

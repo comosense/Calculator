@@ -107,6 +107,20 @@ val Key.action: Action
         is Key.Tan ->
             Action.App(AppAction.Input(Symbol.FactorStart.Function.Tan))
 
+        is Key.Exp ->
+            Action.App(AppAction.Input(Symbol.FactorStart.Function.Exp))
+
+        is Key.Pow10 ->
+            Action.App(
+                AppAction.Inputs(
+                    listOf(
+                        Symbol.Numeric.Digit(1),
+                        Symbol.Numeric.Digit(0),
+                        Symbol.SpecialOperator.Power,
+                    )
+                )
+            )
+
         is Key.Arcsin ->
             Action.App(AppAction.Input(Symbol.FactorStart.Function.Arcsin))
 
@@ -119,14 +133,44 @@ val Key.action: Action
 
 val Key.altKeyOrNull: Key?
     get() = when (this) {
-        is Key.ClosingParenthesis
-            -> Key.OpeningParenthesis
+        is Key.ClosingParenthesis ->
+            Key.OpeningParenthesis
 
-        is Key.Backspace
-            -> Key.Clear
+        is Key.Backspace ->
+            Key.Clear
 
-        else
-            -> null
+        is Key.Ln ->
+            Key.Exp
+
+        is Key.Log ->
+            Key.Pow10
+
+        is Key.Sin ->
+            Key.Arcsin
+
+        is Key.Cos ->
+            Key.Arccos
+
+        is Key.Tan ->
+            Key.Arctan
+
+        is Key.Exp ->
+            Key.Ln
+
+        is Key.Pow10 ->
+            Key.Log
+
+        is Key.Arcsin ->
+            Key.Sin
+
+        is Key.Arccos ->
+            Key.Cos
+
+        is Key.Arctan ->
+            Key.Tan
+
+        else ->
+            null
     }
 
 val Key.style: Style
@@ -160,6 +204,8 @@ val Key.style: Style
         is Key.Sin,
         is Key.Cos,
         is Key.Tan,
+        is Key.Exp,
+        is Key.Pow10,
         is Key.Arcsin,
         is Key.Arccos,
         is Key.Arctan ->
@@ -292,6 +338,12 @@ fun Key.display(symbolFormatter: SymbolFormatter): Display = when (this) {
 
     is Key.Tan ->
         Display.Text("tan")
+
+    is Key.Exp ->
+        Display.Text("exp")
+
+    is Key.Pow10 ->
+        Display.Text("10^")
 
     is Key.Arcsin ->
         Display.Text("asin")

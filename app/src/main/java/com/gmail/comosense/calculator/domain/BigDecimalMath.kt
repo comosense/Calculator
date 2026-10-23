@@ -237,6 +237,11 @@ class BigDecimalMath(private val mathContext: MathContext) {
             .round(mathContext)
     }
 
+    suspend fun exp(value: BigDecimal): BigDecimal {
+        return exp(value, workMathContext)
+            .round(mathContext)
+    }
+
     suspend fun sin(value: BigDecimal, isRadians: Boolean): BigDecimal {
         return sin(
             value = if (isRadians) {

@@ -316,6 +316,9 @@ private class Parser(
             Token.FactorStart.Function.Tan ->
                 bigDecimalMath.tan(value, isRadians)
 
+            Token.FactorStart.Function.Exp ->
+                bigDecimalMath.exp(value)
+
             Token.FactorStart.Function.Arcsin ->
                 bigDecimalMath.arcsin(value, isRadians)
 

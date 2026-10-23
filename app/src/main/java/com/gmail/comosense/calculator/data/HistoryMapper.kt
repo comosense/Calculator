@@ -49,6 +49,9 @@ fun ProtoSymbol.toSymbolOrNull(): Symbol? {
         ProtoSymbol.ValueCase.TAN ->
             Symbol.FactorStart.Function.Tan
 
+        ProtoSymbol.ValueCase.EXP ->
+            Symbol.FactorStart.Function.Exp
+
         ProtoSymbol.ValueCase.ARCSIN ->
             Symbol.FactorStart.Function.Arcsin
 
@@ -149,6 +152,11 @@ fun Symbol.toProtoSymbol(): ProtoSymbol {
         Symbol.FactorStart.Function.Tan ->
             ProtoSymbol.newBuilder()
                 .setTan(true)
+                .build()
+
+        Symbol.FactorStart.Function.Exp ->
+            ProtoSymbol.newBuilder()
+                .setExp(true)
                 .build()
 
         Symbol.FactorStart.Function.Arcsin ->

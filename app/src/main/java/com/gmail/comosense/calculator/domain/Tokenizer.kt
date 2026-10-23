@@ -74,6 +74,9 @@ fun Symbol.toTokenOrNull(): Token? = when (this) {
     is Symbol.FactorStart.Function.Tan ->
         Token.FactorStart.Function.Tan
 
+    is Symbol.FactorStart.Function.Exp ->
+        Token.FactorStart.Function.Exp
+
     is Symbol.FactorStart.Function.Arcsin ->
         Token.FactorStart.Function.Arcsin
 
