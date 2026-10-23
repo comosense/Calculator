@@ -251,10 +251,10 @@ fun Key.display(symbolFormatter: SymbolFormatter): Display = when (this) {
 
     is Key.FunctionMode ->
         Display.Icon(
-            painterResource = if (isInversed) {
-                R.drawable.ic_function
-            } else {
+            painterResource = if (isInverseFunctionMode) {
                 R.drawable.ic_inverse_function
+            } else {
+                R.drawable.ic_function
             },
             stringResource = R.string.content_description_function_mode,
         )
