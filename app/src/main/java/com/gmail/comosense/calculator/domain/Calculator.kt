@@ -295,7 +295,7 @@ private class Parser(
                 bigDecimalMath.sqrt(value)
 
             Token.Factor.Function.Pow10 ->
-                bigDecimalMath.pow(BigDecimal(10), value)
+                bigDecimalMath.pow(BigDecimal.TEN, value)
         }
     }
 
