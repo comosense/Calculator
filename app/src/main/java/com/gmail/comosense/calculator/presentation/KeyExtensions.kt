@@ -63,10 +63,10 @@ val Key.action: Action
             Action.App(AppAction.Input(Symbol.Operator.Divide))
 
         is Key.Power ->
-            Action.App(AppAction.Input(Symbol.SpecialOperator.Power))
+            Action.App(AppAction.Input(Symbol.Operator.Power))
 
         is Key.Factorial ->
-            Action.App(AppAction.Input(Symbol.SpecialOperator.Factorial))
+            Action.App(AppAction.Input(Symbol.PostfixOperator.Factorial))
 
         is Key.Equal ->
             Action.App(AppAction.Calculate)

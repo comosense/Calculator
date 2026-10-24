@@ -41,7 +41,7 @@ fun AppState.appendExpression(symbol: Symbol): AppStateUpdateResult {
     return AppStateUpdateResult.Success(
         appState = if (
             symbol is Symbol.Operator ||
-            symbol is Symbol.SpecialOperator ||
+            symbol is Symbol.PostfixOperator ||
             isInputting
         ) {
             copy(
@@ -148,7 +148,7 @@ fun AppState.canAppend(symbols: List<Symbol>): Boolean {
                             nestingDepth() > 0
 
                 is Symbol.Operator,
-                is Symbol.SpecialOperator ->
+                is Symbol.PostfixOperator ->
                     symbol.isAppendableAfter((result + tempInput).lastOrNull())
 
                 else ->
@@ -187,13 +187,12 @@ private fun Symbol.isAppendableAfter(previous: Symbol?): Boolean = when (this) {
         previous == null ||
                 previous is Symbol.Factor ||
                 previous is Symbol.FactorStart ||
-                previous is Symbol.Operator ||
-                previous is Symbol.SpecialOperator.Power
+                previous is Symbol.Operator
 
     is Symbol.Numeric.Digit ->
         previous !is Symbol.Constant &&
                 previous !is Symbol.FactorEnd &&
-                previous !is Symbol.SpecialOperator.Factorial
+                previous !is Symbol.PostfixOperator.Factorial
 
     is Symbol.Numeric.Point ->
         previous is Symbol.Numeric.Digit
@@ -205,14 +204,13 @@ private fun Symbol.isAppendableAfter(previous: Symbol?): Boolean = when (this) {
                 previous is Symbol.Sign ||
                 previous is Symbol.Factor ||
                 previous is Symbol.FactorStart ||
-                previous is Symbol.Operator ||
-                previous is Symbol.SpecialOperator.Power
+                previous is Symbol.Operator
 
     is Symbol.FactorEnd,
     is Symbol.Operator,
-    is Symbol.SpecialOperator ->
+    is Symbol.PostfixOperator ->
         previous is Symbol.Numeric.Digit ||
                 previous is Symbol.Constant ||
                 previous is Symbol.FactorEnd ||
-                previous is Symbol.SpecialOperator.Factorial
+                previous is Symbol.PostfixOperator.Factorial
 }

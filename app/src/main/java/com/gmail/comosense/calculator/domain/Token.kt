@@ -46,10 +46,10 @@ sealed interface Token {
         data object Subtract : Operator
         data object Multiply : Operator
         data object Divide : Operator
+        data object Power : Operator
     }
 
-    sealed interface SpecialOperator : Token {
-        data object Power : SpecialOperator
-        data object Factorial : SpecialOperator
+    sealed interface PostfixOperator : Token {
+        data object Factorial : PostfixOperator
     }
 }

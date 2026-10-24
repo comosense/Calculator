@@ -206,7 +206,7 @@ private class Parser(
     private suspend fun parseBinaryOperation(): BigDecimal {
         val base: BigDecimal = parsePostfixOperation()
 
-        return if (tokens.getOrNull(position) is Token.SpecialOperator.Power) {
+        return if (tokens.getOrNull(position) is Token.Operator.Power) {
             position++
             bigDecimalMath.pow(base, parseSign())
         } else {
@@ -219,7 +219,7 @@ private class Parser(
 
         var value: BigDecimal = parseFactor()
 
-        while (tokens.getOrNull(position) is Token.SpecialOperator.Factorial) {
+        while (tokens.getOrNull(position) is Token.PostfixOperator.Factorial) {
             coroutineContext.ensureActive()
 
             position++

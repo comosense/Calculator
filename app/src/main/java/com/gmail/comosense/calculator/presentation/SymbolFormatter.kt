@@ -143,10 +143,10 @@ class SymbolFormatter(locale: Locale) {
             is Symbol.Operator.Divide
                 -> "÷"
 
-            is Symbol.SpecialOperator.Power
+            is Symbol.Operator.Power
                 -> "^"
 
-            is Symbol.SpecialOperator.Factorial
+            is Symbol.PostfixOperator.Factorial
                 -> "!"
         }
 }

@@ -104,11 +104,11 @@ fun Symbol.toTokenOrNull(): Token? = when (this) {
     is Symbol.Operator.Divide ->
         Token.Operator.Divide
 
-    is Symbol.SpecialOperator.Power ->
-        Token.SpecialOperator.Power
+    is Symbol.Operator.Power ->
+        Token.Operator.Power
 
-    is Symbol.SpecialOperator.Factorial ->
-        Token.SpecialOperator.Factorial
+    is Symbol.PostfixOperator.Factorial ->
+        Token.PostfixOperator.Factorial
 
     else ->
         null

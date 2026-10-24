@@ -80,10 +80,10 @@ fun ProtoSymbol.toSymbolOrNull(): Symbol? {
             Symbol.Operator.Divide
 
         ProtoSymbol.ValueCase.POWER ->
-            Symbol.SpecialOperator.Power
+            Symbol.Operator.Power
 
         ProtoSymbol.ValueCase.FACTORIAL ->
-            Symbol.SpecialOperator.Factorial
+            Symbol.PostfixOperator.Factorial
 
         ProtoSymbol.ValueCase.VALUE_NOT_SET ->
             null
@@ -207,12 +207,12 @@ fun Symbol.toProtoSymbol(): ProtoSymbol {
                 .setDivide(true)
                 .build()
 
-        Symbol.SpecialOperator.Power ->
+        Symbol.Operator.Power ->
             ProtoSymbol.newBuilder()
                 .setPower(true)
                 .build()
 
-        Symbol.SpecialOperator.Factorial ->
+        Symbol.PostfixOperator.Factorial ->
             ProtoSymbol.newBuilder()
                 .setFactorial(true)
                 .build()
