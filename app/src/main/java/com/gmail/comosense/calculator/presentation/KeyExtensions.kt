@@ -14,6 +14,10 @@ enum class UiAction {
     ToggleFunctionMode,
 }
 
+private val SYMBOLS_SQUARE: List<Symbol> = listOf(
+    Symbol.Operator.Power,
+    Symbol.Numeric.Digit(2),
+)
 private val SYMBOLS_EXP: List<Symbol> = listOf(
     Symbol.Constant.Euler,
     Symbol.Operator.Power,
@@ -117,6 +121,9 @@ val Key.action: Action
         is Key.Tan ->
             Action.App(AppAction.Input(Symbol.FactorStart.Function.Tan))
 
+        is Key.Square ->
+            Action.App(AppAction.Inputs(SYMBOLS_SQUARE))
+
         is Key.Exp ->
             Action.App(AppAction.Inputs(SYMBOLS_EXP))
 
@@ -141,6 +148,9 @@ val Key.altKeyOrNull: Key?
         is Key.Backspace ->
             Key.Clear
 
+        is Key.Sqrt ->
+            Key.Square
+
         is Key.Ln ->
             Key.Exp
 
@@ -155,6 +165,9 @@ val Key.altKeyOrNull: Key?
 
         is Key.Tan ->
             Key.Arctan
+
+        is Key.Square ->
+            Key.Sqrt
 
         is Key.Exp ->
             Key.Ln
@@ -206,6 +219,7 @@ val Key.style: Style
         is Key.Sin,
         is Key.Cos,
         is Key.Tan,
+        is Key.Square,
         is Key.Exp,
         is Key.Pow10,
         is Key.Arcsin,
@@ -340,6 +354,9 @@ fun Key.display(symbolFormatter: SymbolFormatter): Display = when (this) {
 
     is Key.Tan ->
         Display.Text("tan")
+
+    is Key.Square ->
+        Display.Text("^2")
 
     is Key.Exp ->
         Display.Text("e^")

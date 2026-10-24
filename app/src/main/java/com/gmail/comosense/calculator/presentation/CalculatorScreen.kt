@@ -547,44 +547,55 @@ private fun functionKeyGrid(
     isInverseFunctionMode: Boolean,
     appState: AppState,
 ): List<List<Key?>> {
-    return listOf(
+    return if (!isInverseFunctionMode) {
         listOf(
-            Key.Sqrt,
-            Key.Power,
-            Key.Factorial,
-        ),
-        if (isInverseFunctionMode) {
             listOf(
-                Key.Pow10,
-                Key.Exp,
-                Key.Euler,
-            )
-        } else {
+                Key.Sqrt,
+                Key.Power,
+                Key.Factorial,
+            ),
             listOf(
                 Key.Log,
                 Key.Ln,
                 Key.Euler,
-            )
-        },
-        if (isInverseFunctionMode) {
-            listOf(
-                Key.Arcsin,
-                Key.Arccos,
-                Key.Arctan,
-            )
-        } else {
+            ),
             listOf(
                 Key.Sin,
                 Key.Cos,
                 Key.Tan,
-            )
-        },
+            ),
+            listOf(
+                null,
+                Key.AngleMode(appState.isRadians),
+                Key.Pi,
+                Key.FunctionMode(false),
+                null,
+            ),
+        )
+    } else {
         listOf(
-            null,
-            Key.AngleMode(appState.isRadians),
-            Key.Pi,
-            Key.FunctionMode(isInverseFunctionMode),
-            null,
-        ),
-    )
+            listOf(
+                Key.Square,
+                Key.Power,
+                Key.Factorial,
+            ),
+            listOf(
+                Key.Pow10,
+                Key.Exp,
+                Key.Euler,
+            ),
+            listOf(
+                Key.Arcsin,
+                Key.Arccos,
+                Key.Arctan,
+            ),
+            listOf(
+                null,
+                Key.AngleMode(appState.isRadians),
+                Key.Pi,
+                Key.FunctionMode(true),
+                null,
+            ),
+        )
+    }
 }
