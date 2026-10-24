@@ -146,9 +146,8 @@ private class Parser(
                     value.subtract(parseTerm())
                 }
 
-                else -> {
+                else ->
                     return value
-                }
             }
         }
         return value
@@ -177,9 +176,8 @@ private class Parser(
                     value.divide(divisor, mathContext)
                 }
 
-                else -> {
+                else ->
                     return value
-                }
             }
         }
         return value
@@ -197,9 +195,8 @@ private class Parser(
                 parseSign().negate()
             }
 
-            else -> {
+            else ->
                 parseBinaryOperation()
-            }
         }
     }
 
@@ -260,9 +257,8 @@ private class Parser(
                 applyFunction(token, parseFactorBody())
             }
 
-            else -> {
+            else ->
                 throw IllegalArgumentException("Expected factor")
-            }
         }
     }
 

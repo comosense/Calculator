@@ -36,9 +36,8 @@ class SymbolFormatter(locale: Locale) {
 
             for (symbol in symbols) {
                 when (symbol) {
-                    is Symbol.Numeric -> {
+                    is Symbol.Numeric ->
                         numericBuffer.append(symbol.canonicalizedText)
-                    }
 
                     else -> {
                         flushNumeric()
