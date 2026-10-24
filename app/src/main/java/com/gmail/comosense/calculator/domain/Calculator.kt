@@ -247,7 +247,7 @@ private class Parser(
 
             is Token.Factor.Function -> {
                 position++
-                applyFunction(token, parseFactor())
+                applyFunction(token, parseSign())
             }
 
             is Token.FactorStart.OpeningParenthesis -> {

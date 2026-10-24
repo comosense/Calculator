@@ -194,7 +194,7 @@ private fun Symbol.isAppendableAfter(previous: Symbol?): Boolean = when (this) {
     is Symbol.Numeric.Digit ->
         previous !is Symbol.Constant &&
                 previous !is Symbol.FactorEnd &&
-                previous !is Symbol.PostfixOperator.Factorial
+                previous !is Symbol.PostfixOperator
 
     is Symbol.Numeric.Point ->
         previous is Symbol.Numeric.Digit
@@ -214,5 +214,5 @@ private fun Symbol.isAppendableAfter(previous: Symbol?): Boolean = when (this) {
         previous is Symbol.Numeric.Digit ||
                 previous is Symbol.Constant ||
                 previous is Symbol.FactorEnd ||
-                previous is Symbol.PostfixOperator.Factorial
+                previous is Symbol.PostfixOperator
 }
