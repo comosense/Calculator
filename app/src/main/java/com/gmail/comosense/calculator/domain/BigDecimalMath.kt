@@ -62,6 +62,16 @@ class BigDecimalMath(private val mathContext: MathContext) {
         val twoPi: BigDecimal,
     )
 
+    private data class SqrtTwo(
+        val mathContext: MathContext,
+        val value: BigDecimal,
+    )
+
+    private data class InverseSqrtTwo(
+        val mathContext: MathContext,
+        val value: BigDecimal,
+    )
+
     private val mathContextForConstant: MathContext = MathContext(
         mathContext.precision + EXTRA_PRECISION_FOR_CONSTANT,
         mathContext.roundingMode,
@@ -75,25 +85,39 @@ class BigDecimalMath(private val mathContext: MathContext) {
     }
 
     @Volatile
-    private var cachedSqrtTwo: BigDecimal? = null
-    private suspend fun sqrtTwo(): BigDecimal {
-        cachedSqrtTwo?.let { cached -> return cached }
+    private var cachedSqrtTwo: SqrtTwo? = null
+    private suspend fun sqrtTwo(mc: MathContext): SqrtTwo {
+        cachedSqrtTwo?.let { cached ->
+            if (cached.mathContext == mc) {
+                return cached
+            }
+        }
 
-        val result: BigDecimal = sqrt(TWO, workingMc)
-        cachedSqrtTwo = result
+        val sqrtTwoConstant = SqrtTwo(
+            mathContext = mc,
+            value = sqrt(TWO, workingMc),
+        )
+        cachedSqrtTwo = sqrtTwoConstant
 
-        return result
+        return sqrtTwoConstant
     }
 
     @Volatile
-    private var cachedInverseSqrtTwo: BigDecimal? = null
-    private suspend fun inverseSqrtTwo(): BigDecimal {
-        cachedInverseSqrtTwo?.let { cached -> return cached }
+    private var cachedInverseSqrtTwo: InverseSqrtTwo? = null
+    private suspend fun inverseSqrtTwo(mc: MathContext): InverseSqrtTwo {
+        cachedInverseSqrtTwo?.let { cached ->
+            if (cached.mathContext == mc) {
+                return cached
+            }
+        }
 
-        val result: BigDecimal = ONE.divide(sqrtTwo(), workingMc)
-        cachedInverseSqrtTwo = result
+        val inverseSqrtTwo = InverseSqrtTwo(
+            mathContext = mc,
+            value = ONE.divide(sqrtTwo(mc).value, mc)
+        )
+        cachedInverseSqrtTwo = inverseSqrtTwo
 
-        return result
+        return inverseSqrtTwo
     }
 
     @Volatile
@@ -499,14 +523,14 @@ class BigDecimalMath(private val mathContext: MathContext) {
         var x: BigDecimal = value
         var exponent = 0
 
-        while (x > sqrtTwo()) {
+        while (x > sqrtTwo(mc).value) {
             coroutineContext.ensureActive()
 
             x = x.divide(TWO, mc)
             exponent++
         }
 
-        while (x < inverseSqrtTwo()) {
+        while (x < inverseSqrtTwo(mc).value) {
             coroutineContext.ensureActive()
 
             x = x.multiply(TWO)
