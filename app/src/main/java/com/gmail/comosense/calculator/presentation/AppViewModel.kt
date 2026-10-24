@@ -114,6 +114,7 @@ class AppViewModel(
                 is AppAction.SelectHistory,
                 is AppAction.Calculate,
                 is AppAction.Input,
+                is AppAction.Inputs,
                 is AppAction.Clear,
                 is AppAction.Backspace,
                 is AppAction.ToggleAngleMode ->
