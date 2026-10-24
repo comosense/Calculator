@@ -21,6 +21,7 @@ import androidx.wear.compose.material3.ButtonDefaults
 import androidx.wear.compose.material3.EdgeButton
 import androidx.wear.compose.material3.Icon
 import androidx.wear.compose.material3.Picker
+import androidx.wear.compose.material3.PickerState
 import androidx.wear.compose.material3.ScreenScaffold
 import androidx.wear.compose.material3.Text
 import androidx.wear.compose.material3.rememberPickerState
@@ -55,7 +56,7 @@ fun SettingsScreen(
                         .indexOf(SettingsConstraints.DEFAULT_PRECISION)
                 }
             }
-        val precisionPickerState =
+        val precisionPickerState: PickerState =
             rememberPickerState(
                 initialNumberOfOptions = SettingsConstraints.VALID_PRECISIONS.size,
                 initiallySelectedIndex = precisionIndex,

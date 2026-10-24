@@ -366,7 +366,7 @@ class AppViewModel(
         toAppEvent: (E) -> AppEvent,
     ) {
         viewModelScope.launch {
-            when (val result = action()) {
+            when (val result: Result<Unit, E> = action()) {
                 is Result.Ok ->
                     Unit
 
