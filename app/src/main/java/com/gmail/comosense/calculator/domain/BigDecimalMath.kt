@@ -55,19 +55,19 @@ class BigDecimalMath(private val mathContext: MathContext) {
     }
 
     private data class MathConstant(
-        val mathContext: MathContext,
+        val mc: MathContext,
         val value: BigDecimal,
     )
 
     private data class ConstantsForLn(
-        val mathContext: MathContext,
+        val mc: MathContext,
         val sqrtTwo: BigDecimal,
         val inverseSqrtTwo: BigDecimal,
         val lnTwo: BigDecimal,
     )
 
     private data class PiConstants(
-        val mathContext: MathContext,
+        val mc: MathContext,
         val pi: BigDecimal,
         val halfPi: BigDecimal,
         val threeHalfPi: BigDecimal,
@@ -90,13 +90,13 @@ class BigDecimalMath(private val mathContext: MathContext) {
     private var cachedE: MathConstant? = null
     private suspend fun cachedE(mc: MathContext): MathConstant {
         cachedE?.let { cached ->
-            if (cached.mathContext == mc) {
+            if (cached.mc == mc) {
                 return cached
             }
         }
 
         val e = MathConstant(
-            mathContext = mc,
+            mc = mc,
             value = e(mc),
         )
         cachedE = e
@@ -108,13 +108,13 @@ class BigDecimalMath(private val mathContext: MathContext) {
     private var cachedLnTen: MathConstant? = null
     private suspend fun cachedLnTen(mc: MathContext): MathConstant {
         cachedLnTen?.let { cached ->
-            if (cached.mathContext == mc) {
+            if (cached.mc == mc) {
                 return cached
             }
         }
 
         val lnTen = MathConstant(
-            mathContext = mc,
+            mc = mc,
             value = ln(TEN, mc),
         )
         cachedLnTen = lnTen
@@ -126,14 +126,14 @@ class BigDecimalMath(private val mathContext: MathContext) {
     private var cachedConstantsForLn: ConstantsForLn? = null
     private suspend fun cachedConstantsForLn(mc: MathContext): ConstantsForLn {
         cachedConstantsForLn?.let { cached ->
-            if (cached.mathContext == mc) {
+            if (cached.mc == mc) {
                 return cached
             }
         }
 
         val sqrtTwo: BigDecimal = sqrt(TWO, mc)
         val constantsForLn = ConstantsForLn(
-            mathContext = mc,
+            mc = mc,
             sqrtTwo = sqrtTwo,
             inverseSqrtTwo = ONE.divide(sqrtTwo, mc),
             lnTwo = calculateLn(TWO, mc),
@@ -147,7 +147,7 @@ class BigDecimalMath(private val mathContext: MathContext) {
     private var cachedPiConstants: PiConstants? = null
     private suspend fun piConstants(mc: MathContext): PiConstants {
         cachedPiConstants?.let { cached ->
-            if (cached.mathContext == mc) {
+            if (cached.mc == mc) {
                 return cached
             }
         }
@@ -158,7 +158,7 @@ class BigDecimalMath(private val mathContext: MathContext) {
         val twoPi: BigDecimal = pi.multiply(TWO)
 
         val piConstants = PiConstants(
-            mathContext = mc,
+            mc = mc,
             pi = pi,
             halfPi = halfPi,
             threeHalfPi = threeHalfPi,
@@ -232,17 +232,14 @@ class BigDecimalMath(private val mathContext: MathContext) {
             null
         }
 
-        val result: BigDecimal = if (integerExponent != null) {
+        return if (integerExponent != null) {
             powIntegerExponent(base, integerExponent, workingMc)
         } else {
             if (base.signum() < 0) {
                 throw PowInvalidArgumentException()
             }
             powNonIntegerExponent(base, exponent, workingMc)
-        }
-
-        return result
-            .round(mathContext)
+        }.round(mathContext)
     }
 
     suspend fun ln(value: BigDecimal): BigDecimal {
@@ -287,9 +284,11 @@ class BigDecimalMath(private val mathContext: MathContext) {
             },
             workingMc
         )
+
         if (cos.signum() == 0) {
             throw TanInvalidArgumentException()
         }
+
         val sin: BigDecimal = sin(
             value = if (isRadians) {
                 value
@@ -571,7 +570,7 @@ class BigDecimalMath(private val mathContext: MathContext) {
         value: BigDecimal,
         mc: MathContext,
     ): BigDecimal {
-        val angle: BigDecimal = normalizeAngle(value, mc)
+        val angle: BigDecimal = value.normalizedAngle(mc)
         val piConstants: PiConstants = piConstants(mc)
 
         val distanceToZero: BigDecimal =
@@ -613,7 +612,7 @@ class BigDecimalMath(private val mathContext: MathContext) {
         value: BigDecimal,
         mc: MathContext,
     ): BigDecimal {
-        val angle: BigDecimal = normalizeAngle(value, mc)
+        val angle: BigDecimal = value.normalizedAngle(mc)
         val piConstants: PiConstants = piConstants(mc)
 
         val distanceToZero: BigDecimal =
@@ -860,13 +859,12 @@ class BigDecimalMath(private val mathContext: MathContext) {
             .divide(piConstants(mc).pi, mc)
     }
 
-    private suspend fun normalizeAngle(
-        value: BigDecimal,
+    private suspend fun BigDecimal.normalizedAngle(
         mc: MathContext,
     ): BigDecimal {
         val piConstants: PiConstants = piConstants(mc)
 
-        var angle: BigDecimal = value.remainder(piConstants.twoPi, mc)
+        var angle: BigDecimal = this.remainder(piConstants.twoPi, mc)
 
         if (angle.signum() == -1) {
             angle = angle.add(piConstants.twoPi)
