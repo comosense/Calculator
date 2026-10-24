@@ -31,9 +31,6 @@ fun ProtoSymbol.toSymbolOrNull(): Symbol? {
         ProtoSymbol.ValueCase.SQRT ->
             Symbol.Factor.Function.Sqrt
 
-        ProtoSymbol.ValueCase.POW10 ->
-            Symbol.Factor.Function.Pow10
-
         ProtoSymbol.ValueCase.OPENING_PARENTHESIS ->
             Symbol.FactorStart.OpeningParenthesis
 
@@ -51,9 +48,6 @@ fun ProtoSymbol.toSymbolOrNull(): Symbol? {
 
         ProtoSymbol.ValueCase.TAN ->
             Symbol.FactorStart.Function.Tan
-
-        ProtoSymbol.ValueCase.EXP ->
-            Symbol.FactorStart.Function.Exp
 
         ProtoSymbol.ValueCase.ARCSIN ->
             Symbol.FactorStart.Function.Arcsin
@@ -127,11 +121,6 @@ fun Symbol.toProtoSymbol(): ProtoSymbol {
                 .setSqrt(true)
                 .build()
 
-        Symbol.Factor.Function.Pow10 ->
-            ProtoSymbol.newBuilder()
-                .setPow10(true)
-                .build()
-
         Symbol.FactorStart.OpeningParenthesis ->
             ProtoSymbol.newBuilder()
                 .setOpeningParenthesis(true)
@@ -160,11 +149,6 @@ fun Symbol.toProtoSymbol(): ProtoSymbol {
         Symbol.FactorStart.Function.Tan ->
             ProtoSymbol.newBuilder()
                 .setTan(true)
-                .build()
-
-        Symbol.FactorStart.Function.Exp ->
-            ProtoSymbol.newBuilder()
-                .setExp(true)
                 .build()
 
         Symbol.FactorStart.Function.Arcsin ->

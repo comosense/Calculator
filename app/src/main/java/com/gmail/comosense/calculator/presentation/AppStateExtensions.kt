@@ -28,11 +28,13 @@ val AppState.expression: List<Symbol>
 val AppState.isInputting: Boolean
     get() = input.isNotEmpty()
 
-fun AppState.appendExpression(symbol: Symbol): AppStateUpdateResult {
-    val symbols: List<Symbol> = symbolsToAppendOrNull(symbol)
+fun AppState.appendExpression(symbols: List<Symbol>): AppStateUpdateResult {
+    val symbolsToAppend: List<Symbol> = symbolsToAppendOrNull(symbols)
+        ?: return AppStateUpdateResult.UnacceptableSymbol
+    val firstSymbol: Symbol = symbolsToAppend.firstOrNull()
         ?: return AppStateUpdateResult.UnacceptableSymbol
 
-    if (expression.size + symbols.size
+    if (expression.size + symbolsToAppend.size
         > AppStateExtensionsConstraints.MAX_EXPRESSION_SIZE
     ) {
         return AppStateUpdateResult.ExpressionTooLarge
@@ -40,17 +42,17 @@ fun AppState.appendExpression(symbol: Symbol): AppStateUpdateResult {
 
     return AppStateUpdateResult.Success(
         appState = if (
-            symbol is Symbol.Operator ||
-            symbol is Symbol.PostfixOperator ||
+            firstSymbol is Symbol.Operator ||
+            firstSymbol is Symbol.PostfixOperator ||
             isInputting
         ) {
             copy(
-                input = input + symbols,
+                input = input + symbolsToAppend,
             )
         } else {
             copy(
                 result = emptyList(),
-                input = input + symbols,
+                input = input + symbolsToAppend,
             )
         },
     )
@@ -163,18 +165,18 @@ fun AppState.canAppend(symbols: List<Symbol>): Boolean {
     return true
 }
 
-private fun AppState.symbolsToAppendOrNull(symbol: Symbol): List<Symbol>? {
-    return if (canAppend(symbol)) {
-        listOf(symbol)
+private fun AppState.symbolsToAppendOrNull(symbols: List<Symbol>): List<Symbol>? {
+    return if (canAppend(symbols)) {
+        symbols
     } else {
-        when (symbol) {
+        when (symbols.firstOrNull()) {
             is Symbol.Numeric.Point ->
-                listOf(Symbol.Numeric.Digit(0), symbol)
+                listOf(Symbol.Numeric.Digit(0)) + symbols
 
             is Symbol.Constant,
             is Symbol.Factor,
             is Symbol.FactorStart ->
-                listOf(Symbol.Operator.Multiply, symbol)
+                listOf(Symbol.Operator.Multiply) + symbols
 
             else ->
                 return null

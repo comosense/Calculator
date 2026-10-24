@@ -14,6 +14,16 @@ enum class UiAction {
     ToggleFunctionMode,
 }
 
+private val SYMBOLS_EXP: List<Symbol> = listOf(
+    Symbol.Constant.Euler,
+    Symbol.Operator.Power,
+)
+private val SYMBOLS_POW10: List<Symbol> = listOf(
+    Symbol.Numeric.Digit(1),
+    Symbol.Numeric.Digit(0),
+    Symbol.Operator.Power,
+)
+
 sealed interface Action {
     data class App(val appAction: AppAction) : Action
     data class Ui(val uiAction: UiAction) : Action
@@ -108,10 +118,10 @@ val Key.action: Action
             Action.App(AppAction.Input(Symbol.FactorStart.Function.Tan))
 
         is Key.Exp ->
-            Action.App(AppAction.Input(Symbol.FactorStart.Function.Exp))
+            Action.App(AppAction.Inputs(SYMBOLS_EXP))
 
         is Key.Pow10 ->
-            Action.App(AppAction.Input(Symbol.Factor.Function.Pow10))
+            Action.App(AppAction.Inputs(SYMBOLS_POW10))
 
         is Key.Arcsin ->
             Action.App(AppAction.Input(Symbol.FactorStart.Function.Arcsin))
@@ -332,7 +342,7 @@ fun Key.display(symbolFormatter: SymbolFormatter): Display = when (this) {
         Display.Text("tan")
 
     is Key.Exp ->
-        Display.Text("exp")
+        Display.Text("e^")
 
     is Key.Pow10 ->
         Display.Text("10^")

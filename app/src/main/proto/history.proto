@@ -35,13 +35,11 @@ message Symbol {
     bool pi = 24;
     bool euler = 25;
     bool sqrt = 32;
-    bool pow10 = 33;
     bool sin = 40;
     bool cos = 41;
     bool tan = 42;
     bool log = 48;
     bool ln = 49;
-    bool exp = 50;
     bool arcsin = 51;
     bool arccos = 52;
     bool arctan = 53;

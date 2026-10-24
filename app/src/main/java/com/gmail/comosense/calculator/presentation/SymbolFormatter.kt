@@ -95,9 +95,6 @@ class SymbolFormatter(locale: Locale) {
             is Symbol.Factor.Function.Sqrt
                 -> "√"
 
-            is Symbol.Factor.Function.Pow10
-                -> "10^"
-
             is Symbol.FactorStart.OpeningParenthesis
                 -> "("
 
@@ -115,9 +112,6 @@ class SymbolFormatter(locale: Locale) {
 
             is Symbol.FactorStart.Function.Tan
                 -> "tan("
-
-            is Symbol.FactorStart.Function.Exp
-                -> "exp("
 
             is Symbol.FactorStart.Function.Arcsin
                 -> "asin("
