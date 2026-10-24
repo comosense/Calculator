@@ -17,6 +17,8 @@ import com.gmail.comosense.calculator.domain.Symbol
 import com.gmail.comosense.calculator.domain.calculate
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -212,6 +214,8 @@ class AppViewModel(
                             precision = settings.precision,
                         )
                     }
+
+                currentCoroutineContext().ensureActive()
 
                 val result: List<Symbol> = when (calculatedResult) {
                     is Result.Ok ->

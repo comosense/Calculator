@@ -64,7 +64,10 @@ fun HistoryScreen(
     val listState: TransformingLazyColumnState = rememberTransformingLazyColumnState()
     val transformationSpec: TransformationSpec = rememberTransformationSpec()
 
-    LaunchedEffect(deleteMode) {
+    LaunchedEffect(histories, deleteMode) {
+        if (deleteMode && histories.isEmpty()) {
+            deleteMode = false
+        }
         onDeleteModeChanged(deleteMode)
     }
 
@@ -139,9 +142,6 @@ fun HistoryScreen(
             onClick = { id ->
                 if (deleteMode) {
                     onAppAction(AppAction.DeleteHistory(id))
-                    if (histories.size == 1) {
-                        deleteMode = false
-                    }
                 } else {
                     onAppAction(AppAction.SelectHistory(id))
                     onBack()
