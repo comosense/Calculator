@@ -30,7 +30,9 @@ class BigDecimalMath(private val mathContext: MathContext) {
     }
 
     companion object {
-        private const val EXTRA_PRECISION: Int = 8
+        private const val EXTRA_PRECISION_FOR_CONSTANT: Int = 2
+        private const val EXTRA_PRECISION_FOR_WORKING: Int = 8
+        private const val EXTRA_PRECISION_FOR_TOLERANCE: Int = 2
         private val NEGATIVE_ONE: BigDecimal = BigDecimal.ONE.negate()
         private val ZERO: BigDecimal = BigDecimal.ZERO
         private val ONE_HALF: BigDecimal = BigDecimal("0.5")
@@ -60,17 +62,24 @@ class BigDecimalMath(private val mathContext: MathContext) {
         val twoPi: BigDecimal,
     )
 
-    private val workMathContext: MathContext = MathContext(
-        mathContext.precision + EXTRA_PRECISION,
+    private val mathContextForConstant: MathContext = MathContext(
+        mathContext.precision + EXTRA_PRECISION_FOR_CONSTANT,
         mathContext.roundingMode,
     )
+    private val workingMc: MathContext = MathContext(
+        mathContext.precision + EXTRA_PRECISION_FOR_WORKING,
+        mathContext.roundingMode,
+    )
+    private val tolerance: BigDecimal by lazy {
+        ONE.scaleByPowerOfTen(-mathContext.precision + EXTRA_PRECISION_FOR_TOLERANCE)
+    }
 
     @Volatile
     private var cachedSqrtTwo: BigDecimal? = null
     private suspend fun sqrtTwo(): BigDecimal {
         cachedSqrtTwo?.let { cached -> return cached }
 
-        val result: BigDecimal = sqrt(TWO, workMathContext)
+        val result: BigDecimal = sqrt(TWO, workingMc)
         cachedSqrtTwo = result
 
         return result
@@ -81,7 +90,7 @@ class BigDecimalMath(private val mathContext: MathContext) {
     private suspend fun inverseSqrtTwo(): BigDecimal {
         cachedInverseSqrtTwo?.let { cached -> return cached }
 
-        val result: BigDecimal = ONE.divide(sqrtTwo(), workMathContext)
+        val result: BigDecimal = ONE.divide(sqrtTwo(), workingMc)
         cachedInverseSqrtTwo = result
 
         return result
@@ -92,7 +101,7 @@ class BigDecimalMath(private val mathContext: MathContext) {
     private suspend fun lnTwo(): BigDecimal {
         cachedLnTwo?.let { cached -> return cached }
 
-        val result: BigDecimal = calculateLn(TWO, workMathContext)
+        val result: BigDecimal = calculateLn(TWO, workingMc)
         cachedLnTwo = result
 
         return result
@@ -103,7 +112,7 @@ class BigDecimalMath(private val mathContext: MathContext) {
     private suspend fun lnTen(): BigDecimal {
         cachedLnTen?.let { cached -> return cached }
 
-        val result: BigDecimal = ln(TEN, workMathContext)
+        val result: BigDecimal = ln(TEN, workingMc)
         cachedLnTen = result
 
         return result
@@ -114,7 +123,7 @@ class BigDecimalMath(private val mathContext: MathContext) {
     private suspend fun oneE(): BigDecimal {
         cachedOneE?.let { cached -> return cached }
 
-        val result: BigDecimal = e(workMathContext)
+        val result: BigDecimal = e(workingMc)
         cachedOneE = result
 
         return result
@@ -146,18 +155,14 @@ class BigDecimalMath(private val mathContext: MathContext) {
         return piConstants
     }
 
-    private val tolerance: BigDecimal by lazy {
-        ONE.scaleByPowerOfTen(-mathContext.precision + 2)
-    }
-
     suspend fun e(): BigDecimal {
         return oneE()
-            .round(mathContext)
+            .round(mathContextForConstant)
     }
 
     suspend fun pi(): BigDecimal {
-        return piConstants(workMathContext).pi
-            .round(mathContext)
+        return piConstants(workingMc).pi
+            .round(mathContextForConstant)
     }
 
     suspend fun factorial(value: BigDecimal): BigDecimal {
@@ -191,7 +196,7 @@ class BigDecimalMath(private val mathContext: MathContext) {
     }
 
     suspend fun sqrt(value: BigDecimal): BigDecimal {
-        return sqrt(value, workMathContext)
+        return sqrt(value, workingMc)
             .round(mathContext)
     }
 
@@ -214,12 +219,12 @@ class BigDecimalMath(private val mathContext: MathContext) {
         }
 
         val result: BigDecimal = if (integerExponent != null) {
-            powIntegerExponent(base, integerExponent, workMathContext)
+            powIntegerExponent(base, integerExponent, workingMc)
         } else {
             if (base.signum() < 0) {
                 throw PowInvalidArgumentException()
             }
-            powNonIntegerExponent(base, exponent, workMathContext)
+            powNonIntegerExponent(base, exponent, workingMc)
         }
 
         return result
@@ -227,18 +232,13 @@ class BigDecimalMath(private val mathContext: MathContext) {
     }
 
     suspend fun ln(value: BigDecimal): BigDecimal {
-        return ln(value, workMathContext)
+        return ln(value, workingMc)
             .round(mathContext)
     }
 
     suspend fun log(value: BigDecimal): BigDecimal {
-        return ln(value, workMathContext)
-            .divide(lnTen(), workMathContext)
-            .round(mathContext)
-    }
-
-    suspend fun exp(value: BigDecimal): BigDecimal {
-        return pow(oneE(), value)
+        return ln(value, workingMc)
+            .divide(lnTen(), workingMc)
             .round(mathContext)
     }
 
@@ -247,9 +247,9 @@ class BigDecimalMath(private val mathContext: MathContext) {
             value = if (isRadians) {
                 value
             } else {
-                value.toRadians(workMathContext)
+                value.toRadians(workingMc)
             },
-            workMathContext
+            workingMc
         ).round(mathContext)
     }
 
@@ -258,9 +258,9 @@ class BigDecimalMath(private val mathContext: MathContext) {
             value = if (isRadians) {
                 value
             } else {
-                value.toRadians(workMathContext)
+                value.toRadians(workingMc)
             },
-            workMathContext
+            workingMc
         ).round(mathContext)
     }
 
@@ -269,9 +269,9 @@ class BigDecimalMath(private val mathContext: MathContext) {
             value = if (isRadians) {
                 value
             } else {
-                value.toRadians(workMathContext)
+                value.toRadians(workingMc)
             },
-            workMathContext
+            workingMc
         )
         if (cos.signum() == 0) {
             throw TanInvalidArgumentException()
@@ -280,42 +280,42 @@ class BigDecimalMath(private val mathContext: MathContext) {
             value = if (isRadians) {
                 value
             } else {
-                value.toRadians(workMathContext)
+                value.toRadians(workingMc)
             },
-            workMathContext
+            workingMc
         )
 
-        return sin.divide(cos, workMathContext)
+        return sin.divide(cos, workingMc)
             .round(mathContext)
     }
 
     suspend fun arcsin(value: BigDecimal, isRadians: Boolean): BigDecimal {
-        val result: BigDecimal = arcsin(value, workMathContext)
+        val result: BigDecimal = arcsin(value, workingMc)
 
         return if (isRadians) {
             result
         } else {
-            result.toDegrees(workMathContext)
+            result.toDegrees(workingMc)
         }.round(mathContext)
     }
 
     suspend fun arccos(value: BigDecimal, isRadians: Boolean): BigDecimal {
-        val result: BigDecimal = arccos(value, workMathContext)
+        val result: BigDecimal = arccos(value, workingMc)
 
         return if (isRadians) {
             result
         } else {
-            result.toDegrees(workMathContext)
+            result.toDegrees(workingMc)
         }.round(mathContext)
     }
 
     suspend fun arctan(value: BigDecimal, isRadians: Boolean): BigDecimal {
-        val result: BigDecimal = arctan(value, workMathContext)
+        val result: BigDecimal = arctan(value, workingMc)
 
         return if (isRadians) {
             result
         } else {
-            result.toDegrees(workMathContext)
+            result.toDegrees(workingMc)
         }.round(mathContext)
     }
 
@@ -446,7 +446,7 @@ class BigDecimalMath(private val mathContext: MathContext) {
             reductions++
         }
 
-        val workingMc = MathContext(
+        val extendedMc = MathContext(
             mc.precision + reductions,
             mc.roundingMode,
         )
@@ -460,9 +460,9 @@ class BigDecimalMath(private val mathContext: MathContext) {
 
             term = term
                 .multiply(reduced)
-                .divide(BigDecimal(n), workingMc)
+                .divide(BigDecimal(n), extendedMc)
 
-            val nextSum: BigDecimal = sum.add(term).round(workingMc)
+            val nextSum: BigDecimal = sum.add(term).round(extendedMc)
 
             if (nextSum.compareTo(sum) == 0) {
                 sum = nextSum
