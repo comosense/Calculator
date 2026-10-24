@@ -54,22 +54,24 @@ class BigDecimalMath(private val mathContext: MathContext) {
             BigDecimal(BigDecimalMathConstraints.MAX_NON_INTEGER_EXPONENT)
     }
 
+    private data class MathConstant(
+        val mathContext: MathContext,
+        val value: BigDecimal,
+    )
+
+    private data class ConstantsForLn(
+        val mathContext: MathContext,
+        val sqrtTwo: BigDecimal,
+        val inverseSqrtTwo: BigDecimal,
+        val lnTwo: BigDecimal,
+    )
+
     private data class PiConstants(
         val mathContext: MathContext,
         val pi: BigDecimal,
         val halfPi: BigDecimal,
         val threeHalfPi: BigDecimal,
         val twoPi: BigDecimal,
-    )
-
-    private data class SqrtTwo(
-        val mathContext: MathContext,
-        val value: BigDecimal,
-    )
-
-    private data class InverseSqrtTwo(
-        val mathContext: MathContext,
-        val value: BigDecimal,
     )
 
     private val mathContextForConstant: MathContext = MathContext(
@@ -85,72 +87,60 @@ class BigDecimalMath(private val mathContext: MathContext) {
     }
 
     @Volatile
-    private var cachedSqrtTwo: SqrtTwo? = null
-    private suspend fun sqrtTwo(mc: MathContext): SqrtTwo {
-        cachedSqrtTwo?.let { cached ->
+    private var cachedE: MathConstant? = null
+    private suspend fun cachedE(mc: MathContext): MathConstant {
+        cachedE?.let { cached ->
             if (cached.mathContext == mc) {
                 return cached
             }
         }
 
-        val sqrtTwoConstant = SqrtTwo(
+        val e = MathConstant(
             mathContext = mc,
-            value = sqrt(TWO, workingMc),
+            value = e(mc),
         )
-        cachedSqrtTwo = sqrtTwoConstant
+        cachedE = e
 
-        return sqrtTwoConstant
+        return e
     }
 
     @Volatile
-    private var cachedInverseSqrtTwo: InverseSqrtTwo? = null
-    private suspend fun inverseSqrtTwo(mc: MathContext): InverseSqrtTwo {
-        cachedInverseSqrtTwo?.let { cached ->
+    private var cachedLnTen: MathConstant? = null
+    private suspend fun cachedLnTen(mc: MathContext): MathConstant {
+        cachedLnTen?.let { cached ->
             if (cached.mathContext == mc) {
                 return cached
             }
         }
 
-        val inverseSqrtTwo = InverseSqrtTwo(
+        val lnTen = MathConstant(
             mathContext = mc,
-            value = ONE.divide(sqrtTwo(mc).value, mc)
+            value = ln(TEN, mc),
         )
-        cachedInverseSqrtTwo = inverseSqrtTwo
+        cachedLnTen = lnTen
 
-        return inverseSqrtTwo
+        return lnTen
     }
 
     @Volatile
-    private var cachedLnTwo: BigDecimal? = null
-    private suspend fun lnTwo(): BigDecimal {
-        cachedLnTwo?.let { cached -> return cached }
+    private var cachedConstantsForLn: ConstantsForLn? = null
+    private suspend fun cachedConstantsForLn(mc: MathContext): ConstantsForLn {
+        cachedConstantsForLn?.let { cached ->
+            if (cached.mathContext == mc) {
+                return cached
+            }
+        }
 
-        val result: BigDecimal = calculateLn(TWO, workingMc)
-        cachedLnTwo = result
+        val sqrtTwo: BigDecimal = sqrt(TWO, mc)
+        val constantsForLn = ConstantsForLn(
+            mathContext = mc,
+            sqrtTwo = sqrtTwo,
+            inverseSqrtTwo = ONE.divide(sqrtTwo, mc),
+            lnTwo = calculateLn(TWO, mc),
+        )
+        cachedConstantsForLn = constantsForLn
 
-        return result
-    }
-
-    @Volatile
-    private var cachedLnTen: BigDecimal? = null
-    private suspend fun lnTen(): BigDecimal {
-        cachedLnTen?.let { cached -> return cached }
-
-        val result: BigDecimal = ln(TEN, workingMc)
-        cachedLnTen = result
-
-        return result
-    }
-
-    @Volatile
-    private var cachedOneE: BigDecimal? = null
-    private suspend fun oneE(): BigDecimal {
-        cachedOneE?.let { cached -> return cached }
-
-        val result: BigDecimal = e(workingMc)
-        cachedOneE = result
-
-        return result
+        return constantsForLn
     }
 
     @Volatile
@@ -180,7 +170,7 @@ class BigDecimalMath(private val mathContext: MathContext) {
     }
 
     suspend fun e(): BigDecimal {
-        return oneE()
+        return cachedE(workingMc).value
             .round(mathContextForConstant)
     }
 
@@ -262,7 +252,7 @@ class BigDecimalMath(private val mathContext: MathContext) {
 
     suspend fun log(value: BigDecimal): BigDecimal {
         return ln(value, workingMc)
-            .divide(lnTen(), workingMc)
+            .divide(cachedLnTen(workingMc).value, workingMc)
             .round(mathContext)
     }
 
@@ -520,17 +510,18 @@ class BigDecimalMath(private val mathContext: MathContext) {
             return ZERO
         }
 
+        val constantsForLn: ConstantsForLn = cachedConstantsForLn(mc)
         var x: BigDecimal = value
         var exponent = 0
 
-        while (x > sqrtTwo(mc).value) {
+        while (x > constantsForLn.sqrtTwo) {
             coroutineContext.ensureActive()
 
             x = x.divide(TWO, mc)
             exponent++
         }
 
-        while (x < inverseSqrtTwo(mc).value) {
+        while (x < constantsForLn.inverseSqrtTwo) {
             coroutineContext.ensureActive()
 
             x = x.multiply(TWO)
@@ -541,7 +532,7 @@ class BigDecimalMath(private val mathContext: MathContext) {
 
         return lnX.add(
             BigDecimal(exponent)
-                .multiply(lnTwo())
+                .multiply(constantsForLn.lnTwo)
         )
     }
 
