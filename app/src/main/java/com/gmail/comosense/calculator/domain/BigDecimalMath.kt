@@ -32,7 +32,7 @@ class BigDecimalMath(private val mathContext: MathContext) {
     companion object {
         private const val EXTRA_PRECISION_FOR_CONSTANT: Int = 2
         private const val EXTRA_PRECISION_FOR_WORKING: Int = 8
-        private const val TOLERANCE_PRECISION_MARGIN: Int = 2
+        private const val TOLERANCE_PRECISION_MARGIN: Int = EXTRA_PRECISION_FOR_WORKING + 2
         private val NEGATIVE_ONE: BigDecimal = BigDecimal.ONE.negate()
         private val ZERO: BigDecimal = BigDecimal.ZERO
         private val ONE_HALF: BigDecimal = BigDecimal("0.5")
@@ -82,8 +82,23 @@ class BigDecimalMath(private val mathContext: MathContext) {
         mathContext.precision + EXTRA_PRECISION_FOR_WORKING,
         mathContext.roundingMode,
     )
-    private val tolerance: BigDecimal by lazy {
-        ONE.scaleByPowerOfTen(-mathContext.precision + TOLERANCE_PRECISION_MARGIN)
+
+    @Volatile
+    private var cachedTolerance: MathConstant? = null
+    private fun cachedTolerance(mc: MathContext): MathConstant {
+        cachedTolerance?.let { cached ->
+            if (cached.mc == mc) {
+                return cached
+            }
+        }
+
+        val tolerance = MathConstant(
+            mc = mc,
+            value = ONE.scaleByPowerOfTen(-mc.precision + TOLERANCE_PRECISION_MARGIN),
+        )
+        cachedTolerance = tolerance
+
+        return tolerance
     }
 
     @Volatile
@@ -572,6 +587,7 @@ class BigDecimalMath(private val mathContext: MathContext) {
         mc: MathContext,
     ): BigDecimal {
         val angle: BigDecimal = value.normalizedAngle(mc)
+        val tolerance: MathConstant = cachedTolerance(mc)
         val piConstants: PiConstants = cachedPiConstants(mc)
 
         val distanceToZero: BigDecimal =
@@ -584,13 +600,13 @@ class BigDecimalMath(private val mathContext: MathContext) {
             angle.subtract(piConstants.threeHalfPi).abs()
 
         return when {
-            distanceToZero <= tolerance || distanceToPi <= tolerance ->
+            distanceToZero <= tolerance.value || distanceToPi <= tolerance.value ->
                 ZERO
 
-            distanceToHalfPi <= tolerance ->
+            distanceToHalfPi <= tolerance.value ->
                 ONE
 
-            distanceToThreeHalfPi <= tolerance ->
+            distanceToThreeHalfPi <= tolerance.value ->
                 NEGATIVE_ONE
 
             angle <= piConstants.halfPi ->
@@ -614,6 +630,7 @@ class BigDecimalMath(private val mathContext: MathContext) {
         mc: MathContext,
     ): BigDecimal {
         val angle: BigDecimal = value.normalizedAngle(mc)
+        val tolerance: MathConstant = cachedTolerance(mc)
         val piConstants: PiConstants = cachedPiConstants(mc)
 
         val distanceToZero: BigDecimal =
@@ -626,13 +643,13 @@ class BigDecimalMath(private val mathContext: MathContext) {
             angle.subtract(piConstants.threeHalfPi).abs()
 
         return when {
-            distanceToHalfPi <= tolerance || distanceToThreeHalfPi <= tolerance ->
+            distanceToHalfPi <= tolerance.value || distanceToThreeHalfPi <= tolerance.value ->
                 ZERO
 
-            distanceToZero <= tolerance ->
+            distanceToZero <= tolerance.value ->
                 ONE
 
-            distanceToPi <= tolerance ->
+            distanceToPi <= tolerance.value ->
                 NEGATIVE_ONE
 
             angle <= piConstants.halfPi ->
