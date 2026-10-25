@@ -143,11 +143,11 @@ fun AppState.canAppend(symbols: List<Symbol>): Boolean {
 
                 is Symbol.FactorEnd ->
                     symbol.isAppendableAfter(tempInput.lastOrNull()) &&
-                            nestingDepth < AppStateExtensionsConstraints.MAX_NESTING_DEPTH
+                            nestingDepth > 0
 
                 is Symbol.Operator,
                 is Symbol.PostfixOperator ->
-                    symbol.isAppendableAfter(result.lastOrNull() ?: tempInput.lastOrNull())
+                    symbol.isAppendableAfter(tempInput.lastOrNull() ?: result.lastOrNull())
 
                 else ->
                     symbol.isAppendableAfter(tempInput.lastOrNull())
