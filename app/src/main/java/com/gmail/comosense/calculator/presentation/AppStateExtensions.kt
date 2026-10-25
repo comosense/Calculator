@@ -18,11 +18,9 @@ sealed interface AppStateUpdateResult {
 val AppState.fixedExpression: List<Symbol>
     get() = result + input
 val AppState.completionInput: List<Symbol>
-    get() = List(
-        (input.count { symbol -> symbol is Symbol.FactorStart } -
-                input.count { symbol -> symbol is Symbol.FactorEnd })
-            .coerceAtLeast(0)
-    ) { Symbol.FactorEnd.ClosingParenthesis }
+    get() = List(input.nestingDepth().coerceAtLeast(0)) {
+        Symbol.FactorEnd.ClosingParenthesis
+    }
 val AppState.expression: List<Symbol>
     get() = fixedExpression + completionInput
 val AppState.isInputting: Boolean
@@ -129,35 +127,39 @@ fun AppState.canAppend(symbol: Symbol): Boolean = this.canAppend(listOf(symbol))
 fun AppState.canAppend(symbols: List<Symbol>): Boolean {
     val tempInput: MutableList<Symbol> = input.toMutableList()
 
-    fun nestingDepth(): Int =
-        tempInput.count { symbol -> symbol is Symbol.FactorStart } -
-                tempInput.count { symbol -> symbol is Symbol.FactorEnd }
+    var nestingDepth: Int = input.nestingDepth()
 
     for (symbol in symbols) {
         if (when (symbol) {
                 is Symbol.Numeric.Point ->
                     symbol.isAppendableAfter(tempInput.lastOrNull()) &&
                             tempInput
-                                .takeLastWhile { symbol -> symbol is Symbol.Numeric }
-                                .none { symbol -> symbol is Symbol.Numeric.Point }
+                                .takeLastWhile { joiningSymbol -> joiningSymbol is Symbol.Numeric }
+                                .none { joiningSymbol -> joiningSymbol is Symbol.Numeric.Point }
 
                 is Symbol.FactorStart ->
                     symbol.isAppendableAfter(tempInput.lastOrNull()) &&
-                            nestingDepth() < AppStateExtensionsConstraints.MAX_NESTING_DEPTH
+                            nestingDepth < AppStateExtensionsConstraints.MAX_NESTING_DEPTH
 
                 is Symbol.FactorEnd ->
                     symbol.isAppendableAfter(tempInput.lastOrNull()) &&
-                            nestingDepth() > 0
+                            nestingDepth < AppStateExtensionsConstraints.MAX_NESTING_DEPTH
 
                 is Symbol.Operator,
                 is Symbol.PostfixOperator ->
-                    symbol.isAppendableAfter((result + tempInput).lastOrNull())
+                    symbol.isAppendableAfter(result.lastOrNull() ?: tempInput.lastOrNull())
 
                 else ->
                     symbol.isAppendableAfter(tempInput.lastOrNull())
             }
         ) {
             tempInput.add(symbol)
+
+            when (symbol) {
+                is Symbol.FactorStart -> nestingDepth++
+                is Symbol.FactorEnd -> nestingDepth--
+                else -> Unit
+            }
         } else {
             return false
         }
@@ -215,4 +217,12 @@ private fun Symbol.isAppendableAfter(previous: Symbol?): Boolean = when (this) {
                 previous is Symbol.Constant ||
                 previous is Symbol.FactorEnd ||
                 previous is Symbol.PostfixOperator
+}
+
+private fun Iterable<Symbol>.nestingDepth(): Int = sumOf { symbol ->
+    when (symbol) {
+        is Symbol.FactorStart -> 1
+        is Symbol.FactorEnd -> -1
+        else -> 0
+    }
 }
