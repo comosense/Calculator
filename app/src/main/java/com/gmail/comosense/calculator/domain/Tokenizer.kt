@@ -2,7 +2,7 @@ package com.gmail.comosense.calculator.domain
 
 import java.math.BigDecimal
 
-fun tokenize(symbols: List<Symbol>): List<Token>? {
+fun Iterable<Symbol>.tokenize(): List<Token>? {
     val tokens: List<Token> = buildList {
         val numericBuffer: StringBuilder = StringBuilder()
 
@@ -16,7 +16,7 @@ fun tokenize(symbols: List<Symbol>): List<Token>? {
             }
         }
 
-        for (symbol in symbols) {
+        for (symbol in this@tokenize) {
             when (symbol) {
                 is Symbol.Numeric.Digit ->
                     numericBuffer.append(symbol.value)

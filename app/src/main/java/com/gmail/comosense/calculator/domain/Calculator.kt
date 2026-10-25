@@ -40,7 +40,7 @@ suspend fun calculate(
     precision: Int,
 ): Result<List<Symbol>, CalculatorError> {
     require(precision > 0)
-    val tokens: List<Token> = tokenize(expression)
+    val tokens: List<Token> = expression.tokenize()
         ?: return Result.Err(CalculatorError.InvalidExpression)
 
     val calculated: BigDecimal =
