@@ -19,7 +19,7 @@ internal class BigDecimalMathCore(
 ) {
     init {
         require(coreMc.precision > 0)
-        require(tolerancePrecision > 0)
+        require(tolerancePrecision >= 0)
     }
 
     companion object {
@@ -52,7 +52,11 @@ internal class BigDecimalMathCore(
     )
 
     private val tolerance: BigDecimal by lazy {
-        ONE.scaleByPowerOfTen(-tolerancePrecision)
+        if (tolerancePrecision > 0) {
+            ONE.scaleByPowerOfTen(-tolerancePrecision)
+        } else {
+            ZERO
+        }
     }
 
     @Volatile
@@ -190,8 +194,28 @@ internal class BigDecimalMathCore(
         }
     }
 
-    fun powUnrounded(base: BigDecimal, exponent: Int): BigDecimal {
-        return base.pow(exponent)
+    suspend fun powUnrounded(base: BigDecimal, exponent: Int): BigDecimal {
+        val coroutineContext: CoroutineContext = currentCoroutineContext()
+
+        var n: Long = exponent.toLong()
+        var currentBase: BigDecimal = base
+        var result: BigDecimal = ONE
+
+        while (n > 0L) {
+            coroutineContext.ensureActive()
+
+            if ((n and 1L) != 0L) {
+                result = result.multiply(currentBase)
+            }
+
+            n = n shr 1
+
+            if (n > 0L) {
+                currentBase = currentBase.multiply(currentBase)
+            }
+        }
+
+        return result
     }
 
     suspend fun pow(base: BigDecimal, exponent: BigDecimal): BigDecimal {
@@ -240,32 +264,32 @@ internal class BigDecimalMathCore(
             .divide(cachedLnTen(), coreMc)
     }
 
-    suspend fun sin(value: BigDecimal, isRadians: Boolean): BigDecimal {
+    suspend fun sin(angle: BigDecimal, isRadians: Boolean): BigDecimal {
         return calculateSin(
             if (isRadians) {
-                value
+                angle
             } else {
-                value.toRadians()
-            }
+                angle.toRadians()
+            }.normalizedAngle()
         )
     }
 
-    suspend fun cos(value: BigDecimal, isRadians: Boolean): BigDecimal {
+    suspend fun cos(angle: BigDecimal, isRadians: Boolean): BigDecimal {
         return calculateCos(
             if (isRadians) {
-                value
+                angle
             } else {
-                value.toRadians()
-            }
+                angle.toRadians()
+            }.normalizedAngle()
         )
     }
 
-    suspend fun tan(value: BigDecimal, isRadians: Boolean): BigDecimal {
+    suspend fun tan(angle: BigDecimal, isRadians: Boolean): BigDecimal {
         return calculateTan(
             if (isRadians) {
-                value
+                angle
             } else {
-                value.toRadians()
+                angle.toRadians()
             }
         )
     }
@@ -414,8 +438,7 @@ internal class BigDecimalMathCore(
         }
     }
 
-    private suspend fun calculateSin(value: BigDecimal): BigDecimal {
-        val angle: BigDecimal = value.normalizedAngle()
+    private suspend fun calculateSin(angle: BigDecimal): BigDecimal {
         val piConstants: PiConstants = cachedPiConstants()
 
         val distanceToZero: BigDecimal =
@@ -427,14 +450,18 @@ internal class BigDecimalMathCore(
         val distanceToThreeHalfPi: BigDecimal =
             angle.subtract(piConstants.threeHalfPi).abs()
 
+        val useTolerance: Boolean = tolerance.signum() > 0
         return when {
-            distanceToZero <= tolerance || distanceToPi <= tolerance ->
+            useTolerance &&
+                    (distanceToZero <= tolerance || distanceToPi <= tolerance) ->
                 ZERO
 
-            distanceToHalfPi <= tolerance ->
+            useTolerance &&
+                    distanceToHalfPi <= tolerance ->
                 ONE
 
-            distanceToThreeHalfPi <= tolerance ->
+            useTolerance &&
+                    distanceToThreeHalfPi <= tolerance ->
                 NEGATIVE_ONE
 
             angle <= piConstants.halfPi ->
@@ -453,8 +480,7 @@ internal class BigDecimalMathCore(
         }
     }
 
-    private suspend fun calculateCos(value: BigDecimal): BigDecimal {
-        val angle: BigDecimal = value.normalizedAngle()
+    private suspend fun calculateCos(angle: BigDecimal): BigDecimal {
         val piConstants: PiConstants = cachedPiConstants()
 
         val distanceToZero: BigDecimal =
@@ -466,14 +492,18 @@ internal class BigDecimalMathCore(
         val distanceToThreeHalfPi: BigDecimal =
             angle.subtract(piConstants.threeHalfPi).abs()
 
+        val useTolerance: Boolean = tolerance.signum() > 0
         return when {
-            distanceToHalfPi <= tolerance || distanceToThreeHalfPi <= tolerance ->
+            useTolerance &&
+                    (distanceToHalfPi <= tolerance || distanceToThreeHalfPi <= tolerance) ->
                 ZERO
 
-            distanceToZero <= tolerance ->
+            useTolerance &&
+                    distanceToZero <= tolerance ->
                 ONE
 
-            distanceToPi <= tolerance ->
+            useTolerance &&
+                    distanceToPi <= tolerance ->
                 NEGATIVE_ONE
 
             angle <= piConstants.halfPi ->
@@ -492,14 +522,14 @@ internal class BigDecimalMathCore(
         }
     }
 
-    private suspend fun calculateTan(value: BigDecimal): BigDecimal {
-        val cos: BigDecimal = calculateCos(value)
+    private suspend fun calculateTan(angle: BigDecimal): BigDecimal {
+        val cos: BigDecimal = calculateCos(angle)
 
         if (cos.signum() == 0) {
             throw TanInvalidArgumentException()
         }
 
-        val sin: BigDecimal = calculateSin(value)
+        val sin: BigDecimal = calculateSin(angle)
 
         return sin.divide(cos, coreMc)
     }
@@ -582,12 +612,12 @@ internal class BigDecimalMathCore(
         return arctanTaylor(value)
     }
 
-    private suspend fun sinTaylor(value: BigDecimal): BigDecimal {
+    private suspend fun sinTaylor(angle: BigDecimal): BigDecimal {
         val coroutineContext: CoroutineContext = currentCoroutineContext()
-        val valueSquared: BigDecimal = value.multiply(value)
+        val angleSquared: BigDecimal = angle.multiply(angle)
 
-        var term: BigDecimal = value
-        var sum: BigDecimal = value
+        var term: BigDecimal = angle
+        var sum: BigDecimal = angle
         var n = 1
 
         while (true) {
@@ -599,7 +629,7 @@ internal class BigDecimalMathCore(
                 .multiply(twoN.add(BIG_INTEGER_ONE))
 
             term = term
-                .multiply(valueSquared)
+                .multiply(angleSquared)
                 .divide(BigDecimal(denominator), coreMc)
                 .negate()
 
@@ -614,9 +644,9 @@ internal class BigDecimalMathCore(
         }
     }
 
-    private suspend fun cosTaylor(value: BigDecimal): BigDecimal {
+    private suspend fun cosTaylor(angle: BigDecimal): BigDecimal {
         val coroutineContext: CoroutineContext = currentCoroutineContext()
-        val valueSquared: BigDecimal = value.multiply(value)
+        val angleSquared: BigDecimal = angle.multiply(angle)
 
         var term: BigDecimal = ONE
         var sum: BigDecimal = ONE
@@ -632,7 +662,7 @@ internal class BigDecimalMathCore(
                 .multiply(twoN)
 
             term = term
-                .multiply(valueSquared)
+                .multiply(angleSquared)
                 .divide(BigDecimal(denominator), coreMc)
                 .negate()
 

@@ -137,18 +137,18 @@ class BigDecimalMath(private val mathContext: MathContext) {
             .round(mathContext)
     }
 
-    suspend fun sin(value: BigDecimal, isRadians: Boolean): BigDecimal {
-        return core.sin(value, isRadians)
+    suspend fun sin(angle: BigDecimal, isRadians: Boolean): BigDecimal {
+        return core.sin(angle, isRadians)
             .round(mathContext)
     }
 
-    suspend fun cos(value: BigDecimal, isRadians: Boolean): BigDecimal {
-        return core.cos(value, isRadians)
+    suspend fun cos(angle: BigDecimal, isRadians: Boolean): BigDecimal {
+        return core.cos(angle, isRadians)
             .round(mathContext)
     }
 
-    suspend fun tan(value: BigDecimal, isRadians: Boolean): BigDecimal {
-        return core.tan(value, isRadians)
+    suspend fun tan(angle: BigDecimal, isRadians: Boolean): BigDecimal {
+        return core.tan(angle, isRadians)
             .round(mathContext)
     }
 
