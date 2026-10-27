@@ -203,8 +203,7 @@ class BigDecimalMath {
         val internalMc: MathContext = internalMc(mc)
 
         return computeLn(value, internalMc)
-            .divide(cachedLnTen(mc), internalMc)
-            .round(mc)
+            .divide(cachedLnTen(mc), mc)
     }
 
     suspend fun sin(
@@ -546,7 +545,7 @@ class BigDecimalMath {
             sum = sum.multiply(sum)
         }
 
-        return sum.round(mc)
+        return sum
     }
 
     private suspend fun calculateLn(
