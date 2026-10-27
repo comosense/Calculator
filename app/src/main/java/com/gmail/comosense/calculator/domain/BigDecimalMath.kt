@@ -28,7 +28,7 @@ class ArccosInvalidArgumentException : ArithmeticException()
 
 internal object BigDecimalMath {
     private const val EXTRA_PRECISION_FOR_INTERNAL_CALCULATIONS: Int = 8
-    private const val EXTRA_PRECISION_FOR_ROUND: Int = 1
+    private const val EXTRA_PRECISION_FOR_ROUND: Int = 2
     private const val EXTRA_PRECISION_FOR_CACHE: Int = 8
     private val NEGATIVE_ONE: BigDecimal = BigDecimal.ONE.negate()
     private val ZERO: BigDecimal = BigDecimal.ZERO
