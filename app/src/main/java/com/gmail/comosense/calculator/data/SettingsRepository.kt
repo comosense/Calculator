@@ -30,7 +30,7 @@ class SettingsRepository(
                 ?: SettingsConstraints.DEFAULT_PRECISION
 
             Settings(
-                precision = precision
+                precision = precision,
             )
         }
 

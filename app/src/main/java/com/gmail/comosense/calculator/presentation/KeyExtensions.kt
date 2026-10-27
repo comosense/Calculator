@@ -72,12 +72,6 @@ val Key.action: Action
         is Key.Divide ->
             Action.App(AppAction.Input(Symbol.Operator.Divide))
 
-        is Key.Power ->
-            Action.App(AppAction.Input(Symbol.Operator.Power))
-
-        is Key.Factorial ->
-            Action.App(AppAction.Input(Symbol.PostfixOperator.Factorial))
-
         is Key.Equal ->
             Action.App(AppAction.Calculate)
 
@@ -86,12 +80,6 @@ val Key.action: Action
 
         is Key.Backspace ->
             Action.App(AppAction.Backspace)
-
-        is Key.FunctionMode ->
-            Action.Ui(UiAction.ToggleFunctionMode)
-
-        is Key.AngleMode ->
-            Action.App(AppAction.ToggleAngleMode)
 
         is Key.Euler ->
             Action.App(AppAction.Input(Symbol.Constant.Euler))
@@ -102,11 +90,17 @@ val Key.action: Action
         is Key.Sqrt ->
             Action.App(AppAction.Input(Symbol.Factor.Function.Sqrt))
 
-        is Key.Ln ->
-            Action.App(AppAction.Input(Symbol.FactorStart.Function.Ln))
+        is Key.Power ->
+            Action.App(AppAction.Input(Symbol.Operator.Power))
+
+        is Key.Factorial ->
+            Action.App(AppAction.Input(Symbol.PostfixOperator.Factorial))
 
         is Key.Log ->
             Action.App(AppAction.Input(Symbol.FactorStart.Function.Log))
+
+        is Key.Ln ->
+            Action.App(AppAction.Input(Symbol.FactorStart.Function.Ln))
 
         is Key.Sin ->
             Action.App(AppAction.Input(Symbol.FactorStart.Function.Sin))
@@ -120,11 +114,11 @@ val Key.action: Action
         is Key.Square ->
             Action.App(AppAction.Inputs(SYMBOLS_SQUARE))
 
-        is Key.Exp ->
-            Action.App(AppAction.Input(Symbol.FactorStart.Function.Exp))
-
         is Key.Pow10 ->
             Action.App(AppAction.Inputs(SYMBOLS_POW10))
+
+        is Key.Exp ->
+            Action.App(AppAction.Input(Symbol.FactorStart.Function.Exp))
 
         is Key.Arcsin ->
             Action.App(AppAction.Input(Symbol.FactorStart.Function.Arcsin))
@@ -134,6 +128,12 @@ val Key.action: Action
 
         is Key.Arctan ->
             Action.App(AppAction.Input(Symbol.FactorStart.Function.Arctan))
+
+        is Key.FunctionMode ->
+            Action.Ui(UiAction.ToggleFunctionMode)
+
+        is Key.AngleMode ->
+            Action.App(AppAction.ToggleAngleMode)
     }
 
 val Key.altKeyOrNull: Key?
@@ -147,11 +147,11 @@ val Key.altKeyOrNull: Key?
         is Key.Sqrt ->
             Key.Square
 
-        is Key.Ln ->
-            Key.Exp
-
         is Key.Log ->
             Key.Pow10
+
+        is Key.Ln ->
+            Key.Exp
 
         is Key.Sin ->
             Key.Arcsin
@@ -165,11 +165,11 @@ val Key.altKeyOrNull: Key?
         is Key.Square ->
             Key.Sqrt
 
-        is Key.Exp ->
-            Key.Ln
-
         is Key.Pow10 ->
             Key.Log
+
+        is Key.Exp ->
+            Key.Ln
 
         is Key.Arcsin ->
             Key.Sin
@@ -205,19 +205,19 @@ val Key.style: Style
         is Key.Backspace ->
             Style.Command
 
-        is Key.Power,
-        is Key.Factorial,
         is Key.Euler,
         is Key.Pi,
         is Key.Sqrt,
-        is Key.Ln,
+        is Key.Power,
+        is Key.Factorial,
         is Key.Log,
+        is Key.Ln,
         is Key.Sin,
         is Key.Cos,
         is Key.Tan,
         is Key.Square,
-        is Key.Exp,
         is Key.Pow10,
+        is Key.Exp,
         is Key.Arcsin,
         is Key.Arccos,
         is Key.Arctan ->
@@ -283,12 +283,6 @@ fun Key.display(symbolFormatter: SymbolFormatter): Display = when (this) {
             stringResource = R.string.content_description_divide,
         )
 
-    is Key.Power ->
-        Display.Text("^")
-
-    is Key.Factorial ->
-        Display.Text("!")
-
     is Key.Equal ->
         Display.Icon(
             painterResource = R.drawable.ic_equal,
@@ -306,6 +300,54 @@ fun Key.display(symbolFormatter: SymbolFormatter): Display = when (this) {
             painterResource = R.drawable.ic_backspace,
             stringResource = R.string.content_description_backspace,
         )
+
+    is Key.Euler ->
+        Display.Text("e")
+
+    is Key.Pi ->
+        Display.Text("π")
+
+    is Key.Sqrt ->
+        Display.Text("√")
+
+    is Key.Power ->
+        Display.Text("^")
+
+    is Key.Factorial ->
+        Display.Text("!")
+
+    is Key.Log ->
+        Display.Text("log")
+
+    is Key.Ln ->
+        Display.Text("ln")
+
+    is Key.Sin ->
+        Display.Text("sin")
+
+    is Key.Cos ->
+        Display.Text("cos")
+
+    is Key.Tan ->
+        Display.Text("tan")
+
+    is Key.Square ->
+        Display.Text("^2")
+
+    is Key.Pow10 ->
+        Display.Text("10^")
+
+    is Key.Exp ->
+        Display.Text("exp")
+
+    is Key.Arcsin ->
+        Display.Text("asin")
+
+    is Key.Arccos ->
+        Display.Text("acos")
+
+    is Key.Arctan ->
+        Display.Text("atan")
 
     is Key.FunctionMode ->
         Display.Icon(
@@ -326,46 +368,4 @@ fun Key.display(symbolFormatter: SymbolFormatter): Display = when (this) {
             },
             stringResource = R.string.content_description_angle_mode,
         )
-
-    is Key.Euler ->
-        Display.Text("e")
-
-    is Key.Pi ->
-        Display.Text("π")
-
-    is Key.Sqrt ->
-        Display.Text("√")
-
-    is Key.Ln ->
-        Display.Text("ln")
-
-    is Key.Log ->
-        Display.Text("log")
-
-    is Key.Sin ->
-        Display.Text("sin")
-
-    is Key.Cos ->
-        Display.Text("cos")
-
-    is Key.Tan ->
-        Display.Text("tan")
-
-    is Key.Square ->
-        Display.Text("^2")
-
-    is Key.Exp ->
-        Display.Text("exp")
-
-    is Key.Pow10 ->
-        Display.Text("10^")
-
-    is Key.Arcsin ->
-        Display.Text("asin")
-
-    is Key.Arccos ->
-        Display.Text("acos")
-
-    is Key.Arctan ->
-        Display.Text("atan")
 }

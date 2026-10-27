@@ -7,7 +7,9 @@ import java.text.DecimalFormatSymbols
 import java.text.NumberFormat
 import java.util.Locale
 
-class SymbolFormatter(locale: Locale) {
+class SymbolFormatter(
+    locale: Locale,
+) {
     private val integerFormatter: DecimalFormat? =
         (NumberFormat.getNumberInstance(locale) as? DecimalFormat)?.apply {
             isGroupingUsed = true
@@ -21,7 +23,9 @@ class SymbolFormatter(locale: Locale) {
             .getInstance(locale)
             .decimalSeparator
 
-    fun format(symbols: List<Symbol>): String {
+    fun format(
+        symbols: List<Symbol>,
+    ): String {
         return buildString {
             val numericBuffer: StringBuilder = StringBuilder()
 
@@ -49,7 +53,9 @@ class SymbolFormatter(locale: Locale) {
         }
     }
 
-    private fun formatNumericString(value: String): String {
+    private fun formatNumericString(
+        value: String,
+    ): String {
         val pointIndex: Int = value.indexOf(".")
 
         return if (pointIndex >= 0) {
@@ -63,7 +69,9 @@ class SymbolFormatter(locale: Locale) {
         }
     }
 
-    private fun formatIntegerString(integerString: String): String {
+    private fun formatIntegerString(
+        integerString: String,
+    ): String {
         return if (integerString.isNotEmpty() && integerFormatter != null) {
             integerFormatter.format(BigInteger(integerString))
         } else {
@@ -85,11 +93,11 @@ class SymbolFormatter(locale: Locale) {
             is Symbol.Numeric.Point
                 -> "."
 
-            is Symbol.Constant.Pi
-                -> "π"
-
             is Symbol.Constant.Euler
                 -> "e"
+
+            is Symbol.Constant.Pi
+                -> "π"
 
             is Symbol.Factor.Function.Sqrt
                 -> "√"

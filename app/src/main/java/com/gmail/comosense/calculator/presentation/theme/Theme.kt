@@ -63,7 +63,7 @@ object AppTheme {
 
 @Composable
 fun AppTheme(
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     MaterialTheme {
         val settingsScreenColors = SettingsScreenColors(

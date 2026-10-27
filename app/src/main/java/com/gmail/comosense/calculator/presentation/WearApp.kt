@@ -142,7 +142,9 @@ fun WearApp(
 }
 
 @Composable
-private fun HandleEvent(appEvent: Flow<AppEvent>) {
+private fun HandleEvent(
+    appEvent: Flow<AppEvent>,
+) {
     val context: Context = LocalContext.current
     val view: View = LocalView.current
 

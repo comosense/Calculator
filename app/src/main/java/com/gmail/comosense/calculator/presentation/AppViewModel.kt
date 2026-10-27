@@ -53,7 +53,9 @@ class AppViewModel(
     private val settingRepository: SettingsRepository,
     private val historyRepository: HistoryRepository,
 ) : ViewModel() {
-    class Factory(private val application: Application) : ViewModelProvider.Factory {
+    class Factory(
+        private val application: Application,
+    ) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             if (AppViewModel::class.java.isAssignableFrom(modelClass)) {
                 @Suppress("UNCHECKED_CAST")
@@ -91,7 +93,9 @@ class AppViewModel(
         viewModelScope.launch {
             settingRepository.settings.collect { settings ->
                 _appState.update { appState ->
-                    appState.copy(settings = settings)
+                    appState.copy(
+                        settings = settings,
+                    )
                 }
             }
         }
@@ -99,7 +103,9 @@ class AppViewModel(
         viewModelScope.launch {
             historyRepository.histories.collect { histories ->
                 _appState.update { appState ->
-                    appState.copy(histories = histories)
+                    appState.copy(
+                        histories = histories,
+                    )
                 }
             }
         }
@@ -108,7 +114,9 @@ class AppViewModel(
     val appState: StateFlow<AppState> = _appState.asStateFlow()
     val appEvent: SharedFlow<AppEvent> = _appEvent.asSharedFlow()
 
-    fun onAppAction(appAction: AppAction) {
+    fun onAppAction(
+        appAction: AppAction,
+    ) {
         if (_appState.value.isCalculating) {
             when (appAction) {
                 is AppAction.SelectHistory,
@@ -161,13 +169,17 @@ class AppViewModel(
         }
     }
 
-    private fun updatePrecision(value: Int) {
+    private fun updatePrecision(
+        value: Int,
+    ) {
         launchSettingsRepositoryAction {
             settingRepository.updatePrecision(value)
         }
     }
 
-    private fun selectHistory(id: String) {
+    private fun selectHistory(
+        id: String,
+    ) {
         updateAppState { appState ->
             resolveAppStateUpdate(
                 appState = appState,
@@ -176,7 +188,9 @@ class AppViewModel(
         }
     }
 
-    private fun deleteHistory(id: String) {
+    private fun deleteHistory(
+        id: String,
+    ) {
         launchHistoryRepositoryAction {
             historyRepository.deleteHistory(id)
         }
@@ -201,7 +215,9 @@ class AppViewModel(
 
         if (!_appState.compareAndSet(
                 expect = state,
-                update = state.copy(isCalculating = true)
+                update = state.copy(
+                    isCalculating = true,
+                ),
             )
         ) return
 
@@ -243,7 +259,9 @@ class AppViewModel(
                 }
             } finally {
                 _appState.update { appState ->
-                    appState.copy(isCalculating = false)
+                    appState.copy(
+                        isCalculating = false,
+                    )
                 }
             }
         }
@@ -253,8 +271,13 @@ class AppViewModel(
         calculateJobOrNull?.cancel()
     }
 
-    private fun input(symbol: Symbol) = this.inputs(listOf(symbol))
-    private fun inputs(symbols: List<Symbol>) {
+    private fun input(
+        symbol: Symbol,
+    ) = this.inputs(listOf(symbol))
+
+    private fun inputs(
+        symbols: List<Symbol>,
+    ) {
         updateAppState { appState ->
             resolveAppStateUpdate(
                 appState = appState,

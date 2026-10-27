@@ -115,13 +115,13 @@ private fun MainPanel(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Spacer(
-                modifier = Modifier.size(keySwitcherLength)
+                modifier = Modifier.size(keySwitcherLength),
             )
 
             ExpressionBox(
                 modifier = Modifier.size(
                     width = inscribedLength,
-                    height = inscribedLength / 5f
+                    height = inscribedLength / 5f,
                 ),
                 appState = appState,
                 onAppAction = onAppAction,
@@ -137,12 +137,12 @@ private fun MainPanel(
                         initialOffsetY = { height -> height },
                     ) togetherWith slideOutVertically(
                         animationSpec = tween(250),
-                        targetOffsetY = { height -> height }
+                        targetOffsetY = { height -> height },
                     )
                 },
                 modifier = Modifier.size(
                     width = panelWidth,
-                    height = inscribedLength * (4f / 5f)
+                    height = inscribedLength * (4f / 5f),
                 ),
 
                 ) { isShowFunctionKeyGrid ->
@@ -174,7 +174,7 @@ private fun MainPanel(
 
             IconButton(
                 onClick = { showFunctionKeyGrid = !showFunctionKeyGrid },
-                modifier = Modifier.size(keySwitcherLength)
+                modifier = Modifier.size(keySwitcherLength),
             ) {
                 Icon(
                     painter = painterResource(R.drawable.ic_key_switcher),
@@ -252,7 +252,7 @@ private fun ExpressionBox(
                                 blinkColor.copy(alpha = 0.375f * blinkProgress.value),
                                 blinkColor.copy(alpha = 0.25f * blinkProgress.value),
                                 blinkColor.copy(alpha = 0.125f * blinkProgress.value),
-                                Color.Transparent
+                                Color.Transparent,
                             ),
                             center = center,
                             radius = size.maxDimension * 0.5f,
@@ -260,7 +260,7 @@ private fun ExpressionBox(
                         cornerRadius = CornerRadius(
                             x = size.minDimension * 0.5f,
                             y = size.minDimension * 0.5f,
-                        )
+                        ),
                     )
                 }
             },
@@ -276,7 +276,7 @@ private fun ExpressionBox(
         ) {
             textMeasurer.measure(
                 text = expression,
-                style = style
+                style = style,
             )
         }
 
@@ -356,7 +356,7 @@ private fun KeyGrid(
 ) {
     Column(
         modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(arrangementSpace)
+        verticalArrangement = Arrangement.spacedBy(arrangementSpace),
     ) {
         keyGrid.forEach { keys ->
             KeysRow(

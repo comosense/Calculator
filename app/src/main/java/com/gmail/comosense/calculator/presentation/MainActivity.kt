@@ -20,7 +20,9 @@ class MainActivity : ComponentActivity() {
         AppViewModel.Factory(application)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(
+        savedInstanceState: Bundle?,
+        ) {
         installSplashScreen()
 
         super.onCreate(savedInstanceState)

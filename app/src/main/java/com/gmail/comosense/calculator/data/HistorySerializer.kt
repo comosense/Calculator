@@ -10,7 +10,9 @@ import kotlin.coroutines.cancellation.CancellationException
 object HistorySerializer : Serializer<HistoryStore> {
     override val defaultValue: HistoryStore = HistoryStore.getDefaultInstance()
 
-    override suspend fun readFrom(input: InputStream): HistoryStore {
+    override suspend fun readFrom(
+        input: InputStream,
+    ): HistoryStore {
         try {
             return HistoryStore.parseFrom(input)
         } catch (e: CancellationException) {
@@ -20,7 +22,10 @@ object HistorySerializer : Serializer<HistoryStore> {
         }
     }
 
-    override suspend fun writeTo(t: HistoryStore, output: OutputStream) {
+    override suspend fun writeTo(
+        t: HistoryStore,
+        output: OutputStream,
+    ) {
         t.writeTo(output)
     }
 }

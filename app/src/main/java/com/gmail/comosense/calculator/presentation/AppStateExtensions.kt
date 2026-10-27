@@ -26,7 +26,9 @@ val AppState.expression: List<Symbol>
 val AppState.isInputting: Boolean
     get() = input.isNotEmpty()
 
-fun AppState.appendExpression(symbols: List<Symbol>): AppStateUpdateResult {
+fun AppState.appendExpression(
+    symbols: List<Symbol>,
+): AppStateUpdateResult {
     val symbolsToAppend: List<Symbol> = symbolsToAppendOrNull(symbols)
         ?: return AppStateUpdateResult.UnacceptableSymbol
     val firstSymbol: Symbol = symbolsToAppend.firstOrNull()
@@ -56,7 +58,9 @@ fun AppState.appendExpression(symbols: List<Symbol>): AppStateUpdateResult {
     )
 }
 
-fun AppState.applyResult(result: List<Symbol>): AppStateUpdateResult {
+fun AppState.applyResult(
+    result: List<Symbol>,
+): AppStateUpdateResult {
     if (result.size > AppStateExtensionsConstraints.MAX_EXPRESSION_SIZE) {
         return AppStateUpdateResult.ExpressionTooLarge
     }
@@ -69,7 +73,9 @@ fun AppState.applyResult(result: List<Symbol>): AppStateUpdateResult {
     )
 }
 
-fun AppState.applyHistory(id: String): AppStateUpdateResult {
+fun AppState.applyHistory(
+    id: String,
+): AppStateUpdateResult {
     val result: List<Symbol> = histories
         .firstOrNull { history -> history.id == id }
         ?.result
@@ -123,8 +129,13 @@ fun AppState.toggleAngleMode(): AppStateUpdateResult {
     )
 }
 
-fun AppState.canAppend(symbol: Symbol): Boolean = this.canAppend(listOf(symbol))
-fun AppState.canAppend(symbols: List<Symbol>): Boolean {
+fun AppState.canAppend(
+    symbol: Symbol,
+): Boolean = this.canAppend(listOf(symbol))
+
+fun AppState.canAppend(
+    symbols: List<Symbol>,
+): Boolean {
     val tempInput: MutableList<Symbol> = input.toMutableList()
 
     var nestingDepth: Int = input.nestingDepth()
@@ -167,7 +178,9 @@ fun AppState.canAppend(symbols: List<Symbol>): Boolean {
     return true
 }
 
-private fun AppState.symbolsToAppendOrNull(symbols: List<Symbol>): List<Symbol>? {
+private fun AppState.symbolsToAppendOrNull(
+    symbols: List<Symbol>,
+): List<Symbol>? {
     return if (canAppend(symbols)) {
         symbols
     } else {
@@ -186,7 +199,9 @@ private fun AppState.symbolsToAppendOrNull(symbols: List<Symbol>): List<Symbol>?
     }
 }
 
-private fun Symbol.isAppendableAfter(previous: Symbol?): Boolean = when (this) {
+private fun Symbol.isAppendableAfter(
+    previous: Symbol?,
+): Boolean = when (this) {
     is Symbol.Sign ->
         previous == null ||
                 previous is Symbol.Factor ||

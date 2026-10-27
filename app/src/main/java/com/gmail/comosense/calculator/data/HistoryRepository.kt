@@ -57,7 +57,7 @@ class HistoryRepository(
                     builder.removeHistories(builder.historiesCount - 1)
                 }
                 builder.build()
-            }
+            },
         )
     }
 
@@ -77,7 +77,7 @@ class HistoryRepository(
                         .removeHistories(index)
                         .build()
                 }
-            }
+            },
         )
     }
 
@@ -88,7 +88,7 @@ class HistoryRepository(
                 store.toBuilder()
                     .clearHistories()
                     .build()
-            }
+            },
         )
     }
 

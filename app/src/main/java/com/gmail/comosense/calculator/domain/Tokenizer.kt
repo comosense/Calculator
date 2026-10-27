@@ -47,11 +47,11 @@ fun Symbol.toTokenOrNull(): Token? = when (this) {
     is Symbol.Sign.Negative ->
         Token.Sign.Negative
 
-    is Symbol.Constant.Pi ->
-        Token.Constant.Pi
-
     is Symbol.Constant.Euler ->
         Token.Constant.Euler
+
+    is Symbol.Constant.Pi ->
+        Token.Constant.Pi
 
     is Symbol.Factor.Function.Sqrt ->
         Token.Factor.Function.Sqrt
