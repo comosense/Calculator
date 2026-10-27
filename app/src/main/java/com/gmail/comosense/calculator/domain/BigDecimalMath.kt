@@ -26,33 +26,31 @@ class TanInvalidArgumentException : ArithmeticException()
 class ArcsinInvalidArgumentException : ArithmeticException()
 class ArccosInvalidArgumentException : ArithmeticException()
 
-class BigDecimalMath {
-    companion object {
-        private const val EXTRA_PRECISION_FOR_INTERNAL_CALCULATIONS: Int = 8
-        private const val EXTRA_PRECISION_FOR_ROUND: Int = 1
-        private const val EXTRA_PRECISION_FOR_CACHE: Int = 8
-        private val NEGATIVE_ONE: BigDecimal = BigDecimal.ONE.negate()
-        private val ZERO: BigDecimal = BigDecimal.ZERO
-        private val ONE_HALF: BigDecimal = BigDecimal("0.5")
-        private val ONE: BigDecimal = BigDecimal.ONE
-        private val TWO: BigDecimal = BigDecimal(2)
-        private val FOUR: BigDecimal = BigDecimal(4)
-        private val FIVE: BigDecimal = BigDecimal(5)
-        private val TEN: BigDecimal = BigDecimal.TEN
-        private val SIXTEEN: BigDecimal = BigDecimal(16)
-        private val ONE_HUNDRED_EIGHTY: BigDecimal = BigDecimal(180)
-        private val TWO_HUNDRED_THIRTY_NINE: BigDecimal = BigDecimal(239)
-        private val BIG_INTEGER_ONE: BigInteger = BigInteger.ONE
-        private val BIG_INTEGER_TWO: BigInteger = 2.toBigInteger()
-        private val MAX_FACTORIAL_ARGUMENT: BigInteger =
-            BigDecimalMathConstraints.MAX_FACTORIAL_ARGUMENT.toBigInteger()
-        private val MAX_EXPONENTIAL_ARGUMENT: BigDecimal =
-            BigDecimal(BigDecimalMathConstraints.MAX_EXPONENTIAL_ARGUMENT)
-        private val MAX_INTEGER_EXPONENT: BigInteger =
-            BigDecimalMathConstraints.MAX_INTEGER_EXPONENT.toBigInteger()
-        private val MAX_NON_INTEGER_EXPONENT: BigDecimal =
-            BigDecimal(BigDecimalMathConstraints.MAX_NON_INTEGER_EXPONENT)
-    }
+internal object BigDecimalMath {
+    private const val EXTRA_PRECISION_FOR_INTERNAL_CALCULATIONS: Int = 8
+    private const val EXTRA_PRECISION_FOR_ROUND: Int = 1
+    private const val EXTRA_PRECISION_FOR_CACHE: Int = 8
+    private val NEGATIVE_ONE: BigDecimal = BigDecimal.ONE.negate()
+    private val ZERO: BigDecimal = BigDecimal.ZERO
+    private val ONE_HALF: BigDecimal = BigDecimal("0.5")
+    private val ONE: BigDecimal = BigDecimal.ONE
+    private val TWO: BigDecimal = BigDecimal(2)
+    private val FOUR: BigDecimal = BigDecimal(4)
+    private val FIVE: BigDecimal = BigDecimal(5)
+    private val TEN: BigDecimal = BigDecimal.TEN
+    private val SIXTEEN: BigDecimal = BigDecimal(16)
+    private val ONE_HUNDRED_EIGHTY: BigDecimal = BigDecimal(180)
+    private val TWO_HUNDRED_THIRTY_NINE: BigDecimal = BigDecimal(239)
+    private val BIG_INTEGER_ONE: BigInteger = BigInteger.ONE
+    private val BIG_INTEGER_TWO: BigInteger = 2.toBigInteger()
+    private val MAX_FACTORIAL_ARGUMENT: BigInteger =
+        BigDecimalMathConstraints.MAX_FACTORIAL_ARGUMENT.toBigInteger()
+    private val MAX_EXPONENTIAL_ARGUMENT: BigDecimal =
+        BigDecimal(BigDecimalMathConstraints.MAX_EXPONENTIAL_ARGUMENT)
+    private val MAX_INTEGER_EXPONENT: BigInteger =
+        BigDecimalMathConstraints.MAX_INTEGER_EXPONENT.toBigInteger()
+    private val MAX_NON_INTEGER_EXPONENT: BigDecimal =
+        BigDecimal(BigDecimalMathConstraints.MAX_NON_INTEGER_EXPONENT)
 
     private data class MathConstant(
         val mc: MathContext,
@@ -1122,8 +1120,8 @@ class BigDecimalMath {
         mc: MathContext,
     ): BigDecimal {
         cachedValue?.let { cached ->
-            if (cached.mc.precision >= (mc.precision + EXTRA_PRECISION_FOR_ROUND) ||
-                cached.mc == mc
+            if ((cached.mc.roundingMode == mc.roundingMode) &&
+                (cached.mc.precision >= (mc.precision + EXTRA_PRECISION_FOR_ROUND))
             ) {
                 return cached.value.round(mc)
             }

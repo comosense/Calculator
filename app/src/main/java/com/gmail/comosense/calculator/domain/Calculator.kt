@@ -135,8 +135,6 @@ private class Parser(
     private val tolerance: BigDecimal,
     private val additionalPrecision: Int,
 ) {
-    private val bigDecimalMath = BigDecimalMath()
-
     private var position: Int = 0
 
     fun isEnd(): Boolean = (position >= tokens.size)
@@ -227,7 +225,7 @@ private class Parser(
 
         return if (tokens.getOrNull(position) is Token.Operator.Power) {
             position++
-            bigDecimalMath.pow(
+            BigDecimalMath.pow(
                 base = base,
                 exponent = parseSign(increasePrecision(mc)),
                 mc = mc,
@@ -248,7 +246,7 @@ private class Parser(
             coroutineContext.ensureActive()
 
             position++
-            value = bigDecimalMath.factorial(
+            value = BigDecimalMath.factorial(
                 value = value,
             )
         }
@@ -320,12 +318,12 @@ private class Parser(
     ): BigDecimal {
         return when (constant) {
             Token.Constant.Pi ->
-                bigDecimalMath.pi(
+                BigDecimalMath.pi(
                     mc = mc,
                 )
 
             Token.Constant.Euler ->
-                bigDecimalMath.e(
+                BigDecimalMath.e(
                     mc = mc,
                 )
         }
@@ -338,7 +336,7 @@ private class Parser(
     ): BigDecimal {
         return when (function) {
             Token.Factor.Function.Sqrt ->
-                bigDecimalMath.sqrt(
+                BigDecimalMath.sqrt(
                     value = value,
                     mc = mc,
                 )
@@ -352,25 +350,25 @@ private class Parser(
     ): BigDecimal {
         return when (function) {
             Token.FactorStart.Function.Exp ->
-                bigDecimalMath.exp(
+                BigDecimalMath.exp(
                     value = value,
                     mc = mc,
                 )
 
             Token.FactorStart.Function.Ln ->
-                bigDecimalMath.ln(
+                BigDecimalMath.ln(
                     value = value,
                     mc = mc,
                 )
 
             Token.FactorStart.Function.Log ->
-                bigDecimalMath.log(
+                BigDecimalMath.log(
                     value = value,
                     mc = mc,
                 )
 
             Token.FactorStart.Function.Sin ->
-                bigDecimalMath.sin(
+                BigDecimalMath.sin(
                     angle = value,
                     isRadians = isRadians,
                     tolerance = tolerance,
@@ -378,7 +376,7 @@ private class Parser(
                 )
 
             Token.FactorStart.Function.Cos ->
-                bigDecimalMath.cos(
+                BigDecimalMath.cos(
                     angle = value,
                     isRadians = isRadians,
                     tolerance = tolerance,
@@ -386,7 +384,7 @@ private class Parser(
                 )
 
             Token.FactorStart.Function.Tan ->
-                bigDecimalMath.tan(
+                BigDecimalMath.tan(
                     angle = value,
                     isRadians = isRadians,
                     tolerance = tolerance,
@@ -394,21 +392,21 @@ private class Parser(
                 )
 
             Token.FactorStart.Function.Arcsin ->
-                bigDecimalMath.arcsin(
+                BigDecimalMath.arcsin(
                     value = value,
                     isRadians = isRadians,
                     mc = mc,
                 )
 
             Token.FactorStart.Function.Arccos ->
-                bigDecimalMath.arccos(
+                BigDecimalMath.arccos(
                     value = value,
                     isRadians = isRadians,
                     mc = mc,
                 )
 
             Token.FactorStart.Function.Arctan ->
-                bigDecimalMath.arctan(
+                BigDecimalMath.arctan(
                     value = value,
                     isRadians = isRadians,
                     mc = mc,
