@@ -196,7 +196,7 @@ internal object BigDecimalMath {
             val internalMc: MathContext = internalMc(mc)
             return calculateExp(
                 value = exponent.multiply(
-                    computeLn(
+                    calculateLnWithRangeReduction(
                         value = base,
                         mc = internalMc,
                     )
@@ -210,7 +210,7 @@ internal object BigDecimalMath {
         value: BigDecimal,
         mc: MathContext,
     ): BigDecimal {
-        return computeLn(
+        return calculateLnWithRangeReduction(
             value = value,
             mc = internalMc(mc),
         ).round(mc)
@@ -222,7 +222,7 @@ internal object BigDecimalMath {
     ): BigDecimal {
         val internalMc: MathContext = internalMc(mc)
 
-        return computeLn(value, internalMc)
+        return calculateLnWithRangeReduction(value, internalMc)
             .divide(cachedLnTen(mc), mc)
     }
 
@@ -338,52 +338,6 @@ internal object BigDecimalMath {
         } else {
             result.toDegrees(internalMc)
         }.round(mc)
-    }
-
-    private suspend fun computeLn(
-        value: BigDecimal,
-        mc: MathContext,
-    ): BigDecimal {
-        val coroutineContext: CoroutineContext = currentCoroutineContext()
-
-        if (value.signum() <= 0) {
-            throw LogInvalidArgumentException()
-        }
-
-        if (value.compareTo(ONE) == 0) {
-            return ZERO
-        }
-
-        val sqrtTwo: BigDecimal = cachedSqrtTwo(mc)
-        val inverseSqrtTwo: BigDecimal = cachedInverseSqrtTwo(mc)
-        val lnTwo: BigDecimal = cachedLnTwo(mc)
-
-        var x: BigDecimal = value
-        var exponent = 0
-
-        while (x > sqrtTwo) {
-            coroutineContext.ensureActive()
-
-            x = x.divide(TWO, mc)
-            exponent++
-        }
-
-        while (x < inverseSqrtTwo) {
-            coroutineContext.ensureActive()
-
-            x = x.multiply(TWO)
-            exponent--
-        }
-
-        val lnX: BigDecimal = calculateLn(
-            value = x,
-            mc = mc,
-        )
-
-        return lnX.add(
-            BigDecimal(exponent)
-                .multiply(lnTwo)
-        )
     }
 
     private suspend fun calculateE(
@@ -566,6 +520,52 @@ internal object BigDecimalMath {
         }
 
         return sum
+    }
+
+    private suspend fun calculateLnWithRangeReduction(
+        value: BigDecimal,
+        mc: MathContext,
+    ): BigDecimal {
+        val coroutineContext: CoroutineContext = currentCoroutineContext()
+
+        if (value.signum() <= 0) {
+            throw LogInvalidArgumentException()
+        }
+
+        if (value.compareTo(ONE) == 0) {
+            return ZERO
+        }
+
+        val sqrtTwo: BigDecimal = cachedSqrtTwo(mc)
+        val inverseSqrtTwo: BigDecimal = cachedInverseSqrtTwo(mc)
+        val lnTwo: BigDecimal = cachedLnTwo(mc)
+
+        var x: BigDecimal = value
+        var exponent = 0
+
+        while (x > sqrtTwo) {
+            coroutineContext.ensureActive()
+
+            x = x.divide(TWO, mc)
+            exponent++
+        }
+
+        while (x < inverseSqrtTwo) {
+            coroutineContext.ensureActive()
+
+            x = x.multiply(TWO)
+            exponent--
+        }
+
+        val lnX: BigDecimal = calculateLn(
+            value = x,
+            mc = mc,
+        )
+
+        return lnX.add(
+            BigDecimal(exponent)
+                .multiply(lnTwo)
+        )
     }
 
     private suspend fun calculateLn(
@@ -996,7 +996,7 @@ internal object BigDecimalMath {
     ): BigDecimal = cachedConstant(
         cachedValue = cachedLnTen,
         calculate = { mathContext ->
-            computeLn(
+            calculateLnWithRangeReduction(
                 value = TEN,
                 mc = mathContext,
             )
