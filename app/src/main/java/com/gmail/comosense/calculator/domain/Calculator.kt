@@ -18,6 +18,7 @@ enum class CalculatorError {
     FactorialInvalidArgument,
     FactorialLargeArgument,
     SqrtInvalidArgument,
+    ExpLargeArgument,
     PowInvalidArgument,
     PowLimitExceeded,
     LogInvalidArgument,
@@ -109,6 +110,8 @@ private suspend fun parse(
         Result.Err(CalculatorError.FactorialLargeArgument)
     } catch (_: SqrtInvalidArgumentException) {
         Result.Err(CalculatorError.SqrtInvalidArgument)
+    } catch (_: ExpLargeArgumentException) {
+        Result.Err(CalculatorError.ExpLargeArgument)
     } catch (_: PowInvalidArgumentException) {
         Result.Err(CalculatorError.PowInvalidArgument)
     } catch (_: PowLimitExceededException) {
@@ -348,6 +351,12 @@ private class Parser(
         mc: MathContext,
     ): BigDecimal {
         return when (function) {
+            Token.FactorStart.Function.Exp ->
+                bigDecimalMath.exp(
+                    value = value,
+                    mc = mc,
+                )
+
             Token.FactorStart.Function.Ln ->
                 bigDecimalMath.ln(
                     value = value,

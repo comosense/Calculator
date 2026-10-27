@@ -19,6 +19,7 @@
     <string name="calculator_error_factorial_invalid_argument">Factorial requires a non-negative integer</string>
     <string name="calculator_error_factorial_large_argument">Factorial input too large</string>
     <string name="calculator_error_sqrt_invalid_argument">Square root requires a non-negative number</string>
+    <string name="calculator_error_exp_large_argument">Exponential input too large</string>
     <string name="calculator_error_pow_invalid_argument">Invalid exponent</string>
     <string name="calculator_error_pow_limit_exceeded">Exponent exceeds supported limit</string>
     <string name="calculator_error_log_invalid_argument">Logarithm requires a positive number</string>

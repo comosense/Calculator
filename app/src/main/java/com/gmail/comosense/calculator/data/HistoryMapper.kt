@@ -34,6 +34,9 @@ fun ProtoSymbol.toSymbolOrNull(): Symbol? {
         ProtoSymbol.ValueCase.OPENING_PARENTHESIS ->
             Symbol.FactorStart.OpeningParenthesis
 
+        ProtoSymbol.ValueCase.EXP ->
+            Symbol.FactorStart.Function.Exp
+
         ProtoSymbol.ValueCase.LN ->
             Symbol.FactorStart.Function.Ln
 
@@ -124,6 +127,11 @@ fun Symbol.toProtoSymbol(): ProtoSymbol {
         Symbol.FactorStart.OpeningParenthesis ->
             ProtoSymbol.newBuilder()
                 .setOpeningParenthesis(true)
+                .build()
+
+        Symbol.FactorStart.Function.Exp ->
+            ProtoSymbol.newBuilder()
+                .setExp(true)
                 .build()
 
         Symbol.FactorStart.Function.Ln ->

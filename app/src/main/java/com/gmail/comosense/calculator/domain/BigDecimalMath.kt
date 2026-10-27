@@ -12,13 +12,15 @@ internal object BigDecimalMathConstraints {
     const val MAX_FACTORIAL_ARGUMENT: Int = Constraints.MAX_FACTORIAL_ARGUMENT
     const val MAX_INTEGER_EXPONENT: Int = Constraints.MAX_INTEGER_EXPONENT
     const val MAX_NON_INTEGER_EXPONENT: Int = Constraints.MAX_NON_INTEGER_EXPONENT
+    const val MAX_EXPONENTIAL_ARGUMENT: Int = Constraints.MAX_EXPONENTIAL_ARGUMENT
 }
 
 class FactorialLargeArgumentException : ArithmeticException()
 class FactorialInvalidArgumentException : ArithmeticException()
+class SqrtInvalidArgumentException : ArithmeticException()
+class ExpLargeArgumentException : ArithmeticException()
 class PowInvalidArgumentException : ArithmeticException()
 class PowLimitExceededException : ArithmeticException()
-class SqrtInvalidArgumentException : ArithmeticException()
 class LogInvalidArgumentException : ArithmeticException()
 class TanInvalidArgumentException : ArithmeticException()
 class ArcsinInvalidArgumentException : ArithmeticException()
@@ -44,6 +46,8 @@ class BigDecimalMath {
         private val BIG_INTEGER_TWO: BigInteger = 2.toBigInteger()
         private val MAX_FACTORIAL_ARGUMENT: BigInteger =
             BigDecimalMathConstraints.MAX_FACTORIAL_ARGUMENT.toBigInteger()
+        private val MAX_EXPONENTIAL_ARGUMENT: BigDecimal =
+            BigDecimal(BigDecimalMathConstraints.MAX_EXPONENTIAL_ARGUMENT)
         private val MAX_INTEGER_EXPONENT: BigInteger =
             BigDecimalMathConstraints.MAX_INTEGER_EXPONENT.toBigInteger()
         private val MAX_NON_INTEGER_EXPONENT: BigDecimal =
@@ -123,6 +127,24 @@ class BigDecimalMath {
         mc: MathContext,
     ): BigDecimal {
         return calculateSqrt(
+            value = value,
+            mc = internalMc(mc),
+        ).round(mc)
+    }
+
+    suspend fun exp(
+        value: BigDecimal,
+        mc: MathContext,
+    ): BigDecimal {
+        if (value.signum() == 0) {
+            return ONE
+        }
+
+        if (value.abs() > MAX_EXPONENTIAL_ARGUMENT) {
+            throw ExpLargeArgumentException()
+        }
+
+        return calculateExp(
             value = value,
             mc = internalMc(mc),
         ).round(mc)

@@ -18,10 +18,6 @@ private val SYMBOLS_SQUARE: List<Symbol> = listOf(
     Symbol.Operator.Power,
     Symbol.Numeric.Digit(2),
 )
-private val SYMBOLS_EXP: List<Symbol> = listOf(
-    Symbol.Constant.Euler,
-    Symbol.Operator.Power,
-)
 private val SYMBOLS_POW10: List<Symbol> = listOf(
     Symbol.Numeric.Digit(1),
     Symbol.Numeric.Digit(0),
@@ -125,7 +121,7 @@ val Key.action: Action
             Action.App(AppAction.Inputs(SYMBOLS_SQUARE))
 
         is Key.Exp ->
-            Action.App(AppAction.Inputs(SYMBOLS_EXP))
+            Action.App(AppAction.Input(Symbol.FactorStart.Function.Exp))
 
         is Key.Pow10 ->
             Action.App(AppAction.Inputs(SYMBOLS_POW10))
@@ -359,7 +355,7 @@ fun Key.display(symbolFormatter: SymbolFormatter): Display = when (this) {
         Display.Text("^2")
 
     is Key.Exp ->
-        Display.Text("e^")
+        Display.Text("exp")
 
     is Key.Pow10 ->
         Display.Text("10^")

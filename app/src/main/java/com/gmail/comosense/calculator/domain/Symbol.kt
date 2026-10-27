@@ -30,6 +30,7 @@ sealed interface Symbol {
     sealed interface FactorStart : Symbol {
         data object OpeningParenthesis : FactorStart
         sealed interface Function : FactorStart {
+            data object Exp : Function
             data object Ln : Function
             data object Log : Function
             data object Sin : Function

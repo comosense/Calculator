@@ -97,6 +97,9 @@ class SymbolFormatter(locale: Locale) {
             is Symbol.FactorStart.OpeningParenthesis
                 -> "("
 
+            is Symbol.FactorStart.Function.Exp
+                -> "exp("
+
             is Symbol.FactorStart.Function.Ln
                 -> "ln("
 

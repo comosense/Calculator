@@ -7,8 +7,9 @@ internal object Constraints {
     const val MAX_EXPRESSION_SIZE: Int = 1024
     const val MAX_NESTING_DEPTH: Int = 64
     const val MAX_FACTORIAL_ARGUMENT: Int = 253
+    const val MAX_EXPONENTIAL_ARGUMENT: Int = 1024
     const val MAX_INTEGER_EXPONENT: Int = 1024
-    const val MAX_NON_INTEGER_EXPONENT: Int = 1024
+    const val MAX_NON_INTEGER_EXPONENT: Int = MAX_EXPONENTIAL_ARGUMENT
     val VALID_PRECISIONS: List<Int> = listOf(8, 16, 24, 32, 40, 48, 56, 64)
 
     init {
