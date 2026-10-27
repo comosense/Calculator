@@ -14,6 +14,7 @@
     <string name="calculator_error_unsupported">Unsupported value</string>
     <string name="calculator_error_result_too_large">Result too large to display</string>
     <string name="calculator_error_invalid_expression">Invalid expression</string>
+    <string name="calculator_error_insufficient_precision">Insufficient precision</string>
     <string name="calculator_error_division_by_zero">Division by zero</string>
     <string name="calculator_error_factorial_invalid_argument">Factorial requires a non-negative integer</string>
     <string name="calculator_error_factorial_large_argument">Factorial input too large</string>

@@ -202,6 +202,7 @@ private fun CalculatorError.messageResourceId(): Int = when (this) {
     CalculatorError.Unsupported -> R.string.calculator_error_unsupported
     CalculatorError.ResultTooLarge -> R.string.calculator_error_result_too_large
     CalculatorError.InvalidExpression -> R.string.calculator_error_invalid_expression
+    CalculatorError.InsufficientPrecision -> R.string.calculator_error_insufficient_precision
     CalculatorError.DivisionByZero -> R.string.calculator_error_division_by_zero
     CalculatorError.FactorialInvalidArgument -> R.string.calculator_error_factorial_invalid_argument
     CalculatorError.FactorialLargeArgument -> R.string.calculator_error_factorial_large_argument
