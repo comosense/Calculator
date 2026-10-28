@@ -196,7 +196,7 @@ internal object BigDecimalMath {
             val internalMc: MathContext = internalMc(mc)
             return calculateExp(
                 value = exponent.multiply(
-                    calculateLnWithRangeReduction(
+                    calculateLn(
                         value = base,
                         mc = internalMc,
                     )
@@ -210,7 +210,7 @@ internal object BigDecimalMath {
         value: BigDecimal,
         mc: MathContext,
     ): BigDecimal {
-        return calculateLnWithRangeReduction(
+        return calculateLn(
             value = value,
             mc = internalMc(mc),
         ).round(mc)
@@ -222,8 +222,8 @@ internal object BigDecimalMath {
     ): BigDecimal {
         val internalMc: MathContext = internalMc(mc)
 
-        return calculateLnWithRangeReduction(value, internalMc)
-            .divide(cachedLnTen(mc), mc)
+        return calculateLn(value, internalMc)
+            .divide(cachedLnTen(internalMc), mc)
     }
 
     suspend fun sin(
@@ -522,7 +522,7 @@ internal object BigDecimalMath {
         return sum
     }
 
-    private suspend fun calculateLnWithRangeReduction(
+    private suspend fun calculateLn(
         value: BigDecimal,
         mc: MathContext,
     ): BigDecimal {
@@ -557,7 +557,7 @@ internal object BigDecimalMath {
             exponent--
         }
 
-        val lnX: BigDecimal = calculateLn(
+        val lnX: BigDecimal = lnTaylor(
             value = x,
             mc = mc,
         )
@@ -566,37 +566,6 @@ internal object BigDecimalMath {
             BigDecimal(exponent)
                 .multiply(lnTwo)
         )
-    }
-
-    private suspend fun calculateLn(
-        value: BigDecimal,
-        mc: MathContext,
-    ): BigDecimal {
-        val coroutineContext: CoroutineContext = currentCoroutineContext()
-        val z: BigDecimal = value
-            .subtract(ONE)
-            .divide(value.add(ONE), mc)
-        val zSquared: BigDecimal = z.multiply(z)
-
-        var term: BigDecimal = z
-        var sum: BigDecimal = z
-        var denominator: BigDecimal = ONE
-
-        while (true) {
-            coroutineContext.ensureActive()
-
-            term = term.multiply(zSquared)
-            denominator = denominator.add(TWO)
-
-            val nextTerm: BigDecimal = term.divide(denominator, mc)
-            val nextSum: BigDecimal = sum.add(nextTerm).round(mc)
-
-            if (nextSum.compareTo(sum) == 0) {
-                return nextSum.multiply(TWO)
-            }
-
-            sum = nextSum
-        }
     }
 
     private suspend fun calculateSin(
@@ -855,6 +824,37 @@ internal object BigDecimalMath {
         )
     }
 
+    private suspend fun lnTaylor(
+        value: BigDecimal,
+        mc: MathContext,
+    ): BigDecimal {
+        val coroutineContext: CoroutineContext = currentCoroutineContext()
+        val z: BigDecimal = value
+            .subtract(ONE)
+            .divide(value.add(ONE), mc)
+        val zSquared: BigDecimal = z.multiply(z)
+
+        var term: BigDecimal = z
+        var sum: BigDecimal = z
+        var denominator: BigDecimal = ONE
+
+        while (true) {
+            coroutineContext.ensureActive()
+
+            term = term.multiply(zSquared)
+            denominator = denominator.add(TWO)
+
+            val nextTerm: BigDecimal = term.divide(denominator, mc)
+            val nextSum: BigDecimal = sum.add(nextTerm).round(mc)
+
+            if (nextSum.compareTo(sum) == 0) {
+                return nextSum.multiply(TWO)
+            }
+
+            sum = nextSum
+        }
+    }
+
     private suspend fun sinTaylor(
         angle: BigDecimal,
         mc: MathContext,
@@ -996,7 +996,7 @@ internal object BigDecimalMath {
     ): BigDecimal = cachedConstant(
         cachedValue = cachedLnTen,
         calculate = { mathContext ->
-            calculateLnWithRangeReduction(
+            calculateLn(
                 value = TEN,
                 mc = mathContext,
             )
@@ -1039,7 +1039,7 @@ internal object BigDecimalMath {
     ): BigDecimal = cachedConstant(
         cachedValue = cachedLnTwo,
         calculate = { mathContext ->
-            calculateLn(
+            lnTaylor(
                 value = TWO,
                 mc = mathContext,
             )

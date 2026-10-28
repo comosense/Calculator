@@ -30,7 +30,7 @@ enum class CalculatorError {
 
 private class DivisionByZeroException : ArithmeticException()
 
-private const val TOLERANCE_PRECISION_MARGIN: Int = 2
+private const val TOLERANCE_PRECISION_MARGIN: Int = 1
 private const val ADDITIONAL_PRECISION_PER_FUNCTION: Int = 2
 
 private val SymbolizerError.calculatorError: CalculatorError
