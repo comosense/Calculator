@@ -18,9 +18,13 @@ Designed for small, round watch displays, with large, easy-to-tap keys and a com
 ### Scientific functions
 
 * Square root (`√`)
+* Squaring (`^2`)
 * Exponentiation (`^`)
+* Power of ten (`10^`)
+* Exponential function (`exp`)
 * Factorial (`!`)
 * Trigonometric functions: Sine (`sin`), Cosine (`cos`), Tangent (`tan`)
+* Inverse trigonometric functions: Arcsine (`asin`), Arccosine (`acos`), Arctangent (`atan`)
 * Angle modes: Switchable between Radians (`RAD`) and Degrees (`DEG`)
 * Logarithm functions: Common logarithm (`log`, base 10), Natural logarithm (`ln`)
 * Mathematical constants: pi (`π`) and Euler's number (`e`)
@@ -44,12 +48,14 @@ Designed for small, round watch displays, with large, easy-to-tap keys and a com
 * The delete key switches between Backspace and Clear, depending on the input state
 * Long-press the Backspace key to clear the current expression
 * Switch between the main keypad and the scientific function keypad
+* Long-press scientific function keys to access corresponding alternative functions, such as switching between `sin` and `asin`, `cos` and `acos`, or `tan` and `atan`
 
 ### Display
 
 * Locale-aware thousands and decimal separators
 * Text size adjusts automatically to fit the available display area
 * Long expressions remain accessible through horizontal scrolling
+* A calculation progress indicator is displayed while calculating, with an option to cancel the calculation
 
 ### Calculation history
 
@@ -98,7 +104,10 @@ log(100) = 2
 ln(e) = 1
 ```
 
-* Tap the RAD / DEG key on the scientific keypad to toggle between radian and degree angle modes.
+The scientific keypad also provides squaring, powers of ten, the exponential function, and inverse trigonometric functions.
+
+* Tap the `RAD` / `DEG` key on the scientific keypad to toggle between radian and degree angle modes.
+* Long-press a scientific function key to access its alternative function where available. For example, long-press `sin` to enter `asin`.
 * **Precision and rounding:** Calculations involving irrational constants and transcendental functions (such as `ln(e)`) are subject to the configured precision. At certain settings (such as 8 or 16 digits), results may display slight rounding discrepancies (e.g., `0.999999...` instead of an exact `1`) due to finite series approximations.
 
 ### Deleting and clearing
