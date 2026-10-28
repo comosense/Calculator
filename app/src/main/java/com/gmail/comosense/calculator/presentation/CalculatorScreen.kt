@@ -72,13 +72,20 @@ private const val PANEL_WIDTH_RATIO: Float = 0.9055385f
 private const val KEY_SWITCHER_LENGTH_RATIO: Float = 0.14142136f
 
 enum class UiAction {
+    ToggleKeyGrid,
     ToggleFunctionMode,
 }
 
 sealed interface Action {
     data class App(val appAction: AppAction) : Action
+    data class Show(val screen: AppScreen) : Action
     data class Ui(val uiAction: UiAction) : Action
 }
+
+private data class KeyState(
+    val showFunctionKeyGrid: Boolean = false,
+    val isInverseFunctionMode: Boolean = false,
+)
 
 @Composable
 fun CalculatorScreen(
@@ -88,11 +95,34 @@ fun CalculatorScreen(
     symbolFormatter: SymbolFormatter,
 ) {
     ScreenScaffold {
+        var keyState by remember { mutableStateOf(KeyState()) }
+
         MainPanel(
             modifier = Modifier.fillMaxSize(),
+            onAction = { action ->
+                when (action) {
+                    is Action.App ->
+                        onAppAction(action.appAction)
+
+                    is Action.Show ->
+                        onShow(action.screen)
+
+                    is Action.Ui ->
+                        keyState = when (action.uiAction) {
+                            UiAction.ToggleKeyGrid ->
+                                keyState.copy(
+                                    showFunctionKeyGrid = !keyState.showFunctionKeyGrid,
+                                )
+
+                            UiAction.ToggleFunctionMode ->
+                                keyState.copy(
+                                    isInverseFunctionMode = !keyState.isInverseFunctionMode,
+                                )
+                        }
+                }
+            },
+            keyState = keyState,
             appState = appState,
-            onAppAction = onAppAction,
-            onShow = onShow,
             symbolFormatter = symbolFormatter,
         )
     }
@@ -101,14 +131,11 @@ fun CalculatorScreen(
 @Composable
 private fun MainPanel(
     modifier: Modifier,
+    onAction: (Action) -> Unit,
+    keyState: KeyState,
     appState: AppState,
-    onAppAction: (AppAction) -> Unit,
-    onShow: (AppScreen) -> Unit,
     symbolFormatter: SymbolFormatter,
 ) {
-    var showFunctionKeyGrid by remember { mutableStateOf(false) }
-    var isInverseFunctionMode by remember { mutableStateOf(false) }
-
     BoxWithConstraints(
         modifier = modifier.background(AppTheme.calculatorScreenColors.background),
         contentAlignment = Alignment.Center,
@@ -132,14 +159,13 @@ private fun MainPanel(
                     width = inscribedLength,
                     height = inscribedLength / 5f,
                 ),
+                onAction = onAction,
                 appState = appState,
-                onAppAction = onAppAction,
-                onShow = onShow,
                 symbolFormatter = symbolFormatter,
             )
 
             AnimatedContent(
-                targetState = showFunctionKeyGrid,
+                targetState = keyState.showFunctionKeyGrid,
                 transitionSpec = {
                     slideInVertically(
                         animationSpec = tween(250),
@@ -158,7 +184,7 @@ private fun MainPanel(
                 KeyGrid(
                     keyGrid = if (isShowFunctionKeyGrid) {
                         functionKeyGrid(
-                            isInverseFunctionMode = isInverseFunctionMode,
+                            isInverseFunctionMode = keyState.isInverseFunctionMode,
                             appState = appState,
                         )
                     } else {
@@ -168,21 +194,13 @@ private fun MainPanel(
                     },
                     arrangementSpace = 2.dp,
                     modifier = Modifier.fillMaxSize(),
-                    onAction = { action ->
-                        when (action) {
-                            is Action.App -> onAppAction(action.appAction)
-                            is Action.Ui -> when (action.uiAction) {
-                                UiAction.ToggleFunctionMode ->
-                                    isInverseFunctionMode = !isInverseFunctionMode
-                            }
-                        }
-                    },
+                    onAction = onAction,
                     symbolFormatter = symbolFormatter,
                 )
             }
 
             IconButton(
-                onClick = { showFunctionKeyGrid = !showFunctionKeyGrid },
+                onClick = { onAction(Action.Ui(UiAction.ToggleKeyGrid)) },
                 modifier = Modifier.size(keySwitcherLength),
             ) {
                 Icon(
@@ -199,9 +217,8 @@ private fun MainPanel(
 @Composable
 private fun ExpressionBox(
     modifier: Modifier,
+    onAction: (Action) -> Unit,
     appState: AppState,
-    onAppAction: (AppAction) -> Unit,
-    onShow: (AppScreen) -> Unit,
     symbolFormatter: SymbolFormatter,
 ) {
     val scrollState: ScrollState = rememberScrollState()
@@ -250,8 +267,8 @@ private fun ExpressionBox(
     BoxWithConstraints(
         modifier = modifier
             .combinedClickable(
-                onClick = { onShow(AppScreen.History) },
-                onLongClick = { onShow(AppScreen.Settings) },
+                onClick = { onAction(Action.Show(AppScreen.History)) },
+                onLongClick = { onAction(Action.Show(AppScreen.Settings)) },
             )
             .drawBehind {
                 if (blinkProgress.value > 0f) {
@@ -338,7 +355,7 @@ private fun ExpressionBox(
         if (appState.isCalculating) {
             val size: Dp = maxHeight * 0.75f
             IconButton(
-                onClick = { onAppAction(AppAction.CalculateCancel) },
+                onClick = { onAction(Action.App(AppAction.CalculateCancel)) },
                 modifier = Modifier.size(size),
             ) {
                 Icon(
