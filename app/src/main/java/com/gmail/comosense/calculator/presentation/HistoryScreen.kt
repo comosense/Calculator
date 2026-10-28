@@ -42,7 +42,7 @@ import com.gmail.comosense.calculator.R
 import com.gmail.comosense.calculator.data.History
 import com.gmail.comosense.calculator.presentation.theme.AppTheme
 
-data class HistoryItemContent(
+private data class HistoryItemContent(
     val containerColor: Color,
     val contentColor: Color,
     val expressionColor: Color,
