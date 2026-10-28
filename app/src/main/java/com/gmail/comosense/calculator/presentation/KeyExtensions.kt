@@ -10,10 +10,6 @@ enum class Style {
     Mode,
 }
 
-enum class UiAction {
-    ToggleFunctionMode,
-}
-
 private val SYMBOLS_SQUARE: List<Symbol> = listOf(
     Symbol.Operator.Power,
     Symbol.Numeric.Digit(2),
@@ -23,11 +19,6 @@ private val SYMBOLS_POW10: List<Symbol> = listOf(
     Symbol.Numeric.Digit(0),
     Symbol.Operator.Power,
 )
-
-sealed interface Action {
-    data class App(val appAction: AppAction) : Action
-    data class Ui(val uiAction: UiAction) : Action
-}
 
 sealed interface Display {
     data class Text(

@@ -71,6 +71,15 @@ private const val INSCRIBED_LENGTH_RATIO: Float = 0.70710677f
 private const val PANEL_WIDTH_RATIO: Float = 0.9055385f
 private const val KEY_SWITCHER_LENGTH_RATIO: Float = 0.14142136f
 
+enum class UiAction {
+    ToggleFunctionMode,
+}
+
+sealed interface Action {
+    data class App(val appAction: AppAction) : Action
+    data class Ui(val uiAction: UiAction) : Action
+}
+
 @Composable
 fun CalculatorScreen(
     appState: AppState,
