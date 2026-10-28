@@ -991,6 +991,13 @@ internal object BigDecimalMath {
         return angle
     }
 
+    private fun internalMc(mc: MathContext): MathContext {
+        return MathContext(
+            mc.precision + EXTRA_PRECISION_FOR_INTERNAL_CALCULATIONS,
+            mc.roundingMode,
+        )
+    }
+
     private suspend fun cachedLnTen(
         mc: MathContext,
     ): BigDecimal = cachedConstant(
@@ -1141,12 +1148,5 @@ internal object BigDecimalMath {
         )
 
         return value.round(mc)
-    }
-
-    private fun internalMc(mc: MathContext): MathContext {
-        return MathContext(
-            mc.precision + EXTRA_PRECISION_FOR_INTERNAL_CALCULATIONS,
-            mc.roundingMode,
-        )
     }
 }
