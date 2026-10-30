@@ -53,8 +53,10 @@ private data class HistoryItemContent(
 )
 
 private sealed interface HistoryAction {
-    data class Select(val id: String) : HistoryAction
+    data object Back : HistoryAction
     data object ToggleDeleteMode : HistoryAction
+    data class SelectHistory(val id: String) : HistoryAction
+    data object DeleteAllHistory : HistoryAction
 }
 
 @Composable
@@ -66,8 +68,36 @@ fun HistoryScreen(
     symbolFormatter: SymbolFormatter,
 ) {
     var deleteMode: Boolean by remember { mutableStateOf(false) }
+
     val listState: TransformingLazyColumnState = rememberTransformingLazyColumnState()
     val transformationSpec: TransformationSpec = rememberTransformationSpec()
+    val onHistoryAction: (HistoryAction) -> Unit = { historyAction ->
+        when (historyAction) {
+            is HistoryAction.Back -> {
+                if (deleteMode) {
+                    deleteMode = false
+                } else {
+                    onBack()
+                }
+            }
+
+            is HistoryAction.ToggleDeleteMode ->
+                deleteMode = !deleteMode
+
+            is HistoryAction.SelectHistory ->
+                if (deleteMode) {
+                    onAppAction(AppAction.DeleteHistory(historyAction.id))
+                } else {
+                    onAppAction(AppAction.SelectHistory(historyAction.id))
+                    onBack()
+                }
+
+            is HistoryAction.DeleteAllHistory -> {
+                deleteMode = false
+                onAppAction(AppAction.DeleteHistoryAll)
+            }
+        }
+    }
 
     LaunchedEffect(histories, deleteMode) {
         if (deleteMode && histories.isEmpty()) {
@@ -77,11 +107,7 @@ fun HistoryScreen(
     }
 
     BackHandler {
-        if (deleteMode) {
-            deleteMode = false
-        } else {
-            onBack()
-        }
+        onHistoryAction(HistoryAction.Back)
     }
 
     ScreenScaffold(
@@ -90,8 +116,7 @@ fun HistoryScreen(
             if (deleteMode) {
                 EdgeButton(
                     onClick = {
-                        deleteMode = false
-                        onAppAction(AppAction.DeleteHistoryAll)
+                        onHistoryAction(HistoryAction.DeleteAllHistory)
                     },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = AppTheme.historyScreenColors.deleteAllButtonContainer,
@@ -106,7 +131,7 @@ fun HistoryScreen(
             } else {
                 EdgeButton(
                     onClick = {
-                        onBack()
+                        onHistoryAction(HistoryAction.Back)
                     },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = AppTheme.historyScreenColors.backButtonContainer,
@@ -144,20 +169,7 @@ fun HistoryScreen(
                     resultColor = AppTheme.historyScreenColors.historyResult,
                 )
             },
-            onHistoryAction = { historyAction ->
-                when (historyAction) {
-                    is HistoryAction.Select ->
-                        if (deleteMode) {
-                            onAppAction(AppAction.DeleteHistory(historyAction.id))
-                        } else {
-                            onAppAction(AppAction.SelectHistory(historyAction.id))
-                            onBack()
-                        }
-
-                    is HistoryAction.ToggleDeleteMode ->
-                        deleteMode = !deleteMode
-                }
-            },
+            onHistoryAction = onHistoryAction,
             histories = histories,
             symbolFormatter = symbolFormatter,
         )
@@ -233,8 +245,12 @@ private fun HistoryItem(
     val resultScrollState: ScrollState = rememberScrollState()
 
     Button(
-        onClick = { onHistoryAction(HistoryAction.Select(history.id)) },
-        onLongClick = { onHistoryAction(HistoryAction.ToggleDeleteMode) },
+        onClick = {
+            onHistoryAction(HistoryAction.SelectHistory(history.id))
+        },
+        onLongClick = {
+            onHistoryAction(HistoryAction.ToggleDeleteMode)
+        },
         modifier = modifier,
         colors = ButtonDefaults.buttonColors(
             containerColor = historyItemContent.containerColor,
