@@ -15,6 +15,7 @@ import com.gmail.comosense.calculator.data.settingsDataStore
 import com.gmail.comosense.calculator.domain.CalculatorError
 import com.gmail.comosense.calculator.domain.Symbol
 import com.gmail.comosense.calculator.domain.calculate
+import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.currentCoroutineContext
@@ -117,20 +118,10 @@ class AppViewModel(
     fun onAppAction(
         appAction: AppAction,
     ) {
-        if (_appState.value.isCalculating) {
-            when (appAction) {
-                is AppAction.SelectHistory,
-                is AppAction.Calculate,
-                is AppAction.Input,
-                is AppAction.Inputs,
-                is AppAction.Clear,
-                is AppAction.Backspace,
-                is AppAction.ToggleAngleMode ->
-                    return
-
-                else ->
-                    Unit
-            }
+        if (_appState.value.isCalculating &&
+            !appAction.isAllowedWhileCalculating()
+        ) {
+            return
         }
 
         when (appAction) {
@@ -167,6 +158,17 @@ class AppViewModel(
             is AppAction.ToggleAngleMode ->
                 toggleAngleMode()
         }
+    }
+
+    private fun AppAction.isAllowedWhileCalculating(): Boolean = when (this) {
+        is AppAction.CalculateCancel,
+        is AppAction.DeleteHistory,
+        is AppAction.DeleteHistoryAll,
+        is AppAction.SetPrecision ->
+            true
+
+        else ->
+            false
     }
 
     private fun updatePrecision(
@@ -221,7 +223,9 @@ class AppViewModel(
             )
         ) return
 
-        calculateJobOrNull = viewModelScope.launch {
+        val job: Job = viewModelScope.launch(
+            start = CoroutineStart.LAZY,
+        ) {
             try {
                 val calculatedResult: Result<List<Symbol>, CalculatorError> =
                     withContext(Dispatchers.Default) {
@@ -258,22 +262,35 @@ class AppViewModel(
                     )
                 }
             } finally {
-                _appState.update { appState ->
-                    appState.copy(
-                        isCalculating = false,
-                    )
-                }
+                finishCalculation(coroutineContext[Job])
             }
         }
+
+        calculateJobOrNull = job
+        job.start()
     }
 
     private fun calculateCancel() {
         calculateJobOrNull?.cancel()
     }
 
+    private fun finishCalculation(jobOrNull: Job?) {
+        if (calculateJobOrNull !== jobOrNull) {
+            return
+        }
+
+        calculateJobOrNull = null
+
+        _appState.update { appState ->
+            appState.copy(
+                isCalculating = false,
+            )
+        }
+    }
+
     private fun input(
         symbol: Symbol,
-    ) = this.inputs(listOf(symbol))
+    ) = inputs(listOf(symbol))
 
     private fun inputs(
         symbols: List<Symbol>,

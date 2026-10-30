@@ -131,7 +131,7 @@ fun AppState.toggleAngleMode(): AppStateUpdateResult {
 
 fun AppState.canAppend(
     symbol: Symbol,
-): Boolean = this.canAppend(listOf(symbol))
+): Boolean = canAppend(listOf(symbol))
 
 fun AppState.canAppend(
     symbols: List<Symbol>,
