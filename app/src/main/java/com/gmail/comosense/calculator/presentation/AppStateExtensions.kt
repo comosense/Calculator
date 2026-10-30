@@ -188,6 +188,7 @@ private fun AppState.symbolsToAppendOrNull(
             is Symbol.Numeric.Point ->
                 listOf(Symbol.Numeric.Digit(0)) + symbols
 
+            is Symbol.Numeric.Digit,
             is Symbol.Constant,
             is Symbol.Factor,
             is Symbol.FactorStart ->
