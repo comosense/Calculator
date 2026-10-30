@@ -15,14 +15,14 @@ sealed interface AppStateUpdateResult {
     data object HistoryNotFound : AppStateUpdateResult
 }
 
-val AppState.fixedExpression: List<Symbol>
-    get() = result + input
-val AppState.completionInput: List<Symbol>
+val AppState.baseExpression: List<Symbol>
+    get() = input.ifEmpty { result }
+val AppState.completionExpression: List<Symbol>
     get() = List(input.nestingDepth().coerceAtLeast(0)) {
         Symbol.FactorEnd.ClosingParenthesis
     }
 val AppState.expression: List<Symbol>
-    get() = fixedExpression + completionInput
+    get() = baseExpression + completionExpression
 val AppState.isInputting: Boolean
     get() = input.isNotEmpty()
 
@@ -40,21 +40,21 @@ fun AppState.appendExpression(
         return AppStateUpdateResult.ExpressionTooLarge
     }
 
+    val input: List<Symbol> = if (
+        firstSymbol is Symbol.Operator ||
+        firstSymbol is Symbol.PostfixOperator ||
+        isInputting
+    ) {
+        result + input + symbolsToAppend
+    } else {
+        input + symbolsToAppend
+    }
+
     return AppStateUpdateResult.Success(
-        appState = if (
-            firstSymbol is Symbol.Operator ||
-            firstSymbol is Symbol.PostfixOperator ||
-            isInputting
-        ) {
-            copy(
-                input = input + symbolsToAppend,
-            )
-        } else {
-            copy(
-                result = emptyList(),
-                input = input + symbolsToAppend,
-            )
-        },
+        appState = copy(
+            result = emptyList(),
+            input = input,
+        ),
     )
 }
 

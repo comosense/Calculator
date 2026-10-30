@@ -236,10 +236,10 @@ private fun ExpressionBox(
     }
     val expression: AnnotatedString = buildAnnotatedString {
         withStyle(style = SpanStyle(color = expressionColor)) {
-            append(symbolFormatter.format(appState.fixedExpression))
+            append(symbolFormatter.format(appState.baseExpression))
         }
         withStyle(style = SpanStyle(color = expressionColor.copy(alpha = 0.375f))) {
-            append(symbolFormatter.format(appState.completionInput))
+            append(symbolFormatter.format(appState.completionExpression))
         }
     }.ifEmpty {
         buildAnnotatedString {
