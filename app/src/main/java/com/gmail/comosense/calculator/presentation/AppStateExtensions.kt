@@ -89,7 +89,9 @@ fun AppState.applyHistory(
         return AppStateUpdateResult.UnacceptableSymbol
     }
 
-    if (expression.size + result.size > AppStateExtensionsConstraints.MAX_EXPRESSION_SIZE) {
+    if (expression.size + result.size
+        > AppStateExtensionsConstraints.MAX_EXPRESSION_SIZE
+    ) {
         return AppStateUpdateResult.ExpressionTooLarge
     }
 
