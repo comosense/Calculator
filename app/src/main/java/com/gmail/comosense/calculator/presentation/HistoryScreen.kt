@@ -52,6 +52,11 @@ private data class HistoryItemContent(
     val iconColor: Color = contentColor,
 )
 
+private sealed interface HistoryAction {
+    data class Select(val id: String) : HistoryAction
+    data object ToggleDeleteMode : HistoryAction
+}
+
 @Composable
 fun HistoryScreen(
     histories: List<History>,
@@ -139,16 +144,19 @@ fun HistoryScreen(
                     resultColor = AppTheme.historyScreenColors.historyResult,
                 )
             },
-            onClick = { id ->
-                if (deleteMode) {
-                    onAppAction(AppAction.DeleteHistory(id))
-                } else {
-                    onAppAction(AppAction.SelectHistory(id))
-                    onBack()
+            onHistoryAction = { historyAction ->
+                when (historyAction) {
+                    is HistoryAction.Select ->
+                        if (deleteMode) {
+                            onAppAction(AppAction.DeleteHistory(historyAction.id))
+                        } else {
+                            onAppAction(AppAction.SelectHistory(historyAction.id))
+                            onBack()
+                        }
+
+                    is HistoryAction.ToggleDeleteMode ->
+                        deleteMode = !deleteMode
                 }
-            },
-            onLongClick = {
-                deleteMode = !deleteMode
             },
             histories = histories,
             symbolFormatter = symbolFormatter,
@@ -162,8 +170,7 @@ private fun HistoryList(
     transformationSpec: TransformationSpec,
     contentPadding: PaddingValues,
     historyItemContent: HistoryItemContent,
-    onClick: (String) -> Unit,
-    onLongClick: () -> Unit,
+    onHistoryAction: (HistoryAction) -> Unit,
     histories: List<History>,
     symbolFormatter: SymbolFormatter,
 ) {
@@ -192,8 +199,7 @@ private fun HistoryList(
                     transformation = SurfaceTransformation(transformationSpec),
                     history = history,
                     historyItemContent = historyItemContent,
-                    onClick = onClick,
-                    onLongClick = onLongClick,
+                    onHistoryAction = onHistoryAction,
                     symbolFormatter = symbolFormatter,
                 )
             }
@@ -220,16 +226,15 @@ private fun HistoryItem(
     transformation: SurfaceTransformation,
     history: History,
     historyItemContent: HistoryItemContent,
-    onClick: (String) -> Unit,
-    onLongClick: () -> Unit,
+    onHistoryAction: (HistoryAction) -> Unit,
     symbolFormatter: SymbolFormatter,
 ) {
     val expressionScrollState: ScrollState = rememberScrollState()
     val resultScrollState: ScrollState = rememberScrollState()
 
     Button(
-        onClick = { onClick(history.id) },
-        onLongClick = onLongClick,
+        onClick = { onHistoryAction(HistoryAction.Select(history.id)) },
+        onLongClick = { onHistoryAction(HistoryAction.ToggleDeleteMode) },
         modifier = modifier,
         colors = ButtonDefaults.buttonColors(
             containerColor = historyItemContent.containerColor,

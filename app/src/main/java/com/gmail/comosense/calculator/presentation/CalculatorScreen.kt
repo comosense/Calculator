@@ -99,7 +99,7 @@ fun CalculatorScreen(
 
         MainPanel(
             modifier = Modifier.fillMaxSize(),
-            onAction = { calculatorAction ->
+            onCalculatorAction = { calculatorAction ->
                 when (calculatorAction) {
                     is CalculatorAction.App ->
                         onAppAction(calculatorAction.appAction)
@@ -131,7 +131,7 @@ fun CalculatorScreen(
 @Composable
 private fun MainPanel(
     modifier: Modifier,
-    onAction: (CalculatorAction) -> Unit,
+    onCalculatorAction: (CalculatorAction) -> Unit,
     keyState: KeyState,
     appState: AppState,
     symbolFormatter: SymbolFormatter,
@@ -159,7 +159,7 @@ private fun MainPanel(
                     width = inscribedLength,
                     height = inscribedLength / 5f,
                 ),
-                onAction = onAction,
+                onCalculatorAction = onCalculatorAction,
                 appState = appState,
                 symbolFormatter = symbolFormatter,
             )
@@ -194,13 +194,15 @@ private fun MainPanel(
                     },
                     arrangementSpace = 2.dp,
                     modifier = Modifier.fillMaxSize(),
-                    onAction = onAction,
+                    onCalculatorAction = onCalculatorAction,
                     symbolFormatter = symbolFormatter,
                 )
             }
 
             IconButton(
-                onClick = { onAction(CalculatorAction.Ui(UiAction.ToggleKeyGrid)) },
+                onClick = {
+                    onCalculatorAction(CalculatorAction.Ui(UiAction.ToggleKeyGrid))
+                },
                 modifier = Modifier.size(keySwitcherLength),
             ) {
                 Icon(
@@ -217,14 +219,16 @@ private fun MainPanel(
 @Composable
 private fun ExpressionBox(
     modifier: Modifier,
-    onAction: (CalculatorAction) -> Unit,
+    onCalculatorAction: (CalculatorAction) -> Unit,
     appState: AppState,
     symbolFormatter: SymbolFormatter,
 ) {
     val scrollState: ScrollState = rememberScrollState()
     val textMeasurer: TextMeasurer = rememberTextMeasurer()
-    val blinkProgress: Animatable<Float, AnimationVector1D> = remember { Animatable(0f) }
-    val blinkColor: Color = AppTheme.calculatorScreenColors.expressionBlinkBackground
+    val blinkProgress: Animatable<Float, AnimationVector1D> =
+        remember { Animatable(0f) }
+    val blinkColor: Color =
+        AppTheme.calculatorScreenColors.expressionBlinkBackground
     val expressionColor: Color = if (appState.isCalculating) {
         AppTheme.calculatorScreenColors.expression.copy(alpha = 0.375f)
     } else {
@@ -267,8 +271,12 @@ private fun ExpressionBox(
     BoxWithConstraints(
         modifier = modifier
             .combinedClickable(
-                onClick = { onAction(CalculatorAction.Show(AppScreen.History)) },
-                onLongClick = { onAction(CalculatorAction.Show(AppScreen.Settings)) },
+                onClick = {
+                    onCalculatorAction(CalculatorAction.Show(AppScreen.History))
+                },
+                onLongClick = {
+                    onCalculatorAction(CalculatorAction.Show(AppScreen.Settings))
+                },
             )
             .drawBehind {
                 if (blinkProgress.value > 0f) {
@@ -355,7 +363,9 @@ private fun ExpressionBox(
         if (appState.isCalculating) {
             val size: Dp = maxHeight * 0.75f
             IconButton(
-                onClick = { onAction(CalculatorAction.App(AppAction.CalculateCancel)) },
+                onClick = {
+                    onCalculatorAction(CalculatorAction.App(AppAction.CalculateCancel))
+                },
                 modifier = Modifier.size(size),
             ) {
                 Icon(
@@ -377,7 +387,7 @@ private fun KeyGrid(
     keyGrid: List<List<Key?>>,
     arrangementSpace: Dp,
     modifier: Modifier,
-    onAction: (CalculatorAction) -> Unit,
+    onCalculatorAction: (CalculatorAction) -> Unit,
     symbolFormatter: SymbolFormatter,
 ) {
     Column(
@@ -391,7 +401,7 @@ private fun KeyGrid(
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f),
-                onAction = onAction,
+                onCalculatorAction = onCalculatorAction,
                 symbolFormatter = symbolFormatter,
             )
         }
@@ -403,7 +413,7 @@ private fun KeysRow(
     keys: List<Key?>,
     arrangementSpace: Dp,
     modifier: Modifier,
-    onAction: (CalculatorAction) -> Unit,
+    onCalculatorAction: (CalculatorAction) -> Unit,
     symbolFormatter: SymbolFormatter,
 ) {
     Row(
@@ -418,7 +428,7 @@ private fun KeysRow(
                     modifier = Modifier
                         .fillMaxHeight()
                         .weight(1f),
-                    onAction = onAction,
+                    onCalculatorAction = onCalculatorAction,
                     symbolFormatter = symbolFormatter,
                 )
             } else {
@@ -436,7 +446,7 @@ private fun KeysRow(
 private fun KeyButton(
     key: Key,
     modifier: Modifier,
-    onAction: (CalculatorAction) -> Unit,
+    onCalculatorAction: (CalculatorAction) -> Unit,
     symbolFormatter: SymbolFormatter,
 ) {
     data class Colors(
@@ -471,10 +481,10 @@ private fun KeyButton(
     }
 
     Button(
-        onClick = { onAction(key.calculatorAction) },
+        onClick = { onCalculatorAction(key.calculatorAction) },
         onLongClick = {
             key.altKeyOrNull?.let { altKey ->
-                onAction(altKey.calculatorAction)
+                onCalculatorAction(altKey.calculatorAction)
             }
         },
         modifier = modifier,
