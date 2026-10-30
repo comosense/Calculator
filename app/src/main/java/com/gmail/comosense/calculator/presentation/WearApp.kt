@@ -114,19 +114,21 @@ fun WearApp(
                         symbolFormatter = symbolFormatter,
                     )
                 } else {
+                    val onBack: () -> Unit = { changeScreen(null) }
+
                     when (currentScreen) {
                         AppScreen.Settings ->
                             SettingsScreen(
                                 settings = appState.settings,
                                 onAppAction = onAppAction,
-                                onBack = { changeScreen(null) },
+                                onBack = onBack,
                             )
 
                         AppScreen.History ->
                             HistoryScreen(
                                 histories = appState.histories,
                                 onAppAction = onAppAction,
-                                onBack = { changeScreen(null) },
+                                onBack = onBack,
                                 onDeleteModeChanged = { deleteMode ->
                                     isHistoryDeleteMode = deleteMode
                                 },
