@@ -55,8 +55,8 @@ private data class HistoryItemContent(
 private sealed interface HistoryAction {
     data object Back : HistoryAction
     data object ToggleDeleteMode : HistoryAction
-    data class SelectHistory(val id: String) : HistoryAction
-    data object DeleteAllHistory : HistoryAction
+    data class Select(val id: String) : HistoryAction
+    data object DeleteAll : HistoryAction
 }
 
 @Composable
@@ -84,7 +84,7 @@ fun HistoryScreen(
             is HistoryAction.ToggleDeleteMode ->
                 deleteMode = !deleteMode
 
-            is HistoryAction.SelectHistory ->
+            is HistoryAction.Select ->
                 if (deleteMode) {
                     onAppAction(AppAction.DeleteHistory(historyAction.id))
                 } else {
@@ -92,7 +92,7 @@ fun HistoryScreen(
                     onBack()
                 }
 
-            is HistoryAction.DeleteAllHistory -> {
+            is HistoryAction.DeleteAll -> {
                 deleteMode = false
                 onAppAction(AppAction.DeleteHistoryAll)
             }
@@ -116,7 +116,7 @@ fun HistoryScreen(
             if (deleteMode) {
                 EdgeButton(
                     onClick = {
-                        onHistoryAction(HistoryAction.DeleteAllHistory)
+                        onHistoryAction(HistoryAction.DeleteAll)
                     },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = AppTheme.historyScreenColors.deleteAllButtonContainer,
@@ -246,7 +246,7 @@ private fun HistoryItem(
 
     Button(
         onClick = {
-            onHistoryAction(HistoryAction.SelectHistory(history.id))
+            onHistoryAction(HistoryAction.Select(history.id))
         },
         onLongClick = {
             onHistoryAction(HistoryAction.ToggleDeleteMode)
