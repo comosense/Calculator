@@ -7,6 +7,7 @@ import androidx.compose.ui.graphics.Color
 data class SettingsScreenColors(
     val background: Color,
     val label: Color,
+    val subLabel: Color,
     val picker: Color,
     val backButtonContainer: Color,
     val backButtonContent: Color,

@@ -7,6 +7,7 @@ import androidx.compose.ui.unit.TextUnit
 @Immutable
 data class SettingsScreenDimensions(
     val labelFontSize: TextUnit,
+    val subLabelFontSize: TextUnit,
     val pickerFontSize: TextUnit,
 )
 

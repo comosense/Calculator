@@ -69,6 +69,7 @@ fun AppTheme(
         val settingsScreenColors = SettingsScreenColors(
             background = MaterialTheme.colorScheme.background,
             label = MaterialTheme.colorScheme.onBackground,
+            subLabel = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
             picker = MaterialTheme.colorScheme.onBackground,
             backButtonContainer = MaterialTheme.colorScheme.primaryContainer,
             backButtonContent = MaterialTheme.colorScheme.onPrimaryContainer,
@@ -107,6 +108,7 @@ fun AppTheme(
         )
         val settingsScreenDimensions = SettingsScreenDimensions(
             labelFontSize = 18.sp,
+            subLabelFontSize = 12.sp,
             pickerFontSize = 32.sp,
         )
         val historyScreenDimensions = HistoryScreenDimensions(

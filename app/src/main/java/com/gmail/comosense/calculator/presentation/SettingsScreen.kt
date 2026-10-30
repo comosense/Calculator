@@ -88,9 +88,10 @@ fun SettingsScreen(
                 (displayHeight - inscribedLength) / 2f
 
             val labelHeight: Dp = topOrBottomMargin
+            val subLabelHeight: Dp = labelHeight
             val buttonHeight: Dp = topOrBottomMargin * 1.5f
             val pickerHeight: Dp =
-                (displayHeight - (labelHeight + buttonHeight))
+                (displayHeight - (labelHeight + subLabelHeight + buttonHeight))
                     .coerceAtLeast(0.dp)
 
             Column(
@@ -110,6 +111,22 @@ fun SettingsScreen(
                         color = AppTheme.settingsScreenColors.label,
                         fontSize = AppTheme.settingsScreenDimensions.labelFontSize,
                         textAlign = TextAlign.Center,
+                    )
+                }
+
+                Box(
+                    modifier = Modifier.size(
+                        width = displayWidth,
+                        height = subLabelHeight,
+                    ),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Text(
+                        text = stringResource(R.string.settings_screen_sub_label_precision),
+                        color = AppTheme.settingsScreenColors.subLabel,
+                        fontSize = AppTheme.settingsScreenDimensions.subLabelFontSize,
+                        textAlign = TextAlign.Center,
+                        lineHeight = AppTheme.settingsScreenDimensions.subLabelFontSize,
                     )
                 }
 
