@@ -40,7 +40,7 @@ fun AppState.appendExpression(
         return AppStateUpdateResult.ExpressionTooLarge
     }
 
-    val input: List<Symbol> = if (
+    val newInput: List<Symbol> = if (
         firstSymbol is Symbol.Operator ||
         firstSymbol is Symbol.PostfixOperator ||
         isInputting
@@ -53,7 +53,7 @@ fun AppState.appendExpression(
     return AppStateUpdateResult.Success(
         appState = copy(
             result = emptyList(),
-            input = input,
+            input = newInput,
         ),
     )
 }
