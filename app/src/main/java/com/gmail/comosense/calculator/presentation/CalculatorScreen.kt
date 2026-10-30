@@ -76,10 +76,10 @@ enum class UiAction {
     ToggleFunctionMode,
 }
 
-sealed interface Action {
-    data class App(val appAction: AppAction) : Action
-    data class Show(val screen: AppScreen) : Action
-    data class Ui(val uiAction: UiAction) : Action
+sealed interface CalculatorAction {
+    data class App(val appAction: AppAction) : CalculatorAction
+    data class Show(val screen: AppScreen) : CalculatorAction
+    data class Ui(val uiAction: UiAction) : CalculatorAction
 }
 
 private data class KeyState(
@@ -99,16 +99,16 @@ fun CalculatorScreen(
 
         MainPanel(
             modifier = Modifier.fillMaxSize(),
-            onAction = { action ->
-                when (action) {
-                    is Action.App ->
-                        onAppAction(action.appAction)
+            onAction = { calculatorAction ->
+                when (calculatorAction) {
+                    is CalculatorAction.App ->
+                        onAppAction(calculatorAction.appAction)
 
-                    is Action.Show ->
-                        onShow(action.screen)
+                    is CalculatorAction.Show ->
+                        onShow(calculatorAction.screen)
 
-                    is Action.Ui ->
-                        keyState = when (action.uiAction) {
+                    is CalculatorAction.Ui ->
+                        keyState = when (calculatorAction.uiAction) {
                             UiAction.ToggleKeyGrid ->
                                 keyState.copy(
                                     showFunctionKeyGrid = !keyState.showFunctionKeyGrid,
@@ -131,7 +131,7 @@ fun CalculatorScreen(
 @Composable
 private fun MainPanel(
     modifier: Modifier,
-    onAction: (Action) -> Unit,
+    onAction: (CalculatorAction) -> Unit,
     keyState: KeyState,
     appState: AppState,
     symbolFormatter: SymbolFormatter,
@@ -200,7 +200,7 @@ private fun MainPanel(
             }
 
             IconButton(
-                onClick = { onAction(Action.Ui(UiAction.ToggleKeyGrid)) },
+                onClick = { onAction(CalculatorAction.Ui(UiAction.ToggleKeyGrid)) },
                 modifier = Modifier.size(keySwitcherLength),
             ) {
                 Icon(
@@ -217,7 +217,7 @@ private fun MainPanel(
 @Composable
 private fun ExpressionBox(
     modifier: Modifier,
-    onAction: (Action) -> Unit,
+    onAction: (CalculatorAction) -> Unit,
     appState: AppState,
     symbolFormatter: SymbolFormatter,
 ) {
@@ -267,8 +267,8 @@ private fun ExpressionBox(
     BoxWithConstraints(
         modifier = modifier
             .combinedClickable(
-                onClick = { onAction(Action.Show(AppScreen.History)) },
-                onLongClick = { onAction(Action.Show(AppScreen.Settings)) },
+                onClick = { onAction(CalculatorAction.Show(AppScreen.History)) },
+                onLongClick = { onAction(CalculatorAction.Show(AppScreen.Settings)) },
             )
             .drawBehind {
                 if (blinkProgress.value > 0f) {
@@ -355,7 +355,7 @@ private fun ExpressionBox(
         if (appState.isCalculating) {
             val size: Dp = maxHeight * 0.75f
             IconButton(
-                onClick = { onAction(Action.App(AppAction.CalculateCancel)) },
+                onClick = { onAction(CalculatorAction.App(AppAction.CalculateCancel)) },
                 modifier = Modifier.size(size),
             ) {
                 Icon(
@@ -377,7 +377,7 @@ private fun KeyGrid(
     keyGrid: List<List<Key?>>,
     arrangementSpace: Dp,
     modifier: Modifier,
-    onAction: (Action) -> Unit,
+    onAction: (CalculatorAction) -> Unit,
     symbolFormatter: SymbolFormatter,
 ) {
     Column(
@@ -403,7 +403,7 @@ private fun KeysRow(
     keys: List<Key?>,
     arrangementSpace: Dp,
     modifier: Modifier,
-    onAction: (Action) -> Unit,
+    onAction: (CalculatorAction) -> Unit,
     symbolFormatter: SymbolFormatter,
 ) {
     Row(
@@ -436,7 +436,7 @@ private fun KeysRow(
 private fun KeyButton(
     key: Key,
     modifier: Modifier,
-    onAction: (Action) -> Unit,
+    onAction: (CalculatorAction) -> Unit,
     symbolFormatter: SymbolFormatter,
 ) {
     data class Colors(
@@ -471,10 +471,10 @@ private fun KeyButton(
     }
 
     Button(
-        onClick = { onAction(key.action) },
+        onClick = { onAction(key.calculatorAction) },
         onLongClick = {
             key.altKeyOrNull?.let { altKey ->
-                onAction(altKey.action)
+                onAction(altKey.calculatorAction)
             }
         },
         modifier = modifier,

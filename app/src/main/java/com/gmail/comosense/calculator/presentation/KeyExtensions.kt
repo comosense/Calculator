@@ -31,100 +31,100 @@ sealed interface Display {
     ) : Display
 }
 
-val Key.action: Action
+val Key.calculatorAction: CalculatorAction
     get() = when (this) {
         is Key.Positive ->
-            Action.App(AppAction.Input(Symbol.Sign.Positive))
+            CalculatorAction.App(AppAction.Input(Symbol.Sign.Positive))
 
         is Key.Negative ->
-            Action.App(AppAction.Input(Symbol.Sign.Negative))
+            CalculatorAction.App(AppAction.Input(Symbol.Sign.Negative))
 
         is Key.Digit ->
-            Action.App(AppAction.Input(Symbol.Numeric.Digit(value)))
+            CalculatorAction.App(AppAction.Input(Symbol.Numeric.Digit(value)))
 
         is Key.Point ->
-            Action.App(AppAction.Input(Symbol.Numeric.Point))
+            CalculatorAction.App(AppAction.Input(Symbol.Numeric.Point))
 
         is Key.OpeningParenthesis ->
-            Action.App(AppAction.Input(Symbol.FactorStart.OpeningParenthesis))
+            CalculatorAction.App(AppAction.Input(Symbol.FactorStart.OpeningParenthesis))
 
         is Key.ClosingParenthesis ->
-            Action.App(AppAction.Input(Symbol.FactorEnd.ClosingParenthesis))
+            CalculatorAction.App(AppAction.Input(Symbol.FactorEnd.ClosingParenthesis))
 
         is Key.Add ->
-            Action.App(AppAction.Input(Symbol.Operator.Add))
+            CalculatorAction.App(AppAction.Input(Symbol.Operator.Add))
 
         is Key.Subtract ->
-            Action.App(AppAction.Input(Symbol.Operator.Subtract))
+            CalculatorAction.App(AppAction.Input(Symbol.Operator.Subtract))
 
         is Key.Multiply ->
-            Action.App(AppAction.Input(Symbol.Operator.Multiply))
+            CalculatorAction.App(AppAction.Input(Symbol.Operator.Multiply))
 
         is Key.Divide ->
-            Action.App(AppAction.Input(Symbol.Operator.Divide))
+            CalculatorAction.App(AppAction.Input(Symbol.Operator.Divide))
 
         is Key.Equal ->
-            Action.App(AppAction.Calculate)
+            CalculatorAction.App(AppAction.Calculate)
 
         is Key.Clear ->
-            Action.App(AppAction.Clear)
+            CalculatorAction.App(AppAction.Clear)
 
         is Key.Backspace ->
-            Action.App(AppAction.Backspace)
+            CalculatorAction.App(AppAction.Backspace)
 
         is Key.Euler ->
-            Action.App(AppAction.Input(Symbol.Constant.Euler))
+            CalculatorAction.App(AppAction.Input(Symbol.Constant.Euler))
 
         is Key.Pi ->
-            Action.App(AppAction.Input(Symbol.Constant.Pi))
+            CalculatorAction.App(AppAction.Input(Symbol.Constant.Pi))
 
         is Key.Sqrt ->
-            Action.App(AppAction.Input(Symbol.Factor.Function.Sqrt))
+            CalculatorAction.App(AppAction.Input(Symbol.Factor.Function.Sqrt))
 
         is Key.Power ->
-            Action.App(AppAction.Input(Symbol.Operator.Power))
+            CalculatorAction.App(AppAction.Input(Symbol.Operator.Power))
 
         is Key.Factorial ->
-            Action.App(AppAction.Input(Symbol.PostfixOperator.Factorial))
+            CalculatorAction.App(AppAction.Input(Symbol.PostfixOperator.Factorial))
 
         is Key.Log ->
-            Action.App(AppAction.Input(Symbol.FactorStart.Function.Log))
+            CalculatorAction.App(AppAction.Input(Symbol.FactorStart.Function.Log))
 
         is Key.Ln ->
-            Action.App(AppAction.Input(Symbol.FactorStart.Function.Ln))
+            CalculatorAction.App(AppAction.Input(Symbol.FactorStart.Function.Ln))
 
         is Key.Sin ->
-            Action.App(AppAction.Input(Symbol.FactorStart.Function.Sin))
+            CalculatorAction.App(AppAction.Input(Symbol.FactorStart.Function.Sin))
 
         is Key.Cos ->
-            Action.App(AppAction.Input(Symbol.FactorStart.Function.Cos))
+            CalculatorAction.App(AppAction.Input(Symbol.FactorStart.Function.Cos))
 
         is Key.Tan ->
-            Action.App(AppAction.Input(Symbol.FactorStart.Function.Tan))
+            CalculatorAction.App(AppAction.Input(Symbol.FactorStart.Function.Tan))
 
         is Key.Square ->
-            Action.App(AppAction.Inputs(SYMBOLS_SQUARE))
+            CalculatorAction.App(AppAction.Inputs(SYMBOLS_SQUARE))
 
         is Key.Pow10 ->
-            Action.App(AppAction.Inputs(SYMBOLS_POW10))
+            CalculatorAction.App(AppAction.Inputs(SYMBOLS_POW10))
 
         is Key.Exp ->
-            Action.App(AppAction.Input(Symbol.FactorStart.Function.Exp))
+            CalculatorAction.App(AppAction.Input(Symbol.FactorStart.Function.Exp))
 
         is Key.Arcsin ->
-            Action.App(AppAction.Input(Symbol.FactorStart.Function.Arcsin))
+            CalculatorAction.App(AppAction.Input(Symbol.FactorStart.Function.Arcsin))
 
         is Key.Arccos ->
-            Action.App(AppAction.Input(Symbol.FactorStart.Function.Arccos))
+            CalculatorAction.App(AppAction.Input(Symbol.FactorStart.Function.Arccos))
 
         is Key.Arctan ->
-            Action.App(AppAction.Input(Symbol.FactorStart.Function.Arctan))
+            CalculatorAction.App(AppAction.Input(Symbol.FactorStart.Function.Arctan))
 
         is Key.FunctionMode ->
-            Action.Ui(UiAction.ToggleFunctionMode)
+            CalculatorAction.Ui(UiAction.ToggleFunctionMode)
 
         is Key.AngleMode ->
-            Action.App(AppAction.ToggleAngleMode)
+            CalculatorAction.App(AppAction.ToggleAngleMode)
     }
 
 val Key.altKeyOrNull: Key?
