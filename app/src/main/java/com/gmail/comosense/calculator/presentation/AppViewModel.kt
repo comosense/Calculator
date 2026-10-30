@@ -164,11 +164,9 @@ class AppViewModel(
         is AppAction.CalculateCancel,
         is AppAction.DeleteHistory,
         is AppAction.DeleteHistoryAll,
-        is AppAction.SetPrecision ->
-            true
+        is AppAction.SetPrecision -> true
 
-        else ->
-            false
+        else -> false
     }
 
     private fun updatePrecision(

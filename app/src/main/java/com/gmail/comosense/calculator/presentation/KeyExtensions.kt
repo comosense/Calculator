@@ -129,50 +129,21 @@ val Key.calculatorAction: CalculatorAction
 
 val Key.altKeyOrNull: Key?
     get() = when (this) {
-        is Key.ClosingParenthesis ->
-            Key.OpeningParenthesis
-
-        is Key.Backspace ->
-            Key.Clear
-
-        is Key.Sqrt ->
-            Key.Square
-
-        is Key.Log ->
-            Key.Pow10
-
-        is Key.Ln ->
-            Key.Exp
-
-        is Key.Sin ->
-            Key.Arcsin
-
-        is Key.Cos ->
-            Key.Arccos
-
-        is Key.Tan ->
-            Key.Arctan
-
-        is Key.Square ->
-            Key.Sqrt
-
-        is Key.Pow10 ->
-            Key.Log
-
-        is Key.Exp ->
-            Key.Ln
-
-        is Key.Arcsin ->
-            Key.Sin
-
-        is Key.Arccos ->
-            Key.Cos
-
-        is Key.Arctan ->
-            Key.Tan
-
-        else ->
-            null
+        is Key.ClosingParenthesis -> Key.OpeningParenthesis
+        is Key.Backspace -> Key.Clear
+        is Key.Sqrt -> Key.Square
+        is Key.Log -> Key.Pow10
+        is Key.Ln -> Key.Exp
+        is Key.Sin -> Key.Arcsin
+        is Key.Cos -> Key.Arccos
+        is Key.Tan -> Key.Arctan
+        is Key.Square -> Key.Sqrt
+        is Key.Pow10 -> Key.Log
+        is Key.Exp -> Key.Ln
+        is Key.Arcsin -> Key.Sin
+        is Key.Arccos -> Key.Cos
+        is Key.Arctan -> Key.Tan
+        else -> null
     }
 
 val Key.style: Style
@@ -180,21 +151,18 @@ val Key.style: Style
         is Key.Digit,
         is Key.Point,
         is Key.OpeningParenthesis,
-        is Key.ClosingParenthesis ->
-            Style.Digit
+        is Key.ClosingParenthesis -> Style.Digit
 
         is Key.Positive,
         is Key.Negative,
         is Key.Add,
         is Key.Subtract,
         is Key.Multiply,
-        is Key.Divide ->
-            Style.Operator
+        is Key.Divide -> Style.Operator
 
         is Key.Equal,
         is Key.Clear,
-        is Key.Backspace ->
-            Style.Command
+        is Key.Backspace -> Style.Command
 
         is Key.Euler,
         is Key.Pi,
@@ -211,12 +179,10 @@ val Key.style: Style
         is Key.Exp,
         is Key.Arcsin,
         is Key.Arccos,
-        is Key.Arctan ->
-            Style.Digit
+        is Key.Arctan -> Style.Digit
 
         is Key.FunctionMode,
-        is Key.AngleMode ->
-            Style.Mode
+        is Key.AngleMode -> Style.Mode
     }
 
 fun Key.display(symbolFormatter: SymbolFormatter): Display = when (this) {

@@ -1,18 +1,21 @@
 package com.gmail.comosense.calculator.domain
 
-import java.math.BigDecimal
-
 fun Iterable<Symbol>.tokenize(): List<Token>? {
     val tokens: List<Token> = buildList {
         val numericBuffer: StringBuilder = StringBuilder()
 
         fun flushNumeric(): Boolean {
-            return numericBuffer.isEmpty() || try {
-                add(Token.Numeric(BigDecimal(numericBuffer.toString())))
+            return try {
+                if (numericBuffer.isEmpty()) {
+                    return true
+                }
+
+                numericBuffer.toString().toBigDecimalOrNull()?.let { value ->
+                    add(Token.Numeric(value))
+                    true
+                } ?: false
+            } finally {
                 numericBuffer.clear()
-                true
-            } catch (_: NumberFormatException) {
-                false
             }
         }
 

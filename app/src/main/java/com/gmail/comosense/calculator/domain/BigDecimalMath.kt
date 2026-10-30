@@ -32,25 +32,25 @@ internal object BigDecimalMath {
     private const val EXTRA_PRECISION_FOR_CACHE: Int = 8
     private val NEGATIVE_ONE: BigDecimal = BigDecimal.ONE.negate()
     private val ZERO: BigDecimal = BigDecimal.ZERO
-    private val ONE_HALF: BigDecimal = BigDecimal("0.5")
+    private val ONE_HALF: BigDecimal = "0.5".toBigDecimal()
     private val ONE: BigDecimal = BigDecimal.ONE
-    private val TWO: BigDecimal = BigDecimal(2)
-    private val FOUR: BigDecimal = BigDecimal(4)
-    private val FIVE: BigDecimal = BigDecimal(5)
+    private val TWO: BigDecimal = 2.toBigDecimal()
+    private val FOUR: BigDecimal = 4.toBigDecimal()
+    private val FIVE: BigDecimal = 5.toBigDecimal()
     private val TEN: BigDecimal = BigDecimal.TEN
-    private val SIXTEEN: BigDecimal = BigDecimal(16)
-    private val ONE_HUNDRED_EIGHTY: BigDecimal = BigDecimal(180)
-    private val TWO_HUNDRED_THIRTY_NINE: BigDecimal = BigDecimal(239)
+    private val SIXTEEN: BigDecimal = 16.toBigDecimal()
+    private val ONE_HUNDRED_EIGHTY: BigDecimal = 180.toBigDecimal()
+    private val TWO_HUNDRED_THIRTY_NINE: BigDecimal = 239.toBigDecimal()
     private val BIG_INTEGER_ONE: BigInteger = BigInteger.ONE
     private val BIG_INTEGER_TWO: BigInteger = 2.toBigInteger()
     private val MAX_FACTORIAL_ARGUMENT: BigInteger =
         BigDecimalMathConstraints.MAX_FACTORIAL_ARGUMENT.toBigInteger()
     private val MAX_EXPONENTIAL_ARGUMENT: BigDecimal =
-        BigDecimal(BigDecimalMathConstraints.MAX_EXPONENTIAL_ARGUMENT)
+        BigDecimalMathConstraints.MAX_EXPONENTIAL_ARGUMENT.toBigDecimal()
     private val MAX_INTEGER_EXPONENT: BigInteger =
         BigDecimalMathConstraints.MAX_INTEGER_EXPONENT.toBigInteger()
     private val MAX_NON_INTEGER_EXPONENT: BigDecimal =
-        BigDecimal(BigDecimalMathConstraints.MAX_NON_INTEGER_EXPONENT)
+        BigDecimalMathConstraints.MAX_NON_INTEGER_EXPONENT.toBigDecimal()
 
     init {
         require(MAX_FACTORIAL_ARGUMENT.signum() >= 0)
@@ -360,7 +360,7 @@ internal object BigDecimalMath {
         while (true) {
             coroutineContext.ensureActive()
 
-            term = term.divide(BigDecimal(n), mc)
+            term = term.divide(n.toBigDecimal(), mc)
             val next: BigDecimal = sum.add(term).round(mc)
 
             if (next.compareTo(sum) == 0) {
@@ -408,7 +408,7 @@ internal object BigDecimalMath {
             i = i.add(BigInteger.ONE)
         }
 
-        return BigDecimal(result)
+        return result.toBigDecimal()
     }
 
     private suspend fun calculateSqrt(
@@ -508,7 +508,7 @@ internal object BigDecimalMath {
 
             term = term
                 .multiply(reduced)
-                .divide(BigDecimal(n), extendedMc)
+                .divide(n.toBigDecimal(), extendedMc)
 
             val nextSum: BigDecimal = sum.add(term).round(extendedMc)
 
@@ -571,7 +571,7 @@ internal object BigDecimalMath {
         )
 
         return lnX.add(
-            BigDecimal(exponent)
+            exponent.toBigDecimal()
                 .multiply(lnTwo)
         )
     }
@@ -884,7 +884,7 @@ internal object BigDecimalMath {
 
             term = term
                 .multiply(angleSquared)
-                .divide(BigDecimal(denominator), mc)
+                .divide(denominator.toBigDecimal(), mc)
                 .negate()
 
             val nextSum: BigDecimal = sum.add(term).round(mc)
@@ -920,7 +920,7 @@ internal object BigDecimalMath {
 
             term = term
                 .multiply(angleSquared)
-                .divide(BigDecimal(denominator), mc)
+                .divide(denominator.toBigDecimal(), mc)
                 .negate()
 
             val nextSum: BigDecimal = sum.add(term).round(mc)

@@ -1,7 +1,6 @@
 package com.gmail.comosense.calculator.presentation
 
 import com.gmail.comosense.calculator.domain.Symbol
-import java.math.BigInteger
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.text.NumberFormat
@@ -72,85 +71,40 @@ class SymbolFormatter(
     private fun formatIntegerString(
         integerString: String,
     ): String {
-        return if (integerString.isNotEmpty() && integerFormatter != null) {
-            integerFormatter.format(BigInteger(integerString))
-        } else {
-            integerString
+        if (integerString.isEmpty() || integerFormatter == null) {
+            return integerString
         }
+
+        return integerString.toBigIntegerOrNull()?.let { integerValue ->
+            integerFormatter.format(integerValue)
+        } ?: integerString
     }
 
     private val Symbol.canonicalizedText: String
         get() = when (this) {
-            is Symbol.Sign.Positive
-                -> "+"
-
-            is Symbol.Sign.Negative
-                -> "-"
-
-            is Symbol.Numeric.Digit
-                -> value.toString()
-
-            is Symbol.Numeric.Point
-                -> "."
-
-            is Symbol.Constant.Euler
-                -> "e"
-
-            is Symbol.Constant.Pi
-                -> "π"
-
-            is Symbol.Factor.Function.Sqrt
-                -> "√"
-
-            is Symbol.FactorStart.OpeningParenthesis
-                -> "("
-
-            is Symbol.FactorStart.Function.Exp
-                -> "exp("
-
-            is Symbol.FactorStart.Function.Ln
-                -> "ln("
-
-            is Symbol.FactorStart.Function.Log
-                -> "log("
-
-            is Symbol.FactorStart.Function.Sin
-                -> "sin("
-
-            is Symbol.FactorStart.Function.Cos
-                -> "cos("
-
-            is Symbol.FactorStart.Function.Tan
-                -> "tan("
-
-            is Symbol.FactorStart.Function.Arcsin
-                -> "asin("
-
-            is Symbol.FactorStart.Function.Arccos
-                -> "acos("
-
-            is Symbol.FactorStart.Function.Arctan
-                -> "atan("
-
-            is Symbol.FactorEnd.ClosingParenthesis
-                -> ")"
-
-            is Symbol.Operator.Add
-                -> "+"
-
-            is Symbol.Operator.Subtract
-                -> "-"
-
-            is Symbol.Operator.Multiply
-                -> "×"
-
-            is Symbol.Operator.Divide
-                -> "÷"
-
-            is Symbol.Operator.Power
-                -> "^"
-
-            is Symbol.PostfixOperator.Factorial
-                -> "!"
+            is Symbol.Sign.Positive -> "+"
+            is Symbol.Sign.Negative -> "-"
+            is Symbol.Numeric.Digit -> value.toString()
+            is Symbol.Numeric.Point -> "."
+            is Symbol.Constant.Euler -> "e"
+            is Symbol.Constant.Pi -> "π"
+            is Symbol.Factor.Function.Sqrt -> "√"
+            is Symbol.FactorStart.OpeningParenthesis -> "("
+            is Symbol.FactorStart.Function.Exp -> "exp("
+            is Symbol.FactorStart.Function.Ln -> "ln("
+            is Symbol.FactorStart.Function.Log -> "log("
+            is Symbol.FactorStart.Function.Sin -> "sin("
+            is Symbol.FactorStart.Function.Cos -> "cos("
+            is Symbol.FactorStart.Function.Tan -> "tan("
+            is Symbol.FactorStart.Function.Arcsin -> "asin("
+            is Symbol.FactorStart.Function.Arccos -> "acos("
+            is Symbol.FactorStart.Function.Arctan -> "atan("
+            is Symbol.FactorEnd.ClosingParenthesis -> ")"
+            is Symbol.Operator.Add -> "+"
+            is Symbol.Operator.Subtract -> "-"
+            is Symbol.Operator.Multiply -> "×"
+            is Symbol.Operator.Divide -> "÷"
+            is Symbol.Operator.Power -> "^"
+            is Symbol.PostfixOperator.Factorial -> "!"
         }
 }
