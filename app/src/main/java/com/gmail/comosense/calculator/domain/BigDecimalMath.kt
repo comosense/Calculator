@@ -52,6 +52,14 @@ internal object BigDecimalMath {
     private val MAX_NON_INTEGER_EXPONENT: BigDecimal =
         BigDecimal(BigDecimalMathConstraints.MAX_NON_INTEGER_EXPONENT)
 
+    init {
+        require(MAX_FACTORIAL_ARGUMENT.signum() >= 0)
+        require(MAX_EXPONENTIAL_ARGUMENT.signum() >= 0)
+        require(MAX_INTEGER_EXPONENT.signum() >= 0)
+        require(MAX_INTEGER_EXPONENT <= Int.MAX_VALUE.toBigInteger())
+        require(MAX_NON_INTEGER_EXPONENT.signum() >= 0)
+    }
+
     private data class MathConstant(
         val mc: MathContext,
         val value: BigDecimal,

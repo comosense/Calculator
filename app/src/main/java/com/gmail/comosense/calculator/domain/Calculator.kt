@@ -12,8 +12,8 @@ import kotlin.coroutines.CoroutineContext
 enum class CalculatorError {
     Unsupported,
     ResultTooLarge,
-    InvalidExpression,
     InsufficientPrecision,
+    InvalidExpression,
     DivisionByZero,
     FactorialInvalidArgument,
     FactorialLargeArgument,
@@ -28,6 +28,8 @@ enum class CalculatorError {
     Arithmetic,
 }
 
+private class MissingFactorException : IllegalArgumentException()
+private class IllegalFactorException : IllegalArgumentException()
 private class DivisionByZeroException : ArithmeticException()
 
 private const val TOLERANCE_PRECISION_MARGIN: Int = 1
@@ -100,6 +102,10 @@ private suspend fun parse(
         }
     } catch (e: CancellationException) {
         throw e
+    } catch (_: MissingFactorException) {
+        Result.Err(CalculatorError.InvalidExpression)
+    } catch (_: IllegalFactorException) {
+        Result.Err(CalculatorError.InvalidExpression)
     } catch (_: IllegalArgumentException) {
         Result.Err(CalculatorError.InvalidExpression)
     } catch (_: DivisionByZeroException) {
@@ -258,7 +264,7 @@ private class Parser(
         mc: MathContext,
     ): BigDecimal {
         if (isEnd()) {
-            throw IllegalArgumentException("Expected factor")
+            throw MissingFactorException()
         }
 
         return when (val token: Token = tokens[position]) {
@@ -296,7 +302,7 @@ private class Parser(
             }
 
             else ->
-                throw IllegalArgumentException("Expected factor")
+                throw MissingFactorException()
         }
     }
 
@@ -305,7 +311,7 @@ private class Parser(
     ): BigDecimal {
         val value: BigDecimal = parseExpression(mc)
         if (isEnd() || tokens[position] !is Token.FactorEnd) {
-            throw IllegalArgumentException("Missing FactorEnd")
+            throw IllegalFactorException()
         }
 
         position++
