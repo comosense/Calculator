@@ -29,31 +29,47 @@ val AppState.isInputting: Boolean
 fun AppState.appendExpression(
     symbols: List<Symbol>,
 ): AppStateUpdateResult {
-    val symbolsToAppend: List<Symbol> = symbolsToAppendOrNull(symbols)
-        ?: return AppStateUpdateResult.UnacceptableSymbol
-    val firstSymbol: Symbol = symbolsToAppend.firstOrNull()
+    val firstSymbol: Symbol = symbols.firstOrNull()
         ?: return AppStateUpdateResult.UnacceptableSymbol
 
-    if (expression.size + symbolsToAppend.size
-        > AppStateExtensionsConstraints.MAX_EXPRESSION_SIZE
-    ) {
-        return AppStateUpdateResult.ExpressionTooLarge
-    }
-
-    val newInput: List<Symbol> = if (
+    val currentInput: List<Symbol> = if (
         firstSymbol is Symbol.Operator ||
         firstSymbol is Symbol.PostfixOperator ||
         isInputting
     ) {
-        result + input + symbolsToAppend
+        result + input
     } else {
-        input + symbolsToAppend
+        input
+    }
+
+    val baseInput: List<Symbol> = if (
+        (firstSymbol is Symbol.Operator ||
+                firstSymbol is Symbol.PostfixOperator) &&
+        currentInput.lastOrNull() is Symbol.Operator
+    ) {
+        currentInput.dropLast(1)
+    } else {
+        currentInput
+    }
+
+    val appendingAppState: AppState = copy(
+        result = emptyList(),
+        input = baseInput,
+    )
+
+    val symbolsToAppend: List<Symbol> =
+        appendingAppState.symbolsToAppendOrNull(symbols)
+            ?: return AppStateUpdateResult.UnacceptableSymbol
+
+    if (appendingAppState.expression.size + symbolsToAppend.size >
+        AppStateExtensionsConstraints.MAX_EXPRESSION_SIZE
+    ) {
+        return AppStateUpdateResult.ExpressionTooLarge
     }
 
     return AppStateUpdateResult.Success(
-        appState = copy(
-            result = emptyList(),
-            input = newInput,
+        appState = appendingAppState.copy(
+            input = baseInput + symbolsToAppend,
         ),
     )
 }
