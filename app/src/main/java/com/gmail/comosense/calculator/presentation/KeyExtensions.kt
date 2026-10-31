@@ -10,16 +10,6 @@ enum class Style {
     Mode,
 }
 
-private val SYMBOLS_SQUARE: List<Symbol> = listOf(
-    Symbol.Operator.Power,
-    Symbol.Numeric.Digit(2),
-)
-private val SYMBOLS_POW10: List<Symbol> = listOf(
-    Symbol.Numeric.Digit(1),
-    Symbol.Numeric.Digit(0),
-    Symbol.Operator.Power,
-)
-
 sealed interface Display {
     data class Text(
         val text: String,
@@ -31,6 +21,15 @@ sealed interface Display {
     ) : Display
 }
 
+private val SYMBOLS_SQUARE: List<Symbol> = listOf(
+    Symbol.Operator.Power,
+    Symbol.Numeric.Digit(2),
+)
+private val SYMBOLS_POW10: List<Symbol> = listOf(
+    Symbol.Numeric.Digit(1),
+    Symbol.Numeric.Digit(0),
+    Symbol.Operator.Power,
+)
 val Key.calculatorAction: CalculatorAction
     get() = when (this) {
         is Key.Positive ->

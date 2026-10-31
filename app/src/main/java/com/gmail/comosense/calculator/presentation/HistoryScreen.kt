@@ -42,6 +42,13 @@ import com.gmail.comosense.calculator.R
 import com.gmail.comosense.calculator.data.History
 import com.gmail.comosense.calculator.presentation.theme.AppTheme
 
+private sealed interface HistoryAction {
+    data object Back : HistoryAction
+    data object ToggleDeleteMode : HistoryAction
+    data class Select(val id: String) : HistoryAction
+    data object DeleteAll : HistoryAction
+}
+
 private data class HistoryItemContent(
     val containerColor: Color,
     val contentColor: Color,
@@ -51,13 +58,6 @@ private data class HistoryItemContent(
     val iconDescription: String = "",
     val iconColor: Color = contentColor,
 )
-
-private sealed interface HistoryAction {
-    data object Back : HistoryAction
-    data object ToggleDeleteMode : HistoryAction
-    data class Select(val id: String) : HistoryAction
-    data object DeleteAll : HistoryAction
-}
 
 @Composable
 fun HistoryScreen(

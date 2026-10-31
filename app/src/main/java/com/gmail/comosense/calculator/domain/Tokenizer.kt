@@ -35,6 +35,7 @@ fun Iterable<Symbol>.tokenize(): List<Token>? {
                 }
             }
         }
+
         if (!flushNumeric()) {
             return null
         }
