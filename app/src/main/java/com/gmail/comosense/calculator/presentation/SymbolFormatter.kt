@@ -20,11 +20,18 @@ class SymbolFormatter(
             minimumFractionDigits = 0
             maximumFractionDigits = 0
         }
-
     private val decimalSeparator: Char =
         DecimalFormatSymbols
             .getInstance(locale)
             .decimalSeparator
+    private val Symbol.expressionText: String
+        get() = when (this) {
+            is Symbol.FactorStart ->
+                text(this) + text(Symbol.FactorStart.OpeningParenthesis)
+
+            else ->
+                text(this)
+        }
 
     fun text(symbol: Symbol): String = when (symbol) {
         is Symbol.Sign.Positive -> "+"
@@ -113,13 +120,4 @@ class SymbolFormatter(
             integerFormatter.format(integerValue)
         } ?: integerString
     }
-
-    private val Symbol.expressionText: String
-        get() = when (this) {
-            is Symbol.FactorStart ->
-                text(this) + text(Symbol.FactorStart.OpeningParenthesis)
-
-            else ->
-                text(this)
-        }
 }
