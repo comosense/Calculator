@@ -322,9 +322,13 @@ private class Parser(
         return value
     }
 
-    private fun parseNumeric(): BigDecimal {
+    private suspend fun parseNumeric(): BigDecimal {
+        val coroutineContext: CoroutineContext = currentCoroutineContext()
         val buffer = StringBuilder()
+
         while (!isEnd()) {
+            coroutineContext.ensureActive()
+
             when (val symbol: Symbol = expression[position]) {
                 is Symbol.Numeric.Digit ->
                     buffer.append(symbol.value)
