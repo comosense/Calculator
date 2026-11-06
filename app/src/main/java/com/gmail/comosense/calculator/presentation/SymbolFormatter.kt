@@ -24,9 +24,9 @@ class SymbolFormatter(
         DecimalFormatSymbols
             .getInstance(locale)
             .decimalSeparator
-    private val Symbol.expressionText: String
+    private val Symbol.formatText: String
         get() = when (this) {
-            is Symbol.FactorStart ->
+            is Symbol.FactorStart.Function ->
                 text(this) + text(Symbol.FactorStart.OpeningParenthesis)
 
             else ->
@@ -85,7 +85,7 @@ class SymbolFormatter(
 
                     else -> {
                         flushNumeric()
-                        append(symbol.expressionText)
+                        append(symbol.formatText)
                     }
                 }
             }
