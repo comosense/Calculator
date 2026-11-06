@@ -9,6 +9,10 @@ import java.util.Locale
 class SymbolFormatter(
     locale: Locale,
 ) {
+    companion object {
+        private const val INTERNAL_DECIMAL_SEPARATOR: Char = '.'
+    }
+
     private val integerFormatter: DecimalFormat? =
         (NumberFormat.getNumberInstance(locale) as? DecimalFormat)?.apply {
             isGroupingUsed = true
@@ -17,10 +21,37 @@ class SymbolFormatter(
             maximumFractionDigits = 0
         }
 
-    val decimalSeparator: Char =
+    private val decimalSeparator: Char =
         DecimalFormatSymbols
             .getInstance(locale)
             .decimalSeparator
+
+    fun text(symbol: Symbol): String = when (symbol) {
+        is Symbol.Sign.Positive -> "+"
+        is Symbol.Sign.Negative -> "-"
+        is Symbol.Numeric.Digit -> symbol.value.toString()
+        is Symbol.Numeric.Point -> decimalSeparator.toString()
+        is Symbol.Constant.Euler -> "e"
+        is Symbol.Constant.Pi -> "π"
+        is Symbol.Factor.Function.Sqrt -> "√"
+        is Symbol.FactorStart.OpeningParenthesis -> "("
+        is Symbol.FactorStart.Function.Exp -> "exp"
+        is Symbol.FactorStart.Function.Ln -> "ln"
+        is Symbol.FactorStart.Function.Log -> "log"
+        is Symbol.FactorStart.Function.Sin -> "sin"
+        is Symbol.FactorStart.Function.Cos -> "cos"
+        is Symbol.FactorStart.Function.Tan -> "tan"
+        is Symbol.FactorStart.Function.Arcsin -> "asin"
+        is Symbol.FactorStart.Function.Arccos -> "acos"
+        is Symbol.FactorStart.Function.Arctan -> "atan"
+        is Symbol.FactorEnd.ClosingParenthesis -> ")"
+        is Symbol.Operator.Add -> "+"
+        is Symbol.Operator.Subtract -> "-"
+        is Symbol.Operator.Multiply -> "×"
+        is Symbol.Operator.Divide -> "÷"
+        is Symbol.Operator.Power -> "^"
+        is Symbol.PostfixOperator.Factorial -> "!"
+    }
 
     fun format(
         symbols: List<Symbol>,
@@ -39,12 +70,15 @@ class SymbolFormatter(
 
             for (symbol in symbols) {
                 when (symbol) {
-                    is Symbol.Numeric ->
-                        numericBuffer.append(symbol.canonicalizedText)
+                    is Symbol.Numeric.Digit ->
+                        numericBuffer.append(symbol.value)
+
+                    is Symbol.Numeric.Point ->
+                        numericBuffer.append(INTERNAL_DECIMAL_SEPARATOR)
 
                     else -> {
                         flushNumeric()
-                        append(symbol.canonicalizedText)
+                        append(symbol.expressionText)
                     }
                 }
             }
@@ -55,7 +89,7 @@ class SymbolFormatter(
     private fun formatNumericString(
         value: String,
     ): String {
-        val pointIndex: Int = value.indexOf(".")
+        val pointIndex: Int = value.indexOf(INTERNAL_DECIMAL_SEPARATOR)
 
         return if (pointIndex >= 0) {
             buildString {
@@ -80,31 +114,12 @@ class SymbolFormatter(
         } ?: integerString
     }
 
-    private val Symbol.canonicalizedText: String
+    private val Symbol.expressionText: String
         get() = when (this) {
-            is Symbol.Sign.Positive -> "+"
-            is Symbol.Sign.Negative -> "-"
-            is Symbol.Numeric.Digit -> value.toString()
-            is Symbol.Numeric.Point -> "."
-            is Symbol.Constant.Euler -> "e"
-            is Symbol.Constant.Pi -> "π"
-            is Symbol.Factor.Function.Sqrt -> "√"
-            is Symbol.FactorStart.OpeningParenthesis -> "("
-            is Symbol.FactorStart.Function.Exp -> "exp("
-            is Symbol.FactorStart.Function.Ln -> "ln("
-            is Symbol.FactorStart.Function.Log -> "log("
-            is Symbol.FactorStart.Function.Sin -> "sin("
-            is Symbol.FactorStart.Function.Cos -> "cos("
-            is Symbol.FactorStart.Function.Tan -> "tan("
-            is Symbol.FactorStart.Function.Arcsin -> "asin("
-            is Symbol.FactorStart.Function.Arccos -> "acos("
-            is Symbol.FactorStart.Function.Arctan -> "atan("
-            is Symbol.FactorEnd.ClosingParenthesis -> ")"
-            is Symbol.Operator.Add -> "+"
-            is Symbol.Operator.Subtract -> "-"
-            is Symbol.Operator.Multiply -> "×"
-            is Symbol.Operator.Divide -> "÷"
-            is Symbol.Operator.Power -> "^"
-            is Symbol.PostfixOperator.Factorial -> "!"
+            is Symbol.FactorStart ->
+                text(this) + text(Symbol.FactorStart.OpeningParenthesis)
+
+            else ->
+                text(this)
         }
 }

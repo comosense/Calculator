@@ -198,10 +198,14 @@ fun Key.display(symbolFormatter: SymbolFormatter): Display = when (this) {
         )
 
     is Key.Digit ->
-        Display.Text(value.toString())
+        Display.Text(
+            symbolFormatter.text(Symbol.Numeric.Digit(value))
+        )
 
     is Key.Point ->
-        Display.Text(symbolFormatter.decimalSeparator.toString())
+        Display.Text(
+            symbolFormatter.text(Symbol.Numeric.Point)
+        )
 
     is Key.OpeningParenthesis ->
         Display.Icon(
@@ -258,52 +262,84 @@ fun Key.display(symbolFormatter: SymbolFormatter): Display = when (this) {
         )
 
     is Key.Euler ->
-        Display.Text("e")
+        Display.Text(
+            symbolFormatter.text(Symbol.Constant.Euler)
+        )
 
     is Key.Pi ->
-        Display.Text("π")
+        Display.Text(
+            symbolFormatter.text(Symbol.Constant.Pi)
+        )
 
     is Key.Sqrt ->
-        Display.Text("√")
+        Display.Text(
+            symbolFormatter.text(Symbol.Factor.Function.Sqrt)
+        )
 
     is Key.Power ->
-        Display.Text("^")
+        Display.Text(
+            symbolFormatter.text(Symbol.Operator.Power)
+        )
 
     is Key.Factorial ->
-        Display.Text("!")
+        Display.Text(
+            symbolFormatter.text(Symbol.PostfixOperator.Factorial)
+        )
 
     is Key.Log ->
-        Display.Text("log")
+        Display.Text(
+            symbolFormatter.text(Symbol.FactorStart.Function.Log)
+        )
 
     is Key.Ln ->
-        Display.Text("ln")
+        Display.Text(
+            symbolFormatter.text(Symbol.FactorStart.Function.Ln)
+        )
 
     is Key.Sin ->
-        Display.Text("sin")
+        Display.Text(
+            symbolFormatter.text(Symbol.FactorStart.Function.Sin)
+        )
 
     is Key.Cos ->
-        Display.Text("cos")
+        Display.Text(
+            symbolFormatter.text(Symbol.FactorStart.Function.Cos)
+        )
 
     is Key.Tan ->
-        Display.Text("tan")
+        Display.Text(
+            symbolFormatter.text(Symbol.FactorStart.Function.Tan)
+        )
 
     is Key.Square ->
-        Display.Text("^2")
+        Display.Text(
+            symbolFormatter.format(SYMBOLS_SQUARE)
+        )
 
     is Key.Pow10 ->
-        Display.Text("10^")
+        Display.Text(
+            symbolFormatter.format(SYMBOLS_POW10)
+        )
 
     is Key.Exp ->
-        Display.Text("exp")
+        Display.Text(
+            symbolFormatter.text(Symbol.FactorStart.Function.Exp)
+        )
 
     is Key.Arcsin ->
-        Display.Text("asin")
+        Display.Text(
+            symbolFormatter.text(Symbol.FactorStart.Function.Arcsin)
+        )
 
     is Key.Arccos ->
-        Display.Text("acos")
+        Display.Text(
+            symbolFormatter.text(Symbol.FactorStart.Function.Arccos)
+        )
 
     is Key.Arctan ->
-        Display.Text("atan")
+        Display.Text(
+            symbolFormatter.text(Symbol.FactorStart.Function.Arctan)
+        )
 
     is Key.FunctionMode ->
         Display.Icon(
