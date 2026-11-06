@@ -738,16 +738,19 @@ internal object BigDecimalMath {
             return ZERO
         }
 
-        val absValue: BigDecimal = value.abs()
-        val oneMinusXSquared: BigDecimal = ONE
-            .subtract(absValue)
-            .multiply(ONE.add(absValue))
-        val root: BigDecimal = calculateSqrt(oneMinusXSquared, mc)
-
-        return calculateArctan(
-            value = value.divide(root, mc),
+        val acuteAngle: BigDecimal = calculateInverseTrigonometricAcuteAngle(
+            value = value,
             mc = mc,
         )
+
+        val result: BigDecimal = cachedHalfPi(mc)
+            .subtract(acuteAngle)
+
+        return if (value.signum() < 0) {
+            result.negate()
+        } else {
+            result
+        }
     }
 
     private suspend fun calculateArccos(
@@ -770,19 +773,32 @@ internal object BigDecimalMath {
             return cachedPi(mc).divide(TWO, mc)
         }
 
-        if (value.signum() < 0) {
-            return cachedPi(mc).subtract(
-                calculateArccos(
-                    value = value.negate(),
-                    mc = mc,
-                )
-            )
-        }
+        val acuteAngle: BigDecimal = calculateInverseTrigonometricAcuteAngle(
+            value = value,
+            mc = mc,
+        )
 
-        val numerator: BigDecimal = ONE.subtract(value)
-        val denominator: BigDecimal = ONE.add(value)
+        return if (value.signum() > 0) {
+            acuteAngle
+        } else {
+            cachedPi(mc).subtract(acuteAngle)
+        }
+    }
+
+    private suspend fun calculateInverseTrigonometricAcuteAngle(
+        value: BigDecimal,
+        mc: MathContext,
+    ): BigDecimal {
+        val absValue: BigDecimal = value.abs()
+
+        val numerator: BigDecimal = ONE.subtract(absValue)
+        val denominator: BigDecimal = ONE.add(absValue)
+
         val ratio: BigDecimal = numerator.divide(denominator, mc)
-        val root: BigDecimal = calculateSqrt(ratio, mc)
+        val root: BigDecimal = calculateSqrt(
+            value = ratio,
+            mc = mc,
+        )
 
         return TWO.multiply(
             calculateArctan(
