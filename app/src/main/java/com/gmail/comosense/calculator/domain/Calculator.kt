@@ -28,6 +28,7 @@ enum class CalculatorError {
     Arithmetic,
 }
 
+private class InvalidNumericFormatException : IllegalArgumentException()
 private class MissingFactorException : IllegalArgumentException()
 private class IllegalFactorException : IllegalArgumentException()
 private class DivisionByZeroException : ArithmeticException()
@@ -46,13 +47,11 @@ suspend fun calculate(
     precision: Int,
 ): Result<List<Symbol>, CalculatorError> {
     require(precision > 0)
-    val tokens: List<Token> = expression.tokenize()
-        ?: return Result.Err(CalculatorError.InvalidExpression)
 
     val calculated: BigDecimal =
         when (val calculatedResult: Result<BigDecimal, CalculatorError> =
             parse(
-                expression = tokens,
+                expression = expression,
                 isRadians = isRadians,
                 precision = precision,
             )) {
@@ -68,7 +67,7 @@ suspend fun calculate(
 }
 
 private suspend fun parse(
-    expression: List<Token>,
+    expression: List<Symbol>,
     isRadians: Boolean,
     precision: Int,
 ): Result<BigDecimal, CalculatorError> {
@@ -83,7 +82,7 @@ private suspend fun parse(
 
     return try {
         val parser = Parser(
-            tokens = expression,
+            expression = expression,
             isRadians = isRadians,
             tolerance = BigDecimal.ONE.scaleByPowerOfTen(tolerancePrecision),
             additionalPrecision = ADDITIONAL_PRECISION_PER_FUNCTION,
@@ -101,6 +100,8 @@ private suspend fun parse(
         }
     } catch (e: CancellationException) {
         throw e
+    } catch (_: InvalidNumericFormatException) {
+        Result.Err(CalculatorError.InvalidExpression)
     } catch (_: MissingFactorException) {
         Result.Err(CalculatorError.InvalidExpression)
     } catch (_: IllegalFactorException) {
@@ -135,14 +136,14 @@ private suspend fun parse(
 }
 
 private class Parser(
-    private val tokens: List<Token>,
+    private val expression: List<Symbol>,
     private val isRadians: Boolean,
     private val tolerance: BigDecimal,
     private val additionalPrecision: Int,
 ) {
     private var position: Int = 0
 
-    fun isEnd(): Boolean = (position >= tokens.size)
+    fun isEnd(): Boolean = (position >= expression.size)
 
     suspend fun parseExpression(
         mc: MathContext
@@ -154,13 +155,13 @@ private class Parser(
         while (!isEnd()) {
             coroutineContext.ensureActive()
 
-            value = when (tokens[position]) {
-                is Token.Operator.Add -> {
+            value = when (expression[position]) {
+                is Symbol.Operator.Add -> {
                     position++
                     value.add(parseTerm(mc))
                 }
 
-                is Token.Operator.Subtract -> {
+                is Symbol.Operator.Subtract -> {
                     position++
                     value.subtract(parseTerm(mc))
                 }
@@ -182,13 +183,13 @@ private class Parser(
         while (!isEnd()) {
             coroutineContext.ensureActive()
 
-            value = when (tokens[position]) {
-                is Token.Operator.Multiply -> {
+            value = when (expression[position]) {
+                is Symbol.Operator.Multiply -> {
                     position++
                     value.multiply(parseSign(mc))
                 }
 
-                is Token.Operator.Divide -> {
+                is Symbol.Operator.Divide -> {
                     position++
                     val divisor: BigDecimal = parseSign(mc)
                     if (divisor.signum() == 0) {
@@ -207,13 +208,13 @@ private class Parser(
     private suspend fun parseSign(
         mc: MathContext,
     ): BigDecimal {
-        return when (tokens.getOrNull(position)) {
-            Token.Sign.Positive -> {
+        return when (expression.getOrNull(position)) {
+            Symbol.Sign.Positive -> {
                 position++
                 parseSign(mc)
             }
 
-            Token.Sign.Negative -> {
+            Symbol.Sign.Negative -> {
                 position++
                 parseSign(mc).negate()
             }
@@ -228,7 +229,9 @@ private class Parser(
     ): BigDecimal {
         val base: BigDecimal = parsePostfixOperation(mc)
 
-        return if (tokens.getOrNull(position) is Token.Operator.Power) {
+        return if (expression.getOrNull(position)
+                    is Symbol.Operator.Power
+        ) {
             position++
             BigDecimalMath.pow(
                 base = base,
@@ -247,7 +250,9 @@ private class Parser(
 
         var value: BigDecimal = parseFactor(mc)
 
-        while (tokens.getOrNull(position) is Token.PostfixOperator.Factorial) {
+        while (expression.getOrNull(position)
+                    is Symbol.PostfixOperator.Factorial
+        ) {
             coroutineContext.ensureActive()
 
             position++
@@ -266,35 +271,33 @@ private class Parser(
             throw MissingFactorException()
         }
 
-        return when (val token: Token = tokens[position]) {
-            is Token.Numeric -> {
+        return when (val symbol: Symbol = expression[position]) {
+            is Symbol.Numeric ->
+                parseNumeric()
+
+            is Symbol.Constant -> {
                 position++
-                token.value
+                parseConstant(symbol, mc)
             }
 
-            is Token.Constant -> {
-                position++
-                parseConstant(token, mc)
-            }
-
-            is Token.Factor.Function -> {
+            is Symbol.Factor.Function -> {
                 position++
                 applyFunction(
-                    function = token,
+                    function = symbol,
                     value = parseSign(increasePrecision(mc)),
                     mc = mc,
                 )
             }
 
-            is Token.FactorStart.OpeningParenthesis -> {
+            is Symbol.FactorStart.OpeningParenthesis -> {
                 position++
                 parseFactorBody(mc)
             }
 
-            is Token.FactorStart.Function -> {
+            is Symbol.FactorStart.Function -> {
                 position++
                 applyFunction(
-                    function = token,
+                    function = symbol,
                     value = parseFactorBody(increasePrecision(mc)),
                     mc = mc,
                 )
@@ -309,7 +312,9 @@ private class Parser(
         mc: MathContext,
     ): BigDecimal {
         val value: BigDecimal = parseExpression(mc)
-        if (isEnd() || tokens[position] !is Token.FactorEnd) {
+        if (isEnd() || expression[position]
+                    !is Symbol.FactorEnd
+        ) {
             throw IllegalFactorException()
         }
 
@@ -317,17 +322,31 @@ private class Parser(
         return value
     }
 
+    private fun parseNumeric(): BigDecimal {
+        val buffer = StringBuilder()
+        while (!isEnd()) {
+            when (val symbol: Symbol = expression[position]) {
+                is Symbol.Numeric.Digit -> buffer.append(symbol.value)
+                is Symbol.Numeric.Point -> buffer.append('.')
+                else -> break
+            }
+            position++
+        }
+        return buffer.toString().toBigDecimalOrNull()
+            ?: throw InvalidNumericFormatException()
+    }
+
     private suspend fun parseConstant(
-        constant: Token.Constant,
+        constant: Symbol.Constant,
         mc: MathContext,
     ): BigDecimal {
         return when (constant) {
-            Token.Constant.Pi ->
+            Symbol.Constant.Pi ->
                 BigDecimalMath.pi(
                     mc = mc,
                 )
 
-            Token.Constant.Euler ->
+            Symbol.Constant.Euler ->
                 BigDecimalMath.e(
                     mc = mc,
                 )
@@ -335,12 +354,12 @@ private class Parser(
     }
 
     private suspend fun applyFunction(
-        function: Token.Factor.Function,
+        function: Symbol.Factor.Function,
         value: BigDecimal,
         mc: MathContext,
     ): BigDecimal {
         return when (function) {
-            Token.Factor.Function.Sqrt ->
+            Symbol.Factor.Function.Sqrt ->
                 BigDecimalMath.sqrt(
                     value = value,
                     mc = mc,
@@ -349,30 +368,30 @@ private class Parser(
     }
 
     private suspend fun applyFunction(
-        function: Token.FactorStart.Function,
+        function: Symbol.FactorStart.Function,
         value: BigDecimal,
         mc: MathContext,
     ): BigDecimal {
         return when (function) {
-            Token.FactorStart.Function.Exp ->
+            Symbol.FactorStart.Function.Exp ->
                 BigDecimalMath.exp(
                     value = value,
                     mc = mc,
                 )
 
-            Token.FactorStart.Function.Ln ->
+            Symbol.FactorStart.Function.Ln ->
                 BigDecimalMath.ln(
                     value = value,
                     mc = mc,
                 )
 
-            Token.FactorStart.Function.Log ->
+            Symbol.FactorStart.Function.Log ->
                 BigDecimalMath.log(
                     value = value,
                     mc = mc,
                 )
 
-            Token.FactorStart.Function.Sin ->
+            Symbol.FactorStart.Function.Sin ->
                 BigDecimalMath.sin(
                     angle = value,
                     isRadians = isRadians,
@@ -380,7 +399,7 @@ private class Parser(
                     mc = mc,
                 )
 
-            Token.FactorStart.Function.Cos ->
+            Symbol.FactorStart.Function.Cos ->
                 BigDecimalMath.cos(
                     angle = value,
                     isRadians = isRadians,
@@ -388,7 +407,7 @@ private class Parser(
                     mc = mc,
                 )
 
-            Token.FactorStart.Function.Tan ->
+            Symbol.FactorStart.Function.Tan ->
                 BigDecimalMath.tan(
                     angle = value,
                     isRadians = isRadians,
@@ -396,21 +415,21 @@ private class Parser(
                     mc = mc,
                 )
 
-            Token.FactorStart.Function.Arcsin ->
+            Symbol.FactorStart.Function.Arcsin ->
                 BigDecimalMath.arcsin(
                     value = value,
                     isRadians = isRadians,
                     mc = mc,
                 )
 
-            Token.FactorStart.Function.Arccos ->
+            Symbol.FactorStart.Function.Arccos ->
                 BigDecimalMath.arccos(
                     value = value,
                     isRadians = isRadians,
                     mc = mc,
                 )
 
-            Token.FactorStart.Function.Arctan ->
+            Symbol.FactorStart.Function.Arctan ->
                 BigDecimalMath.arctan(
                     value = value,
                     isRadians = isRadians,
