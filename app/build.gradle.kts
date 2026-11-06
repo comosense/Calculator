@@ -1,7 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
-    id("com.google.protobuf") version "0.10.0"
+    id("com.google.protobuf") version "0.10.1"
 }
 
 android {
