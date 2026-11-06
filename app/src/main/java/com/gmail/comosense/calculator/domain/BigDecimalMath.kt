@@ -785,29 +785,6 @@ internal object BigDecimalMath {
         }
     }
 
-    private suspend fun calculateInverseTrigonometricAcuteAngle(
-        value: BigDecimal,
-        mc: MathContext,
-    ): BigDecimal {
-        val absValue: BigDecimal = value.abs()
-
-        val numerator: BigDecimal = ONE.subtract(absValue)
-        val denominator: BigDecimal = ONE.add(absValue)
-
-        val ratio: BigDecimal = numerator.divide(denominator, mc)
-        val root: BigDecimal = calculateSqrt(
-            value = ratio,
-            mc = mc,
-        )
-
-        return TWO.multiply(
-            calculateArctan(
-                value = root,
-                mc = mc,
-            )
-        )
-    }
-
     private suspend fun calculateArctan(
         value: BigDecimal,
         mc: MathContext,
@@ -948,6 +925,29 @@ internal object BigDecimalMath {
             sum = nextSum
             n++
         }
+    }
+
+    private suspend fun calculateInverseTrigonometricAcuteAngle(
+        value: BigDecimal,
+        mc: MathContext,
+    ): BigDecimal {
+        val absValue: BigDecimal = value.abs()
+
+        val numerator: BigDecimal = ONE.subtract(absValue)
+        val denominator: BigDecimal = ONE.add(absValue)
+
+        val ratio: BigDecimal = numerator.divide(denominator, mc)
+        val root: BigDecimal = calculateSqrt(
+            value = ratio,
+            mc = mc,
+        )
+
+        return TWO.multiply(
+            calculateArctan(
+                value = root,
+                mc = mc,
+            )
+        )
     }
 
     private suspend fun arctanTaylor(
