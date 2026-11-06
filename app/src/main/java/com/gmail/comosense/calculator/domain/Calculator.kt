@@ -326,12 +326,18 @@ private class Parser(
         val buffer = StringBuilder()
         while (!isEnd()) {
             when (val symbol: Symbol = expression[position]) {
-                is Symbol.Numeric.Digit -> buffer.append(symbol.value)
-                is Symbol.Numeric.Point -> buffer.append('.')
-                else -> break
+                is Symbol.Numeric.Digit ->
+                    buffer.append(symbol.value)
+
+                is Symbol.Numeric.Point ->
+                    buffer.append('.')
+
+                else ->
+                    break
             }
             position++
         }
+
         return buffer.toString().toBigDecimalOrNull()
             ?: throw InvalidNumericFormatException()
     }
