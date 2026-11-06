@@ -167,7 +167,7 @@ private class Parser(
                 }
 
                 else ->
-                    return value
+                    break
             }
         }
         return value
@@ -199,7 +199,7 @@ private class Parser(
                 }
 
                 else ->
-                    return value
+                    break
             }
         }
         return value
@@ -250,15 +250,20 @@ private class Parser(
 
         var value: BigDecimal = parseFactor(mc)
 
-        while (expression.getOrNull(position)
-                    is Symbol.PostfixOperator.Factorial
-        ) {
+        while (!isEnd()) {
             coroutineContext.ensureActive()
 
-            position++
-            value = BigDecimalMath.factorial(
-                value = value,
-            )
+            when (expression[position]) {
+                is Symbol.PostfixOperator.Factorial -> {
+                    position++
+                    value = BigDecimalMath.factorial(
+                        value = value,
+                    )
+                }
+
+                else ->
+                    break
+            }
         }
 
         return value
@@ -312,8 +317,7 @@ private class Parser(
         mc: MathContext,
     ): BigDecimal {
         val value: BigDecimal = parseExpression(mc)
-        if (isEnd() || expression[position]
-                    !is Symbol.FactorEnd
+        if (isEnd() || expression[position] !is Symbol.FactorEnd
         ) {
             throw IllegalFactorException()
         }
