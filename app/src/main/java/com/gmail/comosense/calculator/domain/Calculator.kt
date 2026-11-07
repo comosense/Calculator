@@ -91,7 +91,9 @@ private suspend fun parse(
             precision,
             RoundingMode.HALF_UP,
         )
-        val result: BigDecimal = parser.parseExpression(mc)
+        val result: BigDecimal = parser
+            .parseExpression(mc)
+            .toBigDecimal(mc)
 
         if (parser.isEnd()) {
             Result.Ok(result)
@@ -147,10 +149,10 @@ private class Parser(
 
     suspend fun parseExpression(
         mc: MathContext
-    ): BigDecimal {
+    ): Rational {
         val coroutineContext: CoroutineContext = currentCoroutineContext()
 
-        var value: BigDecimal = parseTerm(mc)
+        var value: Rational = parseTerm(mc)
 
         while (!isEnd()) {
             coroutineContext.ensureActive()
@@ -158,12 +160,12 @@ private class Parser(
             value = when (expression[position]) {
                 is Symbol.Operator.Add -> {
                     position++
-                    value.add(parseTerm(mc))
+                    value + parseTerm(mc)
                 }
 
                 is Symbol.Operator.Subtract -> {
                     position++
-                    value.subtract(parseTerm(mc))
+                    value - parseTerm(mc)
                 }
 
                 else ->
@@ -175,10 +177,10 @@ private class Parser(
 
     private suspend fun parseTerm(
         mc: MathContext,
-    ): BigDecimal {
+    ): Rational {
         val coroutineContext: CoroutineContext = currentCoroutineContext()
 
-        var value: BigDecimal = parseSign(mc)
+        var value: Rational = parseSign(mc)
 
         while (!isEnd()) {
             coroutineContext.ensureActive()
@@ -186,16 +188,18 @@ private class Parser(
             value = when (expression[position]) {
                 is Symbol.Operator.Multiply -> {
                     position++
-                    value.multiply(parseSign(mc))
+                    value * parseSign(mc)
                 }
 
                 is Symbol.Operator.Divide -> {
                     position++
-                    val divisor: BigDecimal = parseSign(mc)
-                    if (divisor.signum() == 0) {
+                    val divisor = parseSign(mc)
+
+                    if (divisor.isZero()) {
                         throw DivisionByZeroException()
                     }
-                    value.divide(divisor, mc)
+
+                    value / divisor
                 }
 
                 else ->
@@ -207,7 +211,7 @@ private class Parser(
 
     private suspend fun parseSign(
         mc: MathContext,
-    ): BigDecimal {
+    ): Rational {
         return when (expression.getOrNull(position)) {
             Symbol.Sign.Positive -> {
                 position++
@@ -216,7 +220,7 @@ private class Parser(
 
             Symbol.Sign.Negative -> {
                 position++
-                parseSign(mc).negate()
+                -parseSign(mc)
             }
 
             else ->
@@ -226,17 +230,21 @@ private class Parser(
 
     private suspend fun parseBinaryOperation(
         mc: MathContext,
-    ): BigDecimal {
-        val base: BigDecimal = parsePostfixOperation(mc)
+    ): Rational {
+        val base: Rational = parsePostfixOperation(mc)
 
         return if (expression.getOrNull(position)
                     is Symbol.Operator.Power
         ) {
             position++
-            BigDecimalMath.pow(
-                base = base,
-                exponent = parseSign(increasePrecision(mc)),
-                mc = mc,
+            Rational.of(
+                BigDecimalMath.pow(
+                    base = base
+                        .toBigDecimal(increasePrecision(mc)),
+                    exponent = parseSign(increasePrecision(mc))
+                        .toBigDecimal(increasePrecision(mc)),
+                    mc = mc,
+                )
             )
         } else {
             base
@@ -245,10 +253,10 @@ private class Parser(
 
     private suspend fun parsePostfixOperation(
         mc: MathContext,
-    ): BigDecimal {
+    ): Rational {
         val coroutineContext: CoroutineContext = currentCoroutineContext()
 
-        var value: BigDecimal = parseFactor(mc)
+        var value: Rational = parseFactor(mc)
 
         while (!isEnd()) {
             coroutineContext.ensureActive()
@@ -256,8 +264,10 @@ private class Parser(
             when (expression[position]) {
                 is Symbol.PostfixOperator.Factorial -> {
                     position++
-                    value = BigDecimalMath.factorial(
-                        value = value,
+                    value = Rational.of(
+                        BigDecimalMath.factorial(
+                            value = value.toBigDecimal(mc),
+                        )
                     )
                 }
 
@@ -271,26 +281,31 @@ private class Parser(
 
     private suspend fun parseFactor(
         mc: MathContext,
-    ): BigDecimal {
+    ): Rational {
         if (isEnd()) {
             throw MissingFactorException()
         }
 
         return when (val symbol: Symbol = expression[position]) {
             is Symbol.Numeric ->
-                parseNumeric()
+                Rational.of(
+                    parseNumeric()
+                )
 
             is Symbol.Constant -> {
                 position++
-                parseConstant(symbol, mc)
+                Rational.of(
+                    parseConstant(symbol, increasePrecision(mc))
+                )
             }
 
             is Symbol.Factor.Function -> {
                 position++
                 applyFunction(
                     function = symbol,
-                    value = parseSign(increasePrecision(mc)),
-                    mc = mc,
+                    value = parseSign(increasePrecision(mc))
+                        .toBigDecimal(increasePrecision(mc)),
+                    mc = increasePrecision(mc),
                 )
             }
 
@@ -303,8 +318,9 @@ private class Parser(
                 position++
                 applyFunction(
                     function = symbol,
-                    value = parseFactorBody(increasePrecision(mc)),
-                    mc = mc,
+                    value = parseFactorBody(increasePrecision(mc))
+                        .toBigDecimal(increasePrecision(mc)),
+                    mc = increasePrecision(mc),
                 )
             }
 
@@ -315,14 +331,15 @@ private class Parser(
 
     private suspend fun parseFactorBody(
         mc: MathContext,
-    ): BigDecimal {
-        val value: BigDecimal = parseExpression(mc)
+    ): Rational {
+        val value: Rational = parseExpression(mc)
+
         if (isEnd() || expression[position] !is Symbol.FactorEnd
         ) {
             throw IllegalFactorException()
         }
-
         position++
+
         return value
     }
 
@@ -371,12 +388,14 @@ private class Parser(
         function: Symbol.Factor.Function,
         value: BigDecimal,
         mc: MathContext,
-    ): BigDecimal {
+    ): Rational {
         return when (function) {
             Symbol.Factor.Function.Sqrt ->
-                BigDecimalMath.sqrt(
-                    value = value,
-                    mc = mc,
+                Rational.of(
+                    BigDecimalMath.sqrt(
+                        value = value,
+                        mc = mc,
+                    )
                 )
         }
     }
@@ -385,8 +404,8 @@ private class Parser(
         function: Symbol.FactorStart.Function,
         value: BigDecimal,
         mc: MathContext,
-    ): BigDecimal {
-        return when (function) {
+    ): Rational {
+        val result: BigDecimal = when (function) {
             Symbol.FactorStart.Function.Exp ->
                 BigDecimalMath.exp(
                     value = value,
@@ -450,6 +469,8 @@ private class Parser(
                     mc = mc,
                 )
         }
+
+        return Rational.of(result)
     }
 
     private fun increasePrecision(
