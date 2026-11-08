@@ -1,13 +1,16 @@
 package com.gmail.comosense.calculator.domain
 
+import com.gmail.comosense.calculator.common.Constraints
 import com.gmail.comosense.calculator.common.Result
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.ensureActive
 import java.math.BigDecimal
+import java.math.BigInteger
 import java.math.MathContext
 import java.math.RoundingMode
 import kotlin.coroutines.CoroutineContext
+import kotlin.math.abs
 
 enum class CalculatorError {
     Unsupported,
@@ -31,8 +34,17 @@ enum class CalculatorError {
 private class InvalidNumericFormatException : IllegalArgumentException()
 private class MissingFactorException : IllegalArgumentException()
 private class IllegalFactorException : IllegalArgumentException()
-private class DivisionByZeroException : ArithmeticException()
+private class FactorialLargeArgumentException : ArithmeticException()
+private class FactorialInvalidArgumentException : ArithmeticException()
+private class ExpLargeArgumentException : ArithmeticException()
+private class PowInvalidArgumentException : ArithmeticException()
+private class PowLimitExceededException : ArithmeticException()
 
+private val MAX_EXPONENTIAL_ARGUMENT: BigDecimal =
+    Constraints.MAX_EXPONENTIAL_ARGUMENT.toBigDecimal()
+private const val MAX_FACTORIAL_ARGUMENT: Int = Constraints.MAX_FACTORIAL_ARGUMENT
+private const val MAX_INTEGER_EXPONENT: Int = Constraints.MAX_INTEGER_EXPONENT
+private const val MAX_NON_INTEGER_EXPONENT: Int = Constraints.MAX_NON_INTEGER_EXPONENT
 private const val TOLERANCE_PRECISION_MARGIN: Int = 1
 private const val ADDITIONAL_PRECISION_PER_FUNCTION: Int = 2
 private val SymbolizerError.calculatorError: CalculatorError
@@ -149,10 +161,10 @@ private class Parser(
 
     suspend fun parseExpression(
         mc: MathContext
-    ): Rational {
+    ): NumericValue {
         val coroutineContext: CoroutineContext = currentCoroutineContext()
 
-        var value: Rational = parseTerm(mc)
+        var value: NumericValue = parseTerm(mc)
 
         while (!isEnd()) {
             coroutineContext.ensureActive()
@@ -160,12 +172,12 @@ private class Parser(
             value = when (expression[position]) {
                 is Symbol.Operator.Add -> {
                     position++
-                    value + parseTerm(mc)
+                    value.add(parseTerm(mc), mc)
                 }
 
                 is Symbol.Operator.Subtract -> {
                     position++
-                    value - parseTerm(mc)
+                    value.subtract(parseTerm(mc), mc)
                 }
 
                 else ->
@@ -177,10 +189,10 @@ private class Parser(
 
     private suspend fun parseTerm(
         mc: MathContext,
-    ): Rational {
+    ): NumericValue {
         val coroutineContext: CoroutineContext = currentCoroutineContext()
 
-        var value: Rational = parseSign(mc)
+        var value: NumericValue = parseSign(mc)
 
         while (!isEnd()) {
             coroutineContext.ensureActive()
@@ -188,18 +200,12 @@ private class Parser(
             value = when (expression[position]) {
                 is Symbol.Operator.Multiply -> {
                     position++
-                    value * parseSign(mc)
+                    value.multiply(parseSign(mc), mc)
                 }
 
                 is Symbol.Operator.Divide -> {
                     position++
-                    val divisor = parseSign(mc)
-
-                    if (divisor.isZero()) {
-                        throw DivisionByZeroException()
-                    }
-
-                    value / divisor
+                    value.divide(parseSign(mc), mc)
                 }
 
                 else ->
@@ -211,7 +217,7 @@ private class Parser(
 
     private suspend fun parseSign(
         mc: MathContext,
-    ): Rational {
+    ): NumericValue {
         return when (expression.getOrNull(position)) {
             Symbol.Sign.Positive -> {
                 position++
@@ -220,7 +226,7 @@ private class Parser(
 
             Symbol.Sign.Negative -> {
                 position++
-                -parseSign(mc)
+                parseSign(mc).negate()
             }
 
             else ->
@@ -230,22 +236,61 @@ private class Parser(
 
     private suspend fun parseBinaryOperation(
         mc: MathContext,
-    ): Rational {
-        val base: Rational = parsePostfixOperation(mc)
+    ): NumericValue {
+        val base: NumericValue = parsePostfixOperation(mc)
 
         return if (expression.getOrNull(position)
                     is Symbol.Operator.Power
         ) {
             position++
-            Rational.of(
-                BigDecimalMath.pow(
-                    base = base
-                        .toBigDecimal(increasePrecision(mc)),
-                    exponent = parseSign(increasePrecision(mc))
-                        .toBigDecimal(increasePrecision(mc)),
-                    mc = mc,
-                )
-            )
+            val exponent: NumericValue = parseSign(increasePrecision(mc))
+
+            if (base.signum() == 0) {
+                if (exponent.signum() > 0) {
+                    NumericValue.RationalValue(Rational.ZERO)
+                } else {
+                    throw PowInvalidArgumentException()
+                }
+            }
+
+            if (exponent.signum() == 0) {
+                NumericValue.RationalValue(Rational.ONE)
+            }
+
+            val integerExponent: Int? = integerExponent(exponent)
+
+            when (base) {
+                is NumericValue.RationalValue -> {
+                    if (integerExponent is Int) {
+                        powRationalBase(
+                            base = base,
+                            exponent = integerExponent,
+                        )
+                    } else {
+                        powDecimalExponent(
+                            base = base.value.toBigDecimal(increasePrecision(mc)),
+                            exponent = exponent,
+                            mc = mc,
+                        )
+                    }
+                }
+
+                is NumericValue.DecimalValue -> {
+                    if (integerExponent is Int) {
+                        powNaturalExponent(
+                            base = base.value,
+                            exponent = integerExponent,
+                            mc = mc,
+                        )
+                    } else {
+                        powDecimalExponent(
+                            base = base.value,
+                            exponent = exponent,
+                            mc = mc,
+                        )
+                    }
+                }
+            }
         } else {
             base
         }
@@ -253,10 +298,10 @@ private class Parser(
 
     private suspend fun parsePostfixOperation(
         mc: MathContext,
-    ): Rational {
+    ): NumericValue {
         val coroutineContext: CoroutineContext = currentCoroutineContext()
 
-        var value: Rational = parseFactor(mc)
+        var value: NumericValue = parseFactor(mc)
 
         while (!isEnd()) {
             coroutineContext.ensureActive()
@@ -264,10 +309,10 @@ private class Parser(
             when (expression[position]) {
                 is Symbol.PostfixOperator.Factorial -> {
                     position++
-                    value = Rational.of(
+                    value = NumericValue.DecimalValue(
                         BigDecimalMath.factorial(
-                            value = value.toBigDecimal(mc),
-                        )
+                            value = factorialArgument(value),
+                        ).toBigDecimal()
                     )
                 }
 
@@ -281,20 +326,22 @@ private class Parser(
 
     private suspend fun parseFactor(
         mc: MathContext,
-    ): Rational {
+    ): NumericValue {
         if (isEnd()) {
             throw MissingFactorException()
         }
 
         return when (val symbol: Symbol = expression[position]) {
             is Symbol.Numeric ->
-                Rational.of(
-                    parseNumeric()
+                NumericValue.RationalValue(
+                    Rational.of(
+                        parseNumeric()
+                    )
                 )
 
             is Symbol.Constant -> {
                 position++
-                Rational.of(
+                NumericValue.DecimalValue(
                     parseConstant(symbol, increasePrecision(mc))
                 )
             }
@@ -331,8 +378,8 @@ private class Parser(
 
     private suspend fun parseFactorBody(
         mc: MathContext,
-    ): Rational {
-        val value: Rational = parseExpression(mc)
+    ): NumericValue {
+        val value: NumericValue = parseExpression(mc)
 
         if (isEnd() || expression[position] !is Symbol.FactorEnd
         ) {
@@ -388,10 +435,10 @@ private class Parser(
         function: Symbol.Factor.Function,
         value: BigDecimal,
         mc: MathContext,
-    ): Rational {
+    ): NumericValue {
         return when (function) {
             Symbol.Factor.Function.Sqrt ->
-                Rational.of(
+                NumericValue.DecimalValue(
                     BigDecimalMath.sqrt(
                         value = value,
                         mc = mc,
@@ -404,13 +451,18 @@ private class Parser(
         function: Symbol.FactorStart.Function,
         value: BigDecimal,
         mc: MathContext,
-    ): Rational {
+    ): NumericValue {
         val result: BigDecimal = when (function) {
-            Symbol.FactorStart.Function.Exp ->
+            Symbol.FactorStart.Function.Exp -> {
+                if (value.abs() > MAX_EXPONENTIAL_ARGUMENT) {
+                    throw ExpLargeArgumentException()
+                }
+
                 BigDecimalMath.exp(
                     value = value,
                     mc = mc,
                 )
+            }
 
             Symbol.FactorStart.Function.Ln ->
                 BigDecimalMath.ln(
@@ -470,7 +522,7 @@ private class Parser(
                 )
         }
 
-        return Rational.of(result)
+        return NumericValue.DecimalValue(result)
     }
 
     private fun increasePrecision(
@@ -480,5 +532,112 @@ private class Parser(
             mc.precision + additionalPrecision,
             mc.roundingMode,
         )
+    }
+
+    private fun factorialArgument(
+        value: NumericValue,
+    ): Int {
+        val bigIntegerArgument: BigInteger = try {
+            value.toBigIntegerExact()
+        } catch (_: ArithmeticException) {
+            throw FactorialInvalidArgumentException()
+        }
+
+        if (bigIntegerArgument.signum() < 0) {
+            throw FactorialInvalidArgumentException()
+        }
+
+        val argument: Int = try {
+            bigIntegerArgument.intValueExact()
+        } catch (_: ArithmeticException) {
+            throw FactorialLargeArgumentException()
+        }
+
+        if (argument > MAX_FACTORIAL_ARGUMENT) {
+            throw FactorialLargeArgumentException()
+        }
+
+        return argument
+    }
+
+    private fun powRationalBase(
+        base: NumericValue.RationalValue,
+        exponent: Int,
+    ): NumericValue {
+        return NumericValue.RationalValue(
+            base.value.pow(exponent)
+        )
+    }
+
+    private suspend fun powNaturalExponent(
+        base: BigDecimal,
+        exponent: Int,
+        mc: MathContext,
+    ): NumericValue {
+        val result: BigDecimal = BigDecimalMath.powNaturalExponent(
+            base = base,
+            exponent = exponent,
+        )
+
+        return NumericValue.DecimalValue(
+            if (base.signum() >= 0) {
+                result
+            } else {
+                BigDecimal.ONE.divide(result, mc)
+            }
+        )
+    }
+
+    private suspend fun powDecimalExponent(
+        base: BigDecimal,
+        exponent: NumericValue,
+        mc: MathContext,
+    ): NumericValue {
+        if (base.signum() < 0) {
+            throw PowInvalidArgumentException()
+        }
+
+        return NumericValue.DecimalValue(
+            BigDecimalMath.powDecimalExponent(
+                base = base,
+                exponent = nonIntegerExponent(exponent, increasePrecision(mc)),
+                mc = mc,
+            )
+        )
+    }
+
+    private fun integerExponent(
+        value: NumericValue,
+    ): Int? {
+        val bigIntegerExponent: BigInteger = try {
+            value.toBigIntegerExact()
+        } catch (_: ArithmeticException) {
+            return null
+        }
+
+        val exponent: Int = try {
+            bigIntegerExponent.intValueExact()
+        } catch (_: ArithmeticException) {
+            throw PowLimitExceededException()
+        }
+
+        if (abs(exponent) > MAX_INTEGER_EXPONENT) {
+            throw PowLimitExceededException()
+        }
+
+        return exponent
+    }
+
+    private fun nonIntegerExponent(
+        value: NumericValue,
+        mc: MathContext,
+    ): BigDecimal {
+        val exponent: BigDecimal = value.toBigDecimal(mc)
+
+        if (exponent.abs() > MAX_NON_INTEGER_EXPONENT.toBigDecimal()) {
+            throw PowLimitExceededException()
+        }
+
+        return exponent
     }
 }

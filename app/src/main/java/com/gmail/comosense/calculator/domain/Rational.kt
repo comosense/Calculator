@@ -3,6 +3,7 @@ package com.gmail.comosense.calculator.domain
 import java.math.BigDecimal
 import java.math.BigInteger
 import java.math.MathContext
+import kotlin.math.abs
 
 class Rational private constructor(
     val numerator: BigInteger,
@@ -12,34 +13,36 @@ class Rational private constructor(
         require(denominator.signum() > 0)
     }
 
-    override fun equals(
-        other: Any?
-    ): Boolean {
-        return other is Rational &&
-                numerator == other.numerator &&
-                denominator == other.denominator
-    }
-
-    override fun hashCode(): Int {
-        return 31 * numerator.hashCode() + denominator.hashCode()
-    }
-
-    override fun toString(): String {
-        return "$numerator/$denominator"
-    }
-
-    operator fun unaryMinus(): Rational {
-        return of(
-            numerator = numerator.negate(),
-            denominator = denominator,
-        )
-    }
-
+    //
+//    override fun equals(
+//        other: Any?
+//    ): Boolean =
+//        other is Rational &&
+//                numerator == other.numerator &&
+//                denominator == other.denominator
+//
+//    override fun hashCode(): Int =
+//        31 * numerator.hashCode() + denominator.hashCode()
+//
+//    override fun toString(): String =
+//        "$numerator/$denominator"
+//
+//    operator fun unaryMinus(): Rational =
+//        of(
+//            numerator = numerator.negate(),
+//            denominator = denominator,
+//        )
+//
+//    operator fun compareTo(other: Rational): Int {
+//        return numerator
+//            .multiply(other.denominator)
+//            .compareTo(other.numerator.multiply(denominator))
+//    }
+//
     operator fun plus(
         other: Rational,
     ): Rational {
         val gcd: BigInteger = denominator.gcd(other.denominator)
-
         val leftMultiplier: BigInteger = other.denominator.divide(gcd)
         val rightMultiplier: BigInteger = denominator.divide(gcd)
 
@@ -55,7 +58,17 @@ class Rational private constructor(
     operator fun minus(
         other: Rational,
     ): Rational {
-        return this + (-other)
+        val gcd: BigInteger = denominator.gcd(other.denominator)
+        val leftMultiplier: BigInteger = other.denominator.divide(gcd)
+        val rightMultiplier: BigInteger = denominator.divide(gcd)
+
+        return of(
+            numerator = numerator
+                .multiply(leftMultiplier)
+                .subtract(other.numerator.multiply(rightMultiplier)),
+            denominator = denominator
+                .multiply(leftMultiplier),
+        )
     }
 
     operator fun times(
@@ -92,53 +105,53 @@ class Rational private constructor(
         )
     }
 
-    //    operator fun compareTo(other: Rational): Int {
-//        return numerator
-//            .multiply(other.denominator)
-//            .compareTo(other.numerator.multiply(denominator))
-//    }
-//
-//    fun signum(): Int = numerator.signum()
+    fun signum(): Int = numerator.signum()
 
-    fun isZero(): Boolean = (numerator.signum() == 0)
+    fun negate(): Rational =
+        of(
+            numerator = numerator.negate(),
+            denominator = denominator,
+        )
 
-//    fun isInteger(): Boolean = (denominator == BigInteger.ONE)
-//
-//    fun toBigDecimal(): BigDecimal {
-//        require(isInteger())
-//        return numerator.toBigDecimal()
-//    }
-//
-//    fun toBigDecimal(mc: MathContext): BigDecimal {
-//        return numerator.toBigDecimal()
-//            .divide(denominator.toBigDecimal(), mc)
-//    }
-//
-//    fun pow(exponent: Int): Rational {
-//        if (exponent == 0) {
-//            require(!isZero())
-//            return ONE
-//        }
-//
-//        val n = abs(exponent)
-//
-//        return if (exponent > 0) {
-//            of(
-//                numerator = numerator.pow(n),
-//                denominator = denominator.pow(n),
-//            )
-//        } else {
-//            require(!isZero())
-//
-//            of(
-//                numerator = denominator.pow(n),
-//                denominator = numerator.pow(n),
-//            )
-//        }
-//    }
+    fun isZero(): Boolean =
+        numerator.signum() == 0
+
+    fun isInteger(): Boolean =
+        denominator == BigInteger.ONE
+
+    fun toBigIntegerExact(): BigInteger {
+        if (!isInteger()) {
+            throw ArithmeticException()
+        }
+
+        return numerator
+    }
+
+    fun pow(exponent: Int): Rational {
+        if (exponent == 0) {
+            require(!isZero())
+            return ONE
+        }
+
+        val n: Int = abs(exponent)
+
+        return if (exponent > 0) {
+            of(
+                numerator = numerator.pow(n),
+                denominator = denominator.pow(n),
+            )
+        } else {
+            require(!isZero())
+
+            of(
+                numerator = denominator.pow(n),
+                denominator = numerator.pow(n),
+            )
+        }
+    }
 
     fun toBigDecimal(mc: MathContext): BigDecimal {
-        return if (denominator == BigInteger.ONE) {
+        return if (isInteger()) {
             numerator.toBigDecimal()
         } else {
             numerator.toBigDecimal()
@@ -151,11 +164,10 @@ class Rational private constructor(
             numerator = BigInteger.ZERO,
             denominator = BigInteger.ONE,
         )
-//
-//        val ONE: Rational = Rational(
-//            numerator = BigInteger.ONE,
-//            denominator = BigInteger.ONE,
-//        )
+        val ONE: Rational = Rational(
+            numerator = BigInteger.ONE,
+            denominator = BigInteger.ONE,
+        )
 
         fun of(
             numerator: BigInteger,

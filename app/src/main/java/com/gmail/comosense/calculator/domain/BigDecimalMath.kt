@@ -1,6 +1,5 @@
 package com.gmail.comosense.calculator.domain
 
-import com.gmail.comosense.calculator.common.Constraints
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.ensureActive
 import java.math.BigDecimal
@@ -8,19 +7,7 @@ import java.math.BigInteger
 import java.math.MathContext
 import kotlin.coroutines.CoroutineContext
 
-internal object BigDecimalMathConstraints {
-    const val MAX_FACTORIAL_ARGUMENT: Int = Constraints.MAX_FACTORIAL_ARGUMENT
-    const val MAX_INTEGER_EXPONENT: Int = Constraints.MAX_INTEGER_EXPONENT
-    const val MAX_NON_INTEGER_EXPONENT: Int = Constraints.MAX_NON_INTEGER_EXPONENT
-    const val MAX_EXPONENTIAL_ARGUMENT: Int = Constraints.MAX_EXPONENTIAL_ARGUMENT
-}
-
-class FactorialLargeArgumentException : ArithmeticException()
-class FactorialInvalidArgumentException : ArithmeticException()
 class SqrtInvalidArgumentException : ArithmeticException()
-class ExpLargeArgumentException : ArithmeticException()
-class PowInvalidArgumentException : ArithmeticException()
-class PowLimitExceededException : ArithmeticException()
 class LogInvalidArgumentException : ArithmeticException()
 class TanInvalidArgumentException : ArithmeticException()
 class ArcsinInvalidArgumentException : ArithmeticException()
@@ -43,22 +30,6 @@ internal object BigDecimalMath {
     private val TWO_HUNDRED_THIRTY_NINE: BigDecimal = 239.toBigDecimal()
     private val BIG_INTEGER_ONE: BigInteger = BigInteger.ONE
     private val BIG_INTEGER_TWO: BigInteger = 2.toBigInteger()
-    private val MAX_FACTORIAL_ARGUMENT: BigInteger =
-        BigDecimalMathConstraints.MAX_FACTORIAL_ARGUMENT.toBigInteger()
-    private val MAX_EXPONENTIAL_ARGUMENT: BigDecimal =
-        BigDecimalMathConstraints.MAX_EXPONENTIAL_ARGUMENT.toBigDecimal()
-    private val MAX_INTEGER_EXPONENT: BigInteger =
-        BigDecimalMathConstraints.MAX_INTEGER_EXPONENT.toBigInteger()
-    private val MAX_NON_INTEGER_EXPONENT: BigDecimal =
-        BigDecimalMathConstraints.MAX_NON_INTEGER_EXPONENT.toBigDecimal()
-
-    init {
-        require(MAX_FACTORIAL_ARGUMENT.signum() >= 0)
-        require(MAX_EXPONENTIAL_ARGUMENT.signum() >= 0)
-        require(MAX_INTEGER_EXPONENT.signum() >= 0)
-        require(MAX_INTEGER_EXPONENT <= Int.MAX_VALUE.toBigInteger())
-        require(MAX_NON_INTEGER_EXPONENT.signum() >= 0)
-    }
 
     private data class MathConstant(
         val mc: MathContext,
@@ -109,23 +80,23 @@ internal object BigDecimalMath {
     }
 
     suspend fun factorial(
-        value: BigDecimal,
-    ): BigDecimal {
-        val integerValue: BigInteger = try {
-            value.toBigIntegerExact()
-        } catch (_: ArithmeticException) {
-            throw FactorialInvalidArgumentException()
+        value: Int,
+    ): BigInteger {
+        require(value >= 0)
+
+        val coroutineContext: CoroutineContext = currentCoroutineContext()
+
+        var result: BigInteger = BigInteger.ONE
+        var i = 1
+
+        while (i <= value) {
+            coroutineContext.ensureActive()
+
+            result = result.multiply(i.toBigInteger())
+            i++
         }
 
-        if (integerValue.signum() < 0) {
-            throw FactorialInvalidArgumentException()
-        }
-
-        if (integerValue > MAX_FACTORIAL_ARGUMENT) {
-            throw FactorialLargeArgumentException()
-        }
-
-        return calculateFactorial(integerValue)
+        return result
     }
 
     suspend fun sqrt(
@@ -146,72 +117,59 @@ internal object BigDecimalMath {
             return ONE
         }
 
-        if (value.abs() > MAX_EXPONENTIAL_ARGUMENT) {
-            throw ExpLargeArgumentException()
-        }
-
         return calculateExp(
             value = value,
             mc = internalMc(mc),
         ).round(mc)
     }
 
-    suspend fun pow(
+    suspend fun powNaturalExponent(
+        base: BigDecimal,
+        exponent: Int,
+    ): BigDecimal {
+        require(exponent > 0)
+
+        val coroutineContext: CoroutineContext = currentCoroutineContext()
+
+        var n: Long = exponent.toLong()
+        var currentBase: BigDecimal = base
+        var result: BigDecimal = ONE
+
+        while (n > 0L) {
+            coroutineContext.ensureActive()
+
+            if ((n and 1L) != 0L) {
+                result = result.multiply(currentBase)
+            }
+
+            n = n shr 1
+
+            if (n > 0L) {
+                currentBase = currentBase.multiply(currentBase)
+            }
+        }
+
+        return result
+    }
+
+    suspend fun powDecimalExponent(
         base: BigDecimal,
         exponent: BigDecimal,
         mc: MathContext,
     ): BigDecimal {
-        if (base.signum() == 0) {
-            return if (exponent.signum() > 0) {
-                ZERO
-            } else {
-                throw PowInvalidArgumentException()
-            }
-        }
+        require(base.signum() > 0)
 
-        if (exponent.signum() == 0) {
-            return ONE
-        }
+        val internalMc: MathContext = internalMc(mc)
 
-        val integerExponent: BigInteger? = try {
-            exponent.toBigIntegerExact()
-        } catch (_: ArithmeticException) {
-            null
-        }
-
-        if (integerExponent != null) {
-            if (integerExponent.abs() > MAX_INTEGER_EXPONENT) {
-                throw PowLimitExceededException()
-            }
-            val result = calculateIntegerPow(
-                base = base,
-                exponent = integerExponent.abs().intValueExact(),
-            )
-
-            return if (integerExponent.signum() > 0) {
-                result
-            } else {
-                ONE.divide(result, mc)
-            }
-        } else {
-            if (exponent.abs() > MAX_NON_INTEGER_EXPONENT) {
-                throw PowLimitExceededException()
-            }
-            if (base.signum() < 0) {
-                throw PowInvalidArgumentException()
-            }
-
-            val internalMc: MathContext = internalMc(mc)
-            return calculateExp(
-                value = exponent.multiply(
-                    calculateLn(
-                        value = base,
-                        mc = internalMc,
-                    )
-                ),
-                mc = internalMc,
-            ).round(mc)
-        }
+        return calculateExp(
+            value = exponent.multiply(
+                calculateLn(
+                    value = base,
+                    mc = internalMc,
+                )
+            ),
+            mc = internalMc,
+        ).round(mc)
     }
 
     suspend fun ln(
@@ -393,24 +351,6 @@ internal object BigDecimalMath {
             )
     }
 
-    private suspend fun calculateFactorial(
-        value: BigInteger,
-    ): BigDecimal {
-        val coroutineContext: CoroutineContext = currentCoroutineContext()
-
-        var result: BigInteger = BigInteger.ONE
-        var i: BigInteger = BigInteger.ONE
-
-        while (i <= value) {
-            coroutineContext.ensureActive()
-
-            result = result.multiply(i)
-            i = i.add(BigInteger.ONE)
-        }
-
-        return result.toBigDecimal()
-    }
-
     private suspend fun calculateSqrt(
         value: BigDecimal,
         mc: MathContext,
@@ -449,33 +389,6 @@ internal object BigDecimalMath {
             previousX = x
             x = next
         }
-    }
-
-    private suspend fun calculateIntegerPow(
-        base: BigDecimal,
-        exponent: Int,
-    ): BigDecimal {
-        val coroutineContext: CoroutineContext = currentCoroutineContext()
-
-        var n: Long = exponent.toLong()
-        var currentBase: BigDecimal = base
-        var result: BigDecimal = ONE
-
-        while (n > 0L) {
-            coroutineContext.ensureActive()
-
-            if ((n and 1L) != 0L) {
-                result = result.multiply(currentBase)
-            }
-
-            n = n shr 1
-
-            if (n > 0L) {
-                currentBase = currentBase.multiply(currentBase)
-            }
-        }
-
-        return result
     }
 
     private suspend fun calculateExp(
