@@ -10,7 +10,7 @@ class NumericValue private constructor(
     val decimal: BigDecimal,
     val rational: Rational,
 ) {
-    fun toRational(): Rational =
+    private fun toRational(): Rational =
         Rational.of(decimal) + rational
 
     fun toBigDecimal(
@@ -84,31 +84,20 @@ class NumericValue private constructor(
             rational = Rational.ONE,
         )
 
-        fun fromExact(value: BigDecimal): NumericValue = of(
+        fun from(value: BigDecimal): NumericValue = of(
             decimal = value,
         )
 
-        fun fromExact(value: BigInteger): NumericValue = of(
+        fun from(value: BigInteger): NumericValue = of(
             decimal = value.toBigDecimal(),
-        )
-
-        fun fromApproximation(value: BigDecimal): NumericValue = of(
-            decimal = value,
         )
 
         fun of(
             decimal: BigDecimal = BigDecimal.ZERO,
             rational: Rational = Rational.ZERO,
-        ): NumericValue {
-            val integerPart: BigInteger = rational.numerator
-                .divide(rational.denominator)
-            val fractionalPart: Rational =
-                rational - Rational.of(integerPart)
-
-            return NumericValue(
-                decimal = decimal.add(integerPart.toBigDecimal()),
-                rational = fractionalPart,
-            )
-        }
+        ): NumericValue = NumericValue(
+            decimal = decimal,
+            rational = rational,
+        )
     }
 }

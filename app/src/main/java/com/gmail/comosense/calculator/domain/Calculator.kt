@@ -294,7 +294,7 @@ private class Parser(
             when (expression[position]) {
                 is Symbol.PostfixOperator.Factorial -> {
                     position++
-                    value = NumericValue.fromExact(
+                    value = NumericValue.from(
                         BigDecimalMath.factorial(
                             value = factorialArgument(value),
                         )
@@ -318,13 +318,13 @@ private class Parser(
 
         return when (val symbol: Symbol = expression[position]) {
             is Symbol.Numeric ->
-                NumericValue.fromExact(
+                NumericValue.from(
                     parseNumeric()
                 )
 
             is Symbol.Constant -> {
                 position++
-                NumericValue.fromApproximation(
+                NumericValue.from(
                     parseConstant(symbol, increasePrecision(mc))
                 )
             }
@@ -421,7 +421,7 @@ private class Parser(
     ): NumericValue {
         return when (function) {
             Symbol.Factor.Function.Sqrt ->
-                NumericValue.fromApproximation(
+                NumericValue.from(
                     BigDecimalMath.sqrt(
                         value = value,
                         mc = mc,
@@ -505,7 +505,7 @@ private class Parser(
                 )
         }
 
-        return NumericValue.fromApproximation(result)
+        return NumericValue.from(result)
     }
 
     private fun increasePrecision(
@@ -562,7 +562,7 @@ private class Parser(
             exponent = abs(exponent),
         )
 
-        return NumericValue.fromApproximation(
+        return NumericValue.from(
             if (exponent >= 0) {
                 result
             } else {
@@ -581,7 +581,7 @@ private class Parser(
             throw PowInvalidArgumentException()
         }
 
-        return NumericValue.fromApproximation(
+        return NumericValue.from(
             BigDecimalMath.powDecimalExponent(
                 base = base,
                 exponent = nonIntegerExponent(exponent, increasePrecision(mc)),
