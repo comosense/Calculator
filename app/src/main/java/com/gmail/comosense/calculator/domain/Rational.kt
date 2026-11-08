@@ -13,32 +13,6 @@ class Rational private constructor(
         require(denominator.signum() > 0)
     }
 
-    //
-//    override fun equals(
-//        other: Any?
-//    ): Boolean =
-//        other is Rational &&
-//                numerator == other.numerator &&
-//                denominator == other.denominator
-//
-//    override fun hashCode(): Int =
-//        31 * numerator.hashCode() + denominator.hashCode()
-//
-//    override fun toString(): String =
-//        "$numerator/$denominator"
-//
-//    operator fun unaryMinus(): Rational =
-//        of(
-//            numerator = numerator.negate(),
-//            denominator = denominator,
-//        )
-//
-//    operator fun compareTo(other: Rational): Int {
-//        return numerator
-//            .multiply(other.denominator)
-//            .compareTo(other.numerator.multiply(denominator))
-//    }
-//
     operator fun plus(
         other: Rational,
     ): Rational {
@@ -105,7 +79,8 @@ class Rational private constructor(
         )
     }
 
-    fun signum(): Int = numerator.signum()
+    fun signum(): Int =
+        numerator.signum()
 
     fun negate(): Rational =
         of(
@@ -119,6 +94,15 @@ class Rational private constructor(
     fun isInteger(): Boolean =
         denominator == BigInteger.ONE
 
+    fun toBigDecimal(mc: MathContext): BigDecimal {
+        return if (isInteger()) {
+            numerator.toBigDecimal()
+        } else {
+            numerator.toBigDecimal()
+                .divide(denominator.toBigDecimal(), mc)
+        }
+    }
+
     fun toBigIntegerExact(): BigInteger {
         if (!isInteger()) {
             throw ArithmeticException()
@@ -128,6 +112,8 @@ class Rational private constructor(
     }
 
     fun pow(exponent: Int): Rational {
+        require(exponent != Int.MIN_VALUE)
+
         if (exponent == 0) {
             require(!isZero())
             return ONE
@@ -147,15 +133,6 @@ class Rational private constructor(
                 numerator = denominator.pow(n),
                 denominator = numerator.pow(n),
             )
-        }
-    }
-
-    fun toBigDecimal(mc: MathContext): BigDecimal {
-        return if (isInteger()) {
-            numerator.toBigDecimal()
-        } else {
-            numerator.toBigDecimal()
-                .divide(denominator.toBigDecimal(), mc)
         }
     }
 

@@ -172,12 +172,12 @@ private class Parser(
             value = when (expression[position]) {
                 is Symbol.Operator.Add -> {
                     position++
-                    value.add(parseTerm(mc), mc)
+                    value + parseTerm(mc)
                 }
 
                 is Symbol.Operator.Subtract -> {
                     position++
-                    value.subtract(parseTerm(mc), mc)
+                    value - parseTerm(mc)
                 }
 
                 else ->
@@ -200,12 +200,12 @@ private class Parser(
             value = when (expression[position]) {
                 is Symbol.Operator.Multiply -> {
                     position++
-                    value.multiply(parseSign(mc), mc)
+                    value * parseSign(mc)
                 }
 
                 is Symbol.Operator.Divide -> {
                     position++
-                    value.divide(parseSign(mc), mc)
+                    value / parseSign(mc)
                 }
 
                 else ->
@@ -239,60 +239,45 @@ private class Parser(
     ): NumericValue {
         val base: NumericValue = parsePostfixOperation(mc)
 
-        return if (expression.getOrNull(position)
-                    is Symbol.Operator.Power
-        ) {
-            position++
-            val exponent: NumericValue = parseSign(increasePrecision(mc))
+        if (expression.getOrNull(position) !is Symbol.Operator.Power) {
+            return base
+        }
 
-            if (base.signum() == 0) {
-                if (exponent.signum() > 0) {
-                    return NumericValue.RationalValue(Rational.ZERO)
-                } else {
-                    throw PowInvalidArgumentException()
-                }
+        position++
+        val exponent: NumericValue = parseSign(increasePrecision(mc))
+
+        if (base.signum() == 0) {
+            if (exponent.signum() > 0) {
+                return NumericValue.ZERO
             }
+            throw PowInvalidArgumentException()
+        }
 
-            if (exponent.signum() == 0) {
-                return NumericValue.RationalValue(Rational.ONE)
-            }
+        if (exponent.signum() == 0) {
+            return NumericValue.ONE
+        }
 
-            val integerExponent: Int? = integerExponent(exponent)
+        val integerExponent: Int? = integerExponent(exponent)
 
-            when (base) {
-                is NumericValue.RationalValue -> {
-                    if (integerExponent is Int) {
-                        powRationalBase(
-                            base = base,
-                            exponent = integerExponent,
-                        )
-                    } else {
-                        powDecimalExponent(
-                            base = base.value.toBigDecimal(increasePrecision(mc)),
-                            exponent = exponent,
-                            mc = mc,
-                        )
-                    }
-                }
-
-                is NumericValue.DecimalValue -> {
-                    if (integerExponent is Int) {
-                        powNaturalExponent(
-                            base = base.value,
-                            exponent = integerExponent,
-                            mc = mc,
-                        )
-                    } else {
-                        powDecimalExponent(
-                            base = base.value,
-                            exponent = exponent,
-                            mc = mc,
-                        )
-                    }
-                }
+        return if (integerExponent != null) {
+            if (base.decimal.signum() == 0) {
+                powRationalBase(
+                    base = base,
+                    exponent = integerExponent,
+                )
+            } else {
+                powNaturalExponent(
+                    base = base.toBigDecimal(increasePrecision(mc)),
+                    exponent = integerExponent,
+                    mc = mc,
+                )
             }
         } else {
-            base
+            powDecimalExponent(
+                base = base.toBigDecimal(increasePrecision(mc)),
+                exponent = exponent,
+                mc = mc,
+            )
         }
     }
 
@@ -309,10 +294,10 @@ private class Parser(
             when (expression[position]) {
                 is Symbol.PostfixOperator.Factorial -> {
                     position++
-                    value = NumericValue.DecimalValue(
+                    value = NumericValue.fromExact(
                         BigDecimalMath.factorial(
                             value = factorialArgument(value),
-                        ).toBigDecimal()
+                        )
                     )
                 }
 
@@ -333,15 +318,13 @@ private class Parser(
 
         return when (val symbol: Symbol = expression[position]) {
             is Symbol.Numeric ->
-                NumericValue.RationalValue(
-                    Rational.of(
-                        parseNumeric()
-                    )
+                NumericValue.fromExact(
+                    parseNumeric()
                 )
 
             is Symbol.Constant -> {
                 position++
-                NumericValue.DecimalValue(
+                NumericValue.fromApproximation(
                     parseConstant(symbol, increasePrecision(mc))
                 )
             }
@@ -438,7 +421,7 @@ private class Parser(
     ): NumericValue {
         return when (function) {
             Symbol.Factor.Function.Sqrt ->
-                NumericValue.DecimalValue(
+                NumericValue.fromApproximation(
                     BigDecimalMath.sqrt(
                         value = value,
                         mc = mc,
@@ -522,7 +505,7 @@ private class Parser(
                 )
         }
 
-        return NumericValue.DecimalValue(result)
+        return NumericValue.fromApproximation(result)
     }
 
     private fun increasePrecision(
@@ -561,11 +544,11 @@ private class Parser(
     }
 
     private fun powRationalBase(
-        base: NumericValue.RationalValue,
+        base: NumericValue,
         exponent: Int,
     ): NumericValue {
-        return NumericValue.RationalValue(
-            base.value.pow(exponent)
+        return NumericValue.of(
+            rational = base.rational.pow(exponent)
         )
     }
 
@@ -579,11 +562,12 @@ private class Parser(
             exponent = abs(exponent),
         )
 
-        return NumericValue.DecimalValue(
+        return NumericValue.fromApproximation(
             if (exponent >= 0) {
                 result
             } else {
-                BigDecimal.ONE.divide(result, mc)
+                BigDecimal.ONE.divide(result, increasePrecision(mc))
+
             }
         )
     }
@@ -597,7 +581,7 @@ private class Parser(
             throw PowInvalidArgumentException()
         }
 
-        return NumericValue.DecimalValue(
+        return NumericValue.fromApproximation(
             BigDecimalMath.powDecimalExponent(
                 base = base,
                 exponent = nonIntegerExponent(exponent, increasePrecision(mc)),
@@ -621,7 +605,9 @@ private class Parser(
             throw PowLimitExceededException()
         }
 
-        if (abs(exponent) > MAX_INTEGER_EXPONENT) {
+        if (exponent > MAX_INTEGER_EXPONENT ||
+            exponent < -MAX_INTEGER_EXPONENT
+        ) {
             throw PowLimitExceededException()
         }
 

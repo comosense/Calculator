@@ -6,124 +6,109 @@ import java.math.MathContext
 
 class DivisionByZeroException : ArithmeticException()
 
-sealed interface NumericValue {
-    data class RationalValue(
-        val value: Rational,
-    ) : NumericValue
+class NumericValue private constructor(
+    val decimal: BigDecimal,
+    val rational: Rational,
+) {
+    fun toRational(): Rational =
+        Rational.of(decimal) + rational
 
-    data class DecimalValue(
-        val value: BigDecimal,
-    ) : NumericValue
-}
-
-private fun NumericValue.asRationalOrNull(): Rational? = when (this) {
-    is NumericValue.RationalValue ->
-        value
-
-    is NumericValue.DecimalValue ->
-        null
-}
-
-internal fun NumericValue.toBigDecimal(
-    mc: MathContext,
-): BigDecimal = when (this) {
-    is NumericValue.RationalValue ->
-        value.toBigDecimal(mc)
-
-    is NumericValue.DecimalValue ->
-        value
-}
-
-internal fun NumericValue.toBigIntegerExact(): BigInteger = when (this) {
-    is NumericValue.RationalValue ->
-        value.toBigIntegerExact()
-
-    is NumericValue.DecimalValue ->
-        value.toBigIntegerExact()
-}
-
-internal fun NumericValue.signum(): Int = when (this) {
-    is NumericValue.RationalValue ->
-        value.signum()
-
-    is NumericValue.DecimalValue ->
-        value.signum()
-}
-
-internal fun NumericValue.negate(): NumericValue = when (this) {
-    is NumericValue.RationalValue ->
-        NumericValue.RationalValue(value.negate())
-
-    is NumericValue.DecimalValue ->
-        NumericValue.DecimalValue(value.negate())
-}
-
-internal fun NumericValue.add(
-    other: NumericValue,
-    mc: MathContext,
-): NumericValue {
-    val left: Rational? = asRationalOrNull()
-    val right: Rational? = other.asRationalOrNull()
-
-    return if (left != null && right != null) {
-        NumericValue.RationalValue(left + right)
-    } else {
-        NumericValue.DecimalValue(
-            toBigDecimal(mc).add(other.toBigDecimal(mc))
-        )
-    }
-}
-
-internal fun NumericValue.subtract(
-    other: NumericValue,
-    mc: MathContext,
-): NumericValue {
-    val left: Rational? = asRationalOrNull()
-    val right: Rational? = other.asRationalOrNull()
-
-    return if (left != null && right != null) {
-        NumericValue.RationalValue(left - right)
-    } else {
-        NumericValue.DecimalValue(
-            toBigDecimal(mc).subtract(other.toBigDecimal(mc))
-        )
-    }
-}
-
-internal fun NumericValue.multiply(
-    other: NumericValue,
-    mc: MathContext,
-): NumericValue {
-    val left: Rational? = asRationalOrNull()
-    val right: Rational? = other.asRationalOrNull()
-
-    return if (left != null && right != null) {
-        NumericValue.RationalValue(left * right)
-    } else {
-        NumericValue.DecimalValue(
-            toBigDecimal(mc).multiply(other.toBigDecimal(mc))
-        )
-    }
-}
-
-internal fun NumericValue.divide(
-    other: NumericValue,
-    mc: MathContext,
-): NumericValue {
-    val left: Rational? = asRationalOrNull()
-    val right: Rational? = other.asRationalOrNull()
-
-    if (right?.isZero() == true ||
-        (right == null && other.toBigDecimal(mc).signum() == 0)
-    ) {
-        throw DivisionByZeroException()
+    fun toBigDecimal(
+        mc: MathContext,
+    ): BigDecimal {
+        return decimal.add(rational.toBigDecimal(mc))
     }
 
-    return if (left != null && right != null) {
-        NumericValue.RationalValue(left / right)
-    } else {
-        NumericValue.DecimalValue(
-            toBigDecimal(mc).divide(other.toBigDecimal(mc), mc)
+    fun toBigIntegerExact(): BigInteger =
+        toRational().toBigIntegerExact()
+
+    fun signum(): Int =
+        toRational().signum()
+
+    fun negate(): NumericValue = of(
+        decimal = decimal.negate(),
+        rational = rational.negate(),
+    )
+
+    operator fun plus(
+        other: NumericValue,
+    ): NumericValue = of(
+        decimal = decimal.add(other.decimal),
+        rational = rational + other.rational,
+    )
+
+    operator fun minus(
+        other: NumericValue,
+    ): NumericValue = of(
+        decimal = decimal.subtract(other.decimal),
+        rational = rational - other.rational,
+    )
+
+    operator fun times(
+        other: NumericValue,
+    ): NumericValue {
+        val leftDecimal: Rational = Rational.of(decimal)
+        val rightDecimal: Rational = Rational.of(other.decimal)
+
+        val rationalPart: Rational =
+            leftDecimal * other.rational +
+                    rational * rightDecimal +
+                    rational * other.rational
+
+        return of(
+            decimal = decimal.multiply(other.decimal),
+            rational = rationalPart,
         )
+    }
+
+    operator fun div(
+        other: NumericValue,
+    ): NumericValue {
+        val denominator: Rational = other.toRational()
+
+        if (denominator.isZero()) {
+            throw DivisionByZeroException()
+        }
+
+        return of(
+            rational = toRational() / denominator,
+        )
+    }
+
+    companion object {
+        val ZERO: NumericValue = of(
+            rational = Rational.ZERO,
+        )
+
+        val ONE: NumericValue = of(
+            rational = Rational.ONE,
+        )
+
+        fun fromExact(value: BigDecimal): NumericValue = of(
+            decimal = value,
+        )
+
+        fun fromExact(value: BigInteger): NumericValue = of(
+            decimal = value.toBigDecimal(),
+        )
+
+        fun fromApproximation(value: BigDecimal): NumericValue = of(
+            decimal = value,
+        )
+
+        fun of(
+            decimal: BigDecimal = BigDecimal.ZERO,
+            rational: Rational = Rational.ZERO,
+        ): NumericValue {
+            val integerPart: BigInteger = rational.numerator
+                .divide(rational.denominator)
+            val fractionalPart: Rational =
+                rational - Rational.of(integerPart)
+
+            return NumericValue(
+                decimal = decimal.add(integerPart.toBigDecimal()),
+                rational = fractionalPart,
+            )
+        }
     }
 }
