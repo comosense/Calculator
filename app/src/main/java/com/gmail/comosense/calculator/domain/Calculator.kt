@@ -239,45 +239,15 @@ private class Parser(
     ): NumericValue {
         val base: NumericValue = parsePostfixOperation(mc)
 
-        if (expression.getOrNull(position) !is Symbol.Operator.Power) {
-            return base
-        }
-
-        position++
-        val exponent: NumericValue = parseSign(increasePrecision(mc))
-
-        if (base.signum() == 0) {
-            if (exponent.signum() > 0) {
-                return NumericValue.ZERO
-            }
-            throw PowInvalidArgumentException()
-        }
-
-        if (exponent.signum() == 0) {
-            return NumericValue.ONE
-        }
-
-        val integerExponent: Int? = integerExponent(exponent)
-
-        return if (integerExponent != null) {
-            if (base.decimal.signum() == 0) {
-                powRationalBase(
-                    base = base,
-                    exponent = integerExponent,
-                )
-            } else {
-                powNaturalExponent(
-                    base = base.toBigDecimal(increasePrecision(mc)),
-                    exponent = integerExponent,
-                    mc = mc,
-                )
-            }
-        } else {
-            powDecimalExponent(
-                base = base.toBigDecimal(increasePrecision(mc)),
-                exponent = exponent,
+        return if (expression.getOrNull(position) is Symbol.Operator.Power) {
+            position++
+            pow(
+                base = base,
+                exponent = parseSign(increasePrecision(mc)),
                 mc = mc,
             )
+        } else {
+            base
         }
     }
 
@@ -508,39 +478,44 @@ private class Parser(
         return NumericValue.from(result)
     }
 
-    private fun increasePrecision(
+    private suspend fun pow(
+        base: NumericValue,
+        exponent: NumericValue,
         mc: MathContext,
-    ): MathContext {
-        return MathContext(
-            mc.precision + additionalPrecision,
-            mc.roundingMode,
-        )
-    }
-
-    private fun factorialArgument(
-        value: NumericValue,
-    ): Int {
-        val bigIntegerArgument: BigInteger = try {
-            value.toBigIntegerExact()
-        } catch (_: ArithmeticException) {
-            throw FactorialInvalidArgumentException()
+    ): NumericValue {
+        if (base.signum() == 0) {
+            if (exponent.signum() > 0) {
+                return NumericValue.ZERO
+            }
+            throw PowInvalidArgumentException()
         }
 
-        if (bigIntegerArgument.signum() < 0) {
-            throw FactorialInvalidArgumentException()
+        if (exponent.signum() == 0) {
+            return NumericValue.ONE
         }
 
-        val argument: Int = try {
-            bigIntegerArgument.intValueExact()
-        } catch (_: ArithmeticException) {
-            throw FactorialLargeArgumentException()
-        }
+        val integerExponent: Int? = integerExponent(exponent)
 
-        if (argument > MAX_FACTORIAL_ARGUMENT) {
-            throw FactorialLargeArgumentException()
+        return if (integerExponent != null) {
+            if (base.decimal.signum() == 0) {
+                powRationalBase(
+                    base = base,
+                    exponent = integerExponent,
+                )
+            } else {
+                powNaturalExponent(
+                    base = base.toBigDecimal(increasePrecision(mc)),
+                    exponent = integerExponent,
+                    mc = mc,
+                )
+            }
+        } else {
+            powDecimalExponent(
+                base = base.toBigDecimal(increasePrecision(mc)),
+                exponent = exponent,
+                mc = mc,
+            )
         }
-
-        return argument
     }
 
     private suspend fun powRationalBase(
@@ -590,6 +565,32 @@ private class Parser(
         )
     }
 
+    private fun factorialArgument(
+        value: NumericValue,
+    ): Int {
+        val bigIntegerArgument: BigInteger = try {
+            value.toBigIntegerExact()
+        } catch (_: ArithmeticException) {
+            throw FactorialInvalidArgumentException()
+        }
+
+        if (bigIntegerArgument.signum() < 0) {
+            throw FactorialInvalidArgumentException()
+        }
+
+        val argument: Int = try {
+            bigIntegerArgument.intValueExact()
+        } catch (_: ArithmeticException) {
+            throw FactorialLargeArgumentException()
+        }
+
+        if (argument > MAX_FACTORIAL_ARGUMENT) {
+            throw FactorialLargeArgumentException()
+        }
+
+        return argument
+    }
+
     private fun integerExponent(
         value: NumericValue,
     ): Int? {
@@ -625,5 +626,14 @@ private class Parser(
         }
 
         return exponent
+    }
+
+    private fun increasePrecision(
+        mc: MathContext,
+    ): MathContext {
+        return MathContext(
+            mc.precision + additionalPrecision,
+            mc.roundingMode,
+        )
     }
 }
