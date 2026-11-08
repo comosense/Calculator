@@ -126,29 +126,50 @@ internal object BigDecimalMath {
     suspend fun powNaturalExponent(
         base: BigDecimal,
         exponent: Int,
-    ): BigDecimal {
+    ): BigDecimal = powNaturalExponent(
+        base = base,
+        exponent = exponent,
+        one = ONE,
+        multiply = BigDecimal::multiply
+    )
+
+    suspend fun powNaturalExponent(
+        base: BigInteger,
+        exponent: Int,
+    ): BigInteger = powNaturalExponent(
+        base = base,
+        exponent = exponent,
+        one = BIG_INTEGER_ONE,
+        multiply = BigInteger::multiply
+    )
+
+    private suspend fun <T> powNaturalExponent(
+        base: T,
+        exponent: Int,
+        one: T,
+        multiply: (T, T) -> T,
+    ): T {
         require(exponent > 0)
 
         val coroutineContext: CoroutineContext = currentCoroutineContext()
 
         var n: Long = exponent.toLong()
-        var currentBase: BigDecimal = base
-        var result: BigDecimal = ONE
+        var currentBase: T = base
+        var result: T = one
 
         while (n > 0L) {
             coroutineContext.ensureActive()
 
             if ((n and 1L) != 0L) {
-                result = result.multiply(currentBase)
+                result = multiply(result, currentBase)
             }
 
             n = n shr 1
 
             if (n > 0L) {
-                currentBase = currentBase.multiply(currentBase)
+                currentBase = multiply(currentBase, currentBase)
             }
         }
-
         return result
     }
 

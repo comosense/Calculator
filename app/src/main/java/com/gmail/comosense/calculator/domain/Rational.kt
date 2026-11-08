@@ -116,15 +116,17 @@ class Rational private constructor(
 
         val n: Int = abs(exponent)
 
-        val numeratorResult: BigInteger = BigDecimalMath.powNaturalExponent(
-            base = numerator.toBigDecimal(),
-            exponent = n,
-        ).toBigIntegerExact()
+        val numeratorResult: BigInteger =
+            BigDecimalMath.powNaturalExponent(
+                base = numerator,
+                exponent = n,
+            )
 
-        val denominatorResult: BigInteger = BigDecimalMath.powNaturalExponent(
-            base = denominator.toBigDecimal(),
-            exponent = n,
-        ).toBigIntegerExact()
+        val denominatorResult: BigInteger =
+            BigDecimalMath.powNaturalExponent(
+                base = denominator,
+                exponent = n,
+            )
 
         return if (exponent > 0) {
             of(
@@ -132,8 +134,6 @@ class Rational private constructor(
                 denominator = denominatorResult,
             )
         } else {
-            require(!isZero())
-
             of(
                 numerator = denominatorResult,
                 denominator = numeratorResult,
