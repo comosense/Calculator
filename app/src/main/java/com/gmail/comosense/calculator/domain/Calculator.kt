@@ -247,14 +247,14 @@ private class Parser(
 
             if (base.signum() == 0) {
                 if (exponent.signum() > 0) {
-                    NumericValue.RationalValue(Rational.ZERO)
+                    return NumericValue.RationalValue(Rational.ZERO)
                 } else {
                     throw PowInvalidArgumentException()
                 }
             }
 
             if (exponent.signum() == 0) {
-                NumericValue.RationalValue(Rational.ONE)
+                return NumericValue.RationalValue(Rational.ONE)
             }
 
             val integerExponent: Int? = integerExponent(exponent)
@@ -576,11 +576,11 @@ private class Parser(
     ): NumericValue {
         val result: BigDecimal = BigDecimalMath.powNaturalExponent(
             base = base,
-            exponent = exponent,
+            exponent = abs(exponent),
         )
 
         return NumericValue.DecimalValue(
-            if (base.signum() >= 0) {
+            if (exponent >= 0) {
                 result
             } else {
                 BigDecimal.ONE.divide(result, mc)
