@@ -111,27 +111,32 @@ class Rational private constructor(
         return numerator
     }
 
-    fun pow(exponent: Int): Rational {
+    suspend fun pow(exponent: Int): Rational {
         require(exponent != Int.MIN_VALUE)
-
-        if (exponent == 0) {
-            require(!isZero())
-            return ONE
-        }
 
         val n: Int = abs(exponent)
 
+        val numeratorResult: BigInteger = BigDecimalMath.powNaturalExponent(
+            base = numerator.toBigDecimal(),
+            exponent = n,
+        ).toBigIntegerExact()
+
+        val denominatorResult: BigInteger = BigDecimalMath.powNaturalExponent(
+            base = denominator.toBigDecimal(),
+            exponent = n,
+        ).toBigIntegerExact()
+
         return if (exponent > 0) {
             of(
-                numerator = numerator.pow(n),
-                denominator = denominator.pow(n),
+                numerator = numeratorResult,
+                denominator = denominatorResult,
             )
         } else {
             require(!isZero())
 
             of(
-                numerator = denominator.pow(n),
-                denominator = numerator.pow(n),
+                numerator = denominatorResult,
+                denominator = numeratorResult,
             )
         }
     }

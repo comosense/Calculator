@@ -543,7 +543,7 @@ private class Parser(
         return argument
     }
 
-    private fun powRationalBase(
+    private suspend fun powRationalBase(
         base: NumericValue,
         exponent: Int,
     ): NumericValue {
