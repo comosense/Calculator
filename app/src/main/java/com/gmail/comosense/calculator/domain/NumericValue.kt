@@ -7,8 +7,8 @@ import java.math.MathContext
 class DivisionByZeroException : ArithmeticException()
 
 class NumericValue private constructor(
-    val decimal: BigDecimal,
-    val rational: Rational,
+    val decimal: BigDecimal = BigDecimal.ZERO,
+    val rational: Rational = Rational.ZERO,
 ) {
     companion object {
         private fun of(
@@ -20,12 +20,10 @@ class NumericValue private constructor(
         )
 
         val ZERO: NumericValue = of(
-            decimal = BigDecimal.ZERO,
             rational = Rational.ZERO,
         )
 
         val ONE: NumericValue = of(
-            decimal = BigDecimal.ZERO,
             rational = Rational.ONE,
         )
 
