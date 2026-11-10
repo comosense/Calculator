@@ -11,31 +11,23 @@ class NumericValue private constructor(
     val rational: Rational = Rational.ZERO,
 ) {
     companion object {
-        private fun of(
-            decimal: BigDecimal = BigDecimal.ZERO,
-            rational: Rational = Rational.ZERO,
-        ): NumericValue = NumericValue(
-            decimal = decimal,
-            rational = rational,
-        )
-
-        val ZERO: NumericValue = of(
+        val ZERO: NumericValue = NumericValue(
             rational = Rational.ZERO,
         )
 
-        val ONE: NumericValue = of(
+        val ONE: NumericValue = NumericValue(
             rational = Rational.ONE,
         )
 
-        fun of(value: BigDecimal): NumericValue = of(
+        fun of(value: BigDecimal): NumericValue = NumericValue(
             decimal = value,
         )
 
-        fun of(value: BigInteger): NumericValue = of(
+        fun of(value: BigInteger): NumericValue = NumericValue(
             decimal = value.toBigDecimal(),
         )
 
-        fun of(value: Rational): NumericValue = of(
+        fun of(value: Rational): NumericValue = NumericValue(
             rational = value,
         )
     }
@@ -55,21 +47,21 @@ class NumericValue private constructor(
     fun signum(): Int =
         toRational().signum()
 
-    fun negate(): NumericValue = of(
+    fun negate(): NumericValue = NumericValue(
         decimal = decimal.negate(),
         rational = rational.negate(),
     )
 
     operator fun plus(
         other: NumericValue,
-    ): NumericValue = of(
+    ): NumericValue = NumericValue(
         decimal = decimal.add(other.decimal),
         rational = rational + other.rational,
     )
 
     operator fun minus(
         other: NumericValue,
-    ): NumericValue = of(
+    ): NumericValue = NumericValue(
         decimal = decimal.subtract(other.decimal),
         rational = rational - other.rational,
     )
@@ -80,7 +72,7 @@ class NumericValue private constructor(
         val leftDecimal: Rational = Rational.of(decimal)
         val rightDecimal: Rational = Rational.of(other.decimal)
 
-        return of(
+        return NumericValue(
             decimal = decimal.multiply(other.decimal),
             rational = leftDecimal * other.rational +
                     rational * rightDecimal +
@@ -97,7 +89,7 @@ class NumericValue private constructor(
             throw DivisionByZeroException()
         }
 
-        return of(
+        return NumericValue(
             rational = toRational() / denominator,
         )
     }
