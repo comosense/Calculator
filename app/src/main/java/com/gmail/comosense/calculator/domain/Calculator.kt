@@ -360,7 +360,7 @@ private class Parser(
         val result: BigDecimal = buffer.toString().toBigDecimalOrNull()
             ?: throw InvalidNumericFormatException()
 
-        return NumericValue.from(result)
+        return NumericValue.of(result)
     }
 
     private suspend fun parseConstant(
@@ -379,7 +379,7 @@ private class Parser(
                 )
         }
 
-        return NumericValue.from(result)
+        return NumericValue.of(result)
     }
 
     private suspend fun applyFunction(
@@ -389,7 +389,7 @@ private class Parser(
     ): NumericValue {
         return when (function) {
             Symbol.Factor.Function.Sqrt ->
-                NumericValue.from(
+                NumericValue.of(
                     BigDecimalMath.sqrt(
                         value = value.toBigDecimal(mc),
                         mc = mc,
@@ -475,13 +475,13 @@ private class Parser(
                 )
         }
 
-        return NumericValue.from(result)
+        return NumericValue.of(result)
     }
 
     private suspend fun factorial(
         value: NumericValue
     ): NumericValue {
-        return NumericValue.from(
+        return NumericValue.of(
             BigDecimalMath.factorial(
                 value = factorialArgument(value)
             )
@@ -533,7 +533,7 @@ private class Parser(
         exponent: Int,
     ): NumericValue {
         return NumericValue.of(
-            rational = base.rational.pow(exponent)
+            value = base.rational.pow(exponent)
         )
     }
 
@@ -547,7 +547,7 @@ private class Parser(
             exponent = abs(exponent),
         )
 
-        return NumericValue.from(
+        return NumericValue.of(
             if (exponent >= 0) {
                 result
             } else {
@@ -566,7 +566,7 @@ private class Parser(
             throw PowInvalidArgumentException()
         }
 
-        return NumericValue.from(
+        return NumericValue.of(
             BigDecimalMath.powDecimalExponent(
                 base = base,
                 exponent = nonIntegerExponent(exponent, increasePrecision(mc)),

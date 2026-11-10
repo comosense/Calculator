@@ -11,28 +11,34 @@ class NumericValue private constructor(
     val rational: Rational,
 ) {
     companion object {
-        val ZERO: NumericValue = of(
-            rational = Rational.ZERO,
-        )
-
-        val ONE: NumericValue = of(
-            rational = Rational.ONE,
-        )
-
-        fun from(value: BigDecimal): NumericValue = of(
-            decimal = value,
-        )
-
-        fun from(value: BigInteger): NumericValue = of(
-            decimal = value.toBigDecimal(),
-        )
-
-        fun of(
+        private fun of(
             decimal: BigDecimal = BigDecimal.ZERO,
             rational: Rational = Rational.ZERO,
         ): NumericValue = NumericValue(
             decimal = decimal,
             rational = rational,
+        )
+
+        val ZERO: NumericValue = of(
+            decimal = BigDecimal.ZERO,
+            rational = Rational.ZERO,
+        )
+
+        val ONE: NumericValue = of(
+            decimal = BigDecimal.ZERO,
+            rational = Rational.ONE,
+        )
+
+        fun of(value: BigDecimal): NumericValue = of(
+            decimal = value,
+        )
+
+        fun of(value: BigInteger): NumericValue = of(
+            decimal = value.toBigDecimal(),
+        )
+
+        fun of(value: Rational): NumericValue = of(
+            rational = value,
         )
     }
 
