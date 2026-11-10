@@ -13,6 +13,65 @@ class Rational private constructor(
         require(denominator.signum() > 0)
     }
 
+    companion object {
+        val ZERO: Rational = Rational(
+            numerator = BigInteger.ZERO,
+            denominator = BigInteger.ONE,
+        )
+        val ONE: Rational = Rational(
+            numerator = BigInteger.ONE,
+            denominator = BigInteger.ONE,
+        )
+
+        fun of(
+            numerator: BigInteger,
+            denominator: BigInteger = BigInteger.ONE,
+        ): Rational {
+            require(denominator.signum() != 0)
+
+            if (numerator.signum() == 0) {
+                return ZERO
+            }
+
+            val gcd: BigInteger = numerator.gcd(denominator)
+
+            var n: BigInteger = numerator.divide(gcd)
+            var d: BigInteger = denominator.divide(gcd)
+
+            if (d.signum() < 0) {
+                n = n.negate()
+                d = d.negate()
+            }
+
+            return Rational(
+                numerator = n,
+                denominator = d,
+            )
+        }
+
+        fun of(
+            value: BigDecimal,
+        ): Rational {
+            val scale: Int = value.scale()
+
+            return if (scale >= 0) {
+                of(
+                    numerator = value
+                        .unscaledValue(),
+                    denominator = BigInteger.TEN
+                        .pow(scale),
+                )
+            } else {
+                of(
+                    numerator = value
+                        .unscaledValue()
+                        .multiply(BigInteger.TEN.pow(-scale)),
+                    denominator = BigInteger.ONE,
+                )
+            }
+        }
+    }
+
     operator fun plus(
         other: Rational,
     ): Rational {
@@ -138,65 +197,6 @@ class Rational private constructor(
                 numerator = denominatorResult,
                 denominator = numeratorResult,
             )
-        }
-    }
-
-    companion object {
-        val ZERO: Rational = Rational(
-            numerator = BigInteger.ZERO,
-            denominator = BigInteger.ONE,
-        )
-        val ONE: Rational = Rational(
-            numerator = BigInteger.ONE,
-            denominator = BigInteger.ONE,
-        )
-
-        fun of(
-            numerator: BigInteger,
-            denominator: BigInteger = BigInteger.ONE,
-        ): Rational {
-            require(denominator.signum() != 0)
-
-            if (numerator.signum() == 0) {
-                return ZERO
-            }
-
-            val gcd: BigInteger = numerator.gcd(denominator)
-
-            var n: BigInteger = numerator.divide(gcd)
-            var d: BigInteger = denominator.divide(gcd)
-
-            if (d.signum() < 0) {
-                n = n.negate()
-                d = d.negate()
-            }
-
-            return Rational(
-                numerator = n,
-                denominator = d,
-            )
-        }
-
-        fun of(
-            value: BigDecimal,
-        ): Rational {
-            val scale: Int = value.scale()
-
-            return if (scale >= 0) {
-                of(
-                    numerator = value
-                        .unscaledValue(),
-                    denominator = BigInteger.TEN
-                        .pow(scale),
-                )
-            } else {
-                of(
-                    numerator = value
-                        .unscaledValue()
-                        .multiply(BigInteger.TEN.pow(-scale)),
-                    denominator = BigInteger.ONE,
-                )
-            }
         }
     }
 }

@@ -10,6 +10,32 @@ class NumericValue private constructor(
     val decimal: BigDecimal,
     val rational: Rational,
 ) {
+    companion object {
+        val ZERO: NumericValue = of(
+            rational = Rational.ZERO,
+        )
+
+        val ONE: NumericValue = of(
+            rational = Rational.ONE,
+        )
+
+        fun from(value: BigDecimal): NumericValue = of(
+            decimal = value,
+        )
+
+        fun from(value: BigInteger): NumericValue = of(
+            decimal = value.toBigDecimal(),
+        )
+
+        fun of(
+            decimal: BigDecimal = BigDecimal.ZERO,
+            rational: Rational = Rational.ZERO,
+        ): NumericValue = NumericValue(
+            decimal = decimal,
+            rational = rational,
+        )
+    }
+
     private fun toRational(): Rational =
         Rational.of(decimal) + rational
 
@@ -50,14 +76,11 @@ class NumericValue private constructor(
         val leftDecimal: Rational = Rational.of(decimal)
         val rightDecimal: Rational = Rational.of(other.decimal)
 
-        val rationalPart: Rational =
-            leftDecimal * other.rational +
-                    rational * rightDecimal +
-                    rational * other.rational
-
         return of(
             decimal = decimal.multiply(other.decimal),
-            rational = rationalPart,
+            rational = leftDecimal * other.rational +
+                    rational * rightDecimal +
+                    rational * other.rational,
         )
     }
 
@@ -72,32 +95,6 @@ class NumericValue private constructor(
 
         return of(
             rational = toRational() / denominator,
-        )
-    }
-
-    companion object {
-        val ZERO: NumericValue = of(
-            rational = Rational.ZERO,
-        )
-
-        val ONE: NumericValue = of(
-            rational = Rational.ONE,
-        )
-
-        fun from(value: BigDecimal): NumericValue = of(
-            decimal = value,
-        )
-
-        fun from(value: BigInteger): NumericValue = of(
-            decimal = value.toBigDecimal(),
-        )
-
-        fun of(
-            decimal: BigDecimal = BigDecimal.ZERO,
-            rational: Rational = Rational.ZERO,
-        ): NumericValue = NumericValue(
-            decimal = decimal,
-            rational = rational,
         )
     }
 }

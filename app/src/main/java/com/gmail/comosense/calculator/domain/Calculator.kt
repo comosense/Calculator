@@ -34,11 +34,11 @@ enum class CalculatorError {
 private class InvalidNumericFormatException : IllegalArgumentException()
 private class MissingFactorException : IllegalArgumentException()
 private class IllegalFactorException : IllegalArgumentException()
-private class FactorialLargeArgumentException : ArithmeticException()
+private class FactorialLargeArgumentException : IllegalArgumentException()
 private class FactorialInvalidArgumentException : ArithmeticException()
-private class ExpLargeArgumentException : ArithmeticException()
+private class ExpLargeArgumentException : IllegalArgumentException()
 private class PowInvalidArgumentException : ArithmeticException()
-private class PowLimitExceededException : ArithmeticException()
+private class PowLimitExceededException : IllegalArgumentException()
 
 private val MAX_EXPONENTIAL_ARGUMENT: BigDecimal =
     Constraints.MAX_EXPONENTIAL_ARGUMENT.toBigDecimal()
@@ -122,20 +122,20 @@ private suspend fun parse(
         Result.Err(CalculatorError.InvalidExpression)
     } catch (_: IllegalArgumentException) {
         Result.Err(CalculatorError.InvalidExpression)
-    } catch (_: DivisionByZeroException) {
-        Result.Err(CalculatorError.DivisionByZero)
-    } catch (_: FactorialInvalidArgumentException) {
-        Result.Err(CalculatorError.FactorialInvalidArgument)
     } catch (_: FactorialLargeArgumentException) {
         Result.Err(CalculatorError.FactorialLargeArgument)
-    } catch (_: SqrtInvalidArgumentException) {
-        Result.Err(CalculatorError.SqrtInvalidArgument)
+    } catch (_: FactorialInvalidArgumentException) {
+        Result.Err(CalculatorError.FactorialInvalidArgument)
     } catch (_: ExpLargeArgumentException) {
         Result.Err(CalculatorError.ExpLargeArgument)
     } catch (_: PowInvalidArgumentException) {
         Result.Err(CalculatorError.PowInvalidArgument)
     } catch (_: PowLimitExceededException) {
         Result.Err(CalculatorError.PowLimitExceeded)
+    } catch (_: DivisionByZeroException) {
+        Result.Err(CalculatorError.DivisionByZero)
+    } catch (_: SqrtInvalidArgumentException) {
+        Result.Err(CalculatorError.SqrtInvalidArgument)
     } catch (_: LogInvalidArgumentException) {
         Result.Err(CalculatorError.LogInvalidArgument)
     } catch (_: TanInvalidArgumentException) {
@@ -146,6 +146,8 @@ private suspend fun parse(
         Result.Err(CalculatorError.ArccosInvalidArgument)
     } catch (_: ArithmeticException) {
         Result.Err(CalculatorError.Arithmetic)
+    } catch (_: IllegalArgumentException) {
+        Result.Err(CalculatorError.InvalidExpression)
     }
 }
 
@@ -264,11 +266,7 @@ private class Parser(
             when (expression[position]) {
                 is Symbol.PostfixOperator.Factorial -> {
                     position++
-                    value = NumericValue.from(
-                        BigDecimalMath.factorial(
-                            value = factorialArgument(value),
-                        )
-                    )
+                    value = factorial(value)
                 }
 
                 else ->
@@ -288,24 +286,20 @@ private class Parser(
 
         return when (val symbol: Symbol = expression[position]) {
             is Symbol.Numeric ->
-                NumericValue.from(
-                    parseNumeric()
-                )
+                parseNumeric()
 
             is Symbol.Constant -> {
                 position++
-                NumericValue.from(
-                    parseConstant(symbol, increasePrecision(mc))
-                )
+                parseConstant(symbol, increasePrecision(mc))
             }
 
             is Symbol.Factor.Function -> {
                 position++
+                val workingMc: MathContext = increasePrecision(mc)
                 applyFunction(
                     function = symbol,
-                    value = parseSign(increasePrecision(mc))
-                        .toBigDecimal(increasePrecision(mc)),
-                    mc = increasePrecision(mc),
+                    value = parseSign(workingMc),
+                    mc = workingMc,
                 )
             }
 
@@ -316,11 +310,11 @@ private class Parser(
 
             is Symbol.FactorStart.Function -> {
                 position++
+                val workingMc: MathContext = increasePrecision(mc)
                 applyFunction(
                     function = symbol,
-                    value = parseFactorBody(increasePrecision(mc))
-                        .toBigDecimal(increasePrecision(mc)),
-                    mc = increasePrecision(mc),
+                    value = parseFactorBody(workingMc),
+                    mc = workingMc,
                 )
             }
 
@@ -343,7 +337,7 @@ private class Parser(
         return value
     }
 
-    private suspend fun parseNumeric(): BigDecimal {
+    private suspend fun parseNumeric(): NumericValue {
         val coroutineContext: CoroutineContext = currentCoroutineContext()
         val buffer = StringBuilder()
 
@@ -363,15 +357,17 @@ private class Parser(
             position++
         }
 
-        return buffer.toString().toBigDecimalOrNull()
+        val result: BigDecimal = buffer.toString().toBigDecimalOrNull()
             ?: throw InvalidNumericFormatException()
+
+        return NumericValue.from(result)
     }
 
     private suspend fun parseConstant(
         constant: Symbol.Constant,
         mc: MathContext,
-    ): BigDecimal {
-        return when (constant) {
+    ): NumericValue {
+        val result: BigDecimal = when (constant) {
             Symbol.Constant.Pi ->
                 BigDecimalMath.pi(
                     mc = mc,
@@ -382,18 +378,20 @@ private class Parser(
                     mc = mc,
                 )
         }
+
+        return NumericValue.from(result)
     }
 
     private suspend fun applyFunction(
         function: Symbol.Factor.Function,
-        value: BigDecimal,
+        value: NumericValue,
         mc: MathContext,
     ): NumericValue {
         return when (function) {
             Symbol.Factor.Function.Sqrt ->
                 NumericValue.from(
                     BigDecimalMath.sqrt(
-                        value = value,
+                        value = value.toBigDecimal(mc),
                         mc = mc,
                     )
                 )
@@ -402,36 +400,38 @@ private class Parser(
 
     private suspend fun applyFunction(
         function: Symbol.FactorStart.Function,
-        value: BigDecimal,
+        value: NumericValue,
         mc: MathContext,
     ): NumericValue {
+        val bigDecimalValue = value.toBigDecimal(mc)
+
         val result: BigDecimal = when (function) {
             Symbol.FactorStart.Function.Exp -> {
-                if (value.abs() > MAX_EXPONENTIAL_ARGUMENT) {
+                if (bigDecimalValue.abs() > MAX_EXPONENTIAL_ARGUMENT) {
                     throw ExpLargeArgumentException()
                 }
 
                 BigDecimalMath.exp(
-                    value = value,
+                    value = bigDecimalValue,
                     mc = mc,
                 )
             }
 
             Symbol.FactorStart.Function.Ln ->
                 BigDecimalMath.ln(
-                    value = value,
+                    value = bigDecimalValue,
                     mc = mc,
                 )
 
             Symbol.FactorStart.Function.Log ->
                 BigDecimalMath.log(
-                    value = value,
+                    value = bigDecimalValue,
                     mc = mc,
                 )
 
             Symbol.FactorStart.Function.Sin ->
                 BigDecimalMath.sin(
-                    angle = value,
+                    angle = bigDecimalValue,
                     isRadians = isRadians,
                     tolerance = tolerance,
                     mc = mc,
@@ -439,7 +439,7 @@ private class Parser(
 
             Symbol.FactorStart.Function.Cos ->
                 BigDecimalMath.cos(
-                    angle = value,
+                    angle = bigDecimalValue,
                     isRadians = isRadians,
                     tolerance = tolerance,
                     mc = mc,
@@ -447,7 +447,7 @@ private class Parser(
 
             Symbol.FactorStart.Function.Tan ->
                 BigDecimalMath.tan(
-                    angle = value,
+                    angle = bigDecimalValue,
                     isRadians = isRadians,
                     tolerance = tolerance,
                     mc = mc,
@@ -455,27 +455,37 @@ private class Parser(
 
             Symbol.FactorStart.Function.Arcsin ->
                 BigDecimalMath.arcsin(
-                    value = value,
+                    value = bigDecimalValue,
                     isRadians = isRadians,
                     mc = mc,
                 )
 
             Symbol.FactorStart.Function.Arccos ->
                 BigDecimalMath.arccos(
-                    value = value,
+                    value = bigDecimalValue,
                     isRadians = isRadians,
                     mc = mc,
                 )
 
             Symbol.FactorStart.Function.Arctan ->
                 BigDecimalMath.arctan(
-                    value = value,
+                    value = bigDecimalValue,
                     isRadians = isRadians,
                     mc = mc,
                 )
         }
 
         return NumericValue.from(result)
+    }
+
+    private suspend fun factorial(
+        value: NumericValue
+    ): NumericValue {
+        return NumericValue.from(
+            BigDecimalMath.factorial(
+                value = factorialArgument(value)
+            )
+        )
     }
 
     private suspend fun pow(
@@ -606,9 +616,7 @@ private class Parser(
             throw PowLimitExceededException()
         }
 
-        if (exponent > MAX_INTEGER_EXPONENT ||
-            exponent < -MAX_INTEGER_EXPONENT
-        ) {
+        if (exponent !in -MAX_INTEGER_EXPONENT..MAX_INTEGER_EXPONENT) {
             throw PowLimitExceededException()
         }
 
