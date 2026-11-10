@@ -47,6 +47,7 @@ import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextMeasurer
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
@@ -85,6 +86,13 @@ sealed interface CalculatorAction {
 private data class KeyState(
     val showFunctionKeyGrid: Boolean = false,
     val isInverseFunctionMode: Boolean = false,
+)
+
+private data class KeyAppearance(
+    val containerColor: Color,
+    val contentColor: Color,
+    val fontSize: TextUnit,
+    val iconSize: Dp,
 )
 
 @Composable
@@ -345,6 +353,7 @@ private fun ExpressionBox(
                     text = expression,
                     color = expressionColor,
                     fontSize = AppTheme.calculatorScreenDimensions.expressionMinFontSize,
+                    fontWeight = FontWeight.Bold,
                     maxLines = 1,
                 )
             }
@@ -356,6 +365,7 @@ private fun ExpressionBox(
                     maxFontSize = AppTheme.calculatorScreenDimensions.expressionMaxFontSize,
                     minFontSize = AppTheme.calculatorScreenDimensions.expressionMinFontSize,
                 ),
+                fontWeight = FontWeight.Bold,
                 maxLines = 1,
             )
         }
@@ -449,36 +459,7 @@ private fun KeyButton(
     onCalculatorAction: (CalculatorAction) -> Unit,
     symbolFormatter: SymbolFormatter,
 ) {
-    data class Colors(
-        val container: Color,
-        val content: Color,
-    )
-
-    val colors: Colors = when (key.style) {
-        Style.Digit ->
-            Colors(
-                container = AppTheme.calculatorScreenColors.digitKeyContainer,
-                content = AppTheme.calculatorScreenColors.digitKeyContent,
-            )
-
-        Style.Operator ->
-            Colors(
-                container = AppTheme.calculatorScreenColors.operatorKeyContainer,
-                content = AppTheme.calculatorScreenColors.operatorKeyContent,
-            )
-
-        Style.Command ->
-            Colors(
-                container = AppTheme.calculatorScreenColors.commandKeyContainer,
-                content = AppTheme.calculatorScreenColors.commandKeyContent,
-            )
-
-        Style.Mode ->
-            Colors(
-                container = AppTheme.calculatorScreenColors.modeKeyContainer,
-                content = AppTheme.calculatorScreenColors.modeKeyContent,
-            )
-    }
+    val keyAppearance: KeyAppearance = key.toAppearance()
 
     Button(
         onClick = { onCalculatorAction(key.calculatorAction) },
@@ -489,8 +470,8 @@ private fun KeyButton(
         },
         modifier = modifier,
         colors = ButtonDefaults.buttonColors(
-            containerColor = colors.container,
-            contentColor = colors.content,
+            containerColor = keyAppearance.containerColor,
+            contentColor = keyAppearance.contentColor,
         ),
         contentPadding = PaddingValues(0.dp),
     ) {
@@ -502,8 +483,8 @@ private fun KeyButton(
                 is Display.Text ->
                     Text(
                         text = display.text,
-                        color = colors.content,
-                        fontSize = AppTheme.calculatorScreenDimensions.keyTextFontSize,
+                        color = keyAppearance.contentColor,
+                        fontSize = keyAppearance.fontSize,
                         textAlign = TextAlign.Center,
                     )
 
@@ -511,8 +492,8 @@ private fun KeyButton(
                     Icon(
                         painter = painterResource(display.painterResource),
                         contentDescription = stringResource(display.stringResource),
-                        modifier = Modifier.size(AppTheme.calculatorScreenDimensions.keyIconSize),
-                        tint = colors.content,
+                        modifier = Modifier.size(keyAppearance.iconSize),
+                        tint = keyAppearance.contentColor,
                     )
             }
         }
@@ -635,3 +616,39 @@ private fun functionKeyGrid(
         )
     }
 }
+
+@Composable
+private fun Key.toAppearance(): KeyAppearance = when (this.style) {
+    Style.Digit ->
+        KeyAppearance(
+            containerColor = AppTheme.calculatorScreenColors.digitKeyContainer,
+            contentColor = AppTheme.calculatorScreenColors.digitKeyContent,
+            fontSize = AppTheme.calculatorScreenDimensions.keyTextFontSize,
+            iconSize = AppTheme.calculatorScreenDimensions.keyIconSize,
+        )
+
+    Style.Operator ->
+        KeyAppearance(
+            containerColor = AppTheme.calculatorScreenColors.operatorKeyContainer,
+            contentColor = AppTheme.calculatorScreenColors.operatorKeyContent,
+            fontSize = AppTheme.calculatorScreenDimensions.keyTextFontSize,
+            iconSize = AppTheme.calculatorScreenDimensions.keyIconSize,
+        )
+
+    Style.Command ->
+        KeyAppearance(
+            containerColor = AppTheme.calculatorScreenColors.commandKeyContainer,
+            contentColor = AppTheme.calculatorScreenColors.commandKeyContent,
+            fontSize = AppTheme.calculatorScreenDimensions.keyTextFontSize,
+            iconSize = AppTheme.calculatorScreenDimensions.keyIconSize,
+        )
+
+    Style.Mode ->
+        KeyAppearance(
+            containerColor = AppTheme.calculatorScreenColors.modeKeyContainer,
+            contentColor = AppTheme.calculatorScreenColors.modeKeyContent,
+            fontSize = AppTheme.calculatorScreenDimensions.keyTextFontSize,
+            iconSize = AppTheme.calculatorScreenDimensions.keyIconSizeLarge,
+        )
+}
+

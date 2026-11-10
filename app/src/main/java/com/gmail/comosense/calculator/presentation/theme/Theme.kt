@@ -122,6 +122,7 @@ fun AppTheme(
             expressionMinFontSize = 16.sp,
             keyTextFontSize = 18.sp,
             keyIconSize = 20.dp,
+            keyIconSizeLarge = 26.dp,
         )
         CompositionLocalProvider(
             LocalSettingsScreenColors provides settingsScreenColors,

@@ -25,4 +25,5 @@ data class CalculatorScreenDimensions(
     val expressionMinFontSize: TextUnit,
     val keyTextFontSize: TextUnit,
     val keyIconSize: Dp,
+    val keyIconSizeLarge: Dp,
 )
