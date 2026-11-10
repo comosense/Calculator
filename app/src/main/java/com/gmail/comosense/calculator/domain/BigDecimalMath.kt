@@ -149,7 +149,11 @@ internal object BigDecimalMath {
         one: T,
         multiply: (T, T) -> T,
     ): T {
-        require(exponent > 0)
+        require(exponent >= 0)
+
+        if (exponent == 0) {
+            return one
+        }
 
         val coroutineContext: CoroutineContext = currentCoroutineContext()
 
@@ -179,6 +183,10 @@ internal object BigDecimalMath {
         mc: MathContext,
     ): BigDecimal {
         require(base.signum() > 0)
+
+        if (exponent.signum() == 0) {
+            return ONE
+        }
 
         val internalMc: MathContext = internalMc(mc)
 

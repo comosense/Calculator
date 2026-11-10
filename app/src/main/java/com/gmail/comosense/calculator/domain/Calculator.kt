@@ -146,8 +146,6 @@ private suspend fun parse(
         Result.Err(CalculatorError.ArccosInvalidArgument)
     } catch (_: ArithmeticException) {
         Result.Err(CalculatorError.Arithmetic)
-    } catch (_: IllegalArgumentException) {
-        Result.Err(CalculatorError.InvalidExpression)
     }
 }
 

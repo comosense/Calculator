@@ -173,6 +173,10 @@ class Rational private constructor(
     suspend fun pow(exponent: Int): Rational {
         require(exponent != Int.MIN_VALUE)
 
+        if (exponent == 0) {
+            return ONE
+        }
+
         val n: Int = abs(exponent)
 
         val numeratorResult: BigInteger =
