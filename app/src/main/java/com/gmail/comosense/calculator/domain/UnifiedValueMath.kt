@@ -127,40 +127,29 @@ internal suspend fun UnifiedValue.log(
     ),
 )
 
-private fun sinSpecialResult(piMultiple: BigDecimal): UnifiedValue? = when (piMultiple) {
-    ZERO, ONE ->
-        UnifiedValue.ZERO
+private suspend fun UnifiedValue.trigonometricFunction(
+    isRadians: Boolean,
+    mc: MathContext,
+    specialResult: (BigDecimal) -> UnifiedValue?,
+    calculate: suspend (BigDecimal, MathContext) -> BigDecimal,
+): UnifiedValue {
+    val transformingMc: MathContext = transformingMc(mc)
 
-    HALF ->
-        UnifiedValue.ONE
+    toNormalizedPiMultipleOrNull(
+        isRadians = isRadians,
+        mc = transformingMc,
+    )?.let(specialResult)
+        ?.let { result -> return result }
 
-    THREE_HALF ->
-        UnifiedValue.ONE.negate()
-
-    else ->
-        null
-}
-
-private fun cosSpecialResult(piMultiple: BigDecimal): UnifiedValue? = when (piMultiple) {
-    HALF, THREE_HALF ->
-        UnifiedValue.ZERO
-
-    ZERO ->
-        UnifiedValue.ONE
-
-    ONE ->
-        UnifiedValue.ONE.negate()
-
-    else ->
-        null
-}
-
-private fun tanSpecialResult(piMultiple: BigDecimal): UnifiedValue? = when (piMultiple) {
-    HALF, THREE_HALF ->
-        throw TanInvalidArgumentException()
-
-    else ->
-        null
+    return UnifiedValue.of(
+        value = calculate(
+            toNormalizedRadians(
+                isRadians = isRadians,
+                mc = transformingMc,
+            ),
+            mc,
+        ),
+    )
 }
 
 internal suspend fun UnifiedValue.sin(
@@ -193,167 +182,54 @@ internal suspend fun UnifiedValue.tan(
     calculate = BigDecimalMath::tan,
 )
 
-private suspend fun UnifiedValue.trigonometricFunction(
+private suspend fun UnifiedValue.inverseTrigonometricFunction(
     isRadians: Boolean,
     mc: MathContext,
-    specialResult: (BigDecimal) -> UnifiedValue?,
+    specialResult: (BigDecimal, Boolean) -> UnifiedValue?,
     calculate: suspend (BigDecimal, MathContext) -> BigDecimal,
 ): UnifiedValue {
     val transformingMc: MathContext = transformingMc(mc)
+    val value: BigDecimal = this.toBigDecimal(transformingMc)
 
-    toNormalizedPiMultipleOrNull(
-        isRadians = isRadians,
-        mc = transformingMc,
-    )?.let(specialResult)?.let { result -> return result }
+    specialResult(value, isRadians)
+        ?.let { result -> return result }
 
-    return UnifiedValue.of(
-        value = calculate(
-            toNormalizedRadians(
-                isRadians = isRadians,
-                mc = transformingMc,
-            ),
-            mc,
-        ),
-    )
+    return if (isRadians) {
+        UnifiedValue.of(calculate(value, mc))
+    } else {
+        UnifiedValue.of(calculate(value, transformingMc).toDegrees(mc))
+    }
 }
 
 internal suspend fun UnifiedValue.arcsin(
     isRadians: Boolean,
     mc: MathContext,
-): UnifiedValue {
-    val transformingMc: MathContext = transformingMc(mc)
-    val radians: UnifiedValue =
-        when (val value: BigDecimal = this.toBigDecimal(transformingMc)) {
-            ZERO ->
-                UnifiedValue.ZERO
+): UnifiedValue = inverseTrigonometricFunction(
+    isRadians = isRadians,
+    mc = mc,
+    specialResult = ::arcsinSpecialResult,
+    calculate = BigDecimalMath::arcsin,
+)
 
-            ONE ->
-                UnifiedValue.HALF_PI
-
-            NEGATIVE_ONE ->
-                UnifiedValue.HALF_PI.negate()
-
-            else ->
-                UnifiedValue.of(
-                    value = BigDecimalMath.arcsin(
-                        value = value,
-                        mc = mc,
-                    ),
-                )
-        }
-
-    return if (isRadians) {
-        radians
-    } else {
-        radians.toDegrees(mc)
-    }
-}
-
-//internal suspend fun UnifiedValue.arccos(
-//    isRadians: Boolean,
-//    mc: MathContext,
-//): UnifiedValue {
-//    val transformingMc: MathContext = transformingMc(mc)
-//    val radians: UnifiedValue =
-//        when (val value: BigDecimal = this.toBigDecimal(transformingMc)) {
-//            ZERO ->
-//                UnifiedValue.HALF_PI
-//
-//            ONE ->
-//                UnifiedValue.ZERO
-//
-//            NEGATIVE_ONE ->
-//                UnifiedValue.PI
-//
-//            else ->
-//                UnifiedValue.of(
-//                    value = BigDecimalMath.arccos(
-//                        value = value,
-//                        mc = mc,
-//                    ),
-//                )
-//        }
-//
-//    return if (isRadians) {
-//        radians
-//    } else {
-//        radians.toDegrees(mc)
-//    }
-//}
 internal suspend fun UnifiedValue.arccos(
     isRadians: Boolean,
     mc: MathContext,
-): UnifiedValue {
-    val transformingMc: MathContext = transformingMc(mc)
-    val value: BigDecimal = this.toBigDecimal(transformingMc)
-
-    return if (isRadians) {
-        when (value) {
-            ZERO ->
-                UnifiedValue.HALF_PI
-
-            ONE ->
-                UnifiedValue.ZERO
-
-            NEGATIVE_ONE ->
-                UnifiedValue.PI
-
-            else ->
-                UnifiedValue.of(
-                    value = BigDecimalMath.arccos(
-                        value = value,
-                        mc = mc,
-                    ),
-                )
-        }
-    } else {
-        UnifiedValue.of(
-            value = when (value) {
-                ZERO ->
-                    NINETY
-
-                ONE ->
-                    ZERO
-
-                NEGATIVE_ONE ->
-                    ONE_HUNDRED_EIGHTY
-
-                else ->
-                    BigDecimalMath.arccos(
-                        value = value,
-                        mc = transformingMc,
-                    ).multiply(ONE_HUNDRED_EIGHTY)
-                        .divide(BigDecimalMath.pi(transformingMc), mc)
-            },
-        )
-    }
-}
+): UnifiedValue = inverseTrigonometricFunction(
+    isRadians = isRadians,
+    mc = mc,
+    specialResult = ::arccosSpecialResult,
+    calculate = BigDecimalMath::arccos,
+)
 
 internal suspend fun UnifiedValue.arctan(
     isRadians: Boolean,
     mc: MathContext,
-): UnifiedValue {
-    val transformingMc: MathContext = transformingMc(mc)
-    val radians: UnifiedValue =
-        when (val value: BigDecimal = this.toBigDecimal(transformingMc)) {
-            ZERO ->
-                UnifiedValue.ZERO
-
-            else ->
-                UnifiedValue.of(
-                    value = BigDecimalMath.arctan(
-                        value = value,
-                        mc = mc,
-                    ),
-                )
-        }
-
-    return if (isRadians) {
-        radians
-    } else {
-        radians.toDegrees(mc)
-    }
-}
+): UnifiedValue = inverseTrigonometricFunction(
+    isRadians = isRadians,
+    mc = mc,
+    specialResult = ::arctanSpecialResult,
+    calculate = BigDecimalMath::arctan,
+)
 
 private fun factorialArgument(
     value: UnifiedValue,
@@ -502,16 +378,124 @@ private suspend fun UnifiedValue.toNormalizedRadians(
     }.remainder(TWO.multiply(pi))
 }
 
-private suspend fun UnifiedValue.toDegrees(
+private suspend fun BigDecimal.toDegrees(
     mc: MathContext,
-): UnifiedValue {
-    val transformingMc: MathContext = transformingMc(mc)
+): BigDecimal = multiply(ONE_HUNDRED_EIGHTY)
+    .divide(BigDecimalMath.pi(transformingMc(mc)), mc)
 
-    return UnifiedValue.of(
-        value = this.toBigDecimal(transformingMc)
-            .multiply(ONE_HUNDRED_EIGHTY)
-            .divide(BigDecimalMath.pi(transformingMc), mc),
-    )
+private fun sinSpecialResult(
+    piMultiple: BigDecimal,
+): UnifiedValue? = when (piMultiple) {
+    ZERO, ONE ->
+        UnifiedValue.ZERO
+
+    HALF ->
+        UnifiedValue.ONE
+
+    THREE_HALF ->
+        UnifiedValue.ONE.negate()
+
+    else ->
+        null
+}
+
+private fun cosSpecialResult(
+    piMultiple: BigDecimal,
+): UnifiedValue? = when (piMultiple) {
+    HALF, THREE_HALF ->
+        UnifiedValue.ZERO
+
+    ZERO ->
+        UnifiedValue.ONE
+
+    ONE ->
+        UnifiedValue.ONE.negate()
+
+    else ->
+        null
+}
+
+private fun tanSpecialResult(
+    piMultiple: BigDecimal,
+): UnifiedValue? = when (piMultiple) {
+    HALF, THREE_HALF ->
+        throw TanInvalidArgumentException()
+
+    else ->
+        null
+}
+
+private fun arcsinSpecialResult(
+    value: BigDecimal,
+    isRadians: Boolean,
+): UnifiedValue? = when (value) {
+    ZERO ->
+        if (isRadians) {
+            UnifiedValue.ZERO
+        } else {
+            UnifiedValue.of(ZERO)
+        }
+
+    ONE ->
+        if (isRadians) {
+            UnifiedValue.HALF_PI
+        } else {
+            UnifiedValue.of(NINETY)
+        }
+
+    NEGATIVE_ONE ->
+        if (isRadians) {
+            UnifiedValue.HALF_PI.negate()
+        } else {
+            UnifiedValue.of(ZERO).negate()
+        }
+
+    else ->
+        null
+}
+
+private fun arccosSpecialResult(
+    value: BigDecimal,
+    isRadians: Boolean,
+): UnifiedValue? = when (value) {
+    ZERO ->
+        if (isRadians) {
+            UnifiedValue.HALF_PI
+        } else {
+            UnifiedValue.of(NINETY)
+        }
+
+    ONE ->
+        if (isRadians) {
+            UnifiedValue.ZERO
+        } else {
+            UnifiedValue.of(ZERO)
+        }
+
+    NEGATIVE_ONE ->
+        if (isRadians) {
+            UnifiedValue.PI
+        } else {
+            UnifiedValue.of(ONE_HUNDRED_EIGHTY)
+        }
+
+    else ->
+        null
+}
+
+private fun arctanSpecialResult(
+    value: BigDecimal,
+    isRadians: Boolean,
+): UnifiedValue? = when (value) {
+    ZERO ->
+        if (isRadians) {
+            UnifiedValue.ZERO
+        } else {
+            UnifiedValue.of(ZERO)
+        }
+
+    else ->
+        null
 }
 
 private fun transformingMc(
@@ -520,5 +504,3 @@ private fun transformingMc(
     mc.precision + ADDITIONAL_PRECISION_FOR_TRANSFORMING,
     mc.roundingMode,
 )
-
-
