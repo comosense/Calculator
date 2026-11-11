@@ -19,14 +19,13 @@ internal object BigDecimalMath {
     private const val EXTRA_PRECISION_FOR_CACHE: Int = 8
     private val NEGATIVE_ONE: BigDecimal = BigDecimal.ONE.negate()
     private val ZERO: BigDecimal = BigDecimal.ZERO
-    private val ONE_HALF: BigDecimal = "0.5".toBigDecimal()
+    private val HALF: BigDecimal = "0.5".toBigDecimal()
     private val ONE: BigDecimal = BigDecimal.ONE
     private val TWO: BigDecimal = 2.toBigDecimal()
     private val FOUR: BigDecimal = 4.toBigDecimal()
     private val FIVE: BigDecimal = 5.toBigDecimal()
     private val TEN: BigDecimal = BigDecimal.TEN
     private val SIXTEEN: BigDecimal = 16.toBigDecimal()
-    private val ONE_HUNDRED_EIGHTY: BigDecimal = 180.toBigDecimal()
     private val TWO_HUNDRED_THIRTY_NINE: BigDecimal = 239.toBigDecimal()
     private val BIG_INTEGER_ONE: BigInteger = BigInteger.ONE
     private val BIG_INTEGER_TWO: BigInteger = 2.toBigInteger()
@@ -222,117 +221,63 @@ internal object BigDecimalMath {
     }
 
     suspend fun sin(
-        angle: BigDecimal,
-        isRadians: Boolean,
-        tolerance: BigDecimal,
+        radians: BigDecimal,
         mc: MathContext,
     ): BigDecimal {
-        val internalMc: MathContext = internalMc(mc)
-
         return calculateSin(
-            angle = if (isRadians) {
-                angle
-            } else {
-                angle.toRadians(internalMc)
-            }.normalizedAngle(internalMc),
-            tolerance = tolerance,
-            mc = internalMc,
+            radians = radians,
+            mc = internalMc(mc),
         ).round(mc)
     }
 
     suspend fun cos(
-        angle: BigDecimal,
-        isRadians: Boolean,
-        tolerance: BigDecimal,
+        radians: BigDecimal,
         mc: MathContext,
     ): BigDecimal {
-        val internalMc: MathContext = internalMc(mc)
-
         return calculateCos(
-            angle = if (isRadians) {
-                angle
-            } else {
-                angle.toRadians(internalMc)
-            }.normalizedAngle(internalMc),
-            tolerance = tolerance,
-            mc = internalMc,
+            radians = radians,
+            mc = internalMc(mc),
         ).round(mc)
     }
 
     suspend fun tan(
-        angle: BigDecimal,
-        isRadians: Boolean,
-        tolerance: BigDecimal,
+        radians: BigDecimal,
         mc: MathContext,
     ): BigDecimal {
-        val internalMc: MathContext = internalMc(mc)
-
         return calculateTan(
-            angle = if (isRadians) {
-                angle
-            } else {
-                angle.toRadians(internalMc)
-            }.normalizedAngle(internalMc),
-            tolerance = tolerance,
-            mc = internalMc,
+            radians = radians,
+            mc = internalMc(mc),
         ).round(mc)
     }
 
     suspend fun arcsin(
         value: BigDecimal,
-        isRadians: Boolean,
         mc: MathContext,
     ): BigDecimal {
-        val internalMc: MathContext = internalMc(mc)
-
-        val result: BigDecimal = calculateArcsin(
+        return calculateArcsin(
             value = value,
-            mc = internalMc,
-        )
-
-        return if (isRadians) {
-            result
-        } else {
-            result.toDegrees(internalMc)
-        }.round(mc)
+            mc = internalMc(mc),
+        ).round(mc)
     }
 
     suspend fun arccos(
         value: BigDecimal,
-        isRadians: Boolean,
         mc: MathContext,
     ): BigDecimal {
-        val internalMc: MathContext = internalMc(mc)
-
-        val result: BigDecimal = calculateArccos(
+        return calculateArccos(
             value = value,
-            mc = internalMc,
-        )
-
-        return if (isRadians) {
-            result
-        } else {
-            result.toDegrees(internalMc)
-        }.round(mc)
+            mc = internalMc(mc),
+        ).round(mc)
     }
 
     suspend fun arctan(
         value: BigDecimal,
-        isRadians: Boolean,
         mc: MathContext,
     ): BigDecimal {
-        val internalMc: MathContext = internalMc(mc)
-
-        val result: BigDecimal = calculateArctan(
+        return calculateArctan(
             value = value,
-            mc = internalMc,
-        )
-
-        return if (isRadians) {
-            result
-        } else {
-            result.toDegrees(internalMc)
-        }.round(mc)
+            mc = internalMc(mc),
+        ).round(mc)
     }
 
     private suspend fun calculateE(
@@ -429,7 +374,7 @@ internal object BigDecimalMath {
         var reduced: BigDecimal = value
         var reductions = 0
 
-        while (reduced.abs() > ONE_HALF) {
+        while (reduced.abs() > HALF) {
             coroutineContext.ensureActive()
 
             reduced = reduced.divide(TWO)
@@ -519,8 +464,7 @@ internal object BigDecimalMath {
     }
 
     private suspend fun calculateSin(
-        angle: BigDecimal,
-        tolerance: BigDecimal,
+        radians: BigDecimal,
         mc: MathContext,
     ): BigDecimal {
         val pi: BigDecimal = cachedPi(mc)
@@ -528,58 +472,35 @@ internal object BigDecimalMath {
         val threeHalfPi: BigDecimal = cachedThreeHalfPi(mc)
         val twoPi: BigDecimal = cachedTwoPi(mc)
 
-        val distanceToZero: BigDecimal =
-            minOf(angle, twoPi.subtract(angle).abs())
-        val distanceToHalfPi: BigDecimal =
-            angle.subtract(halfPi).abs()
-        val distanceToPi: BigDecimal =
-            angle.subtract(pi).abs()
-        val distanceToThreeHalfPi: BigDecimal =
-            angle.subtract(threeHalfPi).abs()
-
-        val useTolerance: Boolean = tolerance.signum() > 0
         return when {
-            useTolerance &&
-                    (distanceToZero <= tolerance || distanceToPi <= tolerance) ->
-                ZERO
-
-            useTolerance &&
-                    distanceToHalfPi <= tolerance ->
-                ONE
-
-            useTolerance &&
-                    distanceToThreeHalfPi <= tolerance ->
-                NEGATIVE_ONE
-
-            angle <= halfPi ->
+            radians <= halfPi ->
                 sinTaylor(
-                    angle = angle,
+                    radians = radians,
                     mc = mc,
                 )
 
-            angle <= pi ->
+            radians <= pi ->
                 sinTaylor(
-                    angle = pi.subtract(angle),
+                    radians = pi.subtract(radians),
                     mc = mc,
                 )
 
-            angle <= threeHalfPi ->
+            radians <= threeHalfPi ->
                 sinTaylor(
-                    angle = angle.subtract(pi),
+                    radians = radians.subtract(pi),
                     mc = mc,
                 ).negate()
 
             else ->
                 sinTaylor(
-                    angle = twoPi.subtract(angle),
+                    radians = twoPi.subtract(radians),
                     mc = mc,
                 ).negate()
         }
     }
 
     private suspend fun calculateCos(
-        angle: BigDecimal,
-        tolerance: BigDecimal,
+        radians: BigDecimal,
         mc: MathContext,
     ): BigDecimal {
         val pi: BigDecimal = cachedPi(mc)
@@ -587,63 +508,39 @@ internal object BigDecimalMath {
         val threeHalfPi: BigDecimal = cachedThreeHalfPi(mc)
         val twoPi: BigDecimal = cachedTwoPi(mc)
 
-        val distanceToZero: BigDecimal =
-            minOf(angle, twoPi.subtract(angle).abs())
-        val distanceToHalfPi: BigDecimal =
-            angle.subtract(halfPi).abs()
-        val distanceToPi: BigDecimal =
-            angle.subtract(pi).abs()
-        val distanceToThreeHalfPi: BigDecimal =
-            angle.subtract(threeHalfPi).abs()
-
-        val useTolerance: Boolean = tolerance.signum() > 0
         return when {
-            useTolerance &&
-                    (distanceToHalfPi <= tolerance || distanceToThreeHalfPi <= tolerance) ->
-                ZERO
-
-            useTolerance &&
-                    distanceToZero <= tolerance ->
-                ONE
-
-            useTolerance &&
-                    distanceToPi <= tolerance ->
-                NEGATIVE_ONE
-
-            angle <= halfPi ->
+            radians <= halfPi ->
                 cosTaylor(
-                    angle = angle,
+                    radians = radians,
                     mc = mc,
                 )
 
-            angle <= pi ->
+            radians <= pi ->
                 cosTaylor(
-                    angle = pi.subtract(angle),
+                    radians = pi.subtract(radians),
                     mc = mc,
                 ).negate()
 
-            angle <= threeHalfPi ->
+            radians <= threeHalfPi ->
                 cosTaylor(
-                    angle = angle.subtract(pi),
+                    radians = radians.subtract(pi),
                     mc = mc,
                 ).negate()
 
             else ->
                 cosTaylor(
-                    angle = twoPi.subtract(angle),
+                    radians = twoPi.subtract(radians),
                     mc = mc,
                 )
         }
     }
 
     private suspend fun calculateTan(
-        angle: BigDecimal,
-        tolerance: BigDecimal,
+        radians: BigDecimal,
         mc: MathContext,
     ): BigDecimal {
         val cos: BigDecimal = calculateCos(
-            angle = angle,
-            tolerance = tolerance,
+            radians = radians,
             mc = mc,
         )
 
@@ -652,8 +549,7 @@ internal object BigDecimalMath {
         }
 
         val sin: BigDecimal = calculateSin(
-            angle = angle,
-            tolerance = tolerance,
+            radians = radians,
             mc = mc,
         )
 
@@ -748,7 +644,7 @@ internal object BigDecimalMath {
                 )
         }
 
-        if (value > ONE_HALF) {
+        if (value > HALF) {
             val reduced: BigDecimal = value.subtract(ONE)
                 .divide(value.add(ONE), mc)
 
@@ -799,14 +695,14 @@ internal object BigDecimalMath {
     }
 
     private suspend fun sinTaylor(
-        angle: BigDecimal,
+        radians: BigDecimal,
         mc: MathContext,
     ): BigDecimal {
         val coroutineContext: CoroutineContext = currentCoroutineContext()
-        val angleSquared: BigDecimal = angle.multiply(angle)
+        val radiansSquared: BigDecimal = radians.multiply(radians)
 
-        var term: BigDecimal = angle
-        var sum: BigDecimal = angle
+        var term: BigDecimal = radians
+        var sum: BigDecimal = radians
         var n = 1
 
         while (true) {
@@ -818,7 +714,7 @@ internal object BigDecimalMath {
                 .multiply(twoN.add(BIG_INTEGER_ONE))
 
             term = term
-                .multiply(angleSquared)
+                .multiply(radiansSquared)
                 .divide(denominator.toBigDecimal(), mc)
                 .negate()
 
@@ -834,11 +730,11 @@ internal object BigDecimalMath {
     }
 
     private suspend fun cosTaylor(
-        angle: BigDecimal,
+        radians: BigDecimal,
         mc: MathContext,
     ): BigDecimal {
         val coroutineContext: CoroutineContext = currentCoroutineContext()
-        val angleSquared: BigDecimal = angle.multiply(angle)
+        val radiansSquared: BigDecimal = radians.multiply(radians)
 
         var term: BigDecimal = ONE
         var sum: BigDecimal = ONE
@@ -854,7 +750,7 @@ internal object BigDecimalMath {
                 .multiply(twoN)
 
             term = term
-                .multiply(angleSquared)
+                .multiply(radiansSquared)
                 .divide(denominator.toBigDecimal(), mc)
                 .negate()
 
@@ -927,42 +823,10 @@ internal object BigDecimalMath {
         }
     }
 
-    private suspend fun BigDecimal.toRadians(
-        mc: MathContext
-    ): BigDecimal {
-        return this
-            .multiply(cachedPi(mc))
-            .divide(ONE_HUNDRED_EIGHTY, mc)
-    }
-
-    private suspend fun BigDecimal.toDegrees(
-        mc: MathContext,
-    ): BigDecimal {
-        return this
-            .multiply(ONE_HUNDRED_EIGHTY)
-            .divide(cachedPi(mc), mc)
-    }
-
-    private suspend fun BigDecimal.normalizedAngle(
-        mc: MathContext
-    ): BigDecimal {
-        val twoPi: BigDecimal = cachedTwoPi(mc)
-
-        var angle: BigDecimal = this.remainder(twoPi)
-
-        if (angle.signum() < 0) {
-            angle = angle.add(twoPi)
-        }
-
-        return angle
-    }
-
-    private fun internalMc(mc: MathContext): MathContext {
-        return MathContext(
-            mc.precision + EXTRA_PRECISION_FOR_INTERNAL_CALCULATIONS,
-            mc.roundingMode,
-        )
-    }
+    private fun internalMc(mc: MathContext): MathContext = MathContext(
+        mc.precision + EXTRA_PRECISION_FOR_INTERNAL_CALCULATIONS,
+        mc.roundingMode,
+    )
 
     private suspend fun cachedLnTen(
         mc: MathContext,

@@ -18,6 +18,10 @@ class Rational private constructor(
             numerator = BigInteger.ZERO,
             denominator = BigInteger.ONE,
         )
+        val HALF: Rational = Rational(
+            numerator = BigInteger.ONE,
+            denominator = 2.toBigInteger(),
+        )
         val ONE: Rational = Rational(
             numerator = BigInteger.ONE,
             denominator = BigInteger.ONE,
