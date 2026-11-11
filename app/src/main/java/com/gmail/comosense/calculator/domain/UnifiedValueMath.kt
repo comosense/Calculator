@@ -34,7 +34,7 @@ internal suspend fun e(
 ): UnifiedValue = UnifiedValue.of(
     value = BigDecimalMath.e(
         mc = mc,
-    )
+    ),
 )
 
 internal suspend fun UnifiedValue.factorial(): UnifiedValue = UnifiedValue.of(
@@ -88,7 +88,7 @@ internal suspend fun UnifiedValue.sqrt(
     value = BigDecimalMath.sqrt(
         value = this.toBigDecimal(transformingMc(mc)),
         mc = mc,
-    )
+    ),
 )
 
 internal suspend fun UnifiedValue.exp(
@@ -104,7 +104,7 @@ internal suspend fun UnifiedValue.exp(
         value = BigDecimalMath.exp(
             value = value,
             mc = mc,
-        )
+        ),
     )
 }
 
@@ -114,7 +114,7 @@ internal suspend fun UnifiedValue.ln(
     value = BigDecimalMath.ln(
         value = this.toBigDecimal(transformingMc(mc)),
         mc = mc,
-    )
+    ),
 )
 
 internal suspend fun UnifiedValue.log(
@@ -123,7 +123,7 @@ internal suspend fun UnifiedValue.log(
     value = BigDecimalMath.log(
         value = this.toBigDecimal(transformingMc(mc)),
         mc = mc,
-    )
+    ),
 )
 
 internal suspend fun UnifiedValue.sin(
@@ -154,7 +154,7 @@ internal suspend fun UnifiedValue.sin(
                         mc = transformingMc,
                     ),
                     mc = mc,
-                )
+                ),
             )
     }
 }
@@ -187,7 +187,7 @@ internal suspend fun UnifiedValue.cos(
                         mc = transformingMc,
                     ),
                     mc = mc,
-                )
+                ),
             )
     }
 }
@@ -214,7 +214,7 @@ internal suspend fun UnifiedValue.tan(
                         mc = transformingMc,
                     ),
                     mc = mc,
-                )
+                ),
             )
 
     }
@@ -238,17 +238,17 @@ internal suspend fun UnifiedValue.arcsin(
 
             else ->
                 UnifiedValue.of(
-                    BigDecimalMath.arcsin(
+                    value = BigDecimalMath.arcsin(
                         value = value,
                         mc = mc,
-                    )
+                    ),
                 )
         }
 
     return if (isRadians) {
         radians
     } else {
-        radians.toDegrees(transformingMc)
+        radians.toDegrees(mc)
     }
 }
 
@@ -270,17 +270,17 @@ internal suspend fun UnifiedValue.arccos(
 
             else ->
                 UnifiedValue.of(
-                    BigDecimalMath.arccos(
+                    value = BigDecimalMath.arccos(
                         value = value,
                         mc = mc,
-                    )
+                    ),
                 )
         }
 
     return if (isRadians) {
         radians
     } else {
-        radians.toDegrees(transformingMc)
+        radians.toDegrees(mc)
     }
 }
 
@@ -296,17 +296,17 @@ internal suspend fun UnifiedValue.arctan(
 
             else ->
                 UnifiedValue.of(
-                    BigDecimalMath.arctan(
+                    value = BigDecimalMath.arctan(
                         value = value,
                         mc = mc,
-                    )
+                    ),
                 )
         }
 
     return if (isRadians) {
         radians
     } else {
-        radians.toDegrees(transformingMc)
+        radians.toDegrees(mc)
     }
 }
 
@@ -341,7 +341,7 @@ private suspend fun powRationalBase(
     exponent: Int,
 ): UnifiedValue {
     return UnifiedValue.of(
-        value = base.rational.pow(exponent)
+        value = base.rational.pow(exponent),
     )
 }
 
@@ -356,12 +356,11 @@ private suspend fun powNaturalExponent(
     )
 
     return UnifiedValue.of(
-        if (exponent >= 0) {
+        value = if (exponent >= 0) {
             result
         } else {
             BigDecimal.ONE.divide(result, mc)
-
-        }
+        },
     )
 }
 
@@ -375,11 +374,11 @@ private suspend fun powDecimalExponent(
     }
 
     return UnifiedValue.of(
-        BigDecimalMath.powDecimalExponent(
+        value = BigDecimalMath.powDecimalExponent(
             base = base,
             exponent = nonIntegerExponent(exponent, transformingMc(mc)),
             mc = mc,
-        )
+        ),
     )
 }
 
@@ -466,7 +465,7 @@ private suspend fun UnifiedValue.toDegrees(
     return UnifiedValue.of(
         value = this.toBigDecimal(transformingMc)
             .multiply(ONE_HUNDRED_EIGHTY)
-            .divide(BigDecimalMath.pi(transformingMc), mc)
+            .divide(BigDecimalMath.pi(transformingMc), mc),
     )
 }
 
