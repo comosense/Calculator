@@ -957,8 +957,8 @@ internal object BigDecimalMath {
         mc: MathContext,
     ): BigDecimal {
         cachedValue?.let { cached ->
-            if ((cached.mc.roundingMode == mc.roundingMode) &&
-                (cached.mc.precision >= (mc.precision + EXTRA_PRECISION_FOR_ROUND))
+            if ((cached.mc.precision >= (mc.precision + EXTRA_PRECISION_FOR_ROUND) &&
+                        (cached.mc.roundingMode == mc.roundingMode))
             ) {
                 return cached.value.round(mc)
             }

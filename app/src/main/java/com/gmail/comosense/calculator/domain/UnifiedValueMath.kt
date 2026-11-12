@@ -30,14 +30,6 @@ class PowInvalidArgumentException : ArithmeticException()
 class PowLimitExceededException : IllegalArgumentException()
 class ExpLargeArgumentException : IllegalArgumentException()
 
-internal suspend fun e(
-    mc: MathContext,
-): UnifiedValue = UnifiedValue.of(
-    value = BigDecimalMath.e(
-        mc = mc,
-    ),
-)
-
 internal suspend fun UnifiedValue.factorial(): UnifiedValue = UnifiedValue.of(
     value = BigDecimalMath.factorial(
         value = factorialArgument(this),
@@ -352,7 +344,7 @@ private suspend fun UnifiedValue.toNormalizedPiMultipleOrNull(
             null
         }
     } else {
-        if (this.existPiMultiple()) {
+        if (this.isIrrational()) {
             null
         } else {
             this.toBigDecimal(transformingMc(mc))

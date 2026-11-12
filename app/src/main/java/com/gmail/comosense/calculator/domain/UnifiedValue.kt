@@ -27,15 +27,29 @@ class UnifiedValue private constructor(
             piFactor = Rational.ONE,
         )
 
-        fun of(value: BigDecimal): UnifiedValue = UnifiedValue(
+        suspend fun e(
+            mc: MathContext,
+        ): UnifiedValue = of(
+            value = BigDecimalMath.e(
+                mc = mc,
+            )
+        )
+
+        fun of(
+            value: BigDecimal,
+        ): UnifiedValue = UnifiedValue(
             decimal = value,
         )
 
-        fun of(value: BigInteger): UnifiedValue = UnifiedValue(
+        fun of(
+            value: BigInteger,
+        ): UnifiedValue = UnifiedValue(
             decimal = value.toBigDecimal(),
         )
 
-        fun of(value: Rational): UnifiedValue = UnifiedValue(
+        fun of(
+            value: Rational,
+        ): UnifiedValue = UnifiedValue(
             rational = value,
         )
     }
@@ -70,7 +84,7 @@ class UnifiedValue private constructor(
                 rational.isZero() &&
                 !piFactor.isZero()
 
-    fun existPiMultiple(): Boolean =
+    fun isIrrational(): Boolean =
         !piFactor.isZero()
 
     suspend fun toBigDecimal(
@@ -78,7 +92,7 @@ class UnifiedValue private constructor(
     ): BigDecimal {
         var result: BigDecimal = decimal.add(rational.toBigDecimal(mc))
 
-        if (existPiMultiple()) {
+        if (isIrrational()) {
             result = result.add(
                 piFactor.toBigDecimal(mc)
                     .multiply(BigDecimalMath.pi(mc))

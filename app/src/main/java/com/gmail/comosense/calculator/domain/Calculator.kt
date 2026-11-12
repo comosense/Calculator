@@ -350,7 +350,7 @@ private class Parser(
                 UnifiedValue.PI
 
             Symbol.Constant.Euler ->
-                e(
+                UnifiedValue.e(
                     mc = mc,
                 )
         }
