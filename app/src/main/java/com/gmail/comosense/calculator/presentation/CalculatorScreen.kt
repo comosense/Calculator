@@ -618,7 +618,7 @@ private fun functionKeyGrid(
 }
 
 @Composable
-private fun Key.toAppearance(): KeyAppearance = when (this.style) {
+private fun Key.toAppearance(): KeyAppearance = when (style) {
     Style.Digit ->
         KeyAppearance(
             containerColor = AppTheme.calculatorScreenColors.digitKeyContainer,

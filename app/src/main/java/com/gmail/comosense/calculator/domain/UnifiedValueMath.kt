@@ -40,7 +40,7 @@ internal suspend fun UnifiedValue.pow(
     exponent: UnifiedValue,
     mc: MathContext,
 ): UnifiedValue {
-    if (this.signum(mc) == 0) {
+    if (signum(mc) == 0) {
         if (exponent.signum(mc) > 0) {
             return UnifiedValue.ZERO
         }
@@ -54,21 +54,21 @@ internal suspend fun UnifiedValue.pow(
     val integerExponent: Int? = integerExponent(exponent)
 
     return if (integerExponent != null) {
-        if (this.isPureRational()) {
+        if (isPureRational()) {
             powRationalBase(
                 base = this,
                 exponent = integerExponent,
             )
         } else {
             powNaturalExponent(
-                base = this.toBigDecimal(transformingMc(mc)),
+                base = toBigDecimal(transformingMc(mc)),
                 exponent = integerExponent,
                 mc = mc,
             )
         }
     } else {
         powDecimalExponent(
-            base = this.toBigDecimal(transformingMc(mc)),
+            base = toBigDecimal(transformingMc(mc)),
             exponent = exponent,
             mc = mc,
         )
@@ -79,7 +79,7 @@ internal suspend fun UnifiedValue.sqrt(
     mc: MathContext,
 ): UnifiedValue = UnifiedValue.of(
     value = BigDecimalMath.sqrt(
-        value = this.toBigDecimal(transformingMc(mc)),
+        value = toBigDecimal(transformingMc(mc)),
         mc = mc,
     ),
 )
@@ -87,7 +87,7 @@ internal suspend fun UnifiedValue.sqrt(
 internal suspend fun UnifiedValue.exp(
     mc: MathContext,
 ): UnifiedValue {
-    val value: BigDecimal = this.toBigDecimal(transformingMc(mc))
+    val value: BigDecimal = toBigDecimal(transformingMc(mc))
 
     if (value.abs() > MAX_EXPONENTIAL_ARGUMENT) {
         throw ExpLargeArgumentException()
@@ -105,7 +105,7 @@ internal suspend fun UnifiedValue.ln(
     mc: MathContext,
 ): UnifiedValue = UnifiedValue.of(
     value = BigDecimalMath.ln(
-        value = this.toBigDecimal(transformingMc(mc)),
+        value = toBigDecimal(transformingMc(mc)),
         mc = mc,
     ),
 )
@@ -114,9 +114,29 @@ internal suspend fun UnifiedValue.log(
     mc: MathContext,
 ): UnifiedValue = UnifiedValue.of(
     value = BigDecimalMath.log(
-        value = this.toBigDecimal(transformingMc(mc)),
+        value = toBigDecimal(transformingMc(mc)),
         mc = mc,
     ),
+)
+
+internal suspend fun UnifiedValue.sin(
+    isRadians: Boolean,
+    mc: MathContext,
+): UnifiedValue = trigonometricFunction(
+    isRadians = isRadians,
+    mc = mc,
+    specialResult = ::sinSpecialResult,
+    calculate = BigDecimalMath::sin,
+)
+
+internal suspend fun UnifiedValue.cos(
+    isRadians: Boolean,
+    mc: MathContext,
+): UnifiedValue = trigonometricFunction(
+    isRadians = isRadians,
+    mc = mc,
+    specialResult = ::cosSpecialResult,
+    calculate = BigDecimalMath::cos,
 )
 
 private suspend fun UnifiedValue.trigonometricFunction(
@@ -144,26 +164,6 @@ private suspend fun UnifiedValue.trigonometricFunction(
     )
 }
 
-internal suspend fun UnifiedValue.sin(
-    isRadians: Boolean,
-    mc: MathContext,
-): UnifiedValue = trigonometricFunction(
-    isRadians = isRadians,
-    mc = mc,
-    specialResult = ::sinSpecialResult,
-    calculate = BigDecimalMath::sin,
-)
-
-internal suspend fun UnifiedValue.cos(
-    isRadians: Boolean,
-    mc: MathContext,
-): UnifiedValue = trigonometricFunction(
-    isRadians = isRadians,
-    mc = mc,
-    specialResult = ::cosSpecialResult,
-    calculate = BigDecimalMath::cos,
-)
-
 internal suspend fun UnifiedValue.tan(
     isRadians: Boolean,
     mc: MathContext,
@@ -173,25 +173,6 @@ internal suspend fun UnifiedValue.tan(
     specialResult = ::tanSpecialResult,
     calculate = BigDecimalMath::tan,
 )
-
-private suspend fun UnifiedValue.inverseTrigonometricFunction(
-    isRadians: Boolean,
-    mc: MathContext,
-    specialResult: (BigDecimal, Boolean) -> UnifiedValue?,
-    calculate: suspend (BigDecimal, MathContext) -> BigDecimal,
-): UnifiedValue {
-    val transformingMc: MathContext = transformingMc(mc)
-    val value: BigDecimal = this.toBigDecimal(transformingMc)
-
-    specialResult(value, isRadians)
-        ?.let { result -> return result }
-
-    return if (isRadians) {
-        UnifiedValue.of(calculate(value, mc))
-    } else {
-        UnifiedValue.of(calculate(value, transformingMc).toDegrees(mc))
-    }
-}
 
 internal suspend fun UnifiedValue.arcsin(
     isRadians: Boolean,
@@ -222,6 +203,25 @@ internal suspend fun UnifiedValue.arctan(
     specialResult = ::arctanSpecialResult,
     calculate = BigDecimalMath::arctan,
 )
+
+private suspend fun UnifiedValue.inverseTrigonometricFunction(
+    isRadians: Boolean,
+    mc: MathContext,
+    specialResult: (BigDecimal, Boolean) -> UnifiedValue?,
+    calculate: suspend (BigDecimal, MathContext) -> BigDecimal,
+): UnifiedValue {
+    val transformingMc: MathContext = transformingMc(mc)
+    val value: BigDecimal = toBigDecimal(transformingMc)
+
+    specialResult(value, isRadians)
+        ?.let { result -> return result }
+
+    return if (isRadians) {
+        UnifiedValue.of(calculate(value, mc))
+    } else {
+        UnifiedValue.of(calculate(value, transformingMc).toDegrees(mc))
+    }
+}
 
 private fun factorialArgument(
     value: UnifiedValue,
@@ -336,18 +336,18 @@ private suspend fun UnifiedValue.toNormalizedPiMultipleOrNull(
 ): BigDecimal? {
 
     return if (isRadians) {
-        if (this.isPurePiMultiple()) {
-            this.piFactor
+        if (isPurePiMultiple()) {
+            piFactor
                 .toBigDecimal(transformingMc(mc))
                 .remainder(TWO)
         } else {
             null
         }
     } else {
-        if (this.isIrrational()) {
+        if (isIrrational()) {
             null
         } else {
-            this.toBigDecimal(transformingMc(mc))
+            toBigDecimal(transformingMc(mc))
                 .divide(ONE_HUNDRED_EIGHTY, mc)
                 .remainder(TWO)
         }
@@ -362,9 +362,9 @@ private suspend fun UnifiedValue.toNormalizedRadians(
     val pi: BigDecimal = BigDecimalMath.pi(transformingMc)
 
     return if (isRadians) {
-        this.toBigDecimal(transformingMc)
+        toBigDecimal(transformingMc)
     } else {
-        this.toBigDecimal(transformingMc)
+        toBigDecimal(transformingMc)
             .multiply(pi)
             .divide(ONE_HUNDRED_EIGHTY, mc)
     }.remainder(TWO.multiply(pi))
