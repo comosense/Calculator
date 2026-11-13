@@ -145,7 +145,7 @@ private suspend fun UnifiedValue.trigonometricFunction(
 
     return UnifiedValue.from(
         bigDecimal = calculate(
-            toNormalizedRadians(
+            toRadians(
                 isRadians = isRadians,
                 mc = workingMc,
             ),
@@ -360,32 +360,36 @@ private suspend fun UnifiedValue.toNormalizedPiMultipleOrNull(
     return if (isRadians) {
         toPiMultipleOrNull()
             ?.toBigDecimal(workingMc(mc))
-            ?.remainder(TWO, mc)
     } else {
         if (isIrrational()) {
             null
         } else {
             toBigDecimal(workingMc(mc))
                 .divide(ONE_HUNDRED_EIGHTY, mc)
-                .remainder(TWO, mc)
         }
-    }
+    }?.remainder(TWO, mc)
+        ?.let { normalizedPiMultiple ->
+            if (normalizedPiMultiple.signum() < 0) {
+                normalizedPiMultiple.add(TWO)
+            } else {
+                normalizedPiMultiple
+            }
+        }
 }
 
-private suspend fun UnifiedValue.toNormalizedRadians(
+private suspend fun UnifiedValue.toRadians(
     isRadians: Boolean,
     mc: MathContext,
 ): BigDecimal {
-    val workingMc: MathContext = workingMc(mc)
-    val pi: BigDecimal = BigDecimalMath.pi(workingMc)
-
     return if (isRadians) {
-        toBigDecimal(workingMc)
+        toBigDecimal(mc)
     } else {
+        val workingMc: MathContext = workingMc(mc)
+
         toBigDecimal(workingMc)
-            .multiply(pi)
+            .multiply(BigDecimalMath.pi(workingMc))
             .divide(ONE_HUNDRED_EIGHTY, mc)
-    }.remainder(TWO.multiply(pi), mc)
+    }
 }
 
 private fun sinSpecialOrNull(

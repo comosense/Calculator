@@ -461,20 +461,23 @@ internal object BigDecimalMath {
         val threeHalfPi: BigDecimal = cachedThreeHalfPi(mc)
         val twoPi: BigDecimal = cachedTwoPi(mc)
 
+        val normalizedRadians: BigDecimal =
+            radians.toNormalizedRadians(mc)
+
         return when {
-            radians <= halfPi ->
+            normalizedRadians <= halfPi ->
                 sinTaylor(
                     radians = radians,
                     mc = mc,
                 )
 
-            radians <= pi ->
+            normalizedRadians <= pi ->
                 sinTaylor(
                     radians = pi.subtract(radians),
                     mc = mc,
                 )
 
-            radians <= threeHalfPi ->
+            normalizedRadians <= threeHalfPi ->
                 sinTaylor(
                     radians = radians.subtract(pi),
                     mc = mc,
@@ -497,20 +500,24 @@ internal object BigDecimalMath {
         val threeHalfPi: BigDecimal = cachedThreeHalfPi(mc)
         val twoPi: BigDecimal = cachedTwoPi(mc)
 
+        val normalizedRadians: BigDecimal =
+            radians.toNormalizedRadians(mc)
+
+
         return when {
-            radians <= halfPi ->
+            normalizedRadians <= halfPi ->
                 cosTaylor(
                     radians = radians,
                     mc = mc,
                 )
 
-            radians <= pi ->
+            normalizedRadians <= pi ->
                 cosTaylor(
                     radians = pi.subtract(radians),
                     mc = mc,
                 ).negate()
 
-            radians <= threeHalfPi ->
+            normalizedRadians <= threeHalfPi ->
                 cosTaylor(
                     radians = radians.subtract(pi),
                     mc = mc,
@@ -731,6 +738,21 @@ internal object BigDecimalMath {
             sum = nextSum
             n++
         }
+    }
+
+    private suspend fun BigDecimal.toNormalizedRadians(
+        mc: MathContext,
+    ): BigDecimal {
+        val twoPi: BigDecimal = cachedTwoPi(mc)
+
+        return remainder(twoPi)
+            .let { normalizedRadians ->
+                if (normalizedRadians.signum() < 0) {
+                    normalizedRadians.add(twoPi)
+                } else {
+                    normalizedRadians
+                }
+            }
     }
 
     private suspend fun calculateInverseTrigonometricAcuteAngle(

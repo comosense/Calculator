@@ -189,7 +189,7 @@ class UnifiedValue private constructor(
     ): UnifiedValue {
         val denominator: Rational? = other.toExactRationalOrNull()
 
-        return if (denominator != null && !denominator.isZero()) {
+        return if (denominator != null) {
             if (denominator.isZero()) {
                 throw DivisionByZeroException()
             }
