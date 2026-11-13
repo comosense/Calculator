@@ -9,7 +9,6 @@ import kotlin.coroutines.CoroutineContext
 
 class SqrtInvalidArgumentException : ArithmeticException()
 class LogInvalidArgumentException : ArithmeticException()
-
 class ArcsinInvalidArgumentException : ArithmeticException()
 class ArccosInvalidArgumentException : ArithmeticException()
 
@@ -66,7 +65,7 @@ internal object BigDecimalMath {
         mc: MathContext,
     ): BigDecimal {
         return cachedE(
-            mc = internalMc(mc),
+            mc = calculationMc(mc),
         ).round(mc)
     }
 
@@ -74,7 +73,7 @@ internal object BigDecimalMath {
         mc: MathContext,
     ): BigDecimal {
         return cachedPi(
-            mc = internalMc(mc),
+            mc = calculationMc(mc),
         ).round(mc)
     }
 
@@ -104,7 +103,7 @@ internal object BigDecimalMath {
     ): BigDecimal {
         return calculateSqrt(
             value = value,
-            mc = internalMc(mc),
+            mc = calculationMc(mc),
         ).round(mc)
     }
 
@@ -118,7 +117,7 @@ internal object BigDecimalMath {
 
         return calculateExp(
             value = value,
-            mc = internalMc(mc),
+            mc = calculationMc(mc),
         ).round(mc)
     }
 
@@ -187,7 +186,7 @@ internal object BigDecimalMath {
             return ONE
         }
 
-        val internalMc: MathContext = internalMc(mc)
+        val internalMc: MathContext = calculationMc(mc)
 
         return calculateExp(
             value = exponent.multiply(
@@ -206,7 +205,7 @@ internal object BigDecimalMath {
     ): BigDecimal {
         return calculateLn(
             value = value,
-            mc = internalMc(mc),
+            mc = calculationMc(mc),
         ).round(mc)
     }
 
@@ -214,7 +213,7 @@ internal object BigDecimalMath {
         value: BigDecimal,
         mc: MathContext,
     ): BigDecimal {
-        val internalMc: MathContext = internalMc(mc)
+        val internalMc: MathContext = calculationMc(mc)
 
         return calculateLn(value, internalMc)
             .divide(cachedLnTen(internalMc), mc)
@@ -226,7 +225,7 @@ internal object BigDecimalMath {
     ): BigDecimal {
         return calculateSin(
             radians = radians,
-            mc = internalMc(mc),
+            mc = calculationMc(mc),
         ).round(mc)
     }
 
@@ -236,7 +235,7 @@ internal object BigDecimalMath {
     ): BigDecimal {
         return calculateCos(
             radians = radians,
-            mc = internalMc(mc),
+            mc = calculationMc(mc),
         ).round(mc)
     }
 
@@ -246,7 +245,7 @@ internal object BigDecimalMath {
     ): BigDecimal {
         return calculateArcsin(
             value = value,
-            mc = internalMc(mc),
+            mc = calculationMc(mc),
         ).round(mc)
     }
 
@@ -256,7 +255,7 @@ internal object BigDecimalMath {
     ): BigDecimal {
         return calculateArccos(
             value = value,
-            mc = internalMc(mc),
+            mc = calculationMc(mc),
         ).round(mc)
     }
 
@@ -266,7 +265,7 @@ internal object BigDecimalMath {
     ): BigDecimal {
         return calculateArctan(
             value = value,
-            mc = internalMc(mc),
+            mc = calculationMc(mc),
         ).round(mc)
     }
 
@@ -792,11 +791,6 @@ internal object BigDecimalMath {
         }
     }
 
-    private fun internalMc(mc: MathContext): MathContext = MathContext(
-        mc.precision + EXTRA_PRECISION_FOR_INTERNAL_CALCULATIONS,
-        mc.roundingMode,
-    )
-
     private suspend fun cachedLnTen(
         mc: MathContext,
     ): BigDecimal = cachedConstant(
@@ -948,4 +942,11 @@ internal object BigDecimalMath {
 
         return value.round(mc)
     }
+
+    private fun calculationMc(
+        mc: MathContext,
+    ): MathContext = MathContext(
+        mc.precision + EXTRA_PRECISION_FOR_INTERNAL_CALCULATIONS,
+        mc.roundingMode,
+    )
 }
