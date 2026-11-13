@@ -9,7 +9,7 @@ import kotlin.coroutines.CoroutineContext
 
 class SqrtInvalidArgumentException : ArithmeticException()
 class LogInvalidArgumentException : ArithmeticException()
-class TanInvalidArgumentException : ArithmeticException()
+
 class ArcsinInvalidArgumentException : ArithmeticException()
 class ArccosInvalidArgumentException : ArithmeticException()
 
@@ -235,16 +235,6 @@ internal object BigDecimalMath {
         mc: MathContext,
     ): BigDecimal {
         return calculateCos(
-            radians = radians,
-            mc = internalMc(mc),
-        ).round(mc)
-    }
-
-    suspend fun tan(
-        radians: BigDecimal,
-        mc: MathContext,
-    ): BigDecimal {
-        return calculateTan(
             radians = radians,
             mc = internalMc(mc),
         ).round(mc)
@@ -533,27 +523,6 @@ internal object BigDecimalMath {
                     mc = mc,
                 )
         }
-    }
-
-    private suspend fun calculateTan(
-        radians: BigDecimal,
-        mc: MathContext,
-    ): BigDecimal {
-        val cos: BigDecimal = calculateCos(
-            radians = radians,
-            mc = mc,
-        )
-
-        if (cos.signum() == 0) {
-            throw TanInvalidArgumentException()
-        }
-
-        val sin: BigDecimal = calculateSin(
-            radians = radians,
-            mc = mc,
-        )
-
-        return sin.divide(cos, mc)
     }
 
     private suspend fun calculateArcsin(

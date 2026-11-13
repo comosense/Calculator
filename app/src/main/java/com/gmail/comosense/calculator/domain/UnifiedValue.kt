@@ -12,10 +12,12 @@ class UnifiedValue private constructor(
     val piFactor: Rational = Rational.ZERO,
 ) {
     companion object {
+        val NEGATIVE_ONE: UnifiedValue = UnifiedValue(
+            rational = Rational.ONE,
+        ).negate()
         val ZERO: UnifiedValue = UnifiedValue(
             rational = Rational.ZERO,
         )
-
         val ONE: UnifiedValue = UnifiedValue(
             rational = Rational.ONE,
         )
