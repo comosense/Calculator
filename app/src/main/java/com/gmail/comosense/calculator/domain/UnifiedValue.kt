@@ -110,7 +110,7 @@ class UnifiedValue private constructor(
             )
         }
 
-        return result
+        return result.round(mc)
     }
 
     fun toBigIntegerExact(): BigInteger =
