@@ -20,37 +20,40 @@ class UnifiedValue private constructor(
             rational = Rational.ONE,
         )
 
-        val HALF_PI: UnifiedValue = UnifiedValue(
-            piFactor = Rational.HALF
+        fun from(
+            bigDecimal: BigDecimal,
+        ): UnifiedValue = UnifiedValue(
+            decimal = bigDecimal,
         )
-        val PI: UnifiedValue = UnifiedValue(
+
+        fun from(
+            bigInteger: BigInteger,
+        ): UnifiedValue = UnifiedValue(
+            decimal = bigInteger.toBigDecimal(),
+        )
+
+        fun from(
+            rational: Rational,
+        ): UnifiedValue = UnifiedValue(
+            rational = rational,
+        )
+
+        fun fromPiFactor(
+            piFactor: Rational,
+        ) = UnifiedValue(
+            piFactor = piFactor,
+        )
+
+        fun pi(): UnifiedValue = fromPiFactor(
             piFactor = Rational.ONE,
         )
 
         suspend fun e(
             mc: MathContext,
-        ): UnifiedValue = of(
-            value = BigDecimalMath.e(
+        ): UnifiedValue = from(
+            bigDecimal = BigDecimalMath.e(
                 mc = mc,
-            )
-        )
-
-        fun of(
-            value: BigDecimal,
-        ): UnifiedValue = UnifiedValue(
-            decimal = value,
-        )
-
-        fun of(
-            value: BigInteger,
-        ): UnifiedValue = UnifiedValue(
-            decimal = value.toBigDecimal(),
-        )
-
-        fun of(
-            value: Rational,
-        ): UnifiedValue = UnifiedValue(
-            rational = value,
+            ),
         )
     }
 
@@ -58,7 +61,7 @@ class UnifiedValue private constructor(
         return if (isPureRational()) {
             rational
         } else if (piFactor.isZero()) {
-            rational + Rational.of(decimal)
+            rational + Rational.from(decimal)
         } else {
             null
         }
@@ -68,7 +71,7 @@ class UnifiedValue private constructor(
         mc: MathContext,
     ): Rational {
         return rational +
-                Rational.of(
+                Rational.from(
                     decimal +
                             piFactor.toBigDecimal(mc)
                                 .multiply(BigDecimalMath.pi(mc))
@@ -79,13 +82,19 @@ class UnifiedValue private constructor(
         decimal.signum() == 0 &&
                 piFactor.isZero()
 
-    fun isPurePiMultiple(): Boolean =
-        decimal.signum() == 0 &&
-                rational.isZero() &&
-                !piFactor.isZero()
-
     fun isIrrational(): Boolean =
         !piFactor.isZero()
+
+    fun toPiMultipleOrNull(): Rational? {
+        return if (decimal.signum() == 0 &&
+            rational.isZero() &&
+            !piFactor.isZero()
+        ) {
+            piFactor
+        } else {
+            null
+        }
+    }
 
     suspend fun toBigDecimal(
         mc: MathContext,
@@ -138,8 +147,8 @@ class UnifiedValue private constructor(
         other: UnifiedValue,
         mc: MathContext,
     ): UnifiedValue {
-        val leftDecimalRational: Rational = Rational.of(decimal)
-        val rightDecimalRational: Rational = Rational.of(other.decimal)
+        val leftDecimalRational: Rational = Rational.from(decimal)
+        val rightDecimalRational: Rational = Rational.from(other.decimal)
 
         var newDecimal: BigDecimal =
             decimal.multiply(other.decimal)
@@ -184,7 +193,7 @@ class UnifiedValue private constructor(
             }
 
             UnifiedValue(
-                rational = (Rational.of(decimal) + rational) / denominator,
+                rational = (Rational.from(decimal) + rational) / denominator,
                 piFactor = piFactor / denominator,
             )
         } else {

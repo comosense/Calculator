@@ -338,7 +338,7 @@ private class Parser(
         val result: BigDecimal = buffer.toString().toBigDecimalOrNull()
             ?: throw InvalidNumericFormatException()
 
-        return UnifiedValue.of(result)
+        return UnifiedValue.from(result)
     }
 
     private suspend fun parseConstant(
@@ -347,7 +347,7 @@ private class Parser(
     ): UnifiedValue {
         return when (constant) {
             Symbol.Constant.Pi ->
-                UnifiedValue.PI
+                UnifiedValue.pi()
 
             Symbol.Constant.Euler ->
                 UnifiedValue.e(

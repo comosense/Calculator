@@ -53,7 +53,7 @@ class Rational private constructor(
             )
         }
 
-        fun of(
+        fun from(
             value: BigDecimal,
         ): Rational {
             val scale: Int = value.scale()

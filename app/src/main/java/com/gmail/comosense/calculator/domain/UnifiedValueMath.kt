@@ -19,9 +19,8 @@ private val NEGATIVE_ONE: BigDecimal = BigDecimal.ONE.negate()
 private val ZERO: BigDecimal = BigDecimal.ZERO
 private val HALF: BigDecimal = "0.5".toBigDecimal()
 private val ONE: BigDecimal = BigDecimal.ONE
-private val TWO: BigDecimal = 2.toBigDecimal()
 private val THREE_HALF: BigDecimal = "1.5".toBigDecimal()
-private val NINETY: BigDecimal = 90.toBigDecimal()
+private val TWO: BigDecimal = 2.toBigDecimal()
 private val ONE_HUNDRED_EIGHTY: BigDecimal = 180.toBigDecimal()
 
 class FactorialLargeArgumentException : IllegalArgumentException()
@@ -30,8 +29,8 @@ class PowInvalidArgumentException : ArithmeticException()
 class PowLimitExceededException : IllegalArgumentException()
 class ExpLargeArgumentException : IllegalArgumentException()
 
-internal suspend fun UnifiedValue.factorial(): UnifiedValue = UnifiedValue.of(
-    value = BigDecimalMath.factorial(
+internal suspend fun UnifiedValue.factorial(): UnifiedValue = UnifiedValue.from(
+    bigInteger = BigDecimalMath.factorial(
         value = factorialArgument(this),
     ),
 )
@@ -77,8 +76,8 @@ internal suspend fun UnifiedValue.pow(
 
 internal suspend fun UnifiedValue.sqrt(
     mc: MathContext,
-): UnifiedValue = UnifiedValue.of(
-    value = BigDecimalMath.sqrt(
+): UnifiedValue = UnifiedValue.from(
+    bigDecimal = BigDecimalMath.sqrt(
         value = toBigDecimal(transformingMc(mc)),
         mc = mc,
     ),
@@ -93,8 +92,8 @@ internal suspend fun UnifiedValue.exp(
         throw ExpLargeArgumentException()
     }
 
-    return UnifiedValue.of(
-        value = BigDecimalMath.exp(
+    return UnifiedValue.from(
+        bigDecimal = BigDecimalMath.exp(
             value = value,
             mc = mc,
         ),
@@ -103,8 +102,8 @@ internal suspend fun UnifiedValue.exp(
 
 internal suspend fun UnifiedValue.ln(
     mc: MathContext,
-): UnifiedValue = UnifiedValue.of(
-    value = BigDecimalMath.ln(
+): UnifiedValue = UnifiedValue.from(
+    bigDecimal = BigDecimalMath.ln(
         value = toBigDecimal(transformingMc(mc)),
         mc = mc,
     ),
@@ -112,8 +111,8 @@ internal suspend fun UnifiedValue.ln(
 
 internal suspend fun UnifiedValue.log(
     mc: MathContext,
-): UnifiedValue = UnifiedValue.of(
-    value = BigDecimalMath.log(
+): UnifiedValue = UnifiedValue.from(
+    bigDecimal = BigDecimalMath.log(
         value = toBigDecimal(transformingMc(mc)),
         mc = mc,
     ),
@@ -153,8 +152,8 @@ private suspend fun UnifiedValue.trigonometricFunction(
     )?.let(specialResult)
         ?.let { result -> return result }
 
-    return UnifiedValue.of(
-        value = calculate(
+    return UnifiedValue.from(
+        bigDecimal = calculate(
             toNormalizedRadians(
                 isRadians = isRadians,
                 mc = transformingMc,
@@ -217,9 +216,15 @@ private suspend fun UnifiedValue.inverseTrigonometricFunction(
         ?.let { result -> return result }
 
     return if (isRadians) {
-        UnifiedValue.of(calculate(value, mc))
+        UnifiedValue.from(
+            bigDecimal = calculate(value, mc),
+        )
     } else {
-        UnifiedValue.of(calculate(value, transformingMc).toDegrees(mc))
+        UnifiedValue.from(
+            bigDecimal = calculate(value, transformingMc)
+                .multiply(ONE_HUNDRED_EIGHTY)
+                .divide(BigDecimalMath.pi(transformingMc(mc)), mc),
+        )
     }
 }
 
@@ -253,8 +258,8 @@ private suspend fun powRationalBase(
     base: UnifiedValue,
     exponent: Int,
 ): UnifiedValue {
-    return UnifiedValue.of(
-        value = base.rational.pow(exponent),
+    return UnifiedValue.from(
+        rational = base.rational.pow(exponent),
     )
 }
 
@@ -268,8 +273,8 @@ private suspend fun powNaturalExponent(
         exponent = abs(exponent),
     )
 
-    return UnifiedValue.of(
-        value = if (exponent >= 0) {
+    return UnifiedValue.from(
+        bigDecimal = if (exponent >= 0) {
             result
         } else {
             BigDecimal.ONE.divide(result, mc)
@@ -286,8 +291,8 @@ private suspend fun powDecimalExponent(
         throw PowInvalidArgumentException()
     }
 
-    return UnifiedValue.of(
-        value = BigDecimalMath.powDecimalExponent(
+    return UnifiedValue.from(
+        bigDecimal = BigDecimalMath.powDecimalExponent(
             base = base,
             exponent = nonIntegerExponent(exponent, transformingMc(mc)),
             mc = mc,
@@ -334,15 +339,10 @@ private suspend fun UnifiedValue.toNormalizedPiMultipleOrNull(
     isRadians: Boolean,
     mc: MathContext,
 ): BigDecimal? {
-
     return if (isRadians) {
-        if (isPurePiMultiple()) {
-            piFactor
-                .toBigDecimal(transformingMc(mc))
-                .remainder(TWO)
-        } else {
-            null
-        }
+        toPiMultipleOrNull()
+            ?.toBigDecimal(transformingMc(mc))
+            ?.remainder(TWO)
     } else {
         if (isIrrational()) {
             null
@@ -369,11 +369,6 @@ private suspend fun UnifiedValue.toNormalizedRadians(
             .divide(ONE_HUNDRED_EIGHTY, mc)
     }.remainder(TWO.multiply(pi))
 }
-
-private suspend fun BigDecimal.toDegrees(
-    mc: MathContext,
-): BigDecimal = multiply(ONE_HUNDRED_EIGHTY)
-    .divide(BigDecimalMath.pi(transformingMc(mc)), mc)
 
 private fun sinSpecialResult(
     piMultiple: BigDecimal,
@@ -420,74 +415,72 @@ private fun tanSpecialResult(
 private fun arcsinSpecialResult(
     value: BigDecimal,
     isRadians: Boolean,
-): UnifiedValue? = when (value) {
-    ZERO ->
-        if (isRadians) {
-            UnifiedValue.ZERO
-        } else {
-            UnifiedValue.of(ZERO)
-        }
+): UnifiedValue? {
+    return when (value) {
+        ZERO ->
+            Rational.ZERO
 
-    ONE ->
-        if (isRadians) {
-            UnifiedValue.HALF_PI
-        } else {
-            UnifiedValue.of(NINETY)
-        }
+        ONE ->
+            Rational.HALF
 
-    NEGATIVE_ONE ->
-        if (isRadians) {
-            UnifiedValue.HALF_PI.negate()
-        } else {
-            UnifiedValue.of(ZERO).negate()
-        }
+        NEGATIVE_ONE ->
+            Rational.HALF.negate()
 
-    else ->
-        null
+        else ->
+            null
+    }?.toUnifiedValue(
+        isRadians = isRadians,
+    )
 }
 
 private fun arccosSpecialResult(
     value: BigDecimal,
     isRadians: Boolean,
-): UnifiedValue? = when (value) {
-    ZERO ->
-        if (isRadians) {
-            UnifiedValue.HALF_PI
-        } else {
-            UnifiedValue.of(NINETY)
-        }
+): UnifiedValue? {
+    return when (value) {
+        ZERO ->
+            Rational.HALF
 
-    ONE ->
-        if (isRadians) {
-            UnifiedValue.ZERO
-        } else {
-            UnifiedValue.of(ZERO)
-        }
+        ONE ->
+            Rational.ZERO
 
-    NEGATIVE_ONE ->
-        if (isRadians) {
-            UnifiedValue.PI
-        } else {
-            UnifiedValue.of(ONE_HUNDRED_EIGHTY)
-        }
+        NEGATIVE_ONE ->
+            Rational.ONE
 
-    else ->
-        null
+        else ->
+            null
+    }?.toUnifiedValue(
+        isRadians = isRadians,
+    )
 }
 
 private fun arctanSpecialResult(
     value: BigDecimal,
     isRadians: Boolean,
-): UnifiedValue? = when (value) {
-    ZERO ->
-        if (isRadians) {
-            UnifiedValue.ZERO
-        } else {
-            UnifiedValue.of(ZERO)
-        }
+): UnifiedValue? {
+    return when (value) {
+        ZERO ->
+            Rational.ZERO
 
-    else ->
-        null
+        else ->
+            null
+    }?.toUnifiedValue(
+        isRadians = isRadians,
+    )
+}
+
+private fun Rational.toUnifiedValue(
+    isRadians: Boolean,
+): UnifiedValue {
+    return if (isRadians) {
+        UnifiedValue.fromPiFactor(
+            piFactor = this,
+        )
+    } else {
+        UnifiedValue.from(
+            rational = this * Rational.from(ONE_HUNDRED_EIGHTY)
+        )
+    }
 }
 
 private fun transformingMc(
