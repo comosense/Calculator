@@ -59,27 +59,6 @@ class UnifiedValue private constructor(
         )
     }
 
-    private fun toExactRationalOrNull(): Rational? {
-        return if (isPureRational()) {
-            rational
-        } else if (piFactor.isZero()) {
-            rational + Rational.from(decimal)
-        } else {
-            null
-        }
-    }
-
-    private suspend fun toApproximateRational(
-        mc: MathContext,
-    ): Rational {
-        return rational +
-                Rational.from(
-                    decimal +
-                            piFactor.toBigDecimal(mc)
-                                .multiply(BigDecimalMath.pi(mc))
-                )
-    }
-
     fun isPureRational(): Boolean =
         decimal.signum() == 0 &&
                 piFactor.isZero()
@@ -199,14 +178,25 @@ class UnifiedValue private constructor(
                 piFactor = piFactor / denominator,
             )
         } else {
-            val approximateDenominator: Rational = other.toApproximateRational(mc)
-            if (approximateDenominator.isZero()) {
+            val approximateDenominator: BigDecimal = other.toBigDecimal(mc)
+            if (approximateDenominator.signum() == 0) {
                 throw DivisionByZeroException()
             }
 
             UnifiedValue(
-                rational = toApproximateRational(mc) / approximateDenominator
+                decimal = toBigDecimal(mc)
+                    .divide(approximateDenominator, mc)
             )
+        }
+    }
+
+    private fun toExactRationalOrNull(): Rational? {
+        return if (isPureRational()) {
+            rational
+        } else if (!isIrrational()) {
+            rational + Rational.from(decimal)
+        } else {
+            null
         }
     }
 }
