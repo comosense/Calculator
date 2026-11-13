@@ -467,25 +467,25 @@ internal object BigDecimalMath {
         return when {
             normalizedRadians <= halfPi ->
                 sinTaylor(
-                    radians = radians,
+                    radians = normalizedRadians,
                     mc = mc,
                 )
 
             normalizedRadians <= pi ->
                 sinTaylor(
-                    radians = pi.subtract(radians),
+                    radians = pi.subtract(normalizedRadians),
                     mc = mc,
                 )
 
             normalizedRadians <= threeHalfPi ->
                 sinTaylor(
-                    radians = radians.subtract(pi),
+                    radians = normalizedRadians.subtract(pi),
                     mc = mc,
                 ).negate()
 
             else ->
                 sinTaylor(
-                    radians = twoPi.subtract(radians),
+                    radians = twoPi.subtract(normalizedRadians),
                     mc = mc,
                 ).negate()
         }
@@ -507,25 +507,25 @@ internal object BigDecimalMath {
         return when {
             normalizedRadians <= halfPi ->
                 cosTaylor(
-                    radians = radians,
+                    radians = normalizedRadians,
                     mc = mc,
                 )
 
             normalizedRadians <= pi ->
                 cosTaylor(
-                    radians = pi.subtract(radians),
+                    radians = pi.subtract(normalizedRadians),
                     mc = mc,
                 ).negate()
 
             normalizedRadians <= threeHalfPi ->
                 cosTaylor(
-                    radians = radians.subtract(pi),
+                    radians = normalizedRadians.subtract(pi),
                     mc = mc,
                 ).negate()
 
             else ->
                 cosTaylor(
-                    radians = twoPi.subtract(radians),
+                    radians = twoPi.subtract(normalizedRadians),
                     mc = mc,
                 )
         }

@@ -106,11 +106,11 @@ class UnifiedValue private constructor(
         if (isIrrational()) {
             result = result.add(
                 piFactor.toBigDecimal(mc)
-                    .multiply(BigDecimalMath.pi(mc))
+                    .multiply(BigDecimalMath.pi(mc), mc)
             )
         }
 
-        return result.round(mc)
+        return result
     }
 
     fun toBigIntegerExact(): BigInteger =

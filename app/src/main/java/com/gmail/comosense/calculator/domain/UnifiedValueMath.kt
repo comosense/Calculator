@@ -394,14 +394,15 @@ private suspend fun UnifiedValue.toRadians(
 
 private fun sinSpecialOrNull(
     piMultiple: BigDecimal,
-): UnifiedValue? = when (piMultiple) {
-    ZERO, ONE ->
+): UnifiedValue? = when {
+    piMultiple.compareTo(ZERO) == 0 ||
+            piMultiple.compareTo(ONE) == 0 ->
         UnifiedValue.ZERO
 
-    HALF ->
+    piMultiple.compareTo(HALF) == 0 ->
         UnifiedValue.ONE
 
-    THREE_HALF ->
+    piMultiple.compareTo(THREE_HALF) == 0 ->
         UnifiedValue.NEGATIVE_ONE
 
     else ->
@@ -410,14 +411,15 @@ private fun sinSpecialOrNull(
 
 private fun cosSpecialOrNull(
     piMultiple: BigDecimal,
-): UnifiedValue? = when (piMultiple) {
-    HALF, THREE_HALF ->
+): UnifiedValue? = when {
+    piMultiple.compareTo(HALF) == 0 ||
+            piMultiple.compareTo(THREE_HALF) == 0 ->
         UnifiedValue.ZERO
 
-    ZERO ->
+    piMultiple.compareTo(ZERO) == 0 ->
         UnifiedValue.ONE
 
-    ONE ->
+    piMultiple.compareTo(ONE) == 0 ->
         UnifiedValue.NEGATIVE_ONE
 
     else ->
@@ -427,59 +429,53 @@ private fun cosSpecialOrNull(
 private fun arcsinSpecialOrNull(
     value: BigDecimal,
     isRadians: Boolean,
-): UnifiedValue? {
-    return when (value) {
-        ZERO ->
-            Rational.ZERO
+): UnifiedValue? = when {
+    value.compareTo(ZERO) == 0 ->
+        Rational.ZERO
 
-        ONE ->
-            Rational.HALF
+    value.compareTo(ONE) == 0 ->
+        Rational.HALF
 
-        NEGATIVE_ONE ->
-            Rational.NEGATIVE_HALF
+    value.compareTo(NEGATIVE_ONE) == 0 ->
+        Rational.NEGATIVE_HALF
 
-        else ->
-            null
-    }?.toAngleUnifiedValue(
-        isRadians = isRadians,
-    )
-}
+    else ->
+        null
+}?.toAngleUnifiedValue(
+    isRadians = isRadians,
+)
 
 private fun arccosSpecialOrNull(
     value: BigDecimal,
     isRadians: Boolean,
-): UnifiedValue? {
-    return when (value) {
-        ZERO ->
-            Rational.HALF
+): UnifiedValue? = when {
+    value.compareTo(ZERO) == 0 ->
+        Rational.HALF
 
-        ONE ->
-            Rational.ZERO
+    value.compareTo(ONE) == 0 ->
+        Rational.ZERO
 
-        NEGATIVE_ONE ->
-            Rational.ONE
+    value.compareTo(NEGATIVE_ONE) == 0 ->
+        Rational.ONE
 
-        else ->
-            null
-    }?.toAngleUnifiedValue(
-        isRadians = isRadians,
-    )
-}
+    else ->
+        null
+}?.toAngleUnifiedValue(
+    isRadians = isRadians,
+)
 
 private fun arctanSpecialOrNull(
     value: BigDecimal,
     isRadians: Boolean,
-): UnifiedValue? {
-    return when (value) {
-        ZERO ->
-            Rational.ZERO
+): UnifiedValue? = when {
+    value.compareTo(ZERO) == 0 ->
+        Rational.ZERO
 
-        else ->
-            null
-    }?.toAngleUnifiedValue(
-        isRadians = isRadians,
-    )
-}
+    else ->
+        null
+}?.toAngleUnifiedValue(
+    isRadians = isRadians,
+)
 
 private fun Rational.toAngleUnifiedValue(
     isRadians: Boolean,
