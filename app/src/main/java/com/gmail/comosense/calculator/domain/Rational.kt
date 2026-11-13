@@ -27,7 +27,29 @@ class Rational private constructor(
             denominator = BigInteger.ONE,
         )
 
-        fun of(
+        fun from(
+            value: BigDecimal,
+        ): Rational {
+            val scale: Int = value.scale()
+
+            return if (scale >= 0) {
+                of(
+                    numerator = value
+                        .unscaledValue(),
+                    denominator = BigInteger.TEN
+                        .pow(scale),
+                )
+            } else {
+                of(
+                    numerator = value
+                        .unscaledValue()
+                        .multiply(BigInteger.TEN.pow(-scale)),
+                    denominator = BigInteger.ONE,
+                )
+            }
+        }
+
+        private fun of(
             numerator: BigInteger,
             denominator: BigInteger = BigInteger.ONE,
         ): Rational {
@@ -51,28 +73,6 @@ class Rational private constructor(
                 numerator = n,
                 denominator = d,
             )
-        }
-
-        fun from(
-            value: BigDecimal,
-        ): Rational {
-            val scale: Int = value.scale()
-
-            return if (scale >= 0) {
-                of(
-                    numerator = value
-                        .unscaledValue(),
-                    denominator = BigInteger.TEN
-                        .pow(scale),
-                )
-            } else {
-                of(
-                    numerator = value
-                        .unscaledValue()
-                        .multiply(BigInteger.TEN.pow(-scale)),
-                    denominator = BigInteger.ONE,
-                )
-            }
         }
     }
 
