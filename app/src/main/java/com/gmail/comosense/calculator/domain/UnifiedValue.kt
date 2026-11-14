@@ -85,7 +85,7 @@ class UnifiedValue private constructor(
         if (hasPiFactor()) {
             result = result.add(
                 piFactor.toBigDecimal(mc)
-                    .multiply(BigDecimalMath.pi(mc), mc)
+                    .multiply(BigDecimalMath.pi(mc))
             )
         }
 
