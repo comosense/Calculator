@@ -16,7 +16,6 @@ android {
         targetSdk = 37
         versionCode = 1
         versionName = "YYYY.MM.DD.hhmm"
-
     }
 
     buildTypes {

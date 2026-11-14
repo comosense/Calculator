@@ -48,4 +48,3 @@ androidx-foundation = { group = "androidx.compose.foundation", name = "foundatio
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-
