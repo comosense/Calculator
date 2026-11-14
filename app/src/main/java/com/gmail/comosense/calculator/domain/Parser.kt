@@ -23,7 +23,7 @@ class Parser(
     suspend fun parse(
         mc: MathContext,
     ): UnifiedValue {
-        val result: UnifiedValue = parseExpression(
+        val parsed: UnifiedValue = parseExpression(
             mc = mc,
         )
 
@@ -31,14 +31,14 @@ class Parser(
             throw IllegalFactorException()
         }
 
-        return result
+        return parsed
     }
 
     private fun isEnd(): Boolean =
         position >= expression.size
 
     private suspend fun parseExpression(
-        mc: MathContext
+        mc: MathContext,
     ): UnifiedValue {
         val coroutineContext: CoroutineContext = currentCoroutineContext()
 
@@ -98,12 +98,12 @@ class Parser(
         mc: MathContext,
     ): UnifiedValue {
         return when (expression.getOrNull(position)) {
-            Symbol.Sign.Positive -> {
+            is Symbol.Sign.Positive -> {
                 position++
                 parseSign(mc)
             }
 
-            Symbol.Sign.Negative -> {
+            is Symbol.Sign.Negative -> {
                 position++
                 parseSign(mc).negate()
             }
@@ -118,14 +118,17 @@ class Parser(
     ): UnifiedValue {
         val base: UnifiedValue = parsePostfixOperation(mc)
 
-        return if (expression.getOrNull(position) is Symbol.Operator.Power) {
-            position++
-            base.pow(
-                exponent = parseSign(workingMc(mc)),
-                mc = mc,
-            )
-        } else {
-            base
+        return when (expression.getOrNull(position)) {
+            is Symbol.Operator.Power -> {
+                position++
+                base.pow(
+                    exponent = parseSign(workingMc(mc)),
+                    mc = mc,
+                )
+            }
+
+            else ->
+                base
         }
     }
 
@@ -207,8 +210,7 @@ class Parser(
     ): UnifiedValue {
         val value: UnifiedValue = parseExpression(mc)
 
-        if (isEnd() || expression[position] !is Symbol.FactorEnd
-        ) {
+        if (isEnd() || expression[position] !is Symbol.FactorEnd) {
             throw IllegalFactorException()
         }
         position++
