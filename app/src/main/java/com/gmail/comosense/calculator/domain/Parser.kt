@@ -236,10 +236,12 @@ class Parser(
             position++
         }
 
-        val result: BigDecimal = buffer.toString().toBigDecimalOrNull()
+        val value: BigDecimal = buffer.toString().toBigDecimalOrNull()
             ?: throw InvalidNumericFormatException()
 
-        return UnifiedValue.from(result)
+        return UnifiedValue.from(
+            value = value,
+        )
     }
 
     private suspend fun parseConstant(

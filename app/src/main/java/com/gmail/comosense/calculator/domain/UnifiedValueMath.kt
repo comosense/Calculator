@@ -30,8 +30,8 @@ class PowLimitExceededException : IllegalArgumentException()
 class ExpLargeArgumentException : IllegalArgumentException()
 class TanInvalidArgumentException : ArithmeticException()
 
-internal suspend fun UnifiedValue.factorial(): UnifiedValue = UnifiedValue.from(
-    bigInteger = BigDecimalMath.factorial(
+internal suspend fun UnifiedValue.factorial(): UnifiedValue = UnifiedValue.fromExactValue(
+    exactValue = BigDecimalMath.factorial(
         value = factorialArgument(this),
     ),
 )
@@ -69,7 +69,7 @@ internal suspend fun UnifiedValue.pow(
 internal suspend fun UnifiedValue.sqrt(
     mc: MathContext,
 ): UnifiedValue = UnifiedValue.from(
-    bigDecimal = BigDecimalMath.sqrt(
+    value = BigDecimalMath.sqrt(
         value = toBigDecimal(workingMc(mc)),
         mc = mc,
     ),
@@ -84,7 +84,7 @@ internal suspend fun UnifiedValue.exp(
     }
 
     return UnifiedValue.from(
-        bigDecimal = BigDecimalMath.exp(
+        value = BigDecimalMath.exp(
             value = value,
             mc = mc,
         ),
@@ -94,7 +94,7 @@ internal suspend fun UnifiedValue.exp(
 internal suspend fun UnifiedValue.ln(
     mc: MathContext,
 ): UnifiedValue = UnifiedValue.from(
-    bigDecimal = BigDecimalMath.ln(
+    value = BigDecimalMath.ln(
         value = toBigDecimal(workingMc(mc)),
         mc = mc,
     ),
@@ -103,7 +103,7 @@ internal suspend fun UnifiedValue.ln(
 internal suspend fun UnifiedValue.log(
     mc: MathContext,
 ): UnifiedValue = UnifiedValue.from(
-    bigDecimal = BigDecimalMath.log(
+    value = BigDecimalMath.log(
         value = toBigDecimal(workingMc(mc)),
         mc = mc,
     ),
@@ -144,7 +144,7 @@ private suspend fun UnifiedValue.trigonometricFunction(
         ?.let { result -> return result }
 
     return UnifiedValue.from(
-        bigDecimal = calculate(
+        value = calculate(
             toRadians(
                 isRadians = isRadians,
                 mc = workingMc,
@@ -221,11 +221,11 @@ private suspend fun UnifiedValue.inverseTrigonometricFunction(
 
     return if (isRadians) {
         UnifiedValue.from(
-            bigDecimal = calculate(value, mc),
+            value = calculate(value, mc),
         )
     } else {
         UnifiedValue.from(
-            bigDecimal = calculate(value, workingMc)
+            value = calculate(value, workingMc)
                 .multiply(ONE_HUNDRED_EIGHTY)
                 .divide(BigDecimalMath.pi(workingMc), mc),
         )
@@ -285,7 +285,7 @@ private suspend fun powNaturalExponent(
     exponent: Int,
     mc: MathContext,
 ): UnifiedValue {
-    return if (base.isExactRational()) {
+    return if (base.isPureRational()) {
         powRationalBase(
             base = base,
             exponent = exponent,
@@ -317,7 +317,7 @@ private suspend fun powDecimalExponent(
     }
 
     return UnifiedValue.from(
-        bigDecimal = BigDecimalMath.powDecimalExponent(
+        value = BigDecimalMath.powDecimalExponent(
             base = bigDecimalBase,
             exponent = bigDecimalExponent,
             mc = mc,
@@ -344,13 +344,15 @@ private suspend fun powDecimalBase(
         exponent = abs(exponent),
     )
 
-    return UnifiedValue.from(
-        bigDecimal = if (exponent >= 0) {
-            result
-        } else {
-            BigDecimal.ONE.divide(result, mc)
-        },
-    )
+    return if (exponent >= 0) {
+        UnifiedValue.fromExactValue(
+            exactValue = result,
+        )
+    } else {
+        UnifiedValue.from(
+            value = BigDecimal.ONE.divide(result, mc),
+        )
+    }
 }
 
 private suspend fun UnifiedValue.toNormalizedPiMultipleOrNull(
