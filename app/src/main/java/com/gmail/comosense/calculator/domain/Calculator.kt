@@ -34,19 +34,25 @@ suspend fun calculate(
 ): Result<List<Symbol>, CalculatorError> {
     require(precision > 0)
 
-    val calculated: BigDecimal =
-        when (val calculatedResult: Result<BigDecimal, CalculatorError> =
-            parse(
-                expression = expression,
-                isRadians = isRadians,
-                precision = precision,
-            )) {
-            is Result.Ok -> calculatedResult.value
-            is Result.Err -> return Result.Err(calculatedResult.error)
-        }
+    val calculatedResult: Result<BigDecimal, CalculatorError> =
+        parse(
+            expression = expression,
+            isRadians = isRadians,
+            precision = precision,
+        )
 
-    return when (val calculatedSymbolsResult: Result<List<Symbol>, SymbolizerError> =
-        calculated.toSymbols()) {
+    val calculated: BigDecimal = when (calculatedResult) {
+        is Result.Ok ->
+            calculatedResult.value
+
+        is Result.Err ->
+            return Result.Err(calculatedResult.error)
+    }
+
+    val calculatedSymbolsResult: Result<List<Symbol>, SymbolizerError> =
+        calculated.toSymbols()
+
+    return when (calculatedSymbolsResult) {
         is Result.Ok ->
             Result.Ok(calculatedSymbolsResult.value)
 
@@ -66,20 +72,20 @@ private suspend fun parse(
         return Result.Err(CalculatorError.InvalidExpression)
     }
 
-    return try {
-        val parser = Parser(
-            expression = expression,
-            isRadians = isRadians,
-        )
-        val mc = MathContext(
-            precision,
-            RoundingMode.HALF_UP,
-        )
-        val workingMc = MathContext(
-            precision + EXTRA_PRECISION_FOR_WORKING,
-            RoundingMode.HALF_UP,
-        )
+    val parser = Parser(
+        expression = expression,
+        isRadians = isRadians,
+    )
+    val workingMc = MathContext(
+        precision + EXTRA_PRECISION_FOR_WORKING,
+        RoundingMode.HALF_UP,
+    )
+    val mc = MathContext(
+        precision,
+        RoundingMode.HALF_UP,
+    )
 
+    return try {
         Result.Ok(
             parser
                 .parse(workingMc)
@@ -123,6 +129,9 @@ private suspend fun parse(
 }
 
 private fun SymbolizerError.toCalculatorError(): CalculatorError = when (this) {
-    SymbolizerError.Unsupported -> CalculatorError.Unsupported
-    SymbolizerError.TooLarge -> CalculatorError.ResultTooLarge
+    SymbolizerError.Unsupported ->
+        CalculatorError.Unsupported
+
+    SymbolizerError.TooLarge ->
+        CalculatorError.ResultTooLarge
 }
