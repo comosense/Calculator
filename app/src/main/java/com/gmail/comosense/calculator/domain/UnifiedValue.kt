@@ -12,6 +12,7 @@ class UnifiedValue private constructor(
     val piFactor: Rational = Rational.ZERO,
 ) {
     companion object {
+        private const val EXTRA_PRECISION_FOR_WORKING: Int = 2
         val NEGATIVE_ONE: UnifiedValue = UnifiedValue(
             rational = Rational.ONE,
         ).negate()
@@ -83,9 +84,12 @@ class UnifiedValue private constructor(
         var result: BigDecimal = decimal.add(rational.toBigDecimal(mc))
 
         if (hasPiFactor()) {
+            val workingMc: MathContext = workingMc(mc)
+
             result = result.add(
-                piFactor.toBigDecimal(mc)
-                    .multiply(BigDecimalMath.pi(mc), mc)
+                piFactor.toBigDecimal(workingMc)
+                    .multiply(BigDecimalMath.pi(workingMc))
+                    .round(mc)
             )
         }
 
@@ -135,14 +139,17 @@ class UnifiedValue private constructor(
             decimal.multiply(other.decimal)
 
         if (!piFactor.isZero() && !other.piFactor.isZero()) {
+            val workingMc: MathContext = workingMc(mc)
+
             newDecimal = newDecimal.add(
-                (piFactor * other.piFactor).toBigDecimal(mc)
+                (piFactor * other.piFactor).toBigDecimal(workingMc)
                     .multiply(
                         BigDecimalMath.powNaturalExponent(
-                            base = BigDecimalMath.pi(mc),
+                            base = BigDecimalMath.pi(workingMc),
                             exponent = 2,
                         )
                     )
+                    .round(mc)
             )
         }
 
@@ -178,13 +185,15 @@ class UnifiedValue private constructor(
                 piFactor = piFactor / denominator,
             )
         } else {
-            val approximateDenominator: BigDecimal = other.toBigDecimal(mc)
+            val workingMc: MathContext = workingMc(mc)
+
+            val approximateDenominator: BigDecimal = other.toBigDecimal(workingMc)
             if (approximateDenominator.signum() == 0) {
                 throw DivisionByZeroException()
             }
 
             UnifiedValue(
-                decimal = toBigDecimal(mc)
+                decimal = toBigDecimal(workingMc)
                     .divide(approximateDenominator, mc)
             )
         }
@@ -199,4 +208,11 @@ class UnifiedValue private constructor(
             null
         }
     }
+
+    private fun workingMc(
+        mc: MathContext,
+    ): MathContext = MathContext(
+        mc.precision + EXTRA_PRECISION_FOR_WORKING,
+        mc.roundingMode,
+    )
 }

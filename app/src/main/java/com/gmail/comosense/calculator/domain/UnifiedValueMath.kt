@@ -364,8 +364,9 @@ private suspend fun UnifiedValue.toNormalizedPiMultipleOrNull(
         if (hasPiFactor()) {
             null
         } else {
+            val workingMc: MathContext = workingMc(mc)
             toBigDecimal(workingMc(mc))
-                .divide(ONE_HUNDRED_EIGHTY, mc)
+                .divide(ONE_HUNDRED_EIGHTY, workingMc)
         }
     }?.remainder(TWO, mc)
         ?.let { normalizedPiMultiple ->

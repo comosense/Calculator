@@ -25,11 +25,7 @@ enum class CalculatorError {
     Arithmetic,
 }
 
-private val SymbolizerError.calculatorError: CalculatorError
-    get() = when (this) {
-        SymbolizerError.Unsupported -> CalculatorError.Unsupported
-        SymbolizerError.TooLarge -> CalculatorError.ResultTooLarge
-    }
+private const val EXTRA_PRECISION_FOR_WORKING: Int = 2
 
 suspend fun calculate(
     expression: List<Symbol>,
@@ -51,8 +47,11 @@ suspend fun calculate(
 
     return when (val calculatedSymbolsResult: Result<List<Symbol>, SymbolizerError> =
         calculated.toSymbols()) {
-        is Result.Ok -> Result.Ok(calculatedSymbolsResult.value)
-        is Result.Err -> Result.Err(calculatedSymbolsResult.error.calculatorError)
+        is Result.Ok ->
+            Result.Ok(calculatedSymbolsResult.value)
+
+        is Result.Err ->
+            Result.Err(calculatedSymbolsResult.error.toCalculatorError())
     }
 }
 
@@ -76,10 +75,14 @@ private suspend fun parse(
             precision,
             RoundingMode.HALF_UP,
         )
+        val workingMc = MathContext(
+            precision + EXTRA_PRECISION_FOR_WORKING,
+            RoundingMode.HALF_UP,
+        )
 
         Result.Ok(
             parser
-                .parse(mc)
+                .parse(workingMc)
                 .toBigDecimal(mc),
         )
     } catch (e: CancellationException) {
@@ -117,4 +120,9 @@ private suspend fun parse(
     } catch (_: ArithmeticException) {
         Result.Err(CalculatorError.Arithmetic)
     }
+}
+
+private fun SymbolizerError.toCalculatorError(): CalculatorError = when (this) {
+    SymbolizerError.Unsupported -> CalculatorError.Unsupported
+    SymbolizerError.TooLarge -> CalculatorError.ResultTooLarge
 }

@@ -14,7 +14,7 @@ class ArccosInvalidArgumentException : ArithmeticException()
 
 internal object BigDecimalMath {
     private const val EXTRA_PRECISION_FOR_INTERNAL_CALCULATIONS: Int = 8
-    private const val EXTRA_PRECISION_FOR_ROUND: Int = 2
+    private const val EXTRA_PRECISION_FOR_ROUNDING: Int = 2
     private const val EXTRA_PRECISION_FOR_CACHE: Int = 8
     private val NEGATIVE_ONE: BigDecimal = BigDecimal.ONE.negate()
     private val ZERO: BigDecimal = BigDecimal.ZERO
@@ -942,7 +942,7 @@ internal object BigDecimalMath {
         mc: MathContext,
     ): BigDecimal {
         cachedValue?.let { cached ->
-            if ((cached.mc.precision >= (mc.precision + EXTRA_PRECISION_FOR_ROUND) &&
+            if ((cached.mc.precision >= (mc.precision + EXTRA_PRECISION_FOR_ROUNDING) &&
                         (cached.mc.roundingMode == mc.roundingMode))
             ) {
                 return cached.value.round(mc)
