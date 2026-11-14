@@ -49,7 +49,7 @@ class UnifiedValue private constructor(
 
         fun fromPiFactor(
             piFactor: Rational,
-        ) = UnifiedValue(
+        ): UnifiedValue = UnifiedValue(
             piFactor = piFactor,
         )
 
