@@ -25,8 +25,6 @@ enum class CalculatorError {
     Arithmetic,
 }
 
-private const val EXTRA_PRECISION_FOR_WORKING: Int = 2
-
 private val SymbolizerError.calculatorError: CalculatorError
     get() = when (this) {
         SymbolizerError.Unsupported -> CalculatorError.Unsupported
@@ -78,14 +76,10 @@ private suspend fun parse(
             precision,
             RoundingMode.HALF_UP,
         )
-        val workingMc = MathContext(
-            precision + EXTRA_PRECISION_FOR_WORKING,
-            RoundingMode.HALF_UP,
-        )
 
         Result.Ok(
             parser
-                .parse(workingMc)
+                .parse(mc)
                 .toBigDecimal(mc),
         )
     } catch (e: CancellationException) {
