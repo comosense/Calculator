@@ -26,6 +26,7 @@ internal object BigDecimalMath {
     private val TEN: BigDecimal = BigDecimal.TEN
     private val SIXTEEN: BigDecimal = 16.toBigDecimal()
     private val TWO_HUNDRED_THIRTY_NINE: BigDecimal = 239.toBigDecimal()
+    private val BIG_INTEGER_ZERO: BigInteger = BigInteger.ZERO
     private val BIG_INTEGER_ONE: BigInteger = BigInteger.ONE
     private val BIG_INTEGER_TWO: BigInteger = 2.toBigInteger()
 
@@ -127,8 +128,10 @@ internal object BigDecimalMath {
     ): BigDecimal = powNaturalExponent(
         base = base,
         exponent = exponent,
+        zero = ZERO,
         one = ONE,
-        multiply = BigDecimal::multiply
+        isZero = { value -> value.signum() == 0 },
+        multiply = BigDecimal::multiply,
     )
 
     suspend fun powNaturalExponent(
@@ -137,20 +140,28 @@ internal object BigDecimalMath {
     ): BigInteger = powNaturalExponent(
         base = base,
         exponent = exponent,
+        zero = BIG_INTEGER_ZERO,
         one = BIG_INTEGER_ONE,
-        multiply = BigInteger::multiply
+        isZero = { value -> value.signum() == 0 },
+        multiply = BigInteger::multiply,
     )
 
     private suspend fun <T> powNaturalExponent(
         base: T,
         exponent: Int,
+        zero: T,
         one: T,
+        isZero: (T) -> Boolean,
         multiply: (T, T) -> T,
     ): T {
         require(exponent >= 0)
 
         if (exponent == 0) {
             return one
+        }
+
+        if (isZero(base)) {
+            return zero
         }
 
         val coroutineContext: CoroutineContext = currentCoroutineContext()
@@ -180,22 +191,26 @@ internal object BigDecimalMath {
         exponent: BigDecimal,
         mc: MathContext,
     ): BigDecimal {
-        require(base.signum() > 0)
+        require(base.signum() >= 0)
 
         if (exponent.signum() == 0) {
             return ONE
         }
 
-        val internalMc: MathContext = calculationMc(mc)
+        if (base.signum() == 0) {
+            return ZERO
+        }
+
+        val calculationMc: MathContext = calculationMc(mc)
 
         return calculateExp(
             value = exponent.multiply(
                 calculateLn(
                     value = base,
-                    mc = internalMc,
+                    mc = calculationMc,
                 )
             ),
-            mc = internalMc,
+            mc = calculationMc,
         ).round(mc)
     }
 
@@ -213,10 +228,10 @@ internal object BigDecimalMath {
         value: BigDecimal,
         mc: MathContext,
     ): BigDecimal {
-        val internalMc: MathContext = calculationMc(mc)
+        val calculationMc: MathContext = calculationMc(mc)
 
-        return calculateLn(value, internalMc)
-            .divide(cachedLnTen(internalMc), mc)
+        return calculateLn(value, calculationMc)
+            .divide(cachedLnTen(calculationMc), mc)
     }
 
     suspend fun sin(
@@ -282,7 +297,7 @@ internal object BigDecimalMath {
             coroutineContext.ensureActive()
 
             term = term.divide(n.toBigDecimal(), mc)
-            val next: BigDecimal = sum.add(term).round(mc)
+            val next: BigDecimal = sum.add(term, mc)
 
             if (next.compareTo(sum) == 0) {
                 return next
@@ -306,11 +321,15 @@ internal object BigDecimalMath {
         )
 
         return SIXTEEN
-            .multiply(arctanOneFifth)
+            .multiply(
+                arctanOneFifth,
+                mc
+            )
             .subtract(
                 FOUR.multiply(
-                    arctanOneTwoHundredThirtyNine
-                )
+                    arctanOneTwoHundredThirtyNine, mc,
+                ),
+                mc,
             )
     }
 
@@ -336,13 +355,13 @@ internal object BigDecimalMath {
         }
 
         var x: BigDecimal = initialSqrtEstimate(value)
-
         var previousX: BigDecimal? = null
+
         while (true) {
             coroutineContext.ensureActive()
 
             val next: BigDecimal = x
-                .add(value.divide(x, mc))
+                .add(value.divide(x, mc), mc)
                 .divide(TWO, mc)
             if (next.compareTo(x) == 0 ||
                 (previousX != null && next.compareTo(previousX) == 0)
@@ -386,7 +405,7 @@ internal object BigDecimalMath {
                 .multiply(reduced)
                 .divide(n.toBigDecimal(), extendedMc)
 
-            val nextSum: BigDecimal = sum.add(term).round(extendedMc)
+            val nextSum: BigDecimal = sum.add(term, extendedMc)
 
             if (nextSum.compareTo(sum) == 0) {
                 sum = nextSum
@@ -400,7 +419,7 @@ internal object BigDecimalMath {
         repeat(reductions) {
             coroutineContext.ensureActive()
 
-            sum = sum.multiply(sum)
+            sum = sum.multiply(sum, mc)
         }
 
         return sum
@@ -430,7 +449,7 @@ internal object BigDecimalMath {
         while (x > sqrtTwo) {
             coroutineContext.ensureActive()
 
-            x = x.divide(TWO, mc)
+            x = x.divide(TWO)
             exponent++
         }
 
@@ -448,7 +467,7 @@ internal object BigDecimalMath {
 
         return lnX.add(
             exponent.toBigDecimal()
-                .multiply(lnTwo)
+                .multiply(lnTwo, mc)
         )
     }
 
@@ -540,11 +559,11 @@ internal object BigDecimalMath {
         }
 
         if (value.compareTo(ONE) == 0) {
-            return cachedPi(mc).divide(TWO, mc)
+            return cachedPi(mc).divide(TWO)
         }
 
         if (value.compareTo(NEGATIVE_ONE) == 0) {
-            return cachedPi(mc).divide(TWO, mc).negate()
+            return cachedPi(mc).divide(TWO).negate()
         }
 
         if (value.signum() == 0) {
@@ -557,7 +576,7 @@ internal object BigDecimalMath {
         )
 
         val result: BigDecimal = cachedHalfPi(mc)
-            .subtract(acuteAngle)
+            .subtract(acuteAngle, mc)
 
         return if (value.signum() < 0) {
             result.negate()
@@ -583,7 +602,7 @@ internal object BigDecimalMath {
         }
 
         if (value.signum() == 0) {
-            return cachedPi(mc).divide(TWO, mc)
+            return cachedPi(mc).divide(TWO)
         }
 
         val acuteAngle: BigDecimal = calculateInverseTrigonometricAcuteAngle(
@@ -594,7 +613,7 @@ internal object BigDecimalMath {
         return if (value.signum() > 0) {
             acuteAngle
         } else {
-            cachedPi(mc).subtract(acuteAngle)
+            cachedPi(mc).subtract(acuteAngle, mc)
         }
     }
 
@@ -610,12 +629,13 @@ internal object BigDecimalMath {
         }
 
         if (value > ONE) {
-            return cachedPi(mc).divide(TWO, mc)
+            return cachedPi(mc).divide(TWO)
                 .subtract(
                     calculateArctan(
                         value = ONE.divide(value, mc),
                         mc = mc,
-                    )
+                    ),
+                    mc,
                 )
         }
 
@@ -623,12 +643,13 @@ internal object BigDecimalMath {
             val reduced: BigDecimal = value.subtract(ONE)
                 .divide(value.add(ONE), mc)
 
-            return cachedPi(mc).divide(FOUR, mc)
+            return cachedPi(mc).divide(FOUR)
                 .add(
                     calculateArctan(
                         value = reduced,
                         mc = mc,
-                    )
+                    ),
+                    mc
                 )
         }
 
@@ -644,9 +665,9 @@ internal object BigDecimalMath {
     ): BigDecimal {
         val coroutineContext: CoroutineContext = currentCoroutineContext()
         val z: BigDecimal = value
-            .subtract(ONE)
+            .subtract(ONE, mc)
             .divide(value.add(ONE), mc)
-        val zSquared: BigDecimal = z.multiply(z)
+        val zSquared: BigDecimal = z.multiply(z, mc)
 
         var term: BigDecimal = z
         var sum: BigDecimal = z
@@ -659,7 +680,7 @@ internal object BigDecimalMath {
             denominator = denominator.add(TWO)
 
             val nextTerm: BigDecimal = term.divide(denominator, mc)
-            val nextSum: BigDecimal = sum.add(nextTerm).round(mc)
+            val nextSum: BigDecimal = sum.add(nextTerm, mc)
 
             if (nextSum.compareTo(sum) == 0) {
                 return nextSum.multiply(TWO)
@@ -674,7 +695,7 @@ internal object BigDecimalMath {
         mc: MathContext,
     ): BigDecimal {
         val coroutineContext: CoroutineContext = currentCoroutineContext()
-        val radiansSquared: BigDecimal = radians.multiply(radians)
+        val radiansSquared: BigDecimal = radians.multiply(radians, mc)
 
         var term: BigDecimal = radians
         var sum: BigDecimal = radians
@@ -689,11 +710,11 @@ internal object BigDecimalMath {
                 .multiply(twoN.add(BIG_INTEGER_ONE))
 
             term = term
-                .multiply(radiansSquared)
+                .multiply(radiansSquared, mc)
                 .divide(denominator.toBigDecimal(), mc)
                 .negate()
 
-            val nextSum: BigDecimal = sum.add(term).round(mc)
+            val nextSum: BigDecimal = sum.add(term, mc)
 
             if (nextSum.compareTo(sum) == 0) {
                 return nextSum
@@ -709,7 +730,7 @@ internal object BigDecimalMath {
         mc: MathContext,
     ): BigDecimal {
         val coroutineContext: CoroutineContext = currentCoroutineContext()
-        val radiansSquared: BigDecimal = radians.multiply(radians)
+        val radiansSquared: BigDecimal = radians.multiply(radians, mc)
 
         var term: BigDecimal = ONE
         var sum: BigDecimal = ONE
@@ -725,11 +746,11 @@ internal object BigDecimalMath {
                 .multiply(twoN)
 
             term = term
-                .multiply(radiansSquared)
+                .multiply(radiansSquared, mc)
                 .divide(denominator.toBigDecimal(), mc)
                 .negate()
 
-            val nextSum: BigDecimal = sum.add(term).round(mc)
+            val nextSum: BigDecimal = sum.add(term, mc)
 
             if (nextSum.compareTo(sum) == 0) {
                 return nextSum
@@ -745,10 +766,10 @@ internal object BigDecimalMath {
     ): BigDecimal {
         val twoPi: BigDecimal = cachedTwoPi(mc)
 
-        return remainder(twoPi)
+        return remainder(twoPi, mc)
             .let { normalizedRadians ->
                 if (normalizedRadians.signum() < 0) {
-                    normalizedRadians.add(twoPi)
+                    normalizedRadians.add(twoPi, mc)
                 } else {
                     normalizedRadians
                 }
@@ -783,7 +804,7 @@ internal object BigDecimalMath {
         mc: MathContext,
     ): BigDecimal {
         val coroutineContext: CoroutineContext = currentCoroutineContext()
-        val valueSquared: BigDecimal = value.multiply(value)
+        val valueSquared: BigDecimal = value.multiply(value, mc)
 
         var term: BigDecimal = value
         var sum: BigDecimal = value
@@ -793,16 +814,16 @@ internal object BigDecimalMath {
         while (true) {
             coroutineContext.ensureActive()
 
-            term = term.multiply(valueSquared)
+            term = term.multiply(valueSquared, mc)
             denominator = denominator.add(TWO)
 
             val nextTerm: BigDecimal = term.divide(denominator, mc)
 
             val nextSum: BigDecimal = if (sign > 0) {
-                sum.add(nextTerm)
+                sum.add(nextTerm, mc)
             } else {
-                sum.subtract(nextTerm)
-            }.round(mc)
+                sum.subtract(nextTerm, mc)
+            }
 
             if (nextSum.compareTo(sum) == 0) {
                 return nextSum
