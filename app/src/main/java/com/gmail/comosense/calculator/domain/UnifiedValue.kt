@@ -59,11 +59,11 @@ class UnifiedValue private constructor(
         )
     }
 
-    fun isPureRational(): Boolean =
+    fun isExactRational(): Boolean =
         decimal.signum() == 0 &&
                 piFactor.isZero()
 
-    fun isIrrational(): Boolean =
+    fun hasPiFactor(): Boolean =
         !piFactor.isZero()
 
     fun toPiMultipleOrNull(): Rational? {
@@ -82,7 +82,7 @@ class UnifiedValue private constructor(
     ): BigDecimal {
         var result: BigDecimal = decimal.add(rational.toBigDecimal(mc))
 
-        if (isIrrational()) {
+        if (hasPiFactor()) {
             result = result.add(
                 piFactor.toBigDecimal(mc)
                     .multiply(BigDecimalMath.pi(mc), mc)
@@ -191,9 +191,9 @@ class UnifiedValue private constructor(
     }
 
     private fun toExactRationalOrNull(): Rational? {
-        return if (isPureRational()) {
+        return if (isExactRational()) {
             rational
-        } else if (!isIrrational()) {
+        } else if (!hasPiFactor()) {
             rational + Rational.from(decimal)
         } else {
             null

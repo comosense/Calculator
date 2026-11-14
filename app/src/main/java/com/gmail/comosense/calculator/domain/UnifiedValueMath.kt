@@ -285,7 +285,7 @@ private suspend fun powNaturalExponent(
     exponent: Int,
     mc: MathContext,
 ): UnifiedValue {
-    return if (base.isPureRational()) {
+    return if (base.isExactRational()) {
         powRationalBase(
             base = base,
             exponent = exponent,
@@ -361,7 +361,7 @@ private suspend fun UnifiedValue.toNormalizedPiMultipleOrNull(
         toPiMultipleOrNull()
             ?.toBigDecimal(workingMc(mc))
     } else {
-        if (isIrrational()) {
+        if (hasPiFactor()) {
             null
         } else {
             toBigDecimal(workingMc(mc))

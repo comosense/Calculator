@@ -83,15 +83,11 @@ private suspend fun parse(
             RoundingMode.HALF_UP,
         )
 
-        val result: BigDecimal = parser
-            .parseExpression(workingMc)
-            .toBigDecimal(mc)
-
-        if (parser.isEnd()) {
-            Result.Ok(result)
-        } else {
-            Result.Err(CalculatorError.InvalidExpression)
-        }
+        Result.Ok(
+            parser
+                .parse(workingMc)
+                .toBigDecimal(mc),
+        )
     } catch (e: CancellationException) {
         throw e
     } catch (_: InvalidNumericFormatException) {

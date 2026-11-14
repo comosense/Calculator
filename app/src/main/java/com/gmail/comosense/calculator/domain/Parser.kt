@@ -6,9 +6,9 @@ import java.math.BigDecimal
 import java.math.MathContext
 import kotlin.coroutines.CoroutineContext
 
+class IllegalFactorException : IllegalArgumentException()
 class InvalidNumericFormatException : IllegalArgumentException()
 class MissingFactorException : IllegalArgumentException()
-class IllegalFactorException : IllegalArgumentException()
 
 class Parser(
     private val expression: List<Symbol>,
@@ -20,9 +20,24 @@ class Parser(
 
     private var position: Int = 0
 
-    fun isEnd(): Boolean = (position >= expression.size)
+    suspend fun parse(
+        mc: MathContext,
+    ): UnifiedValue {
+        val result: UnifiedValue = parseExpression(
+            mc = mc,
+        )
 
-    suspend fun parseExpression(
+        if (!isEnd()) {
+            throw IllegalFactorException()
+        }
+
+        return result
+    }
+
+    private fun isEnd(): Boolean =
+        position >= expression.size
+
+    private suspend fun parseExpression(
         mc: MathContext
     ): UnifiedValue {
         val coroutineContext: CoroutineContext = currentCoroutineContext()
@@ -47,6 +62,7 @@ class Parser(
                     break
             }
         }
+
         return value
     }
 
