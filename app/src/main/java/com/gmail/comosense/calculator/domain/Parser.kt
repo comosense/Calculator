@@ -23,6 +23,8 @@ class Parser(
     suspend fun parse(
         mc: MathContext,
     ): UnifiedValue {
+        position = 0
+
         val parsed: UnifiedValue = parseExpression(
             mc = mc,
         )
@@ -47,7 +49,7 @@ class Parser(
         while (!isEnd()) {
             coroutineContext.ensureActive()
 
-            value = when (expression[position]) {
+            value = when (expression.getOrNull(position)) {
                 is Symbol.Operator.Add -> {
                     position++
                     value.add(parseTerm(mc))
@@ -76,7 +78,7 @@ class Parser(
         while (!isEnd()) {
             coroutineContext.ensureActive()
 
-            value = when (expression[position]) {
+            value = when (expression.getOrNull(position)) {
                 is Symbol.Operator.Multiply -> {
                     position++
                     value.multiply(parseSign(mc), mc)
@@ -142,7 +144,7 @@ class Parser(
         while (!isEnd()) {
             coroutineContext.ensureActive()
 
-            when (expression[position]) {
+            when (expression.getOrNull(position)) {
                 is Symbol.PostfixOperator.Factorial -> {
                     position++
                     value = value.factorial()
@@ -163,7 +165,7 @@ class Parser(
             throw MissingFactorException()
         }
 
-        return when (val symbol: Symbol = expression[position]) {
+        return when (val symbol: Symbol? = expression.getOrNull(position)) {
             is Symbol.Numeric ->
                 parseNumeric()
 
@@ -210,7 +212,7 @@ class Parser(
     ): UnifiedValue {
         val value: UnifiedValue = parseExpression(mc)
 
-        if (isEnd() || expression[position] !is Symbol.FactorEnd) {
+        if (isEnd() || expression.getOrNull(position) !is Symbol.FactorEnd) {
             throw IllegalFactorException()
         }
         position++
@@ -225,17 +227,20 @@ class Parser(
         while (!isEnd()) {
             coroutineContext.ensureActive()
 
-            when (val symbol: Symbol = expression[position]) {
-                is Symbol.Numeric.Digit ->
+            when (val symbol: Symbol? = expression.getOrNull(position)) {
+                is Symbol.Numeric.Digit -> {
                     buffer.append(symbol.value)
+                    position++
+                }
 
-                is Symbol.Numeric.Point ->
+                is Symbol.Numeric.Point -> {
                     buffer.append('.')
+                    position++
+                }
 
                 else ->
                     break
             }
-            position++
         }
 
         val value: BigDecimal = buffer.toString().toBigDecimalOrNull()

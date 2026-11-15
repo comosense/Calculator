@@ -34,6 +34,10 @@ class Rational private constructor(
         fun from(
             value: BigDecimal,
         ): Rational {
+            if (value.signum() == 0) {
+                return ZERO
+            }
+
             val scale: Int = value.scale()
 
             return if (scale >= 0) {
@@ -83,6 +87,10 @@ class Rational private constructor(
     operator fun plus(
         other: Rational,
     ): Rational {
+        if (other.isZero()) {
+            return this
+        }
+
         val gcd: BigInteger = denominator.gcd(other.denominator)
         val leftMultiplier: BigInteger = other.denominator.divide(gcd)
         val rightMultiplier: BigInteger = denominator.divide(gcd)
@@ -99,6 +107,10 @@ class Rational private constructor(
     operator fun minus(
         other: Rational,
     ): Rational {
+        if (other.isZero()) {
+            return this
+        }
+
         val gcd: BigInteger = denominator.gcd(other.denominator)
         val leftMultiplier: BigInteger = other.denominator.divide(gcd)
         val rightMultiplier: BigInteger = denominator.divide(gcd)
@@ -115,6 +127,10 @@ class Rational private constructor(
     operator fun times(
         other: Rational,
     ): Rational {
+        if (other.isZero()) {
+            return ZERO
+        }
+
         val gcd1: BigInteger = numerator.abs().gcd(other.denominator)
         val gcd2: BigInteger = other.numerator.abs().gcd(denominator)
 
@@ -161,25 +177,19 @@ class Rational private constructor(
     fun isInteger(): Boolean =
         denominator == BigInteger.ONE
 
-    fun toBigDecimal(mc: MathContext): BigDecimal {
-        return if (isInteger()) {
-            numerator.toBigDecimal()
-        } else {
-            numerator.toBigDecimal()
-                .divide(denominator.toBigDecimal(), mc)
-        }
-    }
+    fun toBigDecimal(mc: MathContext): BigDecimal =
+        numerator.toBigDecimal()
+            .divide(denominator.toBigDecimal(), mc)
 
-    fun toBigIntegerExactOrNull(): BigInteger? {
-        return if (isInteger()) {
-            numerator
-        } else {
-            null
-        }
-    }
+    fun toBigIntegerExactOrNull(): BigInteger? =
+        if (isInteger()) numerator else null
 
     suspend fun pow(exponent: Int): Rational {
         require(exponent != Int.MIN_VALUE)
+
+        if (exponent < 0) {
+            require(!isZero())
+        }
 
         if (exponent == 0) {
             return ONE

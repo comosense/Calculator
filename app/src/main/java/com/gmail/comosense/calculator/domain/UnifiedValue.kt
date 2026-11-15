@@ -93,8 +93,7 @@ class UnifiedValue private constructor(
             value = value.add(
                 piFactor.toBigDecimal(workingMc)
                     .multiply(BigDecimalMath.pi(workingMc))
-                    .round(mc)
-            )
+            ).round(mc)
         }
 
         return value
@@ -116,36 +115,57 @@ class UnifiedValue private constructor(
 
     fun add(
         other: UnifiedValue,
-    ): UnifiedValue = UnifiedValue(
-        exactValue = exactValue.add(other.exactValue),
-        approximateValue = approximateValue + other.approximateValue,
-        piFactor = piFactor + other.piFactor,
-    )
+    ): UnifiedValue {
+        if (other.isZero()) {
+            return this
+        }
+
+        return UnifiedValue(
+            exactValue = exactValue.add(other.exactValue),
+            approximateValue = approximateValue + other.approximateValue,
+            piFactor = piFactor + other.piFactor,
+        )
+    }
 
     fun subtract(
         other: UnifiedValue,
-    ): UnifiedValue = UnifiedValue(
-        exactValue = exactValue.subtract(other.exactValue),
-        approximateValue = approximateValue - other.approximateValue,
-        piFactor = piFactor - other.piFactor,
-    )
+    ): UnifiedValue {
+        if (other.isZero()) {
+            return this
+        }
+
+        return UnifiedValue(
+            exactValue = exactValue.subtract(other.exactValue),
+            approximateValue = approximateValue - other.approximateValue,
+            piFactor = piFactor - other.piFactor,
+        )
+    }
 
     suspend fun multiply(
         other: UnifiedValue,
         mc: MathContext,
     ): UnifiedValue {
+        if (isZero() || other.isZero()) {
+            return ZERO
+        }
+
+        val newExactValue: BigDecimal =
+            exactValue.multiply(other.exactValue)
+
         val leftExactValueRational: Rational =
             Rational.from(exactValue)
         val rightExactValueRational: Rational =
             Rational.from(other.exactValue)
 
-        var newExactValue: BigDecimal =
-            exactValue.multiply(other.exactValue)
+        var newApproximateValue: Rational =
+            approximateValue * other.approximateValue +
+                    leftExactValueRational * other.approximateValue +
+                    rightExactValueRational * approximateValue
 
         if (!piFactor.isZero() && !other.piFactor.isZero()) {
             val workingMc: MathContext = workingMc(mc)
 
-            newExactValue = newExactValue.add(
+            newApproximateValue += Rational.from(
                 (piFactor * other.piFactor).toBigDecimal(workingMc)
                     .multiply(
                         BigDecimalMath.powNaturalExponent(
@@ -156,11 +176,6 @@ class UnifiedValue private constructor(
                     .round(mc)
             )
         }
-
-        val newApproximateValue: Rational =
-            approximateValue * other.approximateValue +
-                    leftExactValueRational * other.approximateValue +
-                    rightExactValueRational * approximateValue
 
         val newPiFactor: Rational =
             (leftExactValueRational + approximateValue) * other.piFactor +
@@ -177,24 +192,20 @@ class UnifiedValue private constructor(
         other: UnifiedValue,
         mc: MathContext,
     ): UnifiedValue {
+        if (other.isZero()) {
+            throw DivisionByZeroException()
+        }
+
         val denominator: Rational? = other.toRationalOrNull()
 
         return if (denominator != null) {
-            if (denominator.isZero()) {
-                throw DivisionByZeroException()
-            }
-
             UnifiedValue(
                 approximateValue = (Rational.from(exactValue) + approximateValue) / denominator,
                 piFactor = piFactor / denominator,
             )
         } else {
             val workingMc: MathContext = workingMc(mc)
-
             val approximateDenominator: BigDecimal = other.toBigDecimal(workingMc)
-            if (approximateDenominator.signum() == 0) {
-                throw DivisionByZeroException()
-            }
 
             UnifiedValue(
                 approximateValue = Rational.from(
@@ -209,20 +220,42 @@ class UnifiedValue private constructor(
         exponent: Int,
         mc: MathContext,
     ): UnifiedValue {
-        return if (hasOnlyApproximateValue()) {
+        require(exponent != Int.MIN_VALUE)
+
+        if (isZero()) {
+            require(exponent >= 0)
+            return when {
+                exponent > 0 -> ZERO
+                else -> ONE
+            }
+        }
+
+        return if (exactValue.signum() == 0 && piFactor.isZero()) {
             fromApproximateValue(
                 approximateValue = approximateValue.pow(exponent),
             )
         } else {
+            val isExactValue: Boolean = approximateValue.isZero() && piFactor.isZero()
+            val base: BigDecimal = if (isExactValue) {
+                exactValue
+            } else {
+                toBigDecimal(workingMc(mc))
+            }
             val result: BigDecimal = BigDecimalMath.powNaturalExponent(
-                base = toBigDecimal(workingMc(mc)),
+                base = base,
                 exponent = abs(exponent),
             )
 
             if (exponent >= 0) {
-                fromExactValue(
-                    exactValue = result,
-                )
+                if (isExactValue) {
+                    fromExactValue(
+                        exactValue = result,
+                    )
+                } else {
+                    fromApproximateValue(
+                        approximateValue = result,
+                    )
+                }
             } else {
                 fromApproximateValue(
                     approximateValue = BigDecimal.ONE.divide(result, mc),
@@ -231,18 +264,18 @@ class UnifiedValue private constructor(
         }
     }
 
+    private fun isZero(): Boolean =
+        exactValue.signum() == 0 &&
+                approximateValue.isZero() &&
+                piFactor.isZero()
+
     private fun toRationalOrNull(): Rational? {
-        return if (hasOnlyApproximateValue()) {
-            approximateValue
-        } else if (!hasPiFactor()) {
+        return if (!hasPiFactor()) {
             approximateValue + Rational.from(exactValue)
         } else {
             null
         }
     }
-
-    private fun hasOnlyApproximateValue(): Boolean =
-        exactValue.signum() == 0 && piFactor.isZero()
 
     private fun workingMc(
         mc: MathContext,

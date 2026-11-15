@@ -183,6 +183,7 @@ internal object BigDecimalMath {
                 currentBase = multiply(currentBase, currentBase)
             }
         }
+
         return result
     }
 
@@ -385,7 +386,7 @@ internal object BigDecimalMath {
         while (reduced.abs() > HALF) {
             coroutineContext.ensureActive()
 
-            reduced = reduced.divide(TWO)
+            reduced = reduced.divide(TWO, mc)
             reductions++
         }
 
@@ -419,10 +420,10 @@ internal object BigDecimalMath {
         repeat(reductions) {
             coroutineContext.ensureActive()
 
-            sum = sum.multiply(sum, mc)
+            sum = sum.multiply(sum, extendedMc)
         }
 
-        return sum
+        return sum.round(mc)
     }
 
     private suspend fun calculateLn(
@@ -449,14 +450,14 @@ internal object BigDecimalMath {
         while (x > sqrtTwo) {
             coroutineContext.ensureActive()
 
-            x = x.divide(TWO)
+            x = x.divide(TWO, mc)
             exponent++
         }
 
         while (x < inverseSqrtTwo) {
             coroutineContext.ensureActive()
 
-            x = x.multiply(TWO)
+            x = x.multiply(TWO, mc)
             exponent--
         }
 
@@ -559,11 +560,11 @@ internal object BigDecimalMath {
         }
 
         if (value.compareTo(ONE) == 0) {
-            return cachedPi(mc).divide(TWO)
+            return cachedPi(mc).divide(TWO, mc)
         }
 
         if (value.compareTo(NEGATIVE_ONE) == 0) {
-            return cachedPi(mc).divide(TWO).negate()
+            return cachedPi(mc).divide(TWO, mc).negate()
         }
 
         if (value.signum() == 0) {
@@ -602,7 +603,7 @@ internal object BigDecimalMath {
         }
 
         if (value.signum() == 0) {
-            return cachedPi(mc).divide(TWO)
+            return cachedPi(mc).divide(TWO, mc)
         }
 
         val acuteAngle: BigDecimal = calculateInverseTrigonometricAcuteAngle(
@@ -629,7 +630,7 @@ internal object BigDecimalMath {
         }
 
         if (value > ONE) {
-            return cachedPi(mc).divide(TWO)
+            return cachedPi(mc).divide(TWO, mc)
                 .subtract(
                     calculateArctan(
                         value = ONE.divide(value, mc),
@@ -640,16 +641,16 @@ internal object BigDecimalMath {
         }
 
         if (value > HALF) {
-            val reduced: BigDecimal = value.subtract(ONE)
+            val reduced: BigDecimal = value.subtract(ONE, mc)
                 .divide(value.add(ONE), mc)
 
-            return cachedPi(mc).divide(FOUR)
+            return cachedPi(mc).divide(FOUR, mc)
                 .add(
                     calculateArctan(
                         value = reduced,
                         mc = mc,
                     ),
-                    mc
+                    mc,
                 )
         }
 
@@ -677,13 +678,13 @@ internal object BigDecimalMath {
             coroutineContext.ensureActive()
 
             term = term.multiply(zSquared)
-            denominator = denominator.add(TWO)
+            denominator = denominator.add(TWO, mc)
 
             val nextTerm: BigDecimal = term.divide(denominator, mc)
             val nextSum: BigDecimal = sum.add(nextTerm, mc)
 
             if (nextSum.compareTo(sum) == 0) {
-                return nextSum.multiply(TWO)
+                return nextSum.multiply(TWO, mc)
             }
 
             sum = nextSum
@@ -782,8 +783,8 @@ internal object BigDecimalMath {
     ): BigDecimal {
         val absValue: BigDecimal = value.abs()
 
-        val numerator: BigDecimal = ONE.subtract(absValue)
-        val denominator: BigDecimal = ONE.add(absValue)
+        val numerator: BigDecimal = ONE.subtract(absValue, mc)
+        val denominator: BigDecimal = ONE.add(absValue, mc)
 
         val ratio: BigDecimal = numerator.divide(denominator, mc)
         val root: BigDecimal = calculateSqrt(
@@ -815,7 +816,7 @@ internal object BigDecimalMath {
             coroutineContext.ensureActive()
 
             term = term.multiply(valueSquared, mc)
-            denominator = denominator.add(TWO)
+            denominator = denominator.add(TWO, mc)
 
             val nextTerm: BigDecimal = term.divide(denominator, mc)
 

@@ -9,7 +9,6 @@ import java.math.RoundingMode
 enum class CalculatorError {
     Unsupported,
     ResultTooLarge,
-    InsufficientPrecision,
     InvalidExpression,
     DivisionByZero,
     FactorialInvalidArgument,
