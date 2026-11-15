@@ -64,19 +64,17 @@ internal object BigDecimalMath {
 
     suspend fun e(
         mc: MathContext,
-    ): BigDecimal {
-        return cachedE(
+    ): BigDecimal =
+        cachedE(
             mc = calculationMc(mc),
         ).round(mc)
-    }
 
     suspend fun pi(
         mc: MathContext,
-    ): BigDecimal {
-        return cachedPi(
+    ): BigDecimal =
+        cachedPi(
             mc = calculationMc(mc),
         ).round(mc)
-    }
 
     suspend fun factorial(
         value: Int,
@@ -101,12 +99,11 @@ internal object BigDecimalMath {
     suspend fun sqrt(
         value: BigDecimal,
         mc: MathContext,
-    ): BigDecimal {
-        return calculateSqrt(
+    ): BigDecimal =
+        calculateSqrt(
             value = value,
             mc = calculationMc(mc),
         ).round(mc)
-    }
 
     suspend fun exp(
         value: BigDecimal,
@@ -125,26 +122,28 @@ internal object BigDecimalMath {
     suspend fun powNaturalExponent(
         base: BigDecimal,
         exponent: Int,
-    ): BigDecimal = powNaturalExponent(
-        base = base,
-        exponent = exponent,
-        zero = ZERO,
-        one = ONE,
-        isZero = { value -> value.signum() == 0 },
-        multiply = BigDecimal::multiply,
-    )
+    ): BigDecimal =
+        powNaturalExponent(
+            base = base,
+            exponent = exponent,
+            zero = ZERO,
+            one = ONE,
+            isZero = { value -> value.signum() == 0 },
+            multiply = BigDecimal::multiply,
+        )
 
     suspend fun powNaturalExponent(
         base: BigInteger,
         exponent: Int,
-    ): BigInteger = powNaturalExponent(
-        base = base,
-        exponent = exponent,
-        zero = BIG_INTEGER_ZERO,
-        one = BIG_INTEGER_ONE,
-        isZero = { value -> value.signum() == 0 },
-        multiply = BigInteger::multiply,
-    )
+    ): BigInteger =
+        powNaturalExponent(
+            base = base,
+            exponent = exponent,
+            zero = BIG_INTEGER_ZERO,
+            one = BIG_INTEGER_ONE,
+            isZero = { value -> value.signum() == 0 },
+            multiply = BigInteger::multiply,
+        )
 
     private suspend fun <T> powNaturalExponent(
         base: T,
@@ -218,12 +217,11 @@ internal object BigDecimalMath {
     suspend fun ln(
         value: BigDecimal,
         mc: MathContext,
-    ): BigDecimal {
-        return calculateLn(
+    ): BigDecimal =
+        calculateLn(
             value = value,
             mc = calculationMc(mc),
         ).round(mc)
-    }
 
     suspend fun log(
         value: BigDecimal,
@@ -238,52 +236,47 @@ internal object BigDecimalMath {
     suspend fun sin(
         radians: BigDecimal,
         mc: MathContext,
-    ): BigDecimal {
-        return calculateSin(
+    ): BigDecimal =
+        calculateSin(
             radians = radians,
             mc = calculationMc(mc),
         ).round(mc)
-    }
 
     suspend fun cos(
         radians: BigDecimal,
         mc: MathContext,
-    ): BigDecimal {
-        return calculateCos(
+    ): BigDecimal =
+        calculateCos(
             radians = radians,
             mc = calculationMc(mc),
         ).round(mc)
-    }
 
     suspend fun arcsin(
         value: BigDecimal,
         mc: MathContext,
-    ): BigDecimal {
-        return calculateArcsin(
+    ): BigDecimal =
+        calculateArcsin(
             value = value,
             mc = calculationMc(mc),
         ).round(mc)
-    }
 
     suspend fun arccos(
         value: BigDecimal,
         mc: MathContext,
-    ): BigDecimal {
-        return calculateArccos(
+    ): BigDecimal =
+        calculateArccos(
             value = value,
             mc = calculationMc(mc),
         ).round(mc)
-    }
 
     suspend fun arctan(
         value: BigDecimal,
         mc: MathContext,
-    ): BigDecimal {
-        return calculateArctan(
+    ): BigDecimal =
+        calculateArctan(
             value = value,
             mc = calculationMc(mc),
         ).round(mc)
-    }
 
     private suspend fun calculateE(
         mc: MathContext,
@@ -837,125 +830,134 @@ internal object BigDecimalMath {
 
     private suspend fun cachedLnTen(
         mc: MathContext,
-    ): BigDecimal = cachedConstant(
-        cachedValue = cachedLnTen,
-        calculate = { mathContext ->
-            calculateLn(
-                value = TEN,
-                mc = mathContext,
-            )
-        },
-        updateCache = { cached -> cachedLnTen = cached },
-        mc = mc,
-    )
+    ): BigDecimal =
+        cachedConstant(
+            cachedValue = cachedLnTen,
+            calculate = { mathContext ->
+                calculateLn(
+                    value = TEN,
+                    mc = mathContext,
+                )
+            },
+            updateCache = { cached -> cachedLnTen = cached },
+            mc = mc,
+        )
 
     private suspend fun cachedSqrtTwo(
         mc: MathContext,
-    ): BigDecimal = cachedConstant(
-        cachedValue = cachedSqrtTwo,
-        calculate = { mathContext ->
-            calculateSqrt(
-                value = TWO,
-                mc = mathContext,
-            )
-        },
-        updateCache = { cached -> cachedSqrtTwo = cached },
-        mc = mc,
-    )
+    ): BigDecimal =
+        cachedConstant(
+            cachedValue = cachedSqrtTwo,
+            calculate = { mathContext ->
+                calculateSqrt(
+                    value = TWO,
+                    mc = mathContext,
+                )
+            },
+            updateCache = { cached -> cachedSqrtTwo = cached },
+            mc = mc,
+        )
 
     private suspend fun cachedInverseSqrtTwo(
         mc: MathContext,
-    ): BigDecimal = cachedConstant(
-        cachedValue = cachedInverseSqrtTwo,
-        calculate = { mathContext ->
-            ONE.divide(
-                cachedSqrtTwo(
-                    mc = mathContext,
-                ), mathContext
-            )
-        },
-        updateCache = { cached -> cachedInverseSqrtTwo = cached },
-        mc = mc,
-    )
+    ): BigDecimal =
+        cachedConstant(
+            cachedValue = cachedInverseSqrtTwo,
+            calculate = { mathContext ->
+                ONE.divide(
+                    cachedSqrtTwo(
+                        mc = mathContext,
+                    ), mathContext
+                )
+            },
+            updateCache = { cached -> cachedInverseSqrtTwo = cached },
+            mc = mc,
+        )
 
     private suspend fun cachedLnTwo(
         mc: MathContext,
-    ): BigDecimal = cachedConstant(
-        cachedValue = cachedLnTwo,
-        calculate = { mathContext ->
-            lnTaylor(
-                value = TWO,
-                mc = mathContext,
-            )
-        },
-        updateCache = { cached -> cachedLnTwo = cached },
-        mc = mc,
-    )
+    ): BigDecimal =
+        cachedConstant(
+            cachedValue = cachedLnTwo,
+            calculate = { mathContext ->
+                lnTaylor(
+                    value = TWO,
+                    mc = mathContext,
+                )
+            },
+            updateCache = { cached -> cachedLnTwo = cached },
+            mc = mc,
+        )
 
     private suspend fun cachedE(
         mc: MathContext,
-    ): BigDecimal = cachedConstant(
-        cachedValue = cachedE,
-        calculate = { mathContext ->
-            calculateE(
-                mc = mathContext,
-            )
-        },
-        updateCache = { cached -> cachedE = cached },
-        mc = mc,
-    )
+    ): BigDecimal =
+        cachedConstant(
+            cachedValue = cachedE,
+            calculate = { mathContext ->
+                calculateE(
+                    mc = mathContext,
+                )
+            },
+            updateCache = { cached -> cachedE = cached },
+            mc = mc,
+        )
 
     private suspend fun cachedPi(
         mc: MathContext,
-    ): BigDecimal = cachedConstant(
-        cachedValue = cachedPi,
-        calculate = { mathContext ->
-            calculatePi(
-                mc = mathContext,
-            )
-        },
-        updateCache = { cached -> cachedPi = cached },
-        mc = mc,
-    )
+    ): BigDecimal =
+        cachedConstant(
+            cachedValue = cachedPi,
+            calculate = { mathContext ->
+                calculatePi(
+                    mc = mathContext,
+                )
+            },
+            updateCache = { cached -> cachedPi = cached },
+            mc = mc,
+        )
 
     private suspend fun cachedHalfPi(
         mc: MathContext,
-    ): BigDecimal = cachedConstant(
-        cachedValue = cachedHalfPi,
-        calculate = { mathContext ->
-            cachedPi(
-                mc = mathContext,
-            ).divide(TWO)
-        },
-        updateCache = { cached -> cachedHalfPi = cached },
-        mc = mc,
-    )
+    ): BigDecimal =
+        cachedConstant(
+            cachedValue = cachedHalfPi,
+            calculate = { mathContext ->
+                cachedPi(
+                    mc = mathContext,
+                ).divide(TWO)
+            },
+            updateCache = { cached -> cachedHalfPi = cached },
+            mc = mc,
+        )
 
     private suspend fun cachedThreeHalfPi(
         mc: MathContext,
-    ): BigDecimal = cachedConstant(
-        cachedValue = cachedThreeHalfPi,
-        calculate = { mathContext ->
-            cachedPi(
-                mc = mathContext,
-            ).add(cachedHalfPi(mathContext))
-        },
-        updateCache = { cached -> cachedThreeHalfPi = cached },
-        mc = mc,
-    )
+    ): BigDecimal =
+        cachedConstant(
+            cachedValue = cachedThreeHalfPi,
+            calculate = { mathContext ->
+                cachedPi(
+                    mc = mathContext,
+                ).add(cachedHalfPi(mathContext))
+            },
+            updateCache = { cached -> cachedThreeHalfPi = cached },
+            mc = mc,
+        )
 
     private suspend fun cachedTwoPi(
         mc: MathContext,
-    ): BigDecimal = cachedConstant(
-        cachedValue = cachedTwoPi,
-        calculate = { mathContext ->
-            cachedPi(
-                mc = mathContext,
-            ).multiply(TWO)
-        },
-        updateCache = { cached -> cachedTwoPi = cached },
-        mc = mc,
-    )
+    ): BigDecimal =
+        cachedConstant(
+            cachedValue = cachedTwoPi,
+            calculate = { mathContext ->
+                cachedPi(
+                    mc = mathContext,
+                ).multiply(TWO)
+            },
+            updateCache = { cached -> cachedTwoPi = cached },
+            mc = mc,
+        )
 
     private suspend fun cachedConstant(
         cachedValue: MathConstant?,
@@ -989,8 +991,9 @@ internal object BigDecimalMath {
 
     private fun calculationMc(
         mc: MathContext,
-    ): MathContext = MathContext(
-        mc.precision + EXTRA_PRECISION_FOR_INTERNAL_CALCULATIONS,
-        mc.roundingMode,
-    )
+    ): MathContext =
+        MathContext(
+            mc.precision + EXTRA_PRECISION_FOR_INTERNAL_CALCULATIONS,
+            mc.roundingMode,
+        )
 }

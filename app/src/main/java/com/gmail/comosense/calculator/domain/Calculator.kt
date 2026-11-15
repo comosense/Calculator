@@ -127,10 +127,11 @@ private suspend fun parse(
     }
 }
 
-private fun SymbolizerError.toCalculatorError(): CalculatorError = when (this) {
-    SymbolizerError.Unsupported ->
-        CalculatorError.Unsupported
+private fun SymbolizerError.toCalculatorError(): CalculatorError =
+    when (this) {
+        SymbolizerError.Unsupported ->
+            CalculatorError.Unsupported
 
-    SymbolizerError.TooLarge ->
-        CalculatorError.ResultTooLarge
-}
+        SymbolizerError.TooLarge ->
+            CalculatorError.ResultTooLarge
+    }

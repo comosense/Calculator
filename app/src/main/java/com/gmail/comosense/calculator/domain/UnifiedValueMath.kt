@@ -29,24 +29,25 @@ class PowLimitExceededException : IllegalArgumentException()
 class ExpLargeArgumentException : IllegalArgumentException()
 class TanInvalidArgumentException : ArithmeticException()
 
-internal suspend fun UnifiedValue.factorial(): UnifiedValue = UnifiedValue.fromExactValue(
-    exactValue = BigDecimalMath.factorial(
-        value = factorialArgument(this),
-    ),
-)
+internal suspend fun UnifiedValue.factorial(): UnifiedValue =
+    UnifiedValue.fromExactValue(
+        exactValue = BigDecimalMath.factorial(
+            value = factorialArgument(this),
+        ),
+    )
 
 internal suspend fun UnifiedValue.pow(
     exponent: UnifiedValue,
     mc: MathContext,
 ): UnifiedValue {
-    if (signum(mc) == 0) {
+    if (isZero()) {
         if (exponent.signum(mc) > 0) {
             return UnifiedValue.ZERO
         }
         throw PowInvalidArgumentException()
     }
 
-    if (exponent.signum(mc) == 0) {
+    if (exponent.isZero()) {
         return UnifiedValue.ONE
     }
 
@@ -66,12 +67,13 @@ internal suspend fun UnifiedValue.pow(
 
 internal suspend fun UnifiedValue.sqrt(
     mc: MathContext,
-): UnifiedValue = UnifiedValue.fromApproximateValue(
-    approximateValue = BigDecimalMath.sqrt(
-        value = toBigDecimal(workingMc(mc)),
-        mc = mc,
-    ),
-)
+): UnifiedValue =
+    UnifiedValue.fromApproximateValue(
+        approximateValue = BigDecimalMath.sqrt(
+            value = toBigDecimal(workingMc(mc)),
+            mc = mc,
+        ),
+    )
 
 internal suspend fun UnifiedValue.exp(
     mc: MathContext,
@@ -91,41 +93,45 @@ internal suspend fun UnifiedValue.exp(
 
 internal suspend fun UnifiedValue.ln(
     mc: MathContext,
-): UnifiedValue = UnifiedValue.fromApproximateValue(
-    approximateValue = BigDecimalMath.ln(
-        value = toBigDecimal(workingMc(mc)),
-        mc = mc,
-    ),
-)
+): UnifiedValue =
+    UnifiedValue.fromApproximateValue(
+        approximateValue = BigDecimalMath.ln(
+            value = toBigDecimal(workingMc(mc)),
+            mc = mc,
+        ),
+    )
 
 internal suspend fun UnifiedValue.log(
     mc: MathContext,
-): UnifiedValue = UnifiedValue.fromApproximateValue(
-    approximateValue = BigDecimalMath.log(
-        value = toBigDecimal(workingMc(mc)),
-        mc = mc,
-    ),
-)
+): UnifiedValue =
+    UnifiedValue.fromApproximateValue(
+        approximateValue = BigDecimalMath.log(
+            value = toBigDecimal(workingMc(mc)),
+            mc = mc,
+        ),
+    )
 
 internal suspend fun UnifiedValue.sin(
     isRadians: Boolean,
     mc: MathContext,
-): UnifiedValue = trigonometricFunction(
-    isRadians = isRadians,
-    mc = mc,
-    specialOrNull = ::sinSpecialOrNull,
-    calculate = BigDecimalMath::sin,
-)
+): UnifiedValue =
+    trigonometricFunction(
+        isRadians = isRadians,
+        mc = mc,
+        specialOrNull = ::sinSpecialOrNull,
+        calculate = BigDecimalMath::sin,
+    )
 
 internal suspend fun UnifiedValue.cos(
     isRadians: Boolean,
     mc: MathContext,
-): UnifiedValue = trigonometricFunction(
-    isRadians = isRadians,
-    mc = mc,
-    specialOrNull = ::cosSpecialOrNull,
-    calculate = BigDecimalMath::cos,
-)
+): UnifiedValue =
+    trigonometricFunction(
+        isRadians = isRadians,
+        mc = mc,
+        specialOrNull = ::cosSpecialOrNull,
+        calculate = BigDecimalMath::cos,
+    )
 
 private suspend fun UnifiedValue.trigonometricFunction(
     isRadians: Boolean,
@@ -163,7 +169,7 @@ internal suspend fun UnifiedValue.tan(
         mc = workingMc,
     )
 
-    if (cos.signum(mc) == 0) {
+    if (cos.isZero()) {
         throw TanInvalidArgumentException()
     }
 
@@ -178,32 +184,35 @@ internal suspend fun UnifiedValue.tan(
 internal suspend fun UnifiedValue.arcsin(
     isRadians: Boolean,
     mc: MathContext,
-): UnifiedValue = inverseTrigonometricFunction(
-    isRadians = isRadians,
-    mc = mc,
-    specialOrNull = ::arcsinSpecialOrNull,
-    calculate = BigDecimalMath::arcsin,
-)
+): UnifiedValue =
+    inverseTrigonometricFunction(
+        isRadians = isRadians,
+        mc = mc,
+        specialOrNull = ::arcsinSpecialOrNull,
+        calculate = BigDecimalMath::arcsin,
+    )
 
 internal suspend fun UnifiedValue.arccos(
     isRadians: Boolean,
     mc: MathContext,
-): UnifiedValue = inverseTrigonometricFunction(
-    isRadians = isRadians,
-    mc = mc,
-    specialOrNull = ::arccosSpecialOrNull,
-    calculate = BigDecimalMath::arccos,
-)
+): UnifiedValue =
+    inverseTrigonometricFunction(
+        isRadians = isRadians,
+        mc = mc,
+        specialOrNull = ::arccosSpecialOrNull,
+        calculate = BigDecimalMath::arccos,
+    )
 
 internal suspend fun UnifiedValue.arctan(
     isRadians: Boolean,
     mc: MathContext,
-): UnifiedValue = inverseTrigonometricFunction(
-    isRadians = isRadians,
-    mc = mc,
-    specialOrNull = ::arctanSpecialOrNull,
-    calculate = BigDecimalMath::arctan,
-)
+): UnifiedValue =
+    inverseTrigonometricFunction(
+        isRadians = isRadians,
+        mc = mc,
+        specialOrNull = ::arctanSpecialOrNull,
+        calculate = BigDecimalMath::arctan,
+    )
 
 private suspend fun UnifiedValue.inverseTrigonometricFunction(
     isRadians: Boolean,
@@ -302,8 +311,8 @@ private suspend fun powDecimalExponent(
 private suspend fun UnifiedValue.toNormalizedPiMultipleOrNull(
     isRadians: Boolean,
     mc: MathContext,
-): BigDecimal? {
-    return if (isRadians) {
+): BigDecimal? =
+    if (isRadians) {
         toPiMultipleOrNull()
             ?.toBigDecimal(workingMc(mc))
     } else {
@@ -317,18 +326,17 @@ private suspend fun UnifiedValue.toNormalizedPiMultipleOrNull(
     }?.remainder(TWO, mc)
         ?.let { normalizedPiMultiple ->
             if (normalizedPiMultiple.signum() < 0) {
-                normalizedPiMultiple.add(TWO)
+                normalizedPiMultiple.add(TWO, mc)
             } else {
                 normalizedPiMultiple
             }
         }
-}
 
 private suspend fun UnifiedValue.toRadians(
     isRadians: Boolean,
     mc: MathContext,
-): BigDecimal {
-    return if (isRadians) {
+): BigDecimal =
+    if (isRadians) {
         toBigDecimal(mc)
     } else {
         val workingMc: MathContext = workingMc(mc)
@@ -337,97 +345,101 @@ private suspend fun UnifiedValue.toRadians(
             .multiply(BigDecimalMath.pi(workingMc))
             .divide(ONE_HUNDRED_EIGHTY, mc)
     }
-}
 
 private fun sinSpecialOrNull(
     piMultiple: BigDecimal,
-): UnifiedValue? = when {
-    piMultiple.compareTo(ZERO) == 0 ||
-            piMultiple.compareTo(ONE) == 0 ->
-        UnifiedValue.ZERO
+): UnifiedValue? =
+    when {
+        piMultiple.compareTo(ZERO) == 0 ||
+                piMultiple.compareTo(ONE) == 0 ->
+            UnifiedValue.ZERO
 
-    piMultiple.compareTo(HALF) == 0 ->
-        UnifiedValue.ONE
+        piMultiple.compareTo(HALF) == 0 ->
+            UnifiedValue.ONE
 
-    piMultiple.compareTo(THREE_HALF) == 0 ->
-        UnifiedValue.NEGATIVE_ONE
+        piMultiple.compareTo(THREE_HALF) == 0 ->
+            UnifiedValue.NEGATIVE_ONE
 
-    else ->
-        null
-}
+        else ->
+            null
+    }
 
 private fun cosSpecialOrNull(
     piMultiple: BigDecimal,
-): UnifiedValue? = when {
-    piMultiple.compareTo(HALF) == 0 ||
-            piMultiple.compareTo(THREE_HALF) == 0 ->
-        UnifiedValue.ZERO
+): UnifiedValue? =
+    when {
+        piMultiple.compareTo(HALF) == 0 ||
+                piMultiple.compareTo(THREE_HALF) == 0 ->
+            UnifiedValue.ZERO
 
-    piMultiple.compareTo(ZERO) == 0 ->
-        UnifiedValue.ONE
+        piMultiple.compareTo(ZERO) == 0 ->
+            UnifiedValue.ONE
 
-    piMultiple.compareTo(ONE) == 0 ->
-        UnifiedValue.NEGATIVE_ONE
+        piMultiple.compareTo(ONE) == 0 ->
+            UnifiedValue.NEGATIVE_ONE
 
-    else ->
-        null
-}
+        else ->
+            null
+    }
 
 private fun arcsinSpecialOrNull(
     value: BigDecimal,
     isRadians: Boolean,
-): UnifiedValue? = when {
-    value.compareTo(ZERO) == 0 ->
-        Rational.ZERO
+): UnifiedValue? =
+    when {
+        value.compareTo(ZERO) == 0 ->
+            Rational.ZERO
 
-    value.compareTo(ONE) == 0 ->
-        Rational.HALF
+        value.compareTo(ONE) == 0 ->
+            Rational.HALF
 
-    value.compareTo(NEGATIVE_ONE) == 0 ->
-        Rational.NEGATIVE_HALF
+        value.compareTo(NEGATIVE_ONE) == 0 ->
+            Rational.NEGATIVE_HALF
 
-    else ->
-        null
-}?.toAngleUnifiedValue(
-    isRadians = isRadians,
-)
+        else ->
+            null
+    }?.toAngleUnifiedValue(
+        isRadians = isRadians,
+    )
 
 private fun arccosSpecialOrNull(
     value: BigDecimal,
     isRadians: Boolean,
-): UnifiedValue? = when {
-    value.compareTo(ZERO) == 0 ->
-        Rational.HALF
+): UnifiedValue? =
+    when {
+        value.compareTo(ZERO) == 0 ->
+            Rational.HALF
 
-    value.compareTo(ONE) == 0 ->
-        Rational.ZERO
+        value.compareTo(ONE) == 0 ->
+            Rational.ZERO
 
-    value.compareTo(NEGATIVE_ONE) == 0 ->
-        Rational.ONE
+        value.compareTo(NEGATIVE_ONE) == 0 ->
+            Rational.ONE
 
-    else ->
-        null
-}?.toAngleUnifiedValue(
-    isRadians = isRadians,
-)
+        else ->
+            null
+    }?.toAngleUnifiedValue(
+        isRadians = isRadians,
+    )
 
 private fun arctanSpecialOrNull(
     value: BigDecimal,
     isRadians: Boolean,
-): UnifiedValue? = when {
-    value.compareTo(ZERO) == 0 ->
-        Rational.ZERO
+): UnifiedValue? =
+    when {
+        value.compareTo(ZERO) == 0 ->
+            Rational.ZERO
 
-    else ->
-        null
-}?.toAngleUnifiedValue(
-    isRadians = isRadians,
-)
+        else ->
+            null
+    }?.toAngleUnifiedValue(
+        isRadians = isRadians,
+    )
 
 private fun Rational.toAngleUnifiedValue(
     isRadians: Boolean,
-): UnifiedValue {
-    return if (isRadians) {
+): UnifiedValue =
+    if (isRadians) {
         UnifiedValue.fromPiFactor(
             piFactor = this,
         )
@@ -436,11 +448,11 @@ private fun Rational.toAngleUnifiedValue(
             approximateValue = this * Rational.from(ONE_HUNDRED_EIGHTY)
         )
     }
-}
 
 private fun workingMc(
     mc: MathContext,
-): MathContext = MathContext(
-    mc.precision + EXTRA_PRECISION_FOR_WORKING,
-    mc.roundingMode,
-)
+): MathContext =
+    MathContext(
+        mc.precision + EXTRA_PRECISION_FOR_WORKING,
+        mc.roundingMode,
+    )

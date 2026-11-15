@@ -162,14 +162,14 @@ class Rational private constructor(
         )
     }
 
-    fun signum(): Int =
-        numerator.signum()
-
     fun negate(): Rational =
         of(
             numerator = numerator.negate(),
             denominator = denominator,
         )
+
+    fun signum(): Int =
+        numerator.signum()
 
     fun isZero(): Boolean =
         numerator.signum() == 0

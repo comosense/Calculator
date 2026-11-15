@@ -17,36 +17,38 @@ class UnifiedValue private constructor(
         val NEGATIVE_ONE: UnifiedValue = UnifiedValue(
             exactValue = BigDecimal.ONE,
         ).negate()
-        val ZERO: UnifiedValue = UnifiedValue(
-            exactValue = BigDecimal.ZERO,
-        )
+        val ZERO: UnifiedValue = UnifiedValue()
         val ONE: UnifiedValue = UnifiedValue(
             exactValue = BigDecimal.ONE,
         )
 
         fun fromExactValue(
             exactValue: BigDecimal,
-        ): UnifiedValue = UnifiedValue(
-            exactValue = exactValue,
-        )
+        ): UnifiedValue =
+            UnifiedValue(
+                exactValue = exactValue,
+            )
 
         fun fromExactValue(
             exactValue: BigInteger,
-        ): UnifiedValue = UnifiedValue(
-            exactValue = exactValue.toBigDecimal(),
-        )
+        ): UnifiedValue =
+            UnifiedValue(
+                exactValue = exactValue.toBigDecimal(),
+            )
 
         fun fromApproximateValue(
             approximateValue: BigDecimal,
-        ): UnifiedValue = UnifiedValue(
-            approximateValue = Rational.from(approximateValue),
-        )
+        ): UnifiedValue =
+            UnifiedValue(
+                approximateValue = Rational.from(approximateValue),
+            )
 
         fun fromApproximateValue(
             approximateValue: Rational,
-        ): UnifiedValue = UnifiedValue(
-            approximateValue = approximateValue,
-        )
+        ): UnifiedValue =
+            UnifiedValue(
+                approximateValue = approximateValue,
+            )
 
         fun fromPiFactor(
             piFactor: Rational,
@@ -54,24 +56,31 @@ class UnifiedValue private constructor(
             piFactor = piFactor,
         )
 
-        fun pi(): UnifiedValue = fromPiFactor(
-            piFactor = Rational.ONE,
-        )
+        fun pi(): UnifiedValue =
+            fromPiFactor(
+                piFactor = Rational.ONE,
+            )
 
         suspend fun e(
             mc: MathContext,
-        ): UnifiedValue = fromApproximateValue(
-            approximateValue = BigDecimalMath.e(
-                mc = mc,
-            ),
-        )
+        ): UnifiedValue =
+            fromApproximateValue(
+                approximateValue = BigDecimalMath.e(
+                    mc = mc,
+                ),
+            )
     }
+
+    fun isZero(): Boolean =
+        exactValue.signum() == 0 &&
+                approximateValue.isZero() &&
+                piFactor.isZero()
 
     fun hasPiFactor(): Boolean =
         !piFactor.isZero()
 
-    fun toPiMultipleOrNull(): Rational? {
-        return if (exactValue.signum() == 0 &&
+    fun toPiMultipleOrNull(): Rational? =
+        if (exactValue.signum() == 0 &&
             approximateValue.isZero() &&
             !piFactor.isZero()
         ) {
@@ -79,7 +88,6 @@ class UnifiedValue private constructor(
         } else {
             null
         }
-    }
 
     suspend fun toBigDecimal(
         mc: MathContext,
@@ -104,14 +112,16 @@ class UnifiedValue private constructor(
 
     suspend fun signum(
         mc: MathContext,
-    ): Int = toRationalOrNull()?.signum()
-        ?: toBigDecimal(mc).signum()
+    ): Int =
+        toRationalOrNull()?.signum()
+            ?: toBigDecimal(mc).signum()
 
-    fun negate(): UnifiedValue = UnifiedValue(
-        exactValue = exactValue.negate(),
-        approximateValue = approximateValue.negate(),
-        piFactor = piFactor.negate(),
-    )
+    fun negate(): UnifiedValue =
+        UnifiedValue(
+            exactValue = exactValue.negate(),
+            approximateValue = approximateValue.negate(),
+            piFactor = piFactor.negate(),
+        )
 
     fun add(
         other: UnifiedValue,
@@ -224,6 +234,7 @@ class UnifiedValue private constructor(
 
         if (isZero()) {
             require(exponent >= 0)
+
             return when {
                 exponent > 0 -> ZERO
                 else -> ONE
@@ -264,23 +275,18 @@ class UnifiedValue private constructor(
         }
     }
 
-    private fun isZero(): Boolean =
-        exactValue.signum() == 0 &&
-                approximateValue.isZero() &&
-                piFactor.isZero()
-
-    private fun toRationalOrNull(): Rational? {
-        return if (!hasPiFactor()) {
+    private fun toRationalOrNull(): Rational? =
+        if (!hasPiFactor()) {
             approximateValue + Rational.from(exactValue)
         } else {
             null
         }
-    }
 
     private fun workingMc(
         mc: MathContext,
-    ): MathContext = MathContext(
-        mc.precision + EXTRA_PRECISION_FOR_WORKING,
-        mc.roundingMode,
-    )
+    ): MathContext =
+        MathContext(
+            mc.precision + EXTRA_PRECISION_FOR_WORKING,
+            mc.roundingMode,
+        )
 }

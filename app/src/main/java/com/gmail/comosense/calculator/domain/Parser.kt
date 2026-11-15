@@ -254,8 +254,8 @@ class Parser(
     private suspend fun parseConstant(
         constant: Symbol.Constant,
         mc: MathContext,
-    ): UnifiedValue {
-        return when (constant) {
+    ): UnifiedValue =
+        when (constant) {
             Symbol.Constant.Pi ->
                 UnifiedValue.pi()
 
@@ -264,27 +264,25 @@ class Parser(
                     mc = mc,
                 )
         }
-    }
 
     private suspend fun applyFunction(
         function: Symbol.Factor.Function,
         value: UnifiedValue,
         mc: MathContext,
-    ): UnifiedValue {
-        return when (function) {
+    ): UnifiedValue =
+        when (function) {
             Symbol.Factor.Function.Sqrt ->
                 value.sqrt(
                     mc = mc,
                 )
         }
-    }
 
     private suspend fun applyFunction(
         function: Symbol.FactorStart.Function,
         value: UnifiedValue,
         mc: MathContext,
-    ): UnifiedValue {
-        return when (function) {
+    ): UnifiedValue =
+        when (function) {
             Symbol.FactorStart.Function.Exp ->
                 value.exp(
                     mc = mc,
@@ -337,12 +335,11 @@ class Parser(
                 )
         }
 
-    }
-
     private fun workingMc(
         mc: MathContext,
-    ): MathContext = MathContext(
-        mc.precision + EXTRA_PRECISION_FOR_WORKING,
-        mc.roundingMode,
-    )
+    ): MathContext =
+        MathContext(
+            mc.precision + EXTRA_PRECISION_FOR_WORKING,
+            mc.roundingMode,
+        )
 }
