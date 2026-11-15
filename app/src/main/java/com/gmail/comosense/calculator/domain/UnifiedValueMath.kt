@@ -4,7 +4,6 @@ import com.gmail.comosense.calculator.common.Constraints
 import java.math.BigDecimal
 import java.math.BigInteger
 import java.math.MathContext
-import kotlin.math.abs
 
 private const val MAX_FACTORIAL_ARGUMENT: Int =
     Constraints.MAX_FACTORIAL_ARGUMENT
@@ -53,8 +52,7 @@ internal suspend fun UnifiedValue.pow(
 
     return integerExponentOrNull(exponent)
         ?.let { integerExponent ->
-            powNaturalExponent(
-                base = this,
+            pow(
                 exponent = integerExponent,
                 mc = mc,
             )
@@ -68,8 +66,8 @@ internal suspend fun UnifiedValue.pow(
 
 internal suspend fun UnifiedValue.sqrt(
     mc: MathContext,
-): UnifiedValue = UnifiedValue.from(
-    value = BigDecimalMath.sqrt(
+): UnifiedValue = UnifiedValue.fromApproximateValue(
+    approximateValue = BigDecimalMath.sqrt(
         value = toBigDecimal(workingMc(mc)),
         mc = mc,
     ),
@@ -83,8 +81,8 @@ internal suspend fun UnifiedValue.exp(
         throw ExpLargeArgumentException()
     }
 
-    return UnifiedValue.from(
-        value = BigDecimalMath.exp(
+    return UnifiedValue.fromApproximateValue(
+        approximateValue = BigDecimalMath.exp(
             value = value,
             mc = mc,
         ),
@@ -93,8 +91,8 @@ internal suspend fun UnifiedValue.exp(
 
 internal suspend fun UnifiedValue.ln(
     mc: MathContext,
-): UnifiedValue = UnifiedValue.from(
-    value = BigDecimalMath.ln(
+): UnifiedValue = UnifiedValue.fromApproximateValue(
+    approximateValue = BigDecimalMath.ln(
         value = toBigDecimal(workingMc(mc)),
         mc = mc,
     ),
@@ -102,8 +100,8 @@ internal suspend fun UnifiedValue.ln(
 
 internal suspend fun UnifiedValue.log(
     mc: MathContext,
-): UnifiedValue = UnifiedValue.from(
-    value = BigDecimalMath.log(
+): UnifiedValue = UnifiedValue.fromApproximateValue(
+    approximateValue = BigDecimalMath.log(
         value = toBigDecimal(workingMc(mc)),
         mc = mc,
     ),
@@ -143,8 +141,8 @@ private suspend fun UnifiedValue.trigonometricFunction(
     )?.let(specialOrNull)
         ?.let { result -> return result }
 
-    return UnifiedValue.from(
-        value = calculate(
+    return UnifiedValue.fromApproximateValue(
+        approximateValue = calculate(
             toRadians(
                 isRadians = isRadians,
                 mc = workingMc,
@@ -219,27 +217,24 @@ private suspend fun UnifiedValue.inverseTrigonometricFunction(
     specialOrNull(value, isRadians)
         ?.let { special -> return special }
 
-    return if (isRadians) {
-        UnifiedValue.from(
-            value = calculate(value, mc),
-        )
-    } else {
-        UnifiedValue.from(
-            value = calculate(value, workingMc)
-                .multiply(ONE_HUNDRED_EIGHTY)
-                .divide(BigDecimalMath.pi(workingMc), mc),
-        )
-    }
+    return UnifiedValue.fromApproximateValue(
+        approximateValue =
+            if (isRadians) {
+                calculate(value, mc)
+            } else {
+                calculate(value, workingMc)
+                    .multiply(ONE_HUNDRED_EIGHTY)
+                    .divide(BigDecimalMath.pi(workingMc), mc)
+            },
+    )
 }
 
 private fun factorialArgument(
     value: UnifiedValue,
 ): Int {
-    val bigIntegerArgument: BigInteger = try {
-        value.toBigIntegerExact()
-    } catch (_: ArithmeticException) {
-        throw FactorialInvalidArgumentException()
-    }
+    val bigIntegerArgument: BigInteger =
+        value.toBigIntegerExactOrNull()
+            ?: throw FactorialInvalidArgumentException()
 
     if (bigIntegerArgument.signum() < 0) {
         throw FactorialInvalidArgumentException()
@@ -261,11 +256,9 @@ private fun factorialArgument(
 private fun integerExponentOrNull(
     value: UnifiedValue,
 ): Int? {
-    val bigIntegerExponent: BigInteger = try {
-        value.toBigIntegerExact()
-    } catch (_: ArithmeticException) {
-        return null
-    }
+    val bigIntegerExponent: BigInteger =
+        value.toBigIntegerExactOrNull()
+            ?: return null
 
     val exponent: Int = try {
         bigIntegerExponent.intValueExact()
@@ -278,25 +271,6 @@ private fun integerExponentOrNull(
     }
 
     return exponent
-}
-
-private suspend fun powNaturalExponent(
-    base: UnifiedValue,
-    exponent: Int,
-    mc: MathContext,
-): UnifiedValue {
-    return if (base.isPureRational()) {
-        powRationalBase(
-            base = base,
-            exponent = exponent,
-        )
-    } else {
-        powDecimalBase(
-            base = base.toBigDecimal(workingMc(mc)),
-            exponent = exponent,
-            mc = mc,
-        )
-    }
 }
 
 private suspend fun powDecimalExponent(
@@ -316,43 +290,13 @@ private suspend fun powDecimalExponent(
         throw PowLimitExceededException()
     }
 
-    return UnifiedValue.from(
-        value = BigDecimalMath.powDecimalExponent(
+    return UnifiedValue.fromApproximateValue(
+        approximateValue = BigDecimalMath.powDecimalExponent(
             base = bigDecimalBase,
             exponent = bigDecimalExponent,
             mc = mc,
         ),
     )
-}
-
-private suspend fun powRationalBase(
-    base: UnifiedValue,
-    exponent: Int,
-): UnifiedValue {
-    return UnifiedValue.from(
-        rational = base.rational.pow(exponent),
-    )
-}
-
-private suspend fun powDecimalBase(
-    base: BigDecimal,
-    exponent: Int,
-    mc: MathContext,
-): UnifiedValue {
-    val result: BigDecimal = BigDecimalMath.powNaturalExponent(
-        base = base,
-        exponent = abs(exponent),
-    )
-
-    return if (exponent >= 0) {
-        UnifiedValue.fromExactValue(
-            exactValue = result,
-        )
-    } else {
-        UnifiedValue.from(
-            value = BigDecimal.ONE.divide(result, mc),
-        )
-    }
 }
 
 private suspend fun UnifiedValue.toNormalizedPiMultipleOrNull(
@@ -488,8 +432,8 @@ private fun Rational.toAngleUnifiedValue(
             piFactor = this,
         )
     } else {
-        UnifiedValue.from(
-            rational = this * Rational.from(ONE_HUNDRED_EIGHTY)
+        UnifiedValue.fromApproximateValue(
+            approximateValue = this * Rational.from(ONE_HUNDRED_EIGHTY)
         )
     }
 }

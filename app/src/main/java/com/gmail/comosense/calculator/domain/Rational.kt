@@ -170,12 +170,12 @@ class Rational private constructor(
         }
     }
 
-    fun toBigIntegerExact(): BigInteger {
-        if (!isInteger()) {
-            throw ArithmeticException()
+    fun toBigIntegerExactOrNull(): BigInteger? {
+        return if (isInteger()) {
+            numerator
+        } else {
+            null
         }
-
-        return numerator
     }
 
     suspend fun pow(exponent: Int): Rational {

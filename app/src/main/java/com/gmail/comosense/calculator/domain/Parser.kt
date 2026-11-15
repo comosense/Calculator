@@ -241,8 +241,8 @@ class Parser(
         val value: BigDecimal = buffer.toString().toBigDecimalOrNull()
             ?: throw InvalidNumericFormatException()
 
-        return UnifiedValue.from(
-            value = value,
+        return UnifiedValue.fromExactValue(
+            exactValue = value,
         )
     }
 
