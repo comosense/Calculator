@@ -234,44 +234,42 @@ class UnifiedValue private constructor(
 
         if (isZero()) {
             require(exponent >= 0)
-
-            return when {
-                exponent > 0 -> ZERO
-                else -> ONE
-            }
+            return if (exponent == 0) ONE else ZERO
         }
 
-        return if (exactValue.signum() == 0 && piFactor.isZero()) {
-            fromApproximateValue(
+        if (exactValue.signum() == 0 && piFactor.isZero()) {
+            return fromApproximateValue(
                 approximateValue = approximateValue.pow(exponent),
             )
-        } else {
-            val isExactValue: Boolean = approximateValue.isZero() && piFactor.isZero()
-            val base: BigDecimal = if (isExactValue) {
-                exactValue
-            } else {
-                toBigDecimal(workingMc(mc))
-            }
-            val result: BigDecimal = BigDecimalMath.powNaturalExponent(
-                base = base,
-                exponent = abs(exponent),
-            )
+        }
 
-            if (exponent >= 0) {
-                if (isExactValue) {
-                    fromExactValue(
-                        exactValue = result,
-                    )
-                } else {
-                    fromApproximateValue(
-                        approximateValue = result,
-                    )
-                }
-            } else {
+        val isExactValue: Boolean = approximateValue.isZero() && piFactor.isZero()
+        val base: BigDecimal = if (isExactValue) {
+            exactValue
+        } else {
+            toBigDecimal(workingMc(mc))
+        }
+        val result: BigDecimal = BigDecimalMath.powNaturalExponent(
+            base = base,
+            exponent = abs(exponent),
+        )
+
+        return when {
+            exponent < 0 ->
                 fromApproximateValue(
                     approximateValue = BigDecimal.ONE.divide(result, mc),
                 )
-            }
+
+            isExactValue ->
+                fromExactValue(
+                    exactValue = result,
+                )
+
+            else ->
+                fromApproximateValue(
+                    approximateValue = result,
+                )
+
         }
     }
 
