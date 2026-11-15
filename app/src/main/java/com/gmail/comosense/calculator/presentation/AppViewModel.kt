@@ -183,7 +183,7 @@ class AppViewModel(
         updateAppState { appState ->
             resolveAppStateUpdate(
                 appState = appState,
-                appStateUpdateResult = appState.applyHistory(id)
+                appStateUpdateResult = appState.applyHistory(id),
             )
         }
     }

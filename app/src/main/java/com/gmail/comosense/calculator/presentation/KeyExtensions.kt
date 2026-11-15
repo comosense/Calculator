@@ -199,12 +199,12 @@ fun Key.display(symbolFormatter: SymbolFormatter): Display = when (this) {
 
     is Key.Digit ->
         Display.Text(
-            symbolFormatter.text(Symbol.Numeric.Digit(value))
+            text = symbolFormatter.text(Symbol.Numeric.Digit(value)),
         )
 
     is Key.Point ->
         Display.Text(
-            symbolFormatter.text(Symbol.Numeric.Point)
+            text = symbolFormatter.text(Symbol.Numeric.Point),
         )
 
     is Key.OpeningParenthesis ->
@@ -263,82 +263,82 @@ fun Key.display(symbolFormatter: SymbolFormatter): Display = when (this) {
 
     is Key.Euler ->
         Display.Text(
-            symbolFormatter.text(Symbol.Constant.Euler)
+            text = symbolFormatter.text(Symbol.Constant.Euler),
         )
 
     is Key.Pi ->
         Display.Text(
-            symbolFormatter.text(Symbol.Constant.Pi)
+            text = symbolFormatter.text(Symbol.Constant.Pi),
         )
 
     is Key.Sqrt ->
         Display.Text(
-            symbolFormatter.text(Symbol.Factor.Function.Sqrt)
+            text = symbolFormatter.text(Symbol.Factor.Function.Sqrt),
         )
 
     is Key.Power ->
         Display.Text(
-            symbolFormatter.text(Symbol.Operator.Power)
+            text = symbolFormatter.text(Symbol.Operator.Power),
         )
 
     is Key.Factorial ->
         Display.Text(
-            symbolFormatter.text(Symbol.PostfixOperator.Factorial)
+            text = symbolFormatter.text(Symbol.PostfixOperator.Factorial),
         )
 
     is Key.Log ->
         Display.Text(
-            symbolFormatter.text(Symbol.FactorStart.Function.Log)
+            text = symbolFormatter.text(Symbol.FactorStart.Function.Log),
         )
 
     is Key.Ln ->
         Display.Text(
-            symbolFormatter.text(Symbol.FactorStart.Function.Ln)
+            text = symbolFormatter.text(Symbol.FactorStart.Function.Ln),
         )
 
     is Key.Sin ->
         Display.Text(
-            symbolFormatter.text(Symbol.FactorStart.Function.Sin)
+            text = symbolFormatter.text(Symbol.FactorStart.Function.Sin),
         )
 
     is Key.Cos ->
         Display.Text(
-            symbolFormatter.text(Symbol.FactorStart.Function.Cos)
+            text = symbolFormatter.text(Symbol.FactorStart.Function.Cos),
         )
 
     is Key.Tan ->
         Display.Text(
-            symbolFormatter.text(Symbol.FactorStart.Function.Tan)
+            text = symbolFormatter.text(Symbol.FactorStart.Function.Tan),
         )
 
     is Key.Square ->
         Display.Text(
-            symbolFormatter.format(SYMBOLS_SQUARE)
+            text = symbolFormatter.format(SYMBOLS_SQUARE),
         )
 
     is Key.Pow10 ->
         Display.Text(
-            symbolFormatter.format(SYMBOLS_POW10)
+            text = symbolFormatter.format(SYMBOLS_POW10),
         )
 
     is Key.Exp ->
         Display.Text(
-            symbolFormatter.text(Symbol.FactorStart.Function.Exp)
+            text = symbolFormatter.text(Symbol.FactorStart.Function.Exp),
         )
 
     is Key.Arcsin ->
         Display.Text(
-            symbolFormatter.text(Symbol.FactorStart.Function.Arcsin)
+            text = symbolFormatter.text(Symbol.FactorStart.Function.Arcsin),
         )
 
     is Key.Arccos ->
         Display.Text(
-            symbolFormatter.text(Symbol.FactorStart.Function.Arccos)
+            text = symbolFormatter.text(Symbol.FactorStart.Function.Arccos),
         )
 
     is Key.Arctan ->
         Display.Text(
-            symbolFormatter.text(Symbol.FactorStart.Function.Arctan)
+            symbolFormatter.text(Symbol.FactorStart.Function.Arctan),
         )
 
     is Key.FunctionMode ->

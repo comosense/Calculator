@@ -183,7 +183,7 @@ class UnifiedValue private constructor(
                             exponent = 2,
                         )
                     )
-                    .round(mc)
+                    .round(mc),
             )
         }
 
@@ -221,7 +221,7 @@ class UnifiedValue private constructor(
                 approximateValue = Rational.from(
                     toBigDecimal(workingMc)
                         .divide(approximateDenominator, mc)
-                )
+                ),
             )
         }
     }

@@ -162,7 +162,7 @@ internal suspend fun UnifiedValue.tan(
     isRadians: Boolean,
     mc: MathContext,
 ): UnifiedValue {
-    val workingMc = workingMc(mc)
+    val workingMc: MathContext = workingMc(mc)
 
     val cos: UnifiedValue = cos(
         isRadians = isRadians,
@@ -289,7 +289,7 @@ private suspend fun powDecimalExponent(
 ): UnifiedValue {
     val workingMc: MathContext = workingMc(mc)
 
-    val bigDecimalBase = base.toBigDecimal(workingMc)
+    val bigDecimalBase: BigDecimal = base.toBigDecimal(workingMc)
     if (bigDecimalBase.signum() < 0) {
         throw PowInvalidArgumentException()
     }
@@ -445,7 +445,7 @@ private fun Rational.toAngleUnifiedValue(
         )
     } else {
         UnifiedValue.fromApproximateValue(
-            approximateValue = this * Rational.from(ONE_HUNDRED_EIGHTY)
+            approximateValue = this * Rational.from(ONE_HUNDRED_EIGHTY),
         )
     }
 

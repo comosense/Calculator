@@ -317,7 +317,7 @@ internal object BigDecimalMath {
         return SIXTEEN
             .multiply(
                 arctanOneFifth,
-                mc
+                mc,
             )
             .subtract(
                 FOUR.multiply(
@@ -789,7 +789,8 @@ internal object BigDecimalMath {
             calculateArctan(
                 value = root,
                 mc = mc,
-            )
+            ),
+            mc,
         )
     }
 
@@ -975,7 +976,7 @@ internal object BigDecimalMath {
 
         val mathContext = MathContext(
             mc.precision + EXTRA_PRECISION_FOR_CACHE,
-            mc.roundingMode
+            mc.roundingMode,
         )
         val value = calculate(mathContext)
 

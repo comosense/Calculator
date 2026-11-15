@@ -501,7 +501,7 @@ private fun KeyButton(
 }
 
 private fun mainKeyGrid(
-    appState: AppState
+    appState: AppState,
 ): List<List<Key?>> {
     val deleteKey: Key =
         if (appState.isInputting) {

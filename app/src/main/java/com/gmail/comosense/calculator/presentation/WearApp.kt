@@ -60,12 +60,12 @@ fun WearApp(
         coroutineScope.launch {
             if (appScreen != null) {
                 swipeToDismissBoxState.snapTo(
-                    targetValue = SwipeToDismissValue.Default
+                    targetValue = SwipeToDismissValue.Default,
                 )
                 currentScreen = appScreen
             } else {
                 swipeToDismissBoxState.snapTo(
-                    targetValue = SwipeToDismissValue.Dismissed
+                    targetValue = SwipeToDismissValue.Dismissed,
                 )
             }
         }
@@ -175,7 +175,7 @@ private fun HandleEvent(
                 Toast.makeText(
                     context,
                     resId,
-                    Toast.LENGTH_SHORT
+                    Toast.LENGTH_SHORT,
                 ).show()
 
             }
