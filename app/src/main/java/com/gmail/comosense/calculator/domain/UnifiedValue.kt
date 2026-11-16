@@ -94,19 +94,23 @@ class UnifiedValue private constructor(
     suspend fun toBigDecimal(
         mc: MathContext,
     ): BigDecimal {
+        val workingMc: MathContext = workingMc(mc)
+
         var value: BigDecimal =
-            exactValue.add(approximateValue.toBigDecimal(mc))
+            exactValue.add(approximateValue.toBigDecimal(workingMc))
 
         if (hasPiCoefficient()) {
-            val workingMc: MathContext = workingMc(mc)
-
             value = value.add(
                 piCoefficient.toBigDecimal(workingMc)
-                    .multiply(BigDecimalMath.pi(workingMc))
-            ).round(mc)
+                    .multiply(
+                        BigDecimalMath.pi(workingMc),
+                        workingMc,
+                    ),
+                workingMc
+            )
         }
 
-        return value
+        return value.round(mc)
     }
 
     fun toBigIntegerExactOrNull(): BigInteger? =
@@ -177,9 +181,9 @@ class UnifiedValue private constructor(
                         BigDecimalMath.powNaturalExponent(
                             base = BigDecimalMath.pi(workingMc),
                             exponent = 2,
-                        )
-                    )
-                    .round(mc),
+                        ),
+                        mc,
+                    ),
             )
         }
 
@@ -215,12 +219,13 @@ class UnifiedValue private constructor(
         } else {
             val workingMc: MathContext = workingMc(mc)
             val approximateDenominator: BigDecimal = other.toBigDecimal(workingMc)
+            val approximateValue: Rational = Rational.from(
+                toBigDecimal(workingMc)
+                    .divide(approximateDenominator, mc)
+            )
 
             UnifiedValue(
-                approximateValue = Rational.from(
-                    toBigDecimal(workingMc)
-                        .divide(approximateDenominator, mc)
-                ),
+                approximateValue = approximateValue,
             )
         }
     }
@@ -260,7 +265,8 @@ class UnifiedValue private constructor(
         return when {
             exponent < 0 ->
                 fromApproximateValue(
-                    approximateValue = BigDecimal.ONE.divide(result, mc),
+                    approximateValue = BigDecimal.ONE
+                        .divide(result, mc),
                 )
 
             isExactValue ->
@@ -272,7 +278,6 @@ class UnifiedValue private constructor(
                 fromApproximateValue(
                     approximateValue = result,
                 )
-
         }
     }
 

@@ -323,10 +323,10 @@ private suspend fun UnifiedValue.toNormalizedPiMultipleOrNull(
             toBigDecimal(workingMc(mc))
                 .divide(ONE_HUNDRED_EIGHTY, workingMc)
         }
-    }?.remainder(TWO, mc)
+    }?.remainder(TWO)
         ?.let { normalizedPiMultiple ->
             if (normalizedPiMultiple.signum() < 0) {
-                normalizedPiMultiple.add(TWO, mc)
+                normalizedPiMultiple.add(TWO)
             } else {
                 normalizedPiMultiple
             }

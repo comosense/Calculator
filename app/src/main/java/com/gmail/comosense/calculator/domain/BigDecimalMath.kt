@@ -307,7 +307,7 @@ internal object BigDecimalMath {
         mc: MathContext,
     ): BigDecimal {
         val arctanOneFifth: BigDecimal = arctanTaylor(
-            value = ONE.divide(FIVE, mc),
+            value = ONE.divide(FIVE),
             mc = mc,
         )
         val arctanOneTwoHundredThirtyNine: BigDecimal = arctanTaylor(
@@ -352,7 +352,7 @@ internal object BigDecimalMath {
 
             val next: BigDecimal = x
                 .add(value.divide(x, mc), mc)
-                .divide(TWO, mc)
+                .divide(TWO)
             if (next.compareTo(x) == 0 ||
                 (previousX != null && next.compareTo(previousX) == 0)
             ) {
@@ -375,7 +375,7 @@ internal object BigDecimalMath {
         while (reduced.abs() > HALF) {
             coroutineContext.ensureActive()
 
-            reduced = reduced.divide(TWO, mc)
+            reduced = reduced.divide(TWO)
             reductions++
         }
 
@@ -438,14 +438,14 @@ internal object BigDecimalMath {
         while (x > sqrtTwo) {
             coroutineContext.ensureActive()
 
-            x = x.divide(TWO, mc)
+            x = x.divide(TWO)
             exponent++
         }
 
         while (x < inverseSqrtTwo) {
             coroutineContext.ensureActive()
 
-            x = x.multiply(TWO, mc)
+            x = x.multiply(TWO)
             exponent--
         }
 
@@ -566,11 +566,11 @@ internal object BigDecimalMath {
         }
 
         if (value.compareTo(ONE) == 0) {
-            return cachedPi(mc).divide(TWO, mc)
+            return cachedPi(mc).divide(TWO)
         }
 
         if (value.compareTo(NEGATIVE_ONE) == 0) {
-            return cachedPi(mc).divide(TWO, mc).negate()
+            return cachedPi(mc).divide(TWO).negate()
         }
 
         if (value.signum() == 0) {
@@ -609,7 +609,7 @@ internal object BigDecimalMath {
         }
 
         if (value.signum() == 0) {
-            return cachedPi(mc).divide(TWO, mc)
+            return cachedPi(mc).divide(TWO)
         }
 
         val acuteAngle: BigDecimal = calculateInverseTrigonometricAcuteAngle(
@@ -636,7 +636,7 @@ internal object BigDecimalMath {
         }
 
         if (value > ONE) {
-            return cachedPi(mc).divide(TWO, mc)
+            return cachedPi(mc).divide(TWO)
                 .subtract(
                     calculateArctan(
                         value = ONE.divide(value, mc),
@@ -647,10 +647,10 @@ internal object BigDecimalMath {
         }
 
         if (value > HALF) {
-            val reduced: BigDecimal = value.subtract(ONE, mc)
+            val reduced: BigDecimal = value.subtract(ONE)
                 .divide(value.add(ONE), mc)
 
-            return cachedPi(mc).divide(FOUR, mc)
+            return cachedPi(mc).divide(FOUR)
                 .add(
                     calculateArctan(
                         value = reduced,
@@ -672,7 +672,7 @@ internal object BigDecimalMath {
     ): BigDecimal {
         val coroutineContext: CoroutineContext = currentCoroutineContext()
         val z: BigDecimal = value
-            .subtract(ONE, mc)
+            .subtract(ONE)
             .divide(value.add(ONE), mc)
         val zSquared: BigDecimal = z.multiply(z, mc)
 
@@ -684,13 +684,13 @@ internal object BigDecimalMath {
             coroutineContext.ensureActive()
 
             term = term.multiply(zSquared, mc)
-            denominator = denominator.add(TWO, mc)
+            denominator = denominator.add(TWO)
 
             val nextTerm: BigDecimal = term.divide(denominator, mc)
             val nextSum: BigDecimal = sum.add(nextTerm, mc)
 
             if (nextSum.compareTo(sum) == 0) {
-                return nextSum.multiply(TWO, mc)
+                return nextSum.multiply(TWO)
             }
 
             sum = nextSum
@@ -784,7 +784,7 @@ internal object BigDecimalMath {
             coroutineContext.ensureActive()
 
             term = term.multiply(valueSquared, mc)
-            denominator = denominator.add(TWO, mc)
+            denominator = denominator.add(TWO)
 
             val nextTerm: BigDecimal = term.divide(denominator, mc)
 
@@ -808,7 +808,7 @@ internal object BigDecimalMath {
     ): BigDecimal {
         val twoPi: BigDecimal = cachedTwoPi(mc)
 
-        return remainder(twoPi, mc)
+        return remainder(twoPi)
             .let { normalizedRadians ->
                 if (normalizedRadians.signum() < 0) {
                     normalizedRadians.add(twoPi, mc)
@@ -938,7 +938,7 @@ internal object BigDecimalMath {
             calculate = { mathContext ->
                 cachedPi(
                     mc = mathContext,
-                ).divide(TWO, mc)
+                ).divide(TWO)
             },
             updateCache = { cached -> cachedHalfPi = cached },
             mc = mc,
@@ -966,7 +966,7 @@ internal object BigDecimalMath {
             calculate = { mathContext ->
                 cachedPi(
                     mc = mathContext,
-                ).multiply(TWO, mc)
+                ).multiply(TWO)
             },
             updateCache = { cached -> cachedTwoPi = cached },
             mc = mc,
