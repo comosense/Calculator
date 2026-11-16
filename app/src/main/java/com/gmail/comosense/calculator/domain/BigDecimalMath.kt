@@ -952,7 +952,7 @@ internal object BigDecimalMath {
             calculate = { mathContext ->
                 cachedPi(
                     mc = mathContext,
-                ).add(cachedHalfPi(mathContext), mc)
+                ).add(cachedHalfPi(mathContext), mathContext)
             },
             updateCache = { cached -> cachedThreeHalfPi = cached },
             mc = mc,
