@@ -3,8 +3,8 @@
 # min_api: 30
 # common_typos_disable
 # {"id":"com.android.tools.r8.mapping","version":"2.2"}
-# pg_map_id: cde5590451a8b1553927dc8fac747c5c041fd16723225014cd60beb1a3d90025
-# pg_map_hash: SHA-256 2d2d0fc26b89fecc847d3c3077ef4121bea2fcfadd3f96957a5c73dbf1f59548
+# pg_map_id: 94c6edba3ef9aec9d1115fe9cf9e3d7103d8fff47615792c0f79998224a22284
+# pg_map_hash: SHA-256 99779f720377b3b529e936a8fa08aa116c5425c959a686780eebb5804cccc537
 _COROUTINE.ArtificialStackFrames -> R8$$REMOVED$$CLASS$$0:
 # {"id":"sourceFile","fileName":"CoroutineDebugging.kt"}
 _COROUTINE.ArtificialStackFramesUnsafe -> wa:
@@ -30883,7 +30883,7 @@ androidx.compose.foundation.gestures.DragGestureNode$startListeningForEvents$1 -
     4:16:void kotlinx.coroutines.flow.FlowKt__ShareKt$launchSharing$1.<init>(kotlinx.coroutines.flow.SharingStarted,kotlinx.coroutines.flow.Flow,kotlinx.coroutines.flow.MutableSharedFlow,java.lang.Object,kotlin.coroutines.Continuation):0:0 -> <init>
       # {"id":"com.android.tools.r8.residualsignature","signature":"(Lvn1;Lk50;Lao1;Ljava/lang/Float;Ljp;)V"}
     17:17:void androidx.lifecycle.RepeatOnLifecycleKt$repeatOnLifecycle$3$1$1$1$1.<init>(kotlinx.coroutines.sync.Mutex,kotlin.jvm.functions.Function2,kotlin.coroutines.Continuation):0:0 -> <init>
-      # {"id":"com.android.tools.r8.residualsignature","signature":"(Lvw0;Lbs;Ljp;)V"}
+      # {"id":"com.android.tools.r8.residualsignature","signature":"(Lvw0;Lld;Ljp;)V"}
     18:18:void androidx.compose.animation.core.InfiniteTransition$run$1$1.<init>(androidx.compose.runtime.MutableState,androidx.compose.animation.core.InfiniteTransition,kotlin.coroutines.Continuation):0:0 -> <init>
       # {"id":"com.android.tools.r8.residualsignature","signature":"(Lgw0;Lef0;Ljp;)V"}
     19:19:void DragGestureNode$startListeningForEvents$1.<init>(java.lang.Object,Continuation,byte):0:0 -> <init>
@@ -32893,128 +32893,128 @@ androidx.compose.foundation.gestures.ScrollableNode -> hi1:
     151:154:void androidx.compose.foundation.gestures.MouseWheelScrollingLogic.startReceivingEvents(kotlinx.coroutines.CoroutineScope):104:104 -> H
     151:154:void androidx.compose.foundation.gestures.AbstractScrollableNode.initializeMouseWheelScrollingLogic():130 -> H
     151:154:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):154 -> H
-    155:160:void androidx.compose.foundation.gestures.MouseWheelScrollingLogic.startReceivingEvents(kotlinx.coroutines.CoroutineScope):106:106 -> H
-    155:160:void androidx.compose.foundation.gestures.AbstractScrollableNode.initializeMouseWheelScrollingLogic():130 -> H
-    155:160:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):154 -> H
-    161:164:kotlinx.coroutines.Job kotlinx.coroutines.BuildersKt.launch$default(kotlinx.coroutines.CoroutineScope,kotlin.coroutines.CoroutineContext,kotlinx.coroutines.CoroutineStart,kotlin.jvm.functions.Function2,int,java.lang.Object):1:1 -> H
-    161:164:void androidx.compose.foundation.gestures.MouseWheelScrollingLogic.startReceivingEvents(kotlinx.coroutines.CoroutineScope):106 -> H
-    161:164:void androidx.compose.foundation.gestures.AbstractScrollableNode.initializeMouseWheelScrollingLogic():130 -> H
-    161:164:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):154 -> H
-    165:166:void androidx.compose.foundation.gestures.MouseWheelScrollingLogic.startReceivingEvents(kotlinx.coroutines.CoroutineScope):105:105 -> H
-    165:166:void androidx.compose.foundation.gestures.AbstractScrollableNode.initializeMouseWheelScrollingLogic():130 -> H
-    165:166:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):154 -> H
-    167:172:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):156:156 -> H
-    173:177:int androidx.compose.ui.input.pointer.PointerEvent.getType-7fucELk():103:103 -> H
-    173:177:void androidx.compose.foundation.gestures.MouseWheelScrollingLogic.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):56 -> H
+    155:159:void androidx.compose.foundation.gestures.MouseWheelScrollingLogic.startReceivingEvents(kotlinx.coroutines.CoroutineScope):106:106 -> H
+    155:159:void androidx.compose.foundation.gestures.AbstractScrollableNode.initializeMouseWheelScrollingLogic():130 -> H
+    155:159:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):154 -> H
+    160:163:kotlinx.coroutines.Job kotlinx.coroutines.BuildersKt.launch$default(kotlinx.coroutines.CoroutineScope,kotlin.coroutines.CoroutineContext,kotlinx.coroutines.CoroutineStart,kotlin.jvm.functions.Function2,int,java.lang.Object):1:1 -> H
+    160:163:void androidx.compose.foundation.gestures.MouseWheelScrollingLogic.startReceivingEvents(kotlinx.coroutines.CoroutineScope):106 -> H
+    160:163:void androidx.compose.foundation.gestures.AbstractScrollableNode.initializeMouseWheelScrollingLogic():130 -> H
+    160:163:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):154 -> H
+    164:165:void androidx.compose.foundation.gestures.MouseWheelScrollingLogic.startReceivingEvents(kotlinx.coroutines.CoroutineScope):105:105 -> H
+    164:165:void androidx.compose.foundation.gestures.AbstractScrollableNode.initializeMouseWheelScrollingLogic():130 -> H
+    164:165:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):154 -> H
+    166:171:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):156:156 -> H
+    172:176:int androidx.compose.ui.input.pointer.PointerEvent.getType-7fucELk():103:103 -> H
+    172:176:void androidx.compose.foundation.gestures.MouseWheelScrollingLogic.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):56 -> H
       # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
-    173:177:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):156 -> H
-    178:179:java.util.List androidx.compose.ui.input.pointer.PointerEvent.getChanges():54:54 -> H
-    178:179:void androidx.compose.foundation.gestures.MouseWheelScrollingLogic.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):322 -> H
-    178:179:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):156 -> H
-    180:186:void androidx.compose.foundation.gestures.MouseWheelScrollingLogic.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):324:324 -> H
-    180:186:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):156 -> H
-    187:190:void androidx.compose.foundation.gestures.MouseWheelScrollingLogic.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):325:325 -> H
-    187:190:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):156 -> H
-    191:192:void androidx.compose.foundation.gestures.MouseWheelScrollingLogic.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):323:323 -> H
-    191:192:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):156 -> H
-    193:203:void androidx.compose.foundation.gestures.MouseWheelScrollingLogic.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):322:322 -> H
-    193:203:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):156 -> H
-    204:207:boolean androidx.compose.foundation.gestures.NonTouchScrollingLogic.isScrolling$foundation():50:50 -> H
-    204:207:void androidx.compose.foundation.gestures.MouseWheelScrollingLogic.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):62 -> H
-    204:207:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):156 -> H
-    208:210:void androidx.compose.foundation.gestures.MouseWheelScrollingLogic.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):63:63 -> H
-    208:210:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):156 -> H
-    211:215:void androidx.compose.foundation.gestures.MouseWheelScrollingLogic.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):64:64 -> H
-    211:215:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):156 -> H
-    216:219:boolean androidx.compose.foundation.gestures.NonTouchScrollingLogic.isScrolling$foundation():50:50 -> H
-    216:219:void androidx.compose.foundation.gestures.MouseWheelScrollingLogic.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):72 -> H
-    216:219:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):156 -> H
-    220:225:void androidx.compose.foundation.gestures.MouseWheelScrollingLogic.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):73:73 -> H
-    220:225:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):156 -> H
-    226:236:void androidx.compose.foundation.gestures.MouseWheelScrollingLogic.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):75:75 -> H
-    226:236:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):156 -> H
-    237:244:int androidx.compose.ui.input.pointer.PointerEvent.getType-7fucELk():103:103 -> H
-    237:244:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):160 -> H
-    245:248:void androidx.compose.foundation.gestures.AbstractScrollableNode.initializeTrackpadScrollingLogic():134:134 -> H
-    245:248:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):164 -> H
-    249:250:androidx.compose.foundation.gestures.TrackpadScrollingLogic createTrackpadScrollingLogic():333:333 -> H
-    249:250:androidx.compose.foundation.gestures.NonTouchScrollingLogic createTrackpadScrollingLogic():271 -> H
-    249:250:void androidx.compose.foundation.gestures.AbstractScrollableNode.initializeTrackpadScrollingLogic():135 -> H
-    249:250:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):164 -> H
-    251:257:androidx.compose.foundation.gestures.TrackpadScrollingLogic createTrackpadScrollingLogic():335:335 -> H
-    251:257:androidx.compose.foundation.gestures.NonTouchScrollingLogic createTrackpadScrollingLogic():271 -> H
-    251:257:void androidx.compose.foundation.gestures.AbstractScrollableNode.initializeTrackpadScrollingLogic():135 -> H
-    251:257:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):164 -> H
-    258:268:void androidx.compose.foundation.gestures.ScrollableNode$createTrackpadScrollingLogic$1.<init>(java.lang.Object):0:0 -> H
-    258:268:androidx.compose.foundation.gestures.TrackpadScrollingLogic createTrackpadScrollingLogic():335 -> H
-    258:268:androidx.compose.foundation.gestures.NonTouchScrollingLogic createTrackpadScrollingLogic():271 -> H
-    258:268:void androidx.compose.foundation.gestures.AbstractScrollableNode.initializeTrackpadScrollingLogic():135 -> H
-    258:268:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):164 -> H
-    269:272:androidx.compose.ui.unit.Density androidx.compose.ui.node.DelegatableNodeKt.requireDensity(androidx.compose.ui.node.DelegatableNode):387:387 -> H
-    269:272:androidx.compose.foundation.gestures.TrackpadScrollingLogic createTrackpadScrollingLogic():336 -> H
-    269:272:androidx.compose.foundation.gestures.NonTouchScrollingLogic createTrackpadScrollingLogic():271 -> H
-    269:272:void androidx.compose.foundation.gestures.AbstractScrollableNode.initializeTrackpadScrollingLogic():135 -> H
-    269:272:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):164 -> H
-    273:274:androidx.compose.ui.unit.Density androidx.compose.ui.node.LayoutNode.getDensity():738:738 -> H
-    273:274:androidx.compose.ui.unit.Density androidx.compose.ui.node.DelegatableNodeKt.requireDensity(androidx.compose.ui.node.DelegatableNode):387 -> H
+    172:176:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):156 -> H
+    177:178:java.util.List androidx.compose.ui.input.pointer.PointerEvent.getChanges():54:54 -> H
+    177:178:void androidx.compose.foundation.gestures.MouseWheelScrollingLogic.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):322 -> H
+    177:178:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):156 -> H
+    179:185:void androidx.compose.foundation.gestures.MouseWheelScrollingLogic.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):324:324 -> H
+    179:185:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):156 -> H
+    186:189:void androidx.compose.foundation.gestures.MouseWheelScrollingLogic.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):325:325 -> H
+    186:189:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):156 -> H
+    190:191:void androidx.compose.foundation.gestures.MouseWheelScrollingLogic.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):323:323 -> H
+    190:191:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):156 -> H
+    192:202:void androidx.compose.foundation.gestures.MouseWheelScrollingLogic.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):322:322 -> H
+    192:202:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):156 -> H
+    203:206:boolean androidx.compose.foundation.gestures.NonTouchScrollingLogic.isScrolling$foundation():50:50 -> H
+    203:206:void androidx.compose.foundation.gestures.MouseWheelScrollingLogic.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):62 -> H
+    203:206:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):156 -> H
+    207:209:void androidx.compose.foundation.gestures.MouseWheelScrollingLogic.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):63:63 -> H
+    207:209:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):156 -> H
+    210:214:void androidx.compose.foundation.gestures.MouseWheelScrollingLogic.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):64:64 -> H
+    210:214:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):156 -> H
+    215:218:boolean androidx.compose.foundation.gestures.NonTouchScrollingLogic.isScrolling$foundation():50:50 -> H
+    215:218:void androidx.compose.foundation.gestures.MouseWheelScrollingLogic.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):72 -> H
+    215:218:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):156 -> H
+    219:224:void androidx.compose.foundation.gestures.MouseWheelScrollingLogic.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):73:73 -> H
+    219:224:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):156 -> H
+    225:235:void androidx.compose.foundation.gestures.MouseWheelScrollingLogic.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):75:75 -> H
+    225:235:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):156 -> H
+    236:243:int androidx.compose.ui.input.pointer.PointerEvent.getType-7fucELk():103:103 -> H
+    236:243:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):160 -> H
+    244:247:void androidx.compose.foundation.gestures.AbstractScrollableNode.initializeTrackpadScrollingLogic():134:134 -> H
+    244:247:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):164 -> H
+    248:249:androidx.compose.foundation.gestures.TrackpadScrollingLogic createTrackpadScrollingLogic():333:333 -> H
+    248:249:androidx.compose.foundation.gestures.NonTouchScrollingLogic createTrackpadScrollingLogic():271 -> H
+    248:249:void androidx.compose.foundation.gestures.AbstractScrollableNode.initializeTrackpadScrollingLogic():135 -> H
+    248:249:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):164 -> H
+    250:256:androidx.compose.foundation.gestures.TrackpadScrollingLogic createTrackpadScrollingLogic():335:335 -> H
+    250:256:androidx.compose.foundation.gestures.NonTouchScrollingLogic createTrackpadScrollingLogic():271 -> H
+    250:256:void androidx.compose.foundation.gestures.AbstractScrollableNode.initializeTrackpadScrollingLogic():135 -> H
+    250:256:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):164 -> H
+    257:267:void androidx.compose.foundation.gestures.ScrollableNode$createTrackpadScrollingLogic$1.<init>(java.lang.Object):0:0 -> H
+    257:267:androidx.compose.foundation.gestures.TrackpadScrollingLogic createTrackpadScrollingLogic():335 -> H
+    257:267:androidx.compose.foundation.gestures.NonTouchScrollingLogic createTrackpadScrollingLogic():271 -> H
+    257:267:void androidx.compose.foundation.gestures.AbstractScrollableNode.initializeTrackpadScrollingLogic():135 -> H
+    257:267:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):164 -> H
+    268:271:androidx.compose.ui.unit.Density androidx.compose.ui.node.DelegatableNodeKt.requireDensity(androidx.compose.ui.node.DelegatableNode):387:387 -> H
+    268:271:androidx.compose.foundation.gestures.TrackpadScrollingLogic createTrackpadScrollingLogic():336 -> H
+    268:271:androidx.compose.foundation.gestures.NonTouchScrollingLogic createTrackpadScrollingLogic():271 -> H
+    268:271:void androidx.compose.foundation.gestures.AbstractScrollableNode.initializeTrackpadScrollingLogic():135 -> H
+    268:271:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):164 -> H
+    272:273:androidx.compose.ui.unit.Density androidx.compose.ui.node.LayoutNode.getDensity():738:738 -> H
+    272:273:androidx.compose.ui.unit.Density androidx.compose.ui.node.DelegatableNodeKt.requireDensity(androidx.compose.ui.node.DelegatableNode):387 -> H
       # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
-    273:274:androidx.compose.foundation.gestures.TrackpadScrollingLogic createTrackpadScrollingLogic():336 -> H
-    273:274:androidx.compose.foundation.gestures.NonTouchScrollingLogic createTrackpadScrollingLogic():271 -> H
-    273:274:void androidx.compose.foundation.gestures.AbstractScrollableNode.initializeTrackpadScrollingLogic():135 -> H
-    273:274:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):164 -> H
-    275:279:androidx.compose.foundation.gestures.TrackpadScrollingLogic createTrackpadScrollingLogic():333:333 -> H
-    275:279:androidx.compose.foundation.gestures.NonTouchScrollingLogic createTrackpadScrollingLogic():271 -> H
-    275:279:void androidx.compose.foundation.gestures.AbstractScrollableNode.initializeTrackpadScrollingLogic():135 -> H
-    275:279:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):164 -> H
-    280:281:void androidx.compose.foundation.gestures.AbstractScrollableNode.initializeTrackpadScrollingLogic():135:135 -> H
-    280:281:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):164 -> H
-    282:283:void androidx.compose.foundation.gestures.AbstractScrollableNode.initializeTrackpadScrollingLogic():136:136 -> H
-    282:283:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):164 -> H
-    284:291:void androidx.compose.foundation.gestures.AbstractScrollableNode.initializeTrackpadScrollingLogic():139:139 -> H
-    284:291:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):164 -> H
-    292:295:void androidx.compose.foundation.gestures.TrackpadScrollingLogic.startReceivingEvents(kotlinx.coroutines.CoroutineScope):90:90 -> H
-    292:295:void androidx.compose.foundation.gestures.AbstractScrollableNode.initializeTrackpadScrollingLogic():139 -> H
-    292:295:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):164 -> H
-    296:301:void androidx.compose.foundation.gestures.TrackpadScrollingLogic.startReceivingEvents(kotlinx.coroutines.CoroutineScope):92:92 -> H
-    296:301:void androidx.compose.foundation.gestures.AbstractScrollableNode.initializeTrackpadScrollingLogic():139 -> H
-    296:301:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):164 -> H
-    302:305:kotlinx.coroutines.Job kotlinx.coroutines.BuildersKt.launch$default(kotlinx.coroutines.CoroutineScope,kotlin.coroutines.CoroutineContext,kotlinx.coroutines.CoroutineStart,kotlin.jvm.functions.Function2,int,java.lang.Object):1:1 -> H
-    302:305:void androidx.compose.foundation.gestures.TrackpadScrollingLogic.startReceivingEvents(kotlinx.coroutines.CoroutineScope):92 -> H
-    302:305:void androidx.compose.foundation.gestures.AbstractScrollableNode.initializeTrackpadScrollingLogic():139 -> H
-    302:305:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):164 -> H
-    306:307:void androidx.compose.foundation.gestures.TrackpadScrollingLogic.startReceivingEvents(kotlinx.coroutines.CoroutineScope):91:91 -> H
-    306:307:void androidx.compose.foundation.gestures.AbstractScrollableNode.initializeTrackpadScrollingLogic():139 -> H
-    306:307:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):164 -> H
-    308:311:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):166:166 -> H
-    312:325:int androidx.compose.ui.input.pointer.PointerEvent.getType-7fucELk():103:103 -> H
-    312:325:void androidx.compose.foundation.gestures.TrackpadScrollingLogic.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):45 -> H
+    272:273:androidx.compose.foundation.gestures.TrackpadScrollingLogic createTrackpadScrollingLogic():336 -> H
+    272:273:androidx.compose.foundation.gestures.NonTouchScrollingLogic createTrackpadScrollingLogic():271 -> H
+    272:273:void androidx.compose.foundation.gestures.AbstractScrollableNode.initializeTrackpadScrollingLogic():135 -> H
+    272:273:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):164 -> H
+    274:278:androidx.compose.foundation.gestures.TrackpadScrollingLogic createTrackpadScrollingLogic():333:333 -> H
+    274:278:androidx.compose.foundation.gestures.NonTouchScrollingLogic createTrackpadScrollingLogic():271 -> H
+    274:278:void androidx.compose.foundation.gestures.AbstractScrollableNode.initializeTrackpadScrollingLogic():135 -> H
+    274:278:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):164 -> H
+    279:280:void androidx.compose.foundation.gestures.AbstractScrollableNode.initializeTrackpadScrollingLogic():135:135 -> H
+    279:280:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):164 -> H
+    281:282:void androidx.compose.foundation.gestures.AbstractScrollableNode.initializeTrackpadScrollingLogic():136:136 -> H
+    281:282:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):164 -> H
+    283:290:void androidx.compose.foundation.gestures.AbstractScrollableNode.initializeTrackpadScrollingLogic():139:139 -> H
+    283:290:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):164 -> H
+    291:294:void androidx.compose.foundation.gestures.TrackpadScrollingLogic.startReceivingEvents(kotlinx.coroutines.CoroutineScope):90:90 -> H
+    291:294:void androidx.compose.foundation.gestures.AbstractScrollableNode.initializeTrackpadScrollingLogic():139 -> H
+    291:294:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):164 -> H
+    295:300:void androidx.compose.foundation.gestures.TrackpadScrollingLogic.startReceivingEvents(kotlinx.coroutines.CoroutineScope):92:92 -> H
+    295:300:void androidx.compose.foundation.gestures.AbstractScrollableNode.initializeTrackpadScrollingLogic():139 -> H
+    295:300:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):164 -> H
+    301:304:kotlinx.coroutines.Job kotlinx.coroutines.BuildersKt.launch$default(kotlinx.coroutines.CoroutineScope,kotlin.coroutines.CoroutineContext,kotlinx.coroutines.CoroutineStart,kotlin.jvm.functions.Function2,int,java.lang.Object):1:1 -> H
+    301:304:void androidx.compose.foundation.gestures.TrackpadScrollingLogic.startReceivingEvents(kotlinx.coroutines.CoroutineScope):92 -> H
+    301:304:void androidx.compose.foundation.gestures.AbstractScrollableNode.initializeTrackpadScrollingLogic():139 -> H
+    301:304:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):164 -> H
+    305:306:void androidx.compose.foundation.gestures.TrackpadScrollingLogic.startReceivingEvents(kotlinx.coroutines.CoroutineScope):91:91 -> H
+    305:306:void androidx.compose.foundation.gestures.AbstractScrollableNode.initializeTrackpadScrollingLogic():139 -> H
+    305:306:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):164 -> H
+    307:310:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):166:166 -> H
+    311:324:int androidx.compose.ui.input.pointer.PointerEvent.getType-7fucELk():103:103 -> H
+    311:324:void androidx.compose.foundation.gestures.TrackpadScrollingLogic.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):45 -> H
       # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
-    312:325:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):166 -> H
-    326:327:java.util.List androidx.compose.ui.input.pointer.PointerEvent.getChanges():54:54 -> H
-    326:327:void androidx.compose.foundation.gestures.TrackpadScrollingLogic.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):194 -> H
-    326:327:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):166 -> H
-    328:334:void androidx.compose.foundation.gestures.TrackpadScrollingLogic.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):196:196 -> H
-    328:334:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):166 -> H
-    335:338:void androidx.compose.foundation.gestures.TrackpadScrollingLogic.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):197:197 -> H
-    335:338:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):166 -> H
-    339:340:void androidx.compose.foundation.gestures.TrackpadScrollingLogic.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):195:195 -> H
-    339:340:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):166 -> H
-    341:351:void androidx.compose.foundation.gestures.TrackpadScrollingLogic.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):194:194 -> H
-    341:351:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):166 -> H
-    352:355:boolean androidx.compose.foundation.gestures.NonTouchScrollingLogic.isScrolling$foundation():50:50 -> H
-    352:355:void androidx.compose.foundation.gestures.TrackpadScrollingLogic.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):56 -> H
-    352:355:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):166 -> H
-    356:358:void androidx.compose.foundation.gestures.TrackpadScrollingLogic.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):57:57 -> H
-    356:358:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):166 -> H
-    359:363:void androidx.compose.foundation.gestures.TrackpadScrollingLogic.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):58:58 -> H
-    359:363:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):166 -> H
-    364:367:boolean androidx.compose.foundation.gestures.NonTouchScrollingLogic.isScrolling$foundation():50:50 -> H
-    364:367:void androidx.compose.foundation.gestures.TrackpadScrollingLogic.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):66 -> H
-    364:367:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):166 -> H
-    368:373:void androidx.compose.foundation.gestures.TrackpadScrollingLogic.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):67:67 -> H
-    368:373:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):166 -> H
-    374:377:void androidx.compose.foundation.gestures.TrackpadScrollingLogic.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):69:69 -> H
-    374:377:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):166 -> H
+    311:324:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):166 -> H
+    325:326:java.util.List androidx.compose.ui.input.pointer.PointerEvent.getChanges():54:54 -> H
+    325:326:void androidx.compose.foundation.gestures.TrackpadScrollingLogic.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):194 -> H
+    325:326:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):166 -> H
+    327:333:void androidx.compose.foundation.gestures.TrackpadScrollingLogic.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):196:196 -> H
+    327:333:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):166 -> H
+    334:337:void androidx.compose.foundation.gestures.TrackpadScrollingLogic.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):197:197 -> H
+    334:337:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):166 -> H
+    338:339:void androidx.compose.foundation.gestures.TrackpadScrollingLogic.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):195:195 -> H
+    338:339:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):166 -> H
+    340:350:void androidx.compose.foundation.gestures.TrackpadScrollingLogic.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):194:194 -> H
+    340:350:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):166 -> H
+    351:354:boolean androidx.compose.foundation.gestures.NonTouchScrollingLogic.isScrolling$foundation():50:50 -> H
+    351:354:void androidx.compose.foundation.gestures.TrackpadScrollingLogic.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):56 -> H
+    351:354:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):166 -> H
+    355:357:void androidx.compose.foundation.gestures.TrackpadScrollingLogic.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):57:57 -> H
+    355:357:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):166 -> H
+    358:362:void androidx.compose.foundation.gestures.TrackpadScrollingLogic.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):58:58 -> H
+    358:362:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):166 -> H
+    363:366:boolean androidx.compose.foundation.gestures.NonTouchScrollingLogic.isScrolling$foundation():50:50 -> H
+    363:366:void androidx.compose.foundation.gestures.TrackpadScrollingLogic.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):66 -> H
+    363:366:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):166 -> H
+    367:372:void androidx.compose.foundation.gestures.TrackpadScrollingLogic.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):67:67 -> H
+    367:372:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):166 -> H
+    373:376:void androidx.compose.foundation.gestures.TrackpadScrollingLogic.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):69:69 -> H
+    373:376:void androidx.compose.foundation.gestures.AbstractScrollableNode.onPointerEvent-H0pRuoY(androidx.compose.ui.input.pointer.PointerEvent,androidx.compose.ui.input.pointer.PointerEventPass,long):166 -> H
     1:16:java.lang.Object drag(kotlin.jvm.functions.Function2,kotlin.coroutines.Continuation):357:357 -> K0
       # {"id":"com.android.tools.r8.residualsignature","signature":"(Ld6;Lcz;)Ljava/lang/Object;"}
     17:21:java.lang.Object kotlin.coroutines.intrinsics.IntrinsicsKt__IntrinsicsKt.getCOROUTINE_SUSPENDED():57:57 -> K0
@@ -144510,25 +144510,25 @@ androidx.datastore.core.DataStoreImpl -> vs:
     6:7:void <init>(androidx.datastore.core.Storage,java.util.List,androidx.datastore.core.CorruptionHandler,kotlin.coroutines.CoroutineContext,androidx.tracing.Tracer):60:60 -> <init>
     8:18:void <init>(androidx.datastore.core.Storage,java.util.List,androidx.datastore.core.CorruptionHandler,kotlin.coroutines.CoroutineContext,androidx.tracing.Tracer):70:70 -> <init>
     19:28:void <init>(androidx.datastore.core.Storage,java.util.List,androidx.datastore.core.CorruptionHandler,kotlin.coroutines.CoroutineContext,androidx.tracing.Tracer):72:72 -> <init>
-    29:34:void <init>(androidx.datastore.core.Storage,java.util.List,androidx.datastore.core.CorruptionHandler,kotlin.coroutines.CoroutineContext,androidx.tracing.Tracer):79:79 -> <init>
-    35:40:kotlinx.coroutines.flow.Flow kotlinx.coroutines.flow.FlowKt__BuildersKt.flow(kotlin.jvm.functions.Function2):52:52 -> <init>
-    35:40:kotlinx.coroutines.flow.Flow kotlinx.coroutines.flow.FlowKt.flow(kotlin.jvm.functions.Function2):1 -> <init>
-    35:40:void <init>(androidx.datastore.core.Storage,java.util.List,androidx.datastore.core.CorruptionHandler,kotlin.coroutines.CoroutineContext,androidx.tracing.Tracer):79 -> <init>
-    41:42:void <init>(androidx.datastore.core.Storage,java.util.List,androidx.datastore.core.CorruptionHandler,kotlin.coroutines.CoroutineContext,androidx.tracing.Tracer):79:79 -> <init>
-    43:47:kotlinx.coroutines.sync.Mutex kotlinx.coroutines.sync.MutexKt.Mutex(boolean):106:106 -> <init>
-    43:47:kotlinx.coroutines.sync.Mutex kotlinx.coroutines.sync.MutexKt.Mutex$default(boolean,int,java.lang.Object):104 -> <init>
-    43:47:void <init>(androidx.datastore.core.Storage,java.util.List,androidx.datastore.core.CorruptionHandler,kotlin.coroutines.CoroutineContext,androidx.tracing.Tracer):150 -> <init>
-    48:49:void <init>(androidx.datastore.core.Storage,java.util.List,androidx.datastore.core.CorruptionHandler,kotlin.coroutines.CoroutineContext,androidx.tracing.Tracer):150:150 -> <init>
-    50:58:void <init>(androidx.datastore.core.Storage,java.util.List,androidx.datastore.core.CorruptionHandler,kotlin.coroutines.CoroutineContext,androidx.tracing.Tracer):216:216 -> <init>
-    59:60:void <init>(androidx.datastore.core.Storage,java.util.List,androidx.datastore.core.CorruptionHandler,kotlin.coroutines.CoroutineContext,androidx.tracing.Tracer):218:218 -> <init>
-    61:62:kotlin.coroutines.CoroutineContext kotlinx.coroutines.internal.ContextScope.getCoroutineContext():33:33 -> <init>
-    61:62:void <init>(androidx.datastore.core.Storage,java.util.List,androidx.datastore.core.CorruptionHandler,kotlin.coroutines.CoroutineContext,androidx.tracing.Tracer):218 -> <init>
-    63:67:void <init>(androidx.datastore.core.Storage,java.util.List,androidx.datastore.core.CorruptionHandler,kotlin.coroutines.CoroutineContext,androidx.tracing.Tracer):218:218 -> <init>
-    68:73:void <init>(androidx.datastore.core.Storage,java.util.List,androidx.datastore.core.CorruptionHandler,kotlin.coroutines.CoroutineContext,androidx.tracing.Tracer):222:222 -> <init>
-    74:78:kotlin.Lazy kotlin.LazyKt__LazyJVMKt.lazy(kotlin.jvm.functions.Function0):26:26 -> <init>
-    74:78:void <init>(androidx.datastore.core.Storage,java.util.List,androidx.datastore.core.CorruptionHandler,kotlin.coroutines.CoroutineContext,androidx.tracing.Tracer):222 -> <init>
-    79:80:void <init>(androidx.datastore.core.Storage,java.util.List,androidx.datastore.core.CorruptionHandler,kotlin.coroutines.CoroutineContext,androidx.tracing.Tracer):222:222 -> <init>
-    81:85:void <init>(androidx.datastore.core.Storage,java.util.List,androidx.datastore.core.CorruptionHandler,kotlin.coroutines.CoroutineContext,androidx.tracing.Tracer):224:224 -> <init>
+    29:33:void <init>(androidx.datastore.core.Storage,java.util.List,androidx.datastore.core.CorruptionHandler,kotlin.coroutines.CoroutineContext,androidx.tracing.Tracer):79:79 -> <init>
+    34:39:kotlinx.coroutines.flow.Flow kotlinx.coroutines.flow.FlowKt__BuildersKt.flow(kotlin.jvm.functions.Function2):52:52 -> <init>
+    34:39:kotlinx.coroutines.flow.Flow kotlinx.coroutines.flow.FlowKt.flow(kotlin.jvm.functions.Function2):1 -> <init>
+    34:39:void <init>(androidx.datastore.core.Storage,java.util.List,androidx.datastore.core.CorruptionHandler,kotlin.coroutines.CoroutineContext,androidx.tracing.Tracer):79 -> <init>
+    40:41:void <init>(androidx.datastore.core.Storage,java.util.List,androidx.datastore.core.CorruptionHandler,kotlin.coroutines.CoroutineContext,androidx.tracing.Tracer):79:79 -> <init>
+    42:46:kotlinx.coroutines.sync.Mutex kotlinx.coroutines.sync.MutexKt.Mutex(boolean):106:106 -> <init>
+    42:46:kotlinx.coroutines.sync.Mutex kotlinx.coroutines.sync.MutexKt.Mutex$default(boolean,int,java.lang.Object):104 -> <init>
+    42:46:void <init>(androidx.datastore.core.Storage,java.util.List,androidx.datastore.core.CorruptionHandler,kotlin.coroutines.CoroutineContext,androidx.tracing.Tracer):150 -> <init>
+    47:48:void <init>(androidx.datastore.core.Storage,java.util.List,androidx.datastore.core.CorruptionHandler,kotlin.coroutines.CoroutineContext,androidx.tracing.Tracer):150:150 -> <init>
+    49:57:void <init>(androidx.datastore.core.Storage,java.util.List,androidx.datastore.core.CorruptionHandler,kotlin.coroutines.CoroutineContext,androidx.tracing.Tracer):216:216 -> <init>
+    58:59:void <init>(androidx.datastore.core.Storage,java.util.List,androidx.datastore.core.CorruptionHandler,kotlin.coroutines.CoroutineContext,androidx.tracing.Tracer):218:218 -> <init>
+    60:61:kotlin.coroutines.CoroutineContext kotlinx.coroutines.internal.ContextScope.getCoroutineContext():33:33 -> <init>
+    60:61:void <init>(androidx.datastore.core.Storage,java.util.List,androidx.datastore.core.CorruptionHandler,kotlin.coroutines.CoroutineContext,androidx.tracing.Tracer):218 -> <init>
+    62:66:void <init>(androidx.datastore.core.Storage,java.util.List,androidx.datastore.core.CorruptionHandler,kotlin.coroutines.CoroutineContext,androidx.tracing.Tracer):218:218 -> <init>
+    67:72:void <init>(androidx.datastore.core.Storage,java.util.List,androidx.datastore.core.CorruptionHandler,kotlin.coroutines.CoroutineContext,androidx.tracing.Tracer):222:222 -> <init>
+    73:77:kotlin.Lazy kotlin.LazyKt__LazyJVMKt.lazy(kotlin.jvm.functions.Function0):26:26 -> <init>
+    73:77:void <init>(androidx.datastore.core.Storage,java.util.List,androidx.datastore.core.CorruptionHandler,kotlin.coroutines.CoroutineContext,androidx.tracing.Tracer):222 -> <init>
+    78:79:void <init>(androidx.datastore.core.Storage,java.util.List,androidx.datastore.core.CorruptionHandler,kotlin.coroutines.CoroutineContext,androidx.tracing.Tracer):222:222 -> <init>
+    80:85:void <init>(androidx.datastore.core.Storage,java.util.List,androidx.datastore.core.CorruptionHandler,kotlin.coroutines.CoroutineContext,androidx.tracing.Tracer):224:224 -> <init>
     86:90:kotlin.Lazy kotlin.LazyKt__LazyJVMKt.lazy(kotlin.jvm.functions.Function0):26:26 -> <init>
     86:90:void <init>(androidx.datastore.core.Storage,java.util.List,androidx.datastore.core.CorruptionHandler,kotlin.coroutines.CoroutineContext,androidx.tracing.Tracer):224 -> <init>
     91:92:void <init>(androidx.datastore.core.Storage,java.util.List,androidx.datastore.core.CorruptionHandler,kotlin.coroutines.CoroutineContext,androidx.tracing.Tracer):224:224 -> <init>
@@ -144868,6 +144868,212 @@ androidx.datastore.core.DataStoreImpl$InitDataStore$doRun$2$1$initData$1$api$1$u
     1:6:void <init>(androidx.datastore.core.DataStoreImpl$InitDataStore$doRun$2$1$initData$1$api$1,kotlin.coroutines.Continuation):0:0 -> <init>
       # {"id":"com.android.tools.r8.residualsignature","signature":"(Lpr;Lkp;)V"}
     1:17:java.lang.Object invokeSuspend(java.lang.Object):0:0 -> p
+androidx.datastore.core.DataStoreImpl$data$1 -> zr:
+# {"id":"sourceFile","fileName":"DataStoreImpl.kt"}
+    byte DataStoreImpl$data$1.$r8$classId -> h
+      # {"id":"com.android.tools.r8.synthesized"}
+    int label -> i
+      # {"id":"com.android.tools.r8.residualsignature","signature":"B"}
+    java.lang.Object L$0 -> j
+    java.lang.Object L$2 -> k
+    androidx.datastore.core.DataStoreImpl this$0 -> l
+      # {"id":"com.android.tools.r8.residualsignature","signature":"Ljava/lang/Object;"}
+    4:13:void com.gmail.comosense.calculator.presentation.WearAppKt$WearApp$changeScreen$1.<init>(com.gmail.comosense.calculator.presentation.AppScreen,androidx.wear.compose.foundation.SwipeToDismissBoxState,androidx.compose.runtime.MutableState,kotlin.coroutines.Continuation):0:0 -> <init>
+      # {"id":"com.android.tools.r8.residualsignature","signature":"(Lg9;Lyp1;Lgw0;Ljp;)V"}
+    14:14:void <init>(androidx.datastore.core.DataStoreImpl,kotlin.coroutines.Continuation):0:0 -> <init>
+      # {"id":"com.android.tools.r8.residualsignature","signature":"(Lvs;Ljp;)V"}
+    15:15:void androidx.wear.compose.foundation.rotary.RotarySnapHandler$snapToClosestItem$2.<init>(androidx.wear.compose.foundation.rotary.RotarySnapHandler,androidx.wear.compose.foundation.rotary.RotaryScrollLogic,kotlin.coroutines.Continuation):0:0 -> <init>
+      # {"id":"com.android.tools.r8.residualsignature","signature":"(Lid1;Lcd1;Ljp;)V"}
+    12:22:java.lang.Object com.gmail.comosense.calculator.presentation.WearAppKt$WearApp$changeScreen$1.invoke(kotlinx.coroutines.CoroutineScope,kotlin.coroutines.Continuation):0:0 -> f
+    12:22:java.lang.Object com.gmail.comosense.calculator.presentation.WearAppKt$WearApp$changeScreen$1.invoke(java.lang.Object,java.lang.Object):0 -> f
+    12:22:java.lang.Object DataStoreImpl$data$1.invoke(java.lang.Object,java.lang.Object):0 -> f
+      # {"id":"com.android.tools.r8.synthesized"}
+    23:26:java.lang.Object DataStoreImpl$data$1.invoke(java.lang.Object,java.lang.Object):0:0 -> f
+    27:37:java.lang.Object androidx.wear.compose.foundation.rotary.RotarySnapHandler$snapToClosestItem$2.invoke(androidx.compose.foundation.gestures.ScrollScope,kotlin.coroutines.Continuation):0:0 -> f
+    27:37:java.lang.Object androidx.wear.compose.foundation.rotary.RotarySnapHandler$snapToClosestItem$2.invoke(java.lang.Object,java.lang.Object):0 -> f
+    27:37:java.lang.Object DataStoreImpl$data$1.invoke(java.lang.Object,java.lang.Object):0 -> f
+    38:41:java.lang.Object DataStoreImpl$data$1.invoke(java.lang.Object,java.lang.Object):0:0 -> f
+    42:52:java.lang.Object invoke(kotlinx.coroutines.flow.FlowCollector,kotlin.coroutines.Continuation):0:0 -> f
+    42:52:java.lang.Object invoke(java.lang.Object,java.lang.Object):0 -> f
+    42:52:java.lang.Object DataStoreImpl$data$1.invoke(java.lang.Object,java.lang.Object):0 -> f
+    8:23:kotlin.coroutines.Continuation com.gmail.comosense.calculator.presentation.WearAppKt$WearApp$changeScreen$1.create(java.lang.Object,kotlin.coroutines.Continuation):0:0 -> m
+      # {"id":"com.android.tools.r8.residualsignature","signature":"(Ljp;Ljava/lang/Object;)Ljp;"}
+    24:37:kotlin.coroutines.Continuation androidx.wear.compose.foundation.rotary.RotarySnapHandler$snapToClosestItem$2.create(java.lang.Object,kotlin.coroutines.Continuation):0:0 -> m
+    38:48:kotlin.coroutines.Continuation create(java.lang.Object,kotlin.coroutines.Continuation):0:0 -> m
+    17:20:java.lang.Object kotlin.coroutines.intrinsics.IntrinsicsKt__IntrinsicsKt.getCOROUTINE_SUSPENDED():57:57 -> p
+    17:20:java.lang.Object com.gmail.comosense.calculator.presentation.WearAppKt$WearApp$changeScreen$1.invokeSuspend(java.lang.Object):0 -> p
+    17:20:java.lang.Object DataStoreImpl$data$1.invokeSuspend(java.lang.Object):0 -> p
+      # {"id":"com.android.tools.r8.synthesized"}
+    21:44:java.lang.Object com.gmail.comosense.calculator.presentation.WearAppKt$WearApp$changeScreen$1.invokeSuspend(java.lang.Object):60:60 -> p
+    21:44:java.lang.Object DataStoreImpl$data$1.invokeSuspend(java.lang.Object):0 -> p
+    45:50:java.lang.Object com.gmail.comosense.calculator.presentation.WearAppKt$WearApp$changeScreen$1.invokeSuspend(java.lang.Object):67:67 -> p
+    45:50:java.lang.Object DataStoreImpl$data$1.invokeSuspend(java.lang.Object):0 -> p
+    51:60:java.lang.Object com.gmail.comosense.calculator.presentation.WearAppKt$WearApp$changeScreen$1.invokeSuspend(java.lang.Object):62:62 -> p
+    51:60:java.lang.Object DataStoreImpl$data$1.invokeSuspend(java.lang.Object):0 -> p
+    61:62:java.lang.Object com.gmail.comosense.calculator.presentation.WearAppKt$WearApp$changeScreen$1.invokeSuspend(java.lang.Object):65:65 -> p
+    61:62:java.lang.Object DataStoreImpl$data$1.invokeSuspend(java.lang.Object):0 -> p
+    63:66:void com.gmail.comosense.calculator.presentation.WearAppKt.WearApp$lambda$2(androidx.compose.runtime.MutableState,com.gmail.comosense.calculator.presentation.AppScreen):274:274 -> p
+    63:66:void com.gmail.comosense.calculator.presentation.WearAppKt.access$WearApp$lambda$2(androidx.compose.runtime.MutableState,com.gmail.comosense.calculator.presentation.AppScreen):1 -> p
+    63:66:java.lang.Object com.gmail.comosense.calculator.presentation.WearAppKt$WearApp$changeScreen$1.invokeSuspend(java.lang.Object):65 -> p
+    63:66:java.lang.Object DataStoreImpl$data$1.invokeSuspend(java.lang.Object):0 -> p
+    67:78:java.lang.Object com.gmail.comosense.calculator.presentation.WearAppKt$WearApp$changeScreen$1.invokeSuspend(java.lang.Object):67:67 -> p
+    67:78:java.lang.Object DataStoreImpl$data$1.invokeSuspend(java.lang.Object):0 -> p
+    79:86:java.lang.Object kotlin.coroutines.intrinsics.IntrinsicsKt__IntrinsicsKt.getCOROUTINE_SUSPENDED():57:57 -> p
+    79:86:java.lang.Object androidx.wear.compose.foundation.rotary.RotarySnapHandler$snapToClosestItem$2.invokeSuspend(java.lang.Object):0 -> p
+    79:86:java.lang.Object DataStoreImpl$data$1.invokeSuspend(java.lang.Object):0 -> p
+    87:121:java.lang.Object androidx.wear.compose.foundation.rotary.RotarySnapHandler$snapToClosestItem$2.invokeSuspend(java.lang.Object):1018:1018 -> p
+    87:121:java.lang.Object DataStoreImpl$data$1.invokeSuspend(java.lang.Object):0 -> p
+    122:123:java.lang.Object androidx.wear.compose.foundation.rotary.RotarySnapHandler$snapToClosestItem$2.invokeSuspend(java.lang.Object):1022:1022 -> p
+    122:123:java.lang.Object DataStoreImpl$data$1.invokeSuspend(java.lang.Object):0 -> p
+    124:129:void kotlin.jvm.internal.Ref$FloatRef.<init>():58:58 -> p
+    124:129:java.lang.Object androidx.wear.compose.foundation.rotary.RotarySnapHandler$snapToClosestItem$2.invokeSuspend(java.lang.Object):1022 -> p
+    124:129:java.lang.Object DataStoreImpl$data$1.invokeSuspend(java.lang.Object):0 -> p
+    130:133:java.lang.Object androidx.wear.compose.foundation.rotary.RotarySnapHandler$snapToClosestItem$2.invokeSuspend(java.lang.Object):1025:1025 -> p
+    130:133:java.lang.Object DataStoreImpl$data$1.invokeSuspend(java.lang.Object):0 -> p
+    134:135:androidx.wear.compose.foundation.rotary.RotarySnapLayoutInfoProvider androidx.wear.compose.foundation.rotary.RotarySnapHandler.access$getLayoutInfoProvider$p(androidx.wear.compose.foundation.rotary.RotarySnapHandler):977:977 -> p
+    134:135:java.lang.Object androidx.wear.compose.foundation.rotary.RotarySnapHandler$snapToClosestItem$2.invokeSuspend(java.lang.Object):1026 -> p
+    134:135:java.lang.Object DataStoreImpl$data$1.invokeSuspend(java.lang.Object):0 -> p
+    136:137:float androidx.wear.compose.material3.PickerRotarySnapLayoutInfoProvider.getCurrentItemOffset():588:588 -> p
+    136:137:java.lang.Object androidx.wear.compose.foundation.rotary.RotarySnapHandler$snapToClosestItem$2.invokeSuspend(java.lang.Object):1026 -> p
+      # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
+    136:137:java.lang.Object DataStoreImpl$data$1.invokeSuspend(java.lang.Object):0 -> p
+    138:139:androidx.wear.compose.foundation.lazy.ScalingLazyListState androidx.wear.compose.material3.PickerState.getScalingLazyListState$compose_material3():466:466 -> p
+    138:139:float androidx.wear.compose.material3.PickerRotarySnapLayoutInfoProvider.getCurrentItemOffset():588 -> p
+      # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
+    138:139:java.lang.Object androidx.wear.compose.foundation.rotary.RotarySnapHandler$snapToClosestItem$2.invokeSuspend(java.lang.Object):1026 -> p
+    138:139:java.lang.Object DataStoreImpl$data$1.invokeSuspend(java.lang.Object):0 -> p
+    140:146:float androidx.wear.compose.material3.PickerRotarySnapLayoutInfoProvider.getCurrentItemOffset():588:588 -> p
+    140:146:java.lang.Object androidx.wear.compose.foundation.rotary.RotarySnapHandler$snapToClosestItem$2.invokeSuspend(java.lang.Object):1026 -> p
+    140:146:java.lang.Object DataStoreImpl$data$1.invokeSuspend(java.lang.Object):0 -> p
+    147:153:java.lang.Float kotlin.coroutines.jvm.internal.Boxing.boxFloat(float):40:40 -> p
+    147:153:java.lang.Object androidx.wear.compose.foundation.rotary.RotarySnapHandler$snapToClosestItem$2.invokeSuspend(java.lang.Object):1026 -> p
+    147:153:java.lang.Object DataStoreImpl$data$1.invokeSuspend(java.lang.Object):0 -> p
+    154:155:androidx.compose.animation.core.Easing androidx.compose.animation.core.EasingKt.getFastOutSlowInEasing():50:50 -> p
+    154:155:java.lang.Object androidx.wear.compose.foundation.rotary.RotarySnapHandler$snapToClosestItem$2.invokeSuspend(java.lang.Object):1027 -> p
+    154:155:java.lang.Object DataStoreImpl$data$1.invokeSuspend(java.lang.Object):0 -> p
+    156:160:java.lang.Object androidx.wear.compose.foundation.rotary.RotarySnapHandler$snapToClosestItem$2.invokeSuspend(java.lang.Object):1027:1027 -> p
+    156:160:java.lang.Object DataStoreImpl$data$1.invokeSuspend(java.lang.Object):0 -> p
+    161:180:java.lang.Object androidx.wear.compose.foundation.rotary.RotarySnapHandler$snapToClosestItem$2.invokeSuspend(java.lang.Object):1025:1025 -> p
+    161:180:java.lang.Object DataStoreImpl$data$1.invokeSuspend(java.lang.Object):0 -> p
+    181:182:androidx.wear.compose.foundation.rotary.RotarySnapLayoutInfoProvider androidx.wear.compose.foundation.rotary.RotarySnapHandler.access$getLayoutInfoProvider$p(androidx.wear.compose.foundation.rotary.RotarySnapHandler):977:977 -> p
+    181:182:java.lang.Object androidx.wear.compose.foundation.rotary.RotarySnapHandler$snapToClosestItem$2.invokeSuspend(java.lang.Object):1034 -> p
+    181:182:java.lang.Object DataStoreImpl$data$1.invokeSuspend(java.lang.Object):0 -> p
+    183:186:java.lang.Object androidx.wear.compose.foundation.rotary.RotarySnapHandler$snapToClosestItem$2.invokeSuspend(java.lang.Object):1034:1034 -> p
+    183:186:java.lang.Object DataStoreImpl$data$1.invokeSuspend(java.lang.Object):0 -> p
+    187:188:void androidx.wear.compose.foundation.rotary.RotarySnapHandler.access$setSnapTarget$p(androidx.wear.compose.foundation.rotary.RotarySnapHandler,int):977:977 -> p
+    187:188:java.lang.Object androidx.wear.compose.foundation.rotary.RotarySnapHandler$snapToClosestItem$2.invokeSuspend(java.lang.Object):1034 -> p
+    187:188:java.lang.Object DataStoreImpl$data$1.invokeSuspend(java.lang.Object):0 -> p
+    189:190:androidx.compose.foundation.gestures.ScrollableState androidx.wear.compose.foundation.rotary.RotarySnapHandler.access$getScrollableState$p(androidx.wear.compose.foundation.rotary.RotarySnapHandler):977:977 -> p
+    189:190:java.lang.Object androidx.wear.compose.foundation.rotary.RotarySnapHandler$snapToClosestItem$2.invokeSuspend(java.lang.Object):1037 -> p
+    189:190:java.lang.Object DataStoreImpl$data$1.invokeSuspend(java.lang.Object):0 -> p
+    191:206:java.lang.Object androidx.wear.compose.foundation.rotary.RotarySnapHandler$snapToClosestItem$2.invokeSuspend(java.lang.Object):1037:1037 -> p
+    191:206:java.lang.Object DataStoreImpl$data$1.invokeSuspend(java.lang.Object):0 -> p
+    207:212:java.lang.Object DataStoreImpl$data$1.invokeSuspend(java.lang.Object):0:0 -> p
+    213:258:java.lang.Object invokeSuspend(java.lang.Object):79:79 -> p
+    213:258:java.lang.Object DataStoreImpl$data$1.invokeSuspend(java.lang.Object):0 -> p
+    259:260:kotlinx.coroutines.CoroutineScope androidx.datastore.core.DataStoreImpl.access$getScope$p(androidx.datastore.core.DataStoreImpl):46:46 -> p
+    259:260:java.lang.Object invokeSuspend(java.lang.Object):81 -> p
+    259:260:java.lang.Object DataStoreImpl$data$1.invokeSuspend(java.lang.Object):0 -> p
+    261:262:kotlin.coroutines.CoroutineContext kotlinx.coroutines.internal.ContextScope.getCoroutineContext():33:33 -> p
+    261:262:java.lang.Object invokeSuspend(java.lang.Object):81 -> p
+      # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
+    261:262:java.lang.Object DataStoreImpl$data$1.invokeSuspend(java.lang.Object):0 -> p
+    263:265:void kotlinx.coroutines.JobKt.ensureActive(kotlin.coroutines.CoroutineContext):1:1 -> p
+    263:265:java.lang.Object invokeSuspend(java.lang.Object):81 -> p
+    263:265:java.lang.Object DataStoreImpl$data$1.invokeSuspend(java.lang.Object):0 -> p
+    266:270:java.lang.Object invokeSuspend(java.lang.Object):84:84 -> p
+    266:270:java.lang.Object DataStoreImpl$data$1.invokeSuspend(java.lang.Object):0 -> p
+    271:272:java.lang.Object invokeSuspend(java.lang.Object):79:79 -> p
+    271:272:java.lang.Object DataStoreImpl$data$1.invokeSuspend(java.lang.Object):0 -> p
+    273:276:java.lang.Object invokeSuspend(java.lang.Object):85:85 -> p
+    273:276:java.lang.Object DataStoreImpl$data$1.invokeSuspend(java.lang.Object):0 -> p
+    277:282:java.lang.Object androidx.datastore.core.DataStoreImpl.access$readState(androidx.datastore.core.DataStoreImpl,boolean,androidx.tracing.PropagationToken,kotlin.coroutines.Continuation):46:46 -> p
+    277:282:java.lang.Object invokeSuspend(java.lang.Object):85 -> p
+    277:282:java.lang.Object DataStoreImpl$data$1.invokeSuspend(java.lang.Object):0 -> p
+    283:284:java.lang.Object invokeSuspend(java.lang.Object):79:79 -> p
+    283:284:java.lang.Object DataStoreImpl$data$1.invokeSuspend(java.lang.Object):0 -> p
+    285:291:java.lang.Object invokeSuspend(java.lang.Object):88:88 -> p
+    285:291:java.lang.Object DataStoreImpl$data$1.invokeSuspend(java.lang.Object):0 -> p
+    292:293:java.lang.Object androidx.datastore.core.Data.getValue():25:25 -> p
+    292:293:java.lang.Object invokeSuspend(java.lang.Object):88 -> p
+      # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
+    292:293:java.lang.Object DataStoreImpl$data$1.invokeSuspend(java.lang.Object):0 -> p
+    294:305:java.lang.Object invokeSuspend(java.lang.Object):88:88 -> p
+    294:305:java.lang.Object DataStoreImpl$data$1.invokeSuspend(java.lang.Object):0 -> p
+    306:307:androidx.datastore.core.DataStoreInMemoryCache androidx.datastore.core.DataStoreImpl.access$getInMemoryCache$p(androidx.datastore.core.DataStoreImpl):46:46 -> p
+    306:307:java.lang.Object invokeSuspend(java.lang.Object):116 -> p
+    306:307:java.lang.Object DataStoreImpl$data$1.invokeSuspend(java.lang.Object):0 -> p
+    308:311:kotlinx.coroutines.flow.Flow androidx.datastore.core.DataStoreInMemoryCache.getFlow():33:33 -> p
+    308:311:java.lang.Object invokeSuspend(java.lang.Object):116 -> p
+      # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
+    308:311:java.lang.Object DataStoreImpl$data$1.invokeSuspend(java.lang.Object):0 -> p
+    312:316:java.lang.Object invokeSuspend(java.lang.Object):117:117 -> p
+    312:316:java.lang.Object DataStoreImpl$data$1.invokeSuspend(java.lang.Object):0 -> p
+    317:322:kotlinx.coroutines.flow.Flow kotlinx.coroutines.flow.FlowKt__EmittersKt.onStart(kotlinx.coroutines.flow.Flow,kotlin.jvm.functions.Function2):220:220 -> p
+    317:322:kotlinx.coroutines.flow.Flow kotlinx.coroutines.flow.FlowKt.onStart(kotlinx.coroutines.flow.Flow,kotlin.jvm.functions.Function2):1 -> p
+    317:322:java.lang.Object invokeSuspend(java.lang.Object):117 -> p
+    317:322:java.lang.Object DataStoreImpl$data$1.invokeSuspend(java.lang.Object):0 -> p
+    323:324:java.lang.Object invokeSuspend(java.lang.Object):118:118 -> p
+    323:324:java.lang.Object DataStoreImpl$data$1.invokeSuspend(java.lang.Object):0 -> p
+    325:327:void androidx.datastore.core.DataStoreImpl$data$1$2.<init>(kotlin.coroutines.Continuation):0:0 -> p
+    325:327:java.lang.Object invokeSuspend(java.lang.Object):118 -> p
+    325:327:java.lang.Object DataStoreImpl$data$1.invokeSuspend(java.lang.Object):0 -> p
+    328:332:kotlinx.coroutines.flow.Flow kotlinx.coroutines.flow.FlowKt__LimitKt.takeWhile(kotlinx.coroutines.flow.Flow,kotlin.jvm.functions.Function2):143:143 -> p
+    328:332:kotlinx.coroutines.flow.Flow kotlinx.coroutines.flow.FlowKt.takeWhile(kotlinx.coroutines.flow.Flow,kotlin.jvm.functions.Function2):1 -> p
+    328:332:java.lang.Object invokeSuspend(java.lang.Object):118 -> p
+    328:332:java.lang.Object DataStoreImpl$data$1.invokeSuspend(java.lang.Object):0 -> p
+    333:339:java.lang.Object invokeSuspend(java.lang.Object):122:122 -> p
+    333:339:java.lang.Object DataStoreImpl$data$1.invokeSuspend(java.lang.Object):0 -> p
+    340:344:kotlinx.coroutines.flow.Flow kotlinx.coroutines.flow.FlowKt__LimitKt.dropWhile(kotlinx.coroutines.flow.Flow,kotlin.jvm.functions.Function2):141:141 -> p
+    340:344:kotlinx.coroutines.flow.Flow kotlinx.coroutines.flow.FlowKt.dropWhile(kotlinx.coroutines.flow.Flow,kotlin.jvm.functions.Function2):1 -> p
+    340:344:java.lang.Object invokeSuspend(java.lang.Object):122 -> p
+    340:344:java.lang.Object DataStoreImpl$data$1.invokeSuspend(java.lang.Object):0 -> p
+    345:349:java.lang.Object invokeSuspend(java.lang.Object):705:705 -> p
+    345:349:java.lang.Object DataStoreImpl$data$1.invokeSuspend(java.lang.Object):0 -> p
+    350:354:java.lang.Object invokeSuspend(java.lang.Object):132:132 -> p
+    350:354:java.lang.Object DataStoreImpl$data$1.invokeSuspend(java.lang.Object):0 -> p
+    355:359:kotlinx.coroutines.flow.Flow kotlinx.coroutines.flow.FlowKt__EmittersKt.onCompletion(kotlinx.coroutines.flow.Flow,kotlin.jvm.functions.Function3):221:221 -> p
+    355:359:kotlinx.coroutines.flow.Flow kotlinx.coroutines.flow.FlowKt.onCompletion(kotlinx.coroutines.flow.Flow,kotlin.jvm.functions.Function3):1 -> p
+    355:359:java.lang.Object invokeSuspend(java.lang.Object):132 -> p
+    355:359:java.lang.Object DataStoreImpl$data$1.invokeSuspend(java.lang.Object):0 -> p
+    360:365:java.lang.Object invokeSuspend(java.lang.Object):115:115 -> p
+    360:365:java.lang.Object DataStoreImpl$data$1.invokeSuspend(java.lang.Object):0 -> p
+    366:369:void kotlinx.coroutines.flow.FlowKt__EmittersKt.ensureActive(kotlinx.coroutines.flow.FlowCollector):198:198 -> p
+    366:369:void kotlinx.coroutines.flow.FlowKt.ensureActive(kotlinx.coroutines.flow.FlowCollector):1 -> p
+    366:369:java.lang.Object kotlinx.coroutines.flow.FlowKt__CollectKt.emitAll(kotlinx.coroutines.flow.FlowCollector,kotlinx.coroutines.flow.Flow,kotlin.coroutines.Continuation):104 -> p
+    366:369:java.lang.Object kotlinx.coroutines.flow.FlowKt.emitAll(kotlinx.coroutines.flow.FlowCollector,kotlinx.coroutines.flow.Flow,kotlin.coroutines.Continuation):1 -> p
+    366:369:java.lang.Object invokeSuspend(java.lang.Object):115 -> p
+    366:369:java.lang.Object DataStoreImpl$data$1.invokeSuspend(java.lang.Object):0 -> p
+    370:380:java.lang.Object kotlinx.coroutines.flow.FlowKt__CollectKt.emitAll(kotlinx.coroutines.flow.FlowCollector,kotlinx.coroutines.flow.Flow,kotlin.coroutines.Continuation):105:105 -> p
+    370:380:java.lang.Object kotlinx.coroutines.flow.FlowKt.emitAll(kotlinx.coroutines.flow.FlowCollector,kotlinx.coroutines.flow.Flow,kotlin.coroutines.Continuation):1 -> p
+    370:380:java.lang.Object invokeSuspend(java.lang.Object):115 -> p
+    370:380:java.lang.Object DataStoreImpl$data$1.invokeSuspend(java.lang.Object):0 -> p
+    381:385:void kotlinx.coroutines.flow.FlowKt__EmittersKt.ensureActive(kotlinx.coroutines.flow.FlowCollector):198:198 -> p
+    381:385:void kotlinx.coroutines.flow.FlowKt.ensureActive(kotlinx.coroutines.flow.FlowCollector):1 -> p
+    381:385:java.lang.Object kotlinx.coroutines.flow.FlowKt__CollectKt.emitAll(kotlinx.coroutines.flow.FlowCollector,kotlinx.coroutines.flow.Flow,kotlin.coroutines.Continuation):104 -> p
+    381:385:java.lang.Object kotlinx.coroutines.flow.FlowKt.emitAll(kotlinx.coroutines.flow.FlowCollector,kotlinx.coroutines.flow.Flow,kotlin.coroutines.Continuation):1 -> p
+    381:385:java.lang.Object invokeSuspend(java.lang.Object):115 -> p
+    381:385:java.lang.Object DataStoreImpl$data$1.invokeSuspend(java.lang.Object):0 -> p
+    386:391:java.lang.Object invokeSuspend(java.lang.Object):89:89 -> p
+    386:391:java.lang.Object DataStoreImpl$data$1.invokeSuspend(java.lang.Object):0 -> p
+    392:395:java.lang.Object invokeSuspend(java.lang.Object):90:90 -> p
+    392:395:java.lang.Object DataStoreImpl$data$1.invokeSuspend(java.lang.Object):0 -> p
+    396:399:java.lang.Object invokeSuspend(java.lang.Object):92:92 -> p
+    396:399:java.lang.Object DataStoreImpl$data$1.invokeSuspend(java.lang.Object):0 -> p
+    400:408:java.lang.Object invokeSuspend(java.lang.Object):93:93 -> p
+    400:408:java.lang.Object DataStoreImpl$data$1.invokeSuspend(java.lang.Object):0 -> p
+    409:413:java.lang.Object invokeSuspend(java.lang.Object):87:87 -> p
+    409:413:java.lang.Object DataStoreImpl$data$1.invokeSuspend(java.lang.Object):0 -> p
+    414:415:java.lang.Object invokeSuspend(java.lang.Object):90:90 -> p
+    414:415:java.lang.Object DataStoreImpl$data$1.invokeSuspend(java.lang.Object):0 -> p
+    416:417:java.lang.Throwable androidx.datastore.core.ReadException.getReadException():37:37 -> p
+    416:417:java.lang.Object invokeSuspend(java.lang.Object):90 -> p
+      # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
+    416:417:java.lang.Object DataStoreImpl$data$1.invokeSuspend(java.lang.Object):0 -> p
+    418:418:java.lang.Object invokeSuspend(java.lang.Object):90:90 -> p
+    418:418:java.lang.Object DataStoreImpl$data$1.invokeSuspend(java.lang.Object):0 -> p
+    419:424:java.lang.Object invokeSuspend(java.lang.Object):89:89 -> p
+    419:424:java.lang.Object DataStoreImpl$data$1.invokeSuspend(java.lang.Object):0 -> p
 androidx.datastore.core.DataStoreImpl$data$1$2 -> sr:
 # {"id":"sourceFile","fileName":"DataStoreImpl.kt"}
     byte DataStoreImpl$data$1$2.$r8$classId -> h
@@ -145331,7 +145537,7 @@ androidx.datastore.core.DataStoreImpl$data$1$invokeSuspend$$inlined$map$1$2$1 ->
     1:6:void <init>(androidx.datastore.core.DataStoreImpl$data$1$invokeSuspend$$inlined$map$1$2,kotlin.coroutines.Continuation):0:0 -> <init>
       # {"id":"com.android.tools.r8.residualsignature","signature":"(Lxr;Ljp;)V"}
     1:17:java.lang.Object invokeSuspend(java.lang.Object):0:0 -> p
-androidx.datastore.core.DataStoreImpl$decrementCollector$1 -> zr:
+androidx.datastore.core.DataStoreImpl$decrementCollector$1 -> as:
 # {"id":"sourceFile","fileName":"DataStoreImpl.kt"}
     java.lang.Object L$0 -> g
       # {"id":"com.android.tools.r8.residualsignature","signature":"Lvw0;"}
@@ -145343,7 +145549,7 @@ androidx.datastore.core.DataStoreImpl$decrementCollector$1 -> zr:
       # {"id":"com.android.tools.r8.residualsignature","signature":"(Lvs;Lkp;)V"}
     12:16:java.lang.Object androidx.datastore.core.DataStoreImpl.access$decrementCollector(androidx.datastore.core.DataStoreImpl,kotlin.coroutines.Continuation):46:46 -> p
     12:16:java.lang.Object invokeSuspend(java.lang.Object):0 -> p
-androidx.datastore.core.DataStoreImpl$handleUpdate$1 -> as:
+androidx.datastore.core.DataStoreImpl$handleUpdate$1 -> bs:
 # {"id":"sourceFile","fileName":"DataStoreImpl.kt"}
     java.lang.Object result -> g
     androidx.datastore.core.DataStoreImpl this$0 -> h
@@ -145431,164 +145637,6 @@ androidx.datastore.core.DataStoreImpl$handleUpdate$2 -> cs:
     253:256:java.lang.Object invokeSuspend(java.lang.Object):275 -> p
     257:262:java.lang.Boolean kotlin.coroutines.jvm.internal.Boxing.boxBoolean(boolean):20:20 -> p
     257:262:java.lang.Object invokeSuspend(java.lang.Object):275 -> p
-androidx.datastore.core.DataStoreImpl$handleUpdate$2$1$1 -> bs:
-# {"id":"sourceFile","fileName":"DataStoreImpl.kt"}
-    byte DataStoreImpl$handleUpdate$2$1$1.$r8$classId -> h
-      # {"id":"com.android.tools.r8.synthesized"}
-    int label -> i
-      # {"id":"com.android.tools.r8.residualsignature","signature":"B"}
-    androidx.datastore.core.DataStoreImpl $this_runCatching -> j
-      # {"id":"com.android.tools.r8.residualsignature","signature":"Ljava/lang/Object;"}
-    androidx.datastore.core.Message$Update $update -> k
-      # {"id":"com.android.tools.r8.residualsignature","signature":"Ljava/lang/Object;"}
-    4:12:void <init>(androidx.datastore.core.DataStoreImpl,androidx.datastore.core.Message$Update,androidx.tracing.PropagationToken,kotlin.coroutines.Continuation):0:0 -> <init>
-      # {"id":"com.android.tools.r8.residualsignature","signature":"(Lvs;Let0;Lm81;Ljp;)V"}
-    13:13:void androidx.lifecycle.compose.FlowExtKt$collectAsStateWithLifecycle$1$1$1.<init>(kotlin.coroutines.CoroutineContext,kotlinx.coroutines.flow.Flow,androidx.compose.runtime.ProduceStateScope,kotlin.coroutines.Continuation):0:0 -> <init>
-      # {"id":"com.android.tools.r8.residualsignature","signature":"(Li91;Lb81;Ljp;)V"}
-    14:14:void DataStoreImpl$handleUpdate$2$1$1.<init>(java.lang.Object,Continuation,byte):0:0 -> <init>
-      # {"id":"com.android.tools.r8.synthesized"}
-      # {"id":"com.android.tools.r8.residualsignature","signature":"(Ljava/lang/Object;Ljp;B)V"}
-    12:22:java.lang.Object androidx.compose.runtime.SnapshotStateKt__SnapshotFlowKt$collectAsState$1$1.invoke(androidx.compose.runtime.ProduceStateScope,kotlin.coroutines.Continuation):0:0 -> f
-    12:22:java.lang.Object androidx.compose.runtime.SnapshotStateKt__SnapshotFlowKt$collectAsState$1$1.invoke(java.lang.Object,java.lang.Object):0 -> f
-    12:22:java.lang.Object DataStoreImpl$handleUpdate$2$1$1.invoke(java.lang.Object,java.lang.Object):0 -> f
-      # {"id":"com.android.tools.r8.synthesized"}
-    23:26:java.lang.Object DataStoreImpl$handleUpdate$2$1$1.invoke(java.lang.Object,java.lang.Object):0:0 -> f
-    27:37:java.lang.Object androidx.datastore.core.SimpleActor$offer$2.invoke(kotlinx.coroutines.CoroutineScope,kotlin.coroutines.Continuation):0:0 -> f
-    27:37:java.lang.Object androidx.datastore.core.SimpleActor$offer$2.invoke(java.lang.Object,java.lang.Object):0 -> f
-    27:37:java.lang.Object DataStoreImpl$handleUpdate$2$1$1.invoke(java.lang.Object,java.lang.Object):0 -> f
-    38:41:java.lang.Object DataStoreImpl$handleUpdate$2$1$1.invoke(java.lang.Object,java.lang.Object):0:0 -> f
-    42:52:java.lang.Object androidx.compose.foundation.gestures.MouseWheelScrollingLogic$startReceivingEvents$1.invoke(kotlinx.coroutines.CoroutineScope,kotlin.coroutines.Continuation):0:0 -> f
-    42:52:java.lang.Object androidx.compose.foundation.gestures.MouseWheelScrollingLogic$startReceivingEvents$1.invoke(java.lang.Object,java.lang.Object):0 -> f
-    42:52:java.lang.Object DataStoreImpl$handleUpdate$2$1$1.invoke(java.lang.Object,java.lang.Object):0 -> f
-    53:56:java.lang.Object DataStoreImpl$handleUpdate$2$1$1.invoke(java.lang.Object,java.lang.Object):0:0 -> f
-    57:67:java.lang.Object androidx.lifecycle.compose.FlowExtKt$collectAsStateWithLifecycle$1$1$1.invoke(kotlinx.coroutines.CoroutineScope,kotlin.coroutines.Continuation):0:0 -> f
-    57:67:java.lang.Object androidx.lifecycle.compose.FlowExtKt$collectAsStateWithLifecycle$1$1$1.invoke(java.lang.Object,java.lang.Object):0 -> f
-    57:67:java.lang.Object DataStoreImpl$handleUpdate$2$1$1.invoke(java.lang.Object,java.lang.Object):0 -> f
-    68:71:java.lang.Object DataStoreImpl$handleUpdate$2$1$1.invoke(java.lang.Object,java.lang.Object):0:0 -> f
-    72:82:java.lang.Object invoke(kotlinx.coroutines.CoroutineScope,kotlin.coroutines.Continuation):0:0 -> f
-    72:82:java.lang.Object invoke(java.lang.Object,java.lang.Object):0 -> f
-    72:82:java.lang.Object DataStoreImpl$handleUpdate$2$1$1.invoke(java.lang.Object,java.lang.Object):0 -> f
-    8:18:kotlin.coroutines.Continuation androidx.compose.runtime.SnapshotStateKt__SnapshotFlowKt$collectAsState$1$1.create(java.lang.Object,kotlin.coroutines.Continuation):0:0 -> m
-      # {"id":"com.android.tools.r8.residualsignature","signature":"(Ljp;Ljava/lang/Object;)Ljp;"}
-    19:27:kotlin.coroutines.Continuation androidx.datastore.core.SimpleActor$offer$2.create(java.lang.Object,kotlin.coroutines.Continuation):0:0 -> m
-    28:38:kotlin.coroutines.Continuation androidx.compose.foundation.gestures.MouseWheelScrollingLogic$startReceivingEvents$1.create(java.lang.Object,kotlin.coroutines.Continuation):0:0 -> m
-    39:50:kotlin.coroutines.Continuation androidx.lifecycle.compose.FlowExtKt$collectAsStateWithLifecycle$1$1$1.create(java.lang.Object,kotlin.coroutines.Continuation):0:0 -> m
-    51:64:kotlin.coroutines.Continuation create(java.lang.Object,kotlin.coroutines.Continuation):0:0 -> m
-    19:20:java.lang.Object kotlin.coroutines.intrinsics.IntrinsicsKt__IntrinsicsKt.getCOROUTINE_SUSPENDED():57:57 -> p
-    19:20:java.lang.Object androidx.compose.runtime.SnapshotStateKt__SnapshotFlowKt$collectAsState$1$1.invokeSuspend(java.lang.Object):0 -> p
-    21:44:java.lang.Object androidx.compose.runtime.SnapshotStateKt__SnapshotFlowKt$collectAsState$1$1.invokeSuspend(java.lang.Object):70:70 -> p
-    45:59:java.lang.Object androidx.compose.runtime.SnapshotStateKt__SnapshotFlowKt$collectAsState$1$1.invokeSuspend(java.lang.Object):72:72 -> p
-    60:61:java.lang.Object kotlin.coroutines.intrinsics.IntrinsicsKt__IntrinsicsKt.getCOROUTINE_SUSPENDED():57:57 -> p
-    60:61:java.lang.Object androidx.datastore.core.SimpleActor$offer$2.invokeSuspend(java.lang.Object):0 -> p
-    62:91:java.lang.Object androidx.datastore.core.SimpleActor$offer$2.invokeSuspend(java.lang.Object):104:104 -> p
-    92:95:androidx.datastore.core.AtomicInt androidx.datastore.core.SimpleActor.access$getRemainingMessages$p(androidx.datastore.core.SimpleActor):28:28 -> p
-    92:95:java.lang.Object androidx.datastore.core.SimpleActor$offer$2.invokeSuspend(java.lang.Object):106 -> p
-    96:99:int androidx.datastore.core.AtomicInt.get():43:43 -> p
-    96:99:java.lang.Object androidx.datastore.core.SimpleActor$offer$2.invokeSuspend(java.lang.Object):106 -> p
-      # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
-    100:105:int androidx.datastore.core.AtomicInt.get():43:43 -> p
-    100:105:java.lang.Object androidx.datastore.core.SimpleActor$offer$2.invokeSuspend(java.lang.Object):106 -> p
-    106:109:kotlinx.coroutines.CoroutineScope androidx.datastore.core.SimpleActor.access$getScope$p(androidx.datastore.core.SimpleActor):28:28 -> p
-    106:109:java.lang.Object androidx.datastore.core.SimpleActor$offer$2.invokeSuspend(java.lang.Object):112 -> p
-    110:111:kotlin.coroutines.CoroutineContext kotlinx.coroutines.internal.ContextScope.getCoroutineContext():33:33 -> p
-    110:111:void kotlinx.coroutines.CoroutineScopeKt.ensureActive(kotlinx.coroutines.CoroutineScope):310 -> p
-    110:111:java.lang.Object androidx.datastore.core.SimpleActor$offer$2.invokeSuspend(java.lang.Object):112 -> p
-    112:114:void kotlinx.coroutines.JobKt.ensureActive(kotlin.coroutines.CoroutineContext):1:1 -> p
-    112:114:void kotlinx.coroutines.CoroutineScopeKt.ensureActive(kotlinx.coroutines.CoroutineScope):310 -> p
-    112:114:java.lang.Object androidx.datastore.core.SimpleActor$offer$2.invokeSuspend(java.lang.Object):112 -> p
-    115:118:kotlin.jvm.functions.Function2 androidx.datastore.core.SimpleActor.access$getConsumeMessage$p(androidx.datastore.core.SimpleActor):28:28 -> p
-    115:118:java.lang.Object androidx.datastore.core.SimpleActor$offer$2.invokeSuspend(java.lang.Object):114 -> p
-    119:122:kotlinx.coroutines.channels.Channel androidx.datastore.core.SimpleActor.access$getMessageQueue$p(androidx.datastore.core.SimpleActor):28:28 -> p
-    119:122:java.lang.Object androidx.datastore.core.SimpleActor$offer$2.invokeSuspend(java.lang.Object):114 -> p
-    123:144:java.lang.Object androidx.datastore.core.SimpleActor$offer$2.invokeSuspend(java.lang.Object):114:114 -> p
-    145:148:androidx.datastore.core.AtomicInt androidx.datastore.core.SimpleActor.access$getRemainingMessages$p(androidx.datastore.core.SimpleActor):28:28 -> p
-    145:148:java.lang.Object androidx.datastore.core.SimpleActor$offer$2.invokeSuspend(java.lang.Object):115 -> p
-    149:152:int androidx.datastore.core.AtomicInt.decrementAndGet():41:41 -> p
-    149:152:java.lang.Object androidx.datastore.core.SimpleActor$offer$2.invokeSuspend(java.lang.Object):115 -> p
-      # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
-    153:159:int androidx.datastore.core.AtomicInt.decrementAndGet():41:41 -> p
-    153:159:java.lang.Object androidx.datastore.core.SimpleActor$offer$2.invokeSuspend(java.lang.Object):115 -> p
-    160:166:java.lang.Object androidx.datastore.core.SimpleActor$offer$2.invokeSuspend(java.lang.Object):106:106 -> p
-    167:168:java.lang.Object kotlin.coroutines.intrinsics.IntrinsicsKt__IntrinsicsKt.getCOROUTINE_SUSPENDED():57:57 -> p
-    167:168:java.lang.Object androidx.compose.foundation.gestures.MouseWheelScrollingLogic$startReceivingEvents$1.invokeSuspend(java.lang.Object):0 -> p
-    169:207:java.lang.Object androidx.compose.foundation.gestures.MouseWheelScrollingLogic$startReceivingEvents$1.invokeSuspend(java.lang.Object):106:106 -> p
-    208:211:java.lang.Object androidx.compose.foundation.gestures.MouseWheelScrollingLogic$startReceivingEvents$1.invokeSuspend(java.lang.Object):108:108 -> p
-    212:217:boolean kotlinx.coroutines.JobKt.isActive(kotlin.coroutines.CoroutineContext):1:1 -> p
-    212:217:java.lang.Object androidx.compose.foundation.gestures.MouseWheelScrollingLogic$startReceivingEvents$1.invokeSuspend(java.lang.Object):108 -> p
-    218:219:kotlinx.coroutines.channels.Channel androidx.compose.foundation.gestures.MouseWheelScrollingLogic.access$getChannel$p(androidx.compose.foundation.gestures.MouseWheelScrollingLogic):45:45 -> p
-    218:219:java.lang.Object androidx.compose.foundation.gestures.MouseWheelScrollingLogic$startReceivingEvents$1.invokeSuspend(java.lang.Object):109 -> p
-    220:229:java.lang.Object androidx.compose.foundation.gestures.MouseWheelScrollingLogic$startReceivingEvents$1.invokeSuspend(java.lang.Object):109:109 -> p
-    230:232:java.lang.Object androidx.compose.foundation.gestures.MouseWheelScrollingLogic$startReceivingEvents$1.invokeSuspend(java.lang.Object):106:106 -> p
-    233:236:androidx.compose.ui.unit.Density androidx.compose.foundation.gestures.NonTouchScrollingLogic.getDensity():39:39 -> p
-    233:236:java.lang.Object androidx.compose.foundation.gestures.MouseWheelScrollingLogic$startReceivingEvents$1.invokeSuspend(java.lang.Object):110 -> p
-      # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
-    237:240:java.lang.Object androidx.compose.foundation.gestures.MouseWheelScrollingLogic$startReceivingEvents$1.invokeSuspend(java.lang.Object):110:110 -> p
-    241:244:androidx.compose.ui.unit.Density androidx.compose.foundation.gestures.NonTouchScrollingLogic.getDensity():39:39 -> p
-    241:244:java.lang.Object androidx.compose.foundation.gestures.MouseWheelScrollingLogic$startReceivingEvents$1.invokeSuspend(java.lang.Object):111 -> p
-      # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
-    245:249:java.lang.Object androidx.compose.foundation.gestures.MouseWheelScrollingLogic$startReceivingEvents$1.invokeSuspend(java.lang.Object):111:111 -> p
-    250:251:androidx.compose.foundation.gestures.ScrollingLogic androidx.compose.foundation.gestures.NonTouchScrollingLogic.getScrollingLogic():37:37 -> p
-    250:251:java.lang.Object androidx.compose.foundation.gestures.MouseWheelScrollingLogic$startReceivingEvents$1.invokeSuspend(java.lang.Object):112 -> p
-      # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
-    252:255:java.lang.Object androidx.compose.foundation.gestures.MouseWheelScrollingLogic$startReceivingEvents$1.invokeSuspend(java.lang.Object):112:112 -> p
-    256:268:java.lang.Object androidx.compose.foundation.gestures.MouseWheelScrollingLogic.access$dispatchMouseWheelScroll(androidx.compose.foundation.gestures.MouseWheelScrollingLogic,androidx.compose.foundation.gestures.ScrollingLogic,androidx.compose.foundation.gestures.MouseWheelScrollingLogic$MouseWheelScrollDelta,float,float,kotlin.coroutines.Continuation):45:45 -> p
-    256:268:java.lang.Object androidx.compose.foundation.gestures.MouseWheelScrollingLogic$startReceivingEvents$1.invokeSuspend(java.lang.Object):112 -> p
-    269:275:void androidx.compose.foundation.gestures.MouseWheelScrollingLogic.access$setReceivingMouseWheelEventsJob$p(androidx.compose.foundation.gestures.MouseWheelScrollingLogic,kotlinx.coroutines.Job):45:45 -> p
-    269:275:java.lang.Object androidx.compose.foundation.gestures.MouseWheelScrollingLogic$startReceivingEvents$1.invokeSuspend(java.lang.Object):115 -> p
-    276:276:java.lang.Object androidx.compose.foundation.gestures.MouseWheelScrollingLogic$startReceivingEvents$1.invokeSuspend(java.lang.Object):115:115 -> p
-    277:282:java.lang.Object kotlin.coroutines.intrinsics.IntrinsicsKt__IntrinsicsKt.getCOROUTINE_SUSPENDED():57:57 -> p
-    277:282:java.lang.Object androidx.lifecycle.compose.FlowExtKt$collectAsStateWithLifecycle$1$1$1.invokeSuspend(java.lang.Object):0 -> p
-    283:302:java.lang.Object androidx.lifecycle.compose.FlowExtKt$collectAsStateWithLifecycle$1$1$1.invokeSuspend(java.lang.Object):177:177 -> p
-    303:315:java.lang.Object androidx.lifecycle.compose.FlowExtKt$collectAsStateWithLifecycle$1$1$1.invokeSuspend(java.lang.Object):179:179 -> p
-    316:322:java.lang.Object kotlin.coroutines.intrinsics.IntrinsicsKt__IntrinsicsKt.getCOROUTINE_SUSPENDED():57:57 -> p
-    316:322:java.lang.Object invokeSuspend(java.lang.Object):0 -> p
-    323:353:java.lang.Object invokeSuspend(java.lang.Object):282:282 -> p
-    354:355:androidx.datastore.core.DataStoreInMemoryCache androidx.datastore.core.DataStoreImpl.access$getInMemoryCache$p(androidx.datastore.core.DataStoreImpl):46:46 -> p
-    354:355:java.lang.Object invokeSuspend(java.lang.Object):284 -> p
-    356:359:java.lang.Object invokeSuspend(java.lang.Object):284:284 -> p
-    360:363:java.lang.Object invokeSuspend(java.lang.Object):285:285 -> p
-    364:365:kotlin.jvm.functions.Function2 androidx.datastore.core.Message$Update.getTransform():34:34 -> p
-    364:365:java.lang.Object invokeSuspend(java.lang.Object):289 -> p
-      # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
-    366:367:kotlin.coroutines.CoroutineContext androidx.datastore.core.Message$Update.getCallerContext():38:38 -> p
-    366:367:java.lang.Object invokeSuspend(java.lang.Object):290 -> p
-      # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
-    368:369:java.lang.Object invokeSuspend(java.lang.Object):288:288 -> p
-    370:389:java.lang.Object androidx.datastore.core.DataStoreImpl.transformAndWrite(kotlin.jvm.functions.Function2,kotlin.coroutines.CoroutineContext,androidx.tracing.PropagationToken,kotlin.coroutines.Continuation):425:425 -> p
-    370:389:java.lang.Object androidx.datastore.core.DataStoreImpl.access$transformAndWrite(androidx.datastore.core.DataStoreImpl,kotlin.jvm.functions.Function2,kotlin.coroutines.CoroutineContext,androidx.tracing.PropagationToken,kotlin.coroutines.Continuation):46 -> p
-    370:389:java.lang.Object invokeSuspend(java.lang.Object):288 -> p
-    390:393:java.lang.Object invokeSuspend(java.lang.Object):294:294 -> p
-    394:397:java.lang.Object invokeSuspend(java.lang.Object):295:295 -> p
-    398:401:java.lang.Object invokeSuspend(java.lang.Object):316:316 -> p
-    402:411:java.lang.Object invokeSuspend(java.lang.Object):317:317 -> p
-    412:415:java.lang.Object invokeSuspend(java.lang.Object):284:284 -> p
-    416:417:java.lang.Object invokeSuspend(java.lang.Object):316:316 -> p
-    418:419:java.lang.Throwable androidx.datastore.core.Final.getFinalException():40:40 -> p
-    418:419:java.lang.Object invokeSuspend(java.lang.Object):316 -> p
-      # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
-    420:420:java.lang.Object invokeSuspend(java.lang.Object):316:316 -> p
-    421:424:androidx.datastore.core.State androidx.datastore.core.Message$Update.getLastState():37:37 -> p
-    421:424:java.lang.Object invokeSuspend(java.lang.Object):296 -> p
-      # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
-    425:426:java.lang.Object invokeSuspend(java.lang.Object):298:298 -> p
-    427:440:java.lang.Object androidx.datastore.core.DataStoreImpl.readAndInitOrPropagateAndThrowFailure(androidx.tracing.PropagationToken,kotlin.coroutines.Continuation):328:328 -> p
-    427:440:java.lang.Object androidx.datastore.core.DataStoreImpl.access$readAndInitOrPropagateAndThrowFailure(androidx.datastore.core.DataStoreImpl,androidx.tracing.PropagationToken,kotlin.coroutines.Continuation):46 -> p
-    427:440:java.lang.Object invokeSuspend(java.lang.Object):298 -> p
-    441:442:kotlin.jvm.functions.Function2 androidx.datastore.core.Message$Update.getTransform():34:34 -> p
-    441:442:java.lang.Object invokeSuspend(java.lang.Object):303 -> p
-      # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
-    443:444:kotlin.coroutines.CoroutineContext androidx.datastore.core.Message$Update.getCallerContext():38:38 -> p
-    443:444:java.lang.Object invokeSuspend(java.lang.Object):304 -> p
-      # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
-    445:446:java.lang.Object invokeSuspend(java.lang.Object):302:302 -> p
-    447:469:java.lang.Object androidx.datastore.core.DataStoreImpl.transformAndWrite(kotlin.jvm.functions.Function2,kotlin.coroutines.CoroutineContext,androidx.tracing.PropagationToken,kotlin.coroutines.Continuation):425:425 -> p
-    447:469:java.lang.Object androidx.datastore.core.DataStoreImpl.access$transformAndWrite(androidx.datastore.core.DataStoreImpl,kotlin.jvm.functions.Function2,kotlin.coroutines.CoroutineContext,androidx.tracing.PropagationToken,kotlin.coroutines.Continuation):46 -> p
-    447:469:java.lang.Object invokeSuspend(java.lang.Object):302 -> p
-    470:471:java.lang.Object invokeSuspend(java.lang.Object):312:312 -> p
-    472:473:java.lang.Throwable androidx.datastore.core.ReadException.getReadException():37:37 -> p
-    472:473:java.lang.Object invokeSuspend(java.lang.Object):312 -> p
-      # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
-    474:474:java.lang.Object invokeSuspend(java.lang.Object):312:312 -> p
 androidx.datastore.core.DataStoreImpl$incrementCollector$1 -> ds:
 # {"id":"sourceFile","fileName":"DataStoreImpl.kt"}
     java.lang.Object L$0 -> g
@@ -162606,9 +162654,9 @@ androidx.lifecycle.RepeatOnLifecycleKt$repeatOnLifecycle$3$1$1$1 -> ua1:
     kotlinx.coroutines.sync.Mutex $mutex -> i
       # {"id":"com.android.tools.r8.residualsignature","signature":"Lvw0;"}
     kotlin.jvm.functions.Function2 $block -> j
-      # {"id":"com.android.tools.r8.residualsignature","signature":"Lbs;"}
+      # {"id":"com.android.tools.r8.residualsignature","signature":"Lld;"}
     1:18:void <init>(androidx.lifecycle.Lifecycle$Event,kotlin.jvm.internal.Ref$ObjectRef,kotlinx.coroutines.CoroutineScope,androidx.lifecycle.Lifecycle$Event,kotlinx.coroutines.CancellableContinuation,kotlinx.coroutines.sync.Mutex,kotlin.jvm.functions.Function2):0:0 -> <init>
-      # {"id":"com.android.tools.r8.residualsignature","signature":"(Lip0;Lga1;Lyp;Lip0;Lxh;Lvw0;Lbs;)V"}
+      # {"id":"com.android.tools.r8.residualsignature","signature":"(Lip0;Lga1;Lyp;Lip0;Lxh;Lvw0;Lld;)V"}
     1:7:void onStateChanged(androidx.lifecycle.LifecycleOwner,androidx.lifecycle.Lifecycle$Event):104:104 -> e
       # {"id":"com.android.tools.r8.residualsignature","signature":"(Lrp0;Lip0;)V"}
     8:17:void onStateChanged(androidx.lifecycle.LifecycleOwner,androidx.lifecycle.Lifecycle$Event):107:107 -> e
@@ -169397,7 +169445,7 @@ androidx.wear.compose.foundation.SwipeToDismissBoxState -> yp1:
     13:18:void <init>(androidx.compose.animation.core.AnimationSpec,kotlin.jvm.functions.Function1):458:458 -> <init>
     1:9:java.lang.Object androidx.wear.compose.foundation.SwipeableV2State.snapTo(java.lang.Object,kotlin.coroutines.Continuation):387:387 -> a
     1:9:java.lang.Object snapTo(androidx.wear.compose.foundation.SwipeToDismissValue,kotlin.coroutines.Continuation):388 -> a
-      # {"id":"com.android.tools.r8.residualsignature","signature":"(Lzp1;Lld;)Ljava/lang/Object;"}
+      # {"id":"com.android.tools.r8.residualsignature","signature":"(Lzp1;Lzr;)Ljava/lang/Object;"}
     10:36:java.lang.Object androidx.wear.compose.foundation.SwipeableV2State.swipe(androidx.compose.foundation.MutatePriority,kotlin.jvm.functions.Function1,kotlin.coroutines.Continuation):560:560 -> a
     10:36:java.lang.Object androidx.wear.compose.foundation.SwipeableV2State.swipe$default(androidx.wear.compose.foundation.SwipeableV2State,androidx.compose.foundation.MutatePriority,kotlin.jvm.functions.Function1,kotlin.coroutines.Continuation,int,java.lang.Object):557 -> a
     10:36:java.lang.Object androidx.wear.compose.foundation.SwipeableV2State.snapTo(java.lang.Object,kotlin.coroutines.Continuation):387 -> a
@@ -188059,16 +188107,21 @@ com.gmail.comosense.calculator.domain.BigDecimalMath -> ge:
     29:30:java.lang.Object kotlin.coroutines.intrinsics.IntrinsicsKt__IntrinsicsKt.getCOROUTINE_SUSPENDED():57:57 -> l
     29:30:java.lang.Object calculateCos(java.math.BigDecimal,java.math.MathContext,kotlin.coroutines.Continuation):0 -> l
       # {"id":"com.android.tools.r8.residualsignature","signature":"(Ljava/math/BigDecimal;Ljava/math/MathContext;Ljp;)Ljava/lang/Object;"}
-    31:128:java.lang.Object calculateCos(java.math.BigDecimal,java.math.MathContext,kotlin.coroutines.Continuation):512:512 -> l
-    129:141:java.lang.Object calculateCos(java.math.BigDecimal,java.math.MathContext,kotlin.coroutines.Continuation):516:516 -> l
-    142:143:java.lang.Object calculateCos(java.math.BigDecimal,java.math.MathContext,kotlin.coroutines.Continuation):512:512 -> l
-    144:161:java.lang.Object calculateCos(java.math.BigDecimal,java.math.MathContext,kotlin.coroutines.Continuation):517:517 -> l
+    31:129:java.lang.Object calculateCos(java.math.BigDecimal,java.math.MathContext,kotlin.coroutines.Continuation):512:512 -> l
+    130:142:java.lang.Object calculateCos(java.math.BigDecimal,java.math.MathContext,kotlin.coroutines.Continuation):516:516 -> l
+    143:144:java.lang.Object calculateCos(java.math.BigDecimal,java.math.MathContext,kotlin.coroutines.Continuation):512:512 -> l
+    145:161:java.lang.Object calculateCos(java.math.BigDecimal,java.math.MathContext,kotlin.coroutines.Continuation):517:517 -> l
     162:163:java.lang.Object calculateCos(java.math.BigDecimal,java.math.MathContext,kotlin.coroutines.Continuation):512:512 -> l
-    164:174:java.lang.Object calculateCos(java.math.BigDecimal,java.math.MathContext,kotlin.coroutines.Continuation):518:518 -> l
-    175:176:java.lang.Object cachedThreeHalfPi(java.math.MathContext,kotlin.coroutines.Continuation):951:951 -> l
-    175:176:java.lang.Object calculateCos(java.math.BigDecimal,java.math.MathContext,kotlin.coroutines.Continuation):518 -> l
-    177:199:java.lang.Object cachedThreeHalfPi(java.math.MathContext,kotlin.coroutines.Continuation):950:950 -> l
-    177:199:java.lang.Object calculateCos(java.math.BigDecimal,java.math.MathContext,kotlin.coroutines.Continuation):518 -> l
+    164:175:java.lang.Object calculateCos(java.math.BigDecimal,java.math.MathContext,kotlin.coroutines.Continuation):518:518 -> l
+    176:177:java.lang.Object cachedThreeHalfPi(java.math.MathContext,kotlin.coroutines.Continuation):951:951 -> l
+    176:177:java.lang.Object calculateCos(java.math.BigDecimal,java.math.MathContext,kotlin.coroutines.Continuation):518 -> l
+    178:179:java.lang.Object cachedThreeHalfPi(java.math.MathContext,kotlin.coroutines.Continuation):950:950 -> l
+    178:179:java.lang.Object calculateCos(java.math.BigDecimal,java.math.MathContext,kotlin.coroutines.Continuation):518 -> l
+    180:182:void com.gmail.comosense.calculator.domain.BigDecimalMath$cachedThreeHalfPi$2.<init>(kotlin.coroutines.Continuation):0:0 -> l
+    180:182:java.lang.Object cachedThreeHalfPi(java.math.MathContext,kotlin.coroutines.Continuation):950 -> l
+    180:182:java.lang.Object calculateCos(java.math.BigDecimal,java.math.MathContext,kotlin.coroutines.Continuation):518 -> l
+    183:199:java.lang.Object cachedThreeHalfPi(java.math.MathContext,kotlin.coroutines.Continuation):950:950 -> l
+    183:199:java.lang.Object calculateCos(java.math.BigDecimal,java.math.MathContext,kotlin.coroutines.Continuation):518 -> l
     200:201:java.lang.Object calculateCos(java.math.BigDecimal,java.math.MathContext,kotlin.coroutines.Continuation):512:512 -> l
     202:226:java.lang.Object calculateCos(java.math.BigDecimal,java.math.MathContext,kotlin.coroutines.Continuation):519:519 -> l
     227:228:java.lang.Object calculateCos(java.math.BigDecimal,java.math.MathContext,kotlin.coroutines.Continuation):512:512 -> l
@@ -188196,16 +188249,21 @@ com.gmail.comosense.calculator.domain.BigDecimalMath -> ge:
     29:30:java.lang.Object kotlin.coroutines.intrinsics.IntrinsicsKt__IntrinsicsKt.getCOROUTINE_SUSPENDED():57:57 -> q
     29:30:java.lang.Object calculateSin(java.math.BigDecimal,java.math.MathContext,kotlin.coroutines.Continuation):0 -> q
       # {"id":"com.android.tools.r8.residualsignature","signature":"(Ljava/math/BigDecimal;Ljava/math/MathContext;Ljp;)Ljava/lang/Object;"}
-    31:128:java.lang.Object calculateSin(java.math.BigDecimal,java.math.MathContext,kotlin.coroutines.Continuation):464:464 -> q
-    129:141:java.lang.Object calculateSin(java.math.BigDecimal,java.math.MathContext,kotlin.coroutines.Continuation):468:468 -> q
-    142:143:java.lang.Object calculateSin(java.math.BigDecimal,java.math.MathContext,kotlin.coroutines.Continuation):464:464 -> q
-    144:161:java.lang.Object calculateSin(java.math.BigDecimal,java.math.MathContext,kotlin.coroutines.Continuation):469:469 -> q
+    31:129:java.lang.Object calculateSin(java.math.BigDecimal,java.math.MathContext,kotlin.coroutines.Continuation):464:464 -> q
+    130:142:java.lang.Object calculateSin(java.math.BigDecimal,java.math.MathContext,kotlin.coroutines.Continuation):468:468 -> q
+    143:144:java.lang.Object calculateSin(java.math.BigDecimal,java.math.MathContext,kotlin.coroutines.Continuation):464:464 -> q
+    145:161:java.lang.Object calculateSin(java.math.BigDecimal,java.math.MathContext,kotlin.coroutines.Continuation):469:469 -> q
     162:163:java.lang.Object calculateSin(java.math.BigDecimal,java.math.MathContext,kotlin.coroutines.Continuation):464:464 -> q
-    164:174:java.lang.Object calculateSin(java.math.BigDecimal,java.math.MathContext,kotlin.coroutines.Continuation):470:470 -> q
-    175:176:java.lang.Object cachedThreeHalfPi(java.math.MathContext,kotlin.coroutines.Continuation):951:951 -> q
-    175:176:java.lang.Object calculateSin(java.math.BigDecimal,java.math.MathContext,kotlin.coroutines.Continuation):470 -> q
-    177:199:java.lang.Object cachedThreeHalfPi(java.math.MathContext,kotlin.coroutines.Continuation):950:950 -> q
-    177:199:java.lang.Object calculateSin(java.math.BigDecimal,java.math.MathContext,kotlin.coroutines.Continuation):470 -> q
+    164:175:java.lang.Object calculateSin(java.math.BigDecimal,java.math.MathContext,kotlin.coroutines.Continuation):470:470 -> q
+    176:177:java.lang.Object cachedThreeHalfPi(java.math.MathContext,kotlin.coroutines.Continuation):951:951 -> q
+    176:177:java.lang.Object calculateSin(java.math.BigDecimal,java.math.MathContext,kotlin.coroutines.Continuation):470 -> q
+    178:179:java.lang.Object cachedThreeHalfPi(java.math.MathContext,kotlin.coroutines.Continuation):950:950 -> q
+    178:179:java.lang.Object calculateSin(java.math.BigDecimal,java.math.MathContext,kotlin.coroutines.Continuation):470 -> q
+    180:182:void com.gmail.comosense.calculator.domain.BigDecimalMath$cachedThreeHalfPi$2.<init>(kotlin.coroutines.Continuation):0:0 -> q
+    180:182:java.lang.Object cachedThreeHalfPi(java.math.MathContext,kotlin.coroutines.Continuation):950 -> q
+    180:182:java.lang.Object calculateSin(java.math.BigDecimal,java.math.MathContext,kotlin.coroutines.Continuation):470 -> q
+    183:199:java.lang.Object cachedThreeHalfPi(java.math.MathContext,kotlin.coroutines.Continuation):950:950 -> q
+    183:199:java.lang.Object calculateSin(java.math.BigDecimal,java.math.MathContext,kotlin.coroutines.Continuation):470 -> q
     200:201:java.lang.Object calculateSin(java.math.BigDecimal,java.math.MathContext,kotlin.coroutines.Continuation):464:464 -> q
     202:226:java.lang.Object calculateSin(java.math.BigDecimal,java.math.MathContext,kotlin.coroutines.Continuation):471:471 -> q
     227:228:java.lang.Object calculateSin(java.math.BigDecimal,java.math.MathContext,kotlin.coroutines.Continuation):464:464 -> q
@@ -188397,229 +188455,259 @@ com.gmail.comosense.calculator.domain.BigDecimalMath$cachedThreeHalfPi$2 -> ld:
       # {"id":"com.android.tools.r8.synthesized"}
     int label -> i
       # {"id":"com.android.tools.r8.residualsignature","signature":"B"}
-    java.lang.Object L$0 -> j
-    java.lang.Object L$1 -> k
-    java.math.MathContext $mc -> l
-      # {"id":"com.android.tools.r8.residualsignature","signature":"Ljava/lang/Object;"}
-    4:14:void com.gmail.comosense.calculator.presentation.WearAppKt$WearApp$changeScreen$1.<init>(com.gmail.comosense.calculator.presentation.AppScreen,androidx.wear.compose.foundation.SwipeToDismissBoxState,androidx.compose.runtime.MutableState,kotlin.coroutines.Continuation):0:0 -> <init>
-      # {"id":"com.android.tools.r8.residualsignature","signature":"(Lg9;Lyp1;Lgw0;Ljp;)V"}
-    15:15:void androidx.wear.compose.foundation.rotary.RotarySnapHandler$snapToClosestItem$2.<init>(androidx.wear.compose.foundation.rotary.RotarySnapHandler,androidx.wear.compose.foundation.rotary.RotaryScrollLogic,kotlin.coroutines.Continuation):0:0 -> <init>
-      # {"id":"com.android.tools.r8.residualsignature","signature":"(Lid1;Lcd1;Ljp;)V"}
+    java.lang.Object L$1 -> j
+    java.lang.Object L$0 -> k
+    4:12:void androidx.datastore.core.DataStoreImpl$handleUpdate$2$1$1.<init>(androidx.datastore.core.DataStoreImpl,androidx.datastore.core.Message$Update,androidx.tracing.PropagationToken,kotlin.coroutines.Continuation):0:0 -> <init>
+      # {"id":"com.android.tools.r8.residualsignature","signature":"(Lvs;Let0;Lm81;Ljp;)V"}
+    13:13:void BigDecimalMath$cachedThreeHalfPi$2.<init>(int,Continuation):0:0 -> <init>
+      # {"id":"com.android.tools.r8.synthesized"}
+      # {"id":"com.android.tools.r8.residualsignature","signature":"(ILjp;)V"}
+    14:14:void androidx.datastore.core.SimpleActor$offer$2.<init>(androidx.datastore.core.SimpleActor,kotlin.coroutines.Continuation):0:0 -> <init>
+      # {"id":"com.android.tools.r8.residualsignature","signature":"(Lot0;Ljp;)V"}
+    15:15:void androidx.lifecycle.compose.FlowExtKt$collectAsStateWithLifecycle$1$1$1.<init>(kotlin.coroutines.CoroutineContext,kotlinx.coroutines.flow.Flow,androidx.compose.runtime.ProduceStateScope,kotlin.coroutines.Continuation):0:0 -> <init>
+      # {"id":"com.android.tools.r8.residualsignature","signature":"(Li91;Lb81;Ljp;)V"}
     16:16:void BigDecimalMath$cachedThreeHalfPi$2.<init>(java.lang.Object,Continuation,byte):0:0 -> <init>
       # {"id":"com.android.tools.r8.synthesized"}
       # {"id":"com.android.tools.r8.residualsignature","signature":"(Ljava/lang/Object;Ljp;B)V"}
-    12:22:java.lang.Object com.gmail.comosense.calculator.presentation.WearAppKt$WearApp$changeScreen$1.invoke(kotlinx.coroutines.CoroutineScope,kotlin.coroutines.Continuation):0:0 -> f
-    12:22:java.lang.Object com.gmail.comosense.calculator.presentation.WearAppKt$WearApp$changeScreen$1.invoke(java.lang.Object,java.lang.Object):0 -> f
+    12:22:java.lang.Object androidx.compose.runtime.SnapshotStateKt__SnapshotFlowKt$collectAsState$1$1.invoke(androidx.compose.runtime.ProduceStateScope,kotlin.coroutines.Continuation):0:0 -> f
+    12:22:java.lang.Object androidx.compose.runtime.SnapshotStateKt__SnapshotFlowKt$collectAsState$1$1.invoke(java.lang.Object,java.lang.Object):0 -> f
     12:22:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invoke(java.lang.Object,java.lang.Object):0 -> f
       # {"id":"com.android.tools.r8.synthesized"}
     23:26:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invoke(java.lang.Object,java.lang.Object):0:0 -> f
-    27:37:java.lang.Object androidx.wear.compose.foundation.rotary.RotarySnapHandler$snapToClosestItem$2.invoke(androidx.compose.foundation.gestures.ScrollScope,kotlin.coroutines.Continuation):0:0 -> f
-    27:37:java.lang.Object androidx.wear.compose.foundation.rotary.RotarySnapHandler$snapToClosestItem$2.invoke(java.lang.Object,java.lang.Object):0 -> f
+    27:37:java.lang.Object androidx.datastore.core.SimpleActor$offer$2.invoke(kotlinx.coroutines.CoroutineScope,kotlin.coroutines.Continuation):0:0 -> f
+    27:37:java.lang.Object androidx.datastore.core.SimpleActor$offer$2.invoke(java.lang.Object,java.lang.Object):0 -> f
     27:37:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invoke(java.lang.Object,java.lang.Object):0 -> f
     38:41:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invoke(java.lang.Object,java.lang.Object):0:0 -> f
-    42:52:java.lang.Object androidx.datastore.core.DataStoreImpl$data$1.invoke(kotlinx.coroutines.flow.FlowCollector,kotlin.coroutines.Continuation):0:0 -> f
-    42:52:java.lang.Object androidx.datastore.core.DataStoreImpl$data$1.invoke(java.lang.Object,java.lang.Object):0 -> f
+    42:52:java.lang.Object androidx.compose.foundation.gestures.MouseWheelScrollingLogic$startReceivingEvents$1.invoke(kotlinx.coroutines.CoroutineScope,kotlin.coroutines.Continuation):0:0 -> f
+    42:52:java.lang.Object androidx.compose.foundation.gestures.MouseWheelScrollingLogic$startReceivingEvents$1.invoke(java.lang.Object,java.lang.Object):0 -> f
     42:52:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invoke(java.lang.Object,java.lang.Object):0 -> f
     53:56:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invoke(java.lang.Object,java.lang.Object):0:0 -> f
-    57:68:java.lang.Object invoke(java.math.MathContext,kotlin.coroutines.Continuation):0:0 -> f
-    57:68:java.lang.Object invoke(java.lang.Object,java.lang.Object):0 -> f
-    57:68:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invoke(java.lang.Object,java.lang.Object):0 -> f
-    8:23:kotlin.coroutines.Continuation com.gmail.comosense.calculator.presentation.WearAppKt$WearApp$changeScreen$1.create(java.lang.Object,kotlin.coroutines.Continuation):0:0 -> m
+    57:67:java.lang.Object androidx.lifecycle.compose.FlowExtKt$collectAsStateWithLifecycle$1$1$1.invoke(kotlinx.coroutines.CoroutineScope,kotlin.coroutines.Continuation):0:0 -> f
+    57:67:java.lang.Object androidx.lifecycle.compose.FlowExtKt$collectAsStateWithLifecycle$1$1$1.invoke(java.lang.Object,java.lang.Object):0 -> f
+    57:67:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invoke(java.lang.Object,java.lang.Object):0 -> f
+    68:71:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invoke(java.lang.Object,java.lang.Object):0:0 -> f
+    72:82:java.lang.Object androidx.datastore.core.DataStoreImpl$handleUpdate$2$1$1.invoke(kotlinx.coroutines.CoroutineScope,kotlin.coroutines.Continuation):0:0 -> f
+    72:82:java.lang.Object androidx.datastore.core.DataStoreImpl$handleUpdate$2$1$1.invoke(java.lang.Object,java.lang.Object):0 -> f
+    72:82:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invoke(java.lang.Object,java.lang.Object):0 -> f
+    83:86:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invoke(java.lang.Object,java.lang.Object):0:0 -> f
+    87:98:java.lang.Object invoke(java.math.MathContext,kotlin.coroutines.Continuation):0:0 -> f
+    87:98:java.lang.Object invoke(java.lang.Object,java.lang.Object):0 -> f
+    87:98:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invoke(java.lang.Object,java.lang.Object):0 -> f
+    6:18:kotlin.coroutines.Continuation androidx.compose.runtime.SnapshotStateKt__SnapshotFlowKt$collectAsState$1$1.create(java.lang.Object,kotlin.coroutines.Continuation):0:0 -> m
+    6:18:Continuation BigDecimalMath$cachedThreeHalfPi$2.create(Continuation,java.lang.Object):0 -> m
+      # {"id":"com.android.tools.r8.synthesized"}
       # {"id":"com.android.tools.r8.residualsignature","signature":"(Ljp;Ljava/lang/Object;)Ljp;"}
-    24:37:kotlin.coroutines.Continuation androidx.wear.compose.foundation.rotary.RotarySnapHandler$snapToClosestItem$2.create(java.lang.Object,kotlin.coroutines.Continuation):0:0 -> m
-    38:48:kotlin.coroutines.Continuation androidx.datastore.core.DataStoreImpl$data$1.create(java.lang.Object,kotlin.coroutines.Continuation):0:0 -> m
-    49:60:kotlin.coroutines.Continuation create(java.lang.Object,kotlin.coroutines.Continuation):0:0 -> m
+    19:28:kotlin.coroutines.Continuation androidx.datastore.core.SimpleActor$offer$2.create(java.lang.Object,kotlin.coroutines.Continuation):0:0 -> m
+    19:28:Continuation BigDecimalMath$cachedThreeHalfPi$2.create(Continuation,java.lang.Object):0 -> m
+    29:41:kotlin.coroutines.Continuation androidx.compose.foundation.gestures.MouseWheelScrollingLogic$startReceivingEvents$1.create(java.lang.Object,kotlin.coroutines.Continuation):0:0 -> m
+    29:41:Continuation BigDecimalMath$cachedThreeHalfPi$2.create(Continuation,java.lang.Object):0 -> m
+    42:55:kotlin.coroutines.Continuation androidx.lifecycle.compose.FlowExtKt$collectAsStateWithLifecycle$1$1$1.create(java.lang.Object,kotlin.coroutines.Continuation):0:0 -> m
+    42:55:Continuation BigDecimalMath$cachedThreeHalfPi$2.create(Continuation,java.lang.Object):0 -> m
+    56:70:kotlin.coroutines.Continuation androidx.datastore.core.DataStoreImpl$handleUpdate$2$1$1.create(java.lang.Object,kotlin.coroutines.Continuation):0:0 -> m
+    56:70:Continuation BigDecimalMath$cachedThreeHalfPi$2.create(Continuation,java.lang.Object):0 -> m
+    71:73:Continuation BigDecimalMath$cachedThreeHalfPi$2.create(Continuation,java.lang.Object):0:0 -> m
+    74:76:void <init>(kotlin.coroutines.Continuation):0:0 -> m
+    74:76:kotlin.coroutines.Continuation create(java.lang.Object,kotlin.coroutines.Continuation):0 -> m
+    74:76:Continuation BigDecimalMath$cachedThreeHalfPi$2.create(Continuation,java.lang.Object):0 -> m
+    77:80:kotlin.coroutines.Continuation create(java.lang.Object,kotlin.coroutines.Continuation):0:0 -> m
+    77:80:Continuation BigDecimalMath$cachedThreeHalfPi$2.create(Continuation,java.lang.Object):0 -> m
     17:20:java.lang.Object kotlin.coroutines.intrinsics.IntrinsicsKt__IntrinsicsKt.getCOROUTINE_SUSPENDED():57:57 -> p
-    17:20:java.lang.Object com.gmail.comosense.calculator.presentation.WearAppKt$WearApp$changeScreen$1.invokeSuspend(java.lang.Object):0 -> p
+    17:20:java.lang.Object androidx.compose.runtime.SnapshotStateKt__SnapshotFlowKt$collectAsState$1$1.invokeSuspend(java.lang.Object):0 -> p
     17:20:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
       # {"id":"com.android.tools.r8.synthesized"}
-    21:44:java.lang.Object com.gmail.comosense.calculator.presentation.WearAppKt$WearApp$changeScreen$1.invokeSuspend(java.lang.Object):60:60 -> p
+    21:44:java.lang.Object androidx.compose.runtime.SnapshotStateKt__SnapshotFlowKt$collectAsState$1$1.invokeSuspend(java.lang.Object):70:70 -> p
     21:44:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
-    45:50:java.lang.Object com.gmail.comosense.calculator.presentation.WearAppKt$WearApp$changeScreen$1.invokeSuspend(java.lang.Object):67:67 -> p
-    45:50:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
-    51:60:java.lang.Object com.gmail.comosense.calculator.presentation.WearAppKt$WearApp$changeScreen$1.invokeSuspend(java.lang.Object):62:62 -> p
-    51:60:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
-    61:62:java.lang.Object com.gmail.comosense.calculator.presentation.WearAppKt$WearApp$changeScreen$1.invokeSuspend(java.lang.Object):65:65 -> p
-    61:62:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
-    63:66:void com.gmail.comosense.calculator.presentation.WearAppKt.WearApp$lambda$2(androidx.compose.runtime.MutableState,com.gmail.comosense.calculator.presentation.AppScreen):274:274 -> p
-    63:66:void com.gmail.comosense.calculator.presentation.WearAppKt.access$WearApp$lambda$2(androidx.compose.runtime.MutableState,com.gmail.comosense.calculator.presentation.AppScreen):1 -> p
-    63:66:java.lang.Object com.gmail.comosense.calculator.presentation.WearAppKt$WearApp$changeScreen$1.invokeSuspend(java.lang.Object):65 -> p
-    63:66:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
-    67:78:java.lang.Object com.gmail.comosense.calculator.presentation.WearAppKt$WearApp$changeScreen$1.invokeSuspend(java.lang.Object):67:67 -> p
-    67:78:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
-    79:86:java.lang.Object kotlin.coroutines.intrinsics.IntrinsicsKt__IntrinsicsKt.getCOROUTINE_SUSPENDED():57:57 -> p
-    79:86:java.lang.Object androidx.wear.compose.foundation.rotary.RotarySnapHandler$snapToClosestItem$2.invokeSuspend(java.lang.Object):0 -> p
-    79:86:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
-    87:121:java.lang.Object androidx.wear.compose.foundation.rotary.RotarySnapHandler$snapToClosestItem$2.invokeSuspend(java.lang.Object):1018:1018 -> p
-    87:121:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
-    122:123:java.lang.Object androidx.wear.compose.foundation.rotary.RotarySnapHandler$snapToClosestItem$2.invokeSuspend(java.lang.Object):1022:1022 -> p
-    122:123:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
-    124:129:void kotlin.jvm.internal.Ref$FloatRef.<init>():58:58 -> p
-    124:129:java.lang.Object androidx.wear.compose.foundation.rotary.RotarySnapHandler$snapToClosestItem$2.invokeSuspend(java.lang.Object):1022 -> p
-    124:129:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
-    130:133:java.lang.Object androidx.wear.compose.foundation.rotary.RotarySnapHandler$snapToClosestItem$2.invokeSuspend(java.lang.Object):1025:1025 -> p
-    130:133:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
-    134:135:androidx.wear.compose.foundation.rotary.RotarySnapLayoutInfoProvider androidx.wear.compose.foundation.rotary.RotarySnapHandler.access$getLayoutInfoProvider$p(androidx.wear.compose.foundation.rotary.RotarySnapHandler):977:977 -> p
-    134:135:java.lang.Object androidx.wear.compose.foundation.rotary.RotarySnapHandler$snapToClosestItem$2.invokeSuspend(java.lang.Object):1026 -> p
-    134:135:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
-    136:137:float androidx.wear.compose.material3.PickerRotarySnapLayoutInfoProvider.getCurrentItemOffset():588:588 -> p
-    136:137:java.lang.Object androidx.wear.compose.foundation.rotary.RotarySnapHandler$snapToClosestItem$2.invokeSuspend(java.lang.Object):1026 -> p
+    45:59:java.lang.Object androidx.compose.runtime.SnapshotStateKt__SnapshotFlowKt$collectAsState$1$1.invokeSuspend(java.lang.Object):72:72 -> p
+    45:59:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
+    60:63:java.lang.Object kotlin.coroutines.intrinsics.IntrinsicsKt__IntrinsicsKt.getCOROUTINE_SUSPENDED():57:57 -> p
+    60:63:java.lang.Object androidx.datastore.core.SimpleActor$offer$2.invokeSuspend(java.lang.Object):0 -> p
+    60:63:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
+    64:93:java.lang.Object androidx.datastore.core.SimpleActor$offer$2.invokeSuspend(java.lang.Object):104:104 -> p
+    64:93:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
+    94:97:androidx.datastore.core.AtomicInt androidx.datastore.core.SimpleActor.access$getRemainingMessages$p(androidx.datastore.core.SimpleActor):28:28 -> p
+    94:97:java.lang.Object androidx.datastore.core.SimpleActor$offer$2.invokeSuspend(java.lang.Object):106 -> p
+    94:97:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
+    98:101:int androidx.datastore.core.AtomicInt.get():43:43 -> p
+    98:101:java.lang.Object androidx.datastore.core.SimpleActor$offer$2.invokeSuspend(java.lang.Object):106 -> p
       # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
-    136:137:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
-    138:139:androidx.wear.compose.foundation.lazy.ScalingLazyListState androidx.wear.compose.material3.PickerState.getScalingLazyListState$compose_material3():466:466 -> p
-    138:139:float androidx.wear.compose.material3.PickerRotarySnapLayoutInfoProvider.getCurrentItemOffset():588 -> p
+    98:101:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
+    102:107:int androidx.datastore.core.AtomicInt.get():43:43 -> p
+    102:107:java.lang.Object androidx.datastore.core.SimpleActor$offer$2.invokeSuspend(java.lang.Object):106 -> p
+    102:107:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
+    108:111:kotlinx.coroutines.CoroutineScope androidx.datastore.core.SimpleActor.access$getScope$p(androidx.datastore.core.SimpleActor):28:28 -> p
+    108:111:java.lang.Object androidx.datastore.core.SimpleActor$offer$2.invokeSuspend(java.lang.Object):112 -> p
+    108:111:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
+    112:113:kotlin.coroutines.CoroutineContext kotlinx.coroutines.internal.ContextScope.getCoroutineContext():33:33 -> p
+    112:113:void kotlinx.coroutines.CoroutineScopeKt.ensureActive(kotlinx.coroutines.CoroutineScope):310 -> p
+    112:113:java.lang.Object androidx.datastore.core.SimpleActor$offer$2.invokeSuspend(java.lang.Object):112 -> p
+    112:113:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
+    114:116:void kotlinx.coroutines.JobKt.ensureActive(kotlin.coroutines.CoroutineContext):1:1 -> p
+    114:116:void kotlinx.coroutines.CoroutineScopeKt.ensureActive(kotlinx.coroutines.CoroutineScope):310 -> p
+    114:116:java.lang.Object androidx.datastore.core.SimpleActor$offer$2.invokeSuspend(java.lang.Object):112 -> p
+    114:116:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
+    117:120:kotlin.jvm.functions.Function2 androidx.datastore.core.SimpleActor.access$getConsumeMessage$p(androidx.datastore.core.SimpleActor):28:28 -> p
+    117:120:java.lang.Object androidx.datastore.core.SimpleActor$offer$2.invokeSuspend(java.lang.Object):114 -> p
+    117:120:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
+    121:124:kotlinx.coroutines.channels.Channel androidx.datastore.core.SimpleActor.access$getMessageQueue$p(androidx.datastore.core.SimpleActor):28:28 -> p
+    121:124:java.lang.Object androidx.datastore.core.SimpleActor$offer$2.invokeSuspend(java.lang.Object):114 -> p
+    121:124:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
+    125:146:java.lang.Object androidx.datastore.core.SimpleActor$offer$2.invokeSuspend(java.lang.Object):114:114 -> p
+    125:146:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
+    147:150:androidx.datastore.core.AtomicInt androidx.datastore.core.SimpleActor.access$getRemainingMessages$p(androidx.datastore.core.SimpleActor):28:28 -> p
+    147:150:java.lang.Object androidx.datastore.core.SimpleActor$offer$2.invokeSuspend(java.lang.Object):115 -> p
+    147:150:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
+    151:154:int androidx.datastore.core.AtomicInt.decrementAndGet():41:41 -> p
+    151:154:java.lang.Object androidx.datastore.core.SimpleActor$offer$2.invokeSuspend(java.lang.Object):115 -> p
       # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
-    138:139:java.lang.Object androidx.wear.compose.foundation.rotary.RotarySnapHandler$snapToClosestItem$2.invokeSuspend(java.lang.Object):1026 -> p
-    138:139:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
-    140:146:float androidx.wear.compose.material3.PickerRotarySnapLayoutInfoProvider.getCurrentItemOffset():588:588 -> p
-    140:146:java.lang.Object androidx.wear.compose.foundation.rotary.RotarySnapHandler$snapToClosestItem$2.invokeSuspend(java.lang.Object):1026 -> p
-    140:146:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
-    147:153:java.lang.Float kotlin.coroutines.jvm.internal.Boxing.boxFloat(float):40:40 -> p
-    147:153:java.lang.Object androidx.wear.compose.foundation.rotary.RotarySnapHandler$snapToClosestItem$2.invokeSuspend(java.lang.Object):1026 -> p
-    147:153:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
-    154:155:androidx.compose.animation.core.Easing androidx.compose.animation.core.EasingKt.getFastOutSlowInEasing():50:50 -> p
-    154:155:java.lang.Object androidx.wear.compose.foundation.rotary.RotarySnapHandler$snapToClosestItem$2.invokeSuspend(java.lang.Object):1027 -> p
-    154:155:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
-    156:160:java.lang.Object androidx.wear.compose.foundation.rotary.RotarySnapHandler$snapToClosestItem$2.invokeSuspend(java.lang.Object):1027:1027 -> p
-    156:160:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
-    161:180:java.lang.Object androidx.wear.compose.foundation.rotary.RotarySnapHandler$snapToClosestItem$2.invokeSuspend(java.lang.Object):1025:1025 -> p
-    161:180:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
-    181:182:androidx.wear.compose.foundation.rotary.RotarySnapLayoutInfoProvider androidx.wear.compose.foundation.rotary.RotarySnapHandler.access$getLayoutInfoProvider$p(androidx.wear.compose.foundation.rotary.RotarySnapHandler):977:977 -> p
-    181:182:java.lang.Object androidx.wear.compose.foundation.rotary.RotarySnapHandler$snapToClosestItem$2.invokeSuspend(java.lang.Object):1034 -> p
-    181:182:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
-    183:186:java.lang.Object androidx.wear.compose.foundation.rotary.RotarySnapHandler$snapToClosestItem$2.invokeSuspend(java.lang.Object):1034:1034 -> p
-    183:186:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
-    187:188:void androidx.wear.compose.foundation.rotary.RotarySnapHandler.access$setSnapTarget$p(androidx.wear.compose.foundation.rotary.RotarySnapHandler,int):977:977 -> p
-    187:188:java.lang.Object androidx.wear.compose.foundation.rotary.RotarySnapHandler$snapToClosestItem$2.invokeSuspend(java.lang.Object):1034 -> p
-    187:188:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
-    189:190:androidx.compose.foundation.gestures.ScrollableState androidx.wear.compose.foundation.rotary.RotarySnapHandler.access$getScrollableState$p(androidx.wear.compose.foundation.rotary.RotarySnapHandler):977:977 -> p
-    189:190:java.lang.Object androidx.wear.compose.foundation.rotary.RotarySnapHandler$snapToClosestItem$2.invokeSuspend(java.lang.Object):1037 -> p
-    189:190:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
-    191:206:java.lang.Object androidx.wear.compose.foundation.rotary.RotarySnapHandler$snapToClosestItem$2.invokeSuspend(java.lang.Object):1037:1037 -> p
-    191:206:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
-    207:212:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0:0 -> p
-    213:258:java.lang.Object androidx.datastore.core.DataStoreImpl$data$1.invokeSuspend(java.lang.Object):79:79 -> p
-    213:258:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
-    259:260:kotlinx.coroutines.CoroutineScope androidx.datastore.core.DataStoreImpl.access$getScope$p(androidx.datastore.core.DataStoreImpl):46:46 -> p
-    259:260:java.lang.Object androidx.datastore.core.DataStoreImpl$data$1.invokeSuspend(java.lang.Object):81 -> p
-    259:260:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
-    261:262:kotlin.coroutines.CoroutineContext kotlinx.coroutines.internal.ContextScope.getCoroutineContext():33:33 -> p
-    261:262:java.lang.Object androidx.datastore.core.DataStoreImpl$data$1.invokeSuspend(java.lang.Object):81 -> p
+    151:154:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
+    155:161:int androidx.datastore.core.AtomicInt.decrementAndGet():41:41 -> p
+    155:161:java.lang.Object androidx.datastore.core.SimpleActor$offer$2.invokeSuspend(java.lang.Object):115 -> p
+    155:161:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
+    162:168:java.lang.Object androidx.datastore.core.SimpleActor$offer$2.invokeSuspend(java.lang.Object):106:106 -> p
+    162:168:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
+    169:173:java.lang.Object kotlin.coroutines.intrinsics.IntrinsicsKt__IntrinsicsKt.getCOROUTINE_SUSPENDED():57:57 -> p
+    169:173:java.lang.Object androidx.compose.foundation.gestures.MouseWheelScrollingLogic$startReceivingEvents$1.invokeSuspend(java.lang.Object):0 -> p
+    169:173:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
+    174:212:java.lang.Object androidx.compose.foundation.gestures.MouseWheelScrollingLogic$startReceivingEvents$1.invokeSuspend(java.lang.Object):106:106 -> p
+    174:212:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
+    213:216:java.lang.Object androidx.compose.foundation.gestures.MouseWheelScrollingLogic$startReceivingEvents$1.invokeSuspend(java.lang.Object):108:108 -> p
+    213:216:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
+    217:222:boolean kotlinx.coroutines.JobKt.isActive(kotlin.coroutines.CoroutineContext):1:1 -> p
+    217:222:java.lang.Object androidx.compose.foundation.gestures.MouseWheelScrollingLogic$startReceivingEvents$1.invokeSuspend(java.lang.Object):108 -> p
+    217:222:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
+    223:224:kotlinx.coroutines.channels.Channel androidx.compose.foundation.gestures.MouseWheelScrollingLogic.access$getChannel$p(androidx.compose.foundation.gestures.MouseWheelScrollingLogic):45:45 -> p
+    223:224:java.lang.Object androidx.compose.foundation.gestures.MouseWheelScrollingLogic$startReceivingEvents$1.invokeSuspend(java.lang.Object):109 -> p
+    223:224:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
+    225:234:java.lang.Object androidx.compose.foundation.gestures.MouseWheelScrollingLogic$startReceivingEvents$1.invokeSuspend(java.lang.Object):109:109 -> p
+    225:234:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
+    235:237:java.lang.Object androidx.compose.foundation.gestures.MouseWheelScrollingLogic$startReceivingEvents$1.invokeSuspend(java.lang.Object):106:106 -> p
+    235:237:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
+    238:241:androidx.compose.ui.unit.Density androidx.compose.foundation.gestures.NonTouchScrollingLogic.getDensity():39:39 -> p
+    238:241:java.lang.Object androidx.compose.foundation.gestures.MouseWheelScrollingLogic$startReceivingEvents$1.invokeSuspend(java.lang.Object):110 -> p
       # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
-    261:262:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
-    263:265:void kotlinx.coroutines.JobKt.ensureActive(kotlin.coroutines.CoroutineContext):1:1 -> p
-    263:265:java.lang.Object androidx.datastore.core.DataStoreImpl$data$1.invokeSuspend(java.lang.Object):81 -> p
-    263:265:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
-    266:270:java.lang.Object androidx.datastore.core.DataStoreImpl$data$1.invokeSuspend(java.lang.Object):84:84 -> p
-    266:270:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
-    271:272:java.lang.Object androidx.datastore.core.DataStoreImpl$data$1.invokeSuspend(java.lang.Object):79:79 -> p
-    271:272:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
-    273:276:java.lang.Object androidx.datastore.core.DataStoreImpl$data$1.invokeSuspend(java.lang.Object):85:85 -> p
-    273:276:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
-    277:282:java.lang.Object androidx.datastore.core.DataStoreImpl.access$readState(androidx.datastore.core.DataStoreImpl,boolean,androidx.tracing.PropagationToken,kotlin.coroutines.Continuation):46:46 -> p
-    277:282:java.lang.Object androidx.datastore.core.DataStoreImpl$data$1.invokeSuspend(java.lang.Object):85 -> p
-    277:282:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
-    283:284:java.lang.Object androidx.datastore.core.DataStoreImpl$data$1.invokeSuspend(java.lang.Object):79:79 -> p
-    283:284:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
-    285:291:java.lang.Object androidx.datastore.core.DataStoreImpl$data$1.invokeSuspend(java.lang.Object):88:88 -> p
-    285:291:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
-    292:293:java.lang.Object androidx.datastore.core.Data.getValue():25:25 -> p
-    292:293:java.lang.Object androidx.datastore.core.DataStoreImpl$data$1.invokeSuspend(java.lang.Object):88 -> p
+    238:241:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
+    242:245:java.lang.Object androidx.compose.foundation.gestures.MouseWheelScrollingLogic$startReceivingEvents$1.invokeSuspend(java.lang.Object):110:110 -> p
+    242:245:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
+    246:249:androidx.compose.ui.unit.Density androidx.compose.foundation.gestures.NonTouchScrollingLogic.getDensity():39:39 -> p
+    246:249:java.lang.Object androidx.compose.foundation.gestures.MouseWheelScrollingLogic$startReceivingEvents$1.invokeSuspend(java.lang.Object):111 -> p
       # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
-    292:293:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
-    294:305:java.lang.Object androidx.datastore.core.DataStoreImpl$data$1.invokeSuspend(java.lang.Object):88:88 -> p
-    294:305:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
-    306:307:androidx.datastore.core.DataStoreInMemoryCache androidx.datastore.core.DataStoreImpl.access$getInMemoryCache$p(androidx.datastore.core.DataStoreImpl):46:46 -> p
-    306:307:java.lang.Object androidx.datastore.core.DataStoreImpl$data$1.invokeSuspend(java.lang.Object):116 -> p
-    306:307:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
-    308:311:kotlinx.coroutines.flow.Flow androidx.datastore.core.DataStoreInMemoryCache.getFlow():33:33 -> p
-    308:311:java.lang.Object androidx.datastore.core.DataStoreImpl$data$1.invokeSuspend(java.lang.Object):116 -> p
+    246:249:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
+    250:254:java.lang.Object androidx.compose.foundation.gestures.MouseWheelScrollingLogic$startReceivingEvents$1.invokeSuspend(java.lang.Object):111:111 -> p
+    250:254:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
+    255:256:androidx.compose.foundation.gestures.ScrollingLogic androidx.compose.foundation.gestures.NonTouchScrollingLogic.getScrollingLogic():37:37 -> p
+    255:256:java.lang.Object androidx.compose.foundation.gestures.MouseWheelScrollingLogic$startReceivingEvents$1.invokeSuspend(java.lang.Object):112 -> p
       # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
-    308:311:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
-    312:316:java.lang.Object androidx.datastore.core.DataStoreImpl$data$1.invokeSuspend(java.lang.Object):117:117 -> p
-    312:316:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
-    317:322:kotlinx.coroutines.flow.Flow kotlinx.coroutines.flow.FlowKt__EmittersKt.onStart(kotlinx.coroutines.flow.Flow,kotlin.jvm.functions.Function2):220:220 -> p
-    317:322:kotlinx.coroutines.flow.Flow kotlinx.coroutines.flow.FlowKt.onStart(kotlinx.coroutines.flow.Flow,kotlin.jvm.functions.Function2):1 -> p
-    317:322:java.lang.Object androidx.datastore.core.DataStoreImpl$data$1.invokeSuspend(java.lang.Object):117 -> p
-    317:322:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
-    323:324:java.lang.Object androidx.datastore.core.DataStoreImpl$data$1.invokeSuspend(java.lang.Object):118:118 -> p
-    323:324:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
-    325:327:void androidx.datastore.core.DataStoreImpl$data$1$2.<init>(kotlin.coroutines.Continuation):0:0 -> p
-    325:327:java.lang.Object androidx.datastore.core.DataStoreImpl$data$1.invokeSuspend(java.lang.Object):118 -> p
-    325:327:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
-    328:332:kotlinx.coroutines.flow.Flow kotlinx.coroutines.flow.FlowKt__LimitKt.takeWhile(kotlinx.coroutines.flow.Flow,kotlin.jvm.functions.Function2):143:143 -> p
-    328:332:kotlinx.coroutines.flow.Flow kotlinx.coroutines.flow.FlowKt.takeWhile(kotlinx.coroutines.flow.Flow,kotlin.jvm.functions.Function2):1 -> p
-    328:332:java.lang.Object androidx.datastore.core.DataStoreImpl$data$1.invokeSuspend(java.lang.Object):118 -> p
-    328:332:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
-    333:339:java.lang.Object androidx.datastore.core.DataStoreImpl$data$1.invokeSuspend(java.lang.Object):122:122 -> p
-    333:339:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
-    340:344:kotlinx.coroutines.flow.Flow kotlinx.coroutines.flow.FlowKt__LimitKt.dropWhile(kotlinx.coroutines.flow.Flow,kotlin.jvm.functions.Function2):141:141 -> p
-    340:344:kotlinx.coroutines.flow.Flow kotlinx.coroutines.flow.FlowKt.dropWhile(kotlinx.coroutines.flow.Flow,kotlin.jvm.functions.Function2):1 -> p
-    340:344:java.lang.Object androidx.datastore.core.DataStoreImpl$data$1.invokeSuspend(java.lang.Object):122 -> p
-    340:344:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
-    345:349:java.lang.Object androidx.datastore.core.DataStoreImpl$data$1.invokeSuspend(java.lang.Object):705:705 -> p
-    345:349:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
-    350:354:java.lang.Object androidx.datastore.core.DataStoreImpl$data$1.invokeSuspend(java.lang.Object):132:132 -> p
-    350:354:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
-    355:359:kotlinx.coroutines.flow.Flow kotlinx.coroutines.flow.FlowKt__EmittersKt.onCompletion(kotlinx.coroutines.flow.Flow,kotlin.jvm.functions.Function3):221:221 -> p
-    355:359:kotlinx.coroutines.flow.Flow kotlinx.coroutines.flow.FlowKt.onCompletion(kotlinx.coroutines.flow.Flow,kotlin.jvm.functions.Function3):1 -> p
-    355:359:java.lang.Object androidx.datastore.core.DataStoreImpl$data$1.invokeSuspend(java.lang.Object):132 -> p
-    355:359:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
-    360:365:java.lang.Object androidx.datastore.core.DataStoreImpl$data$1.invokeSuspend(java.lang.Object):115:115 -> p
-    360:365:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
-    366:369:void kotlinx.coroutines.flow.FlowKt__EmittersKt.ensureActive(kotlinx.coroutines.flow.FlowCollector):198:198 -> p
-    366:369:void kotlinx.coroutines.flow.FlowKt.ensureActive(kotlinx.coroutines.flow.FlowCollector):1 -> p
-    366:369:java.lang.Object kotlinx.coroutines.flow.FlowKt__CollectKt.emitAll(kotlinx.coroutines.flow.FlowCollector,kotlinx.coroutines.flow.Flow,kotlin.coroutines.Continuation):104 -> p
-    366:369:java.lang.Object kotlinx.coroutines.flow.FlowKt.emitAll(kotlinx.coroutines.flow.FlowCollector,kotlinx.coroutines.flow.Flow,kotlin.coroutines.Continuation):1 -> p
-    366:369:java.lang.Object androidx.datastore.core.DataStoreImpl$data$1.invokeSuspend(java.lang.Object):115 -> p
-    366:369:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
-    370:380:java.lang.Object kotlinx.coroutines.flow.FlowKt__CollectKt.emitAll(kotlinx.coroutines.flow.FlowCollector,kotlinx.coroutines.flow.Flow,kotlin.coroutines.Continuation):105:105 -> p
-    370:380:java.lang.Object kotlinx.coroutines.flow.FlowKt.emitAll(kotlinx.coroutines.flow.FlowCollector,kotlinx.coroutines.flow.Flow,kotlin.coroutines.Continuation):1 -> p
-    370:380:java.lang.Object androidx.datastore.core.DataStoreImpl$data$1.invokeSuspend(java.lang.Object):115 -> p
-    370:380:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
-    381:385:void kotlinx.coroutines.flow.FlowKt__EmittersKt.ensureActive(kotlinx.coroutines.flow.FlowCollector):198:198 -> p
-    381:385:void kotlinx.coroutines.flow.FlowKt.ensureActive(kotlinx.coroutines.flow.FlowCollector):1 -> p
-    381:385:java.lang.Object kotlinx.coroutines.flow.FlowKt__CollectKt.emitAll(kotlinx.coroutines.flow.FlowCollector,kotlinx.coroutines.flow.Flow,kotlin.coroutines.Continuation):104 -> p
-    381:385:java.lang.Object kotlinx.coroutines.flow.FlowKt.emitAll(kotlinx.coroutines.flow.FlowCollector,kotlinx.coroutines.flow.Flow,kotlin.coroutines.Continuation):1 -> p
-    381:385:java.lang.Object androidx.datastore.core.DataStoreImpl$data$1.invokeSuspend(java.lang.Object):115 -> p
-    381:385:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
-    386:391:java.lang.Object androidx.datastore.core.DataStoreImpl$data$1.invokeSuspend(java.lang.Object):89:89 -> p
-    386:391:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
-    392:395:java.lang.Object androidx.datastore.core.DataStoreImpl$data$1.invokeSuspend(java.lang.Object):90:90 -> p
-    392:395:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
-    396:399:java.lang.Object androidx.datastore.core.DataStoreImpl$data$1.invokeSuspend(java.lang.Object):92:92 -> p
-    396:399:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
-    400:408:java.lang.Object androidx.datastore.core.DataStoreImpl$data$1.invokeSuspend(java.lang.Object):93:93 -> p
-    400:408:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
-    409:413:java.lang.Object androidx.datastore.core.DataStoreImpl$data$1.invokeSuspend(java.lang.Object):87:87 -> p
-    409:413:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
-    414:415:java.lang.Object androidx.datastore.core.DataStoreImpl$data$1.invokeSuspend(java.lang.Object):90:90 -> p
-    414:415:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
-    416:417:java.lang.Throwable androidx.datastore.core.ReadException.getReadException():37:37 -> p
-    416:417:java.lang.Object androidx.datastore.core.DataStoreImpl$data$1.invokeSuspend(java.lang.Object):90 -> p
+    255:256:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
+    257:260:java.lang.Object androidx.compose.foundation.gestures.MouseWheelScrollingLogic$startReceivingEvents$1.invokeSuspend(java.lang.Object):112:112 -> p
+    257:260:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
+    261:273:java.lang.Object androidx.compose.foundation.gestures.MouseWheelScrollingLogic.access$dispatchMouseWheelScroll(androidx.compose.foundation.gestures.MouseWheelScrollingLogic,androidx.compose.foundation.gestures.ScrollingLogic,androidx.compose.foundation.gestures.MouseWheelScrollingLogic$MouseWheelScrollDelta,float,float,kotlin.coroutines.Continuation):45:45 -> p
+    261:273:java.lang.Object androidx.compose.foundation.gestures.MouseWheelScrollingLogic$startReceivingEvents$1.invokeSuspend(java.lang.Object):112 -> p
+    261:273:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
+    274:280:void androidx.compose.foundation.gestures.MouseWheelScrollingLogic.access$setReceivingMouseWheelEventsJob$p(androidx.compose.foundation.gestures.MouseWheelScrollingLogic,kotlinx.coroutines.Job):45:45 -> p
+    274:280:java.lang.Object androidx.compose.foundation.gestures.MouseWheelScrollingLogic$startReceivingEvents$1.invokeSuspend(java.lang.Object):115 -> p
+    274:280:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
+    281:281:java.lang.Object androidx.compose.foundation.gestures.MouseWheelScrollingLogic$startReceivingEvents$1.invokeSuspend(java.lang.Object):115:115 -> p
+    281:281:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
+    282:289:java.lang.Object kotlin.coroutines.intrinsics.IntrinsicsKt__IntrinsicsKt.getCOROUTINE_SUSPENDED():57:57 -> p
+    282:289:java.lang.Object androidx.lifecycle.compose.FlowExtKt$collectAsStateWithLifecycle$1$1$1.invokeSuspend(java.lang.Object):0 -> p
+    282:289:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
+    290:309:java.lang.Object androidx.lifecycle.compose.FlowExtKt$collectAsStateWithLifecycle$1$1$1.invokeSuspend(java.lang.Object):177:177 -> p
+    290:309:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
+    310:322:java.lang.Object androidx.lifecycle.compose.FlowExtKt$collectAsStateWithLifecycle$1$1$1.invokeSuspend(java.lang.Object):179:179 -> p
+    310:322:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
+    323:331:java.lang.Object kotlin.coroutines.intrinsics.IntrinsicsKt__IntrinsicsKt.getCOROUTINE_SUSPENDED():57:57 -> p
+    323:331:java.lang.Object androidx.datastore.core.DataStoreImpl$handleUpdate$2$1$1.invokeSuspend(java.lang.Object):0 -> p
+    323:331:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
+    332:362:java.lang.Object androidx.datastore.core.DataStoreImpl$handleUpdate$2$1$1.invokeSuspend(java.lang.Object):282:282 -> p
+    332:362:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
+    363:364:androidx.datastore.core.DataStoreInMemoryCache androidx.datastore.core.DataStoreImpl.access$getInMemoryCache$p(androidx.datastore.core.DataStoreImpl):46:46 -> p
+    363:364:java.lang.Object androidx.datastore.core.DataStoreImpl$handleUpdate$2$1$1.invokeSuspend(java.lang.Object):284 -> p
+    363:364:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
+    365:368:java.lang.Object androidx.datastore.core.DataStoreImpl$handleUpdate$2$1$1.invokeSuspend(java.lang.Object):284:284 -> p
+    365:368:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
+    369:372:java.lang.Object androidx.datastore.core.DataStoreImpl$handleUpdate$2$1$1.invokeSuspend(java.lang.Object):285:285 -> p
+    369:372:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
+    373:374:kotlin.jvm.functions.Function2 androidx.datastore.core.Message$Update.getTransform():34:34 -> p
+    373:374:java.lang.Object androidx.datastore.core.DataStoreImpl$handleUpdate$2$1$1.invokeSuspend(java.lang.Object):289 -> p
       # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
-    416:417:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
-    418:418:java.lang.Object androidx.datastore.core.DataStoreImpl$data$1.invokeSuspend(java.lang.Object):90:90 -> p
-    418:418:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
-    419:424:java.lang.Object androidx.datastore.core.DataStoreImpl$data$1.invokeSuspend(java.lang.Object):89:89 -> p
-    419:424:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
-    425:428:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0:0 -> p
-    429:459:java.lang.Object invokeSuspend(java.lang.Object):952:952 -> p
-    429:459:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
-    460:465:java.lang.Object invokeSuspend(java.lang.Object):953:953 -> p
-    460:465:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
-    466:471:java.lang.Object com.gmail.comosense.calculator.domain.BigDecimalMath.access$cachedPi(com.gmail.comosense.calculator.domain.BigDecimalMath,java.math.MathContext,kotlin.coroutines.Continuation):15:15 -> p
-    466:471:java.lang.Object invokeSuspend(java.lang.Object):953 -> p
-    466:471:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
-    472:473:java.lang.Object invokeSuspend(java.lang.Object):952:952 -> p
-    472:473:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
-    474:481:java.lang.Object invokeSuspend(java.lang.Object):955:955 -> p
-    474:481:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
-    482:487:java.lang.Object com.gmail.comosense.calculator.domain.BigDecimalMath.access$cachedHalfPi(com.gmail.comosense.calculator.domain.BigDecimalMath,java.math.MathContext,kotlin.coroutines.Continuation):15:15 -> p
-    482:487:java.lang.Object invokeSuspend(java.lang.Object):955 -> p
-    482:487:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
-    488:500:java.lang.Object invokeSuspend(java.lang.Object):955:955 -> p
-    488:500:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
+    373:374:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
+    375:376:kotlin.coroutines.CoroutineContext androidx.datastore.core.Message$Update.getCallerContext():38:38 -> p
+    375:376:java.lang.Object androidx.datastore.core.DataStoreImpl$handleUpdate$2$1$1.invokeSuspend(java.lang.Object):290 -> p
+      # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
+    375:376:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
+    377:378:java.lang.Object androidx.datastore.core.DataStoreImpl$handleUpdate$2$1$1.invokeSuspend(java.lang.Object):288:288 -> p
+    377:378:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
+    379:398:java.lang.Object androidx.datastore.core.DataStoreImpl.transformAndWrite(kotlin.jvm.functions.Function2,kotlin.coroutines.CoroutineContext,androidx.tracing.PropagationToken,kotlin.coroutines.Continuation):425:425 -> p
+    379:398:java.lang.Object androidx.datastore.core.DataStoreImpl.access$transformAndWrite(androidx.datastore.core.DataStoreImpl,kotlin.jvm.functions.Function2,kotlin.coroutines.CoroutineContext,androidx.tracing.PropagationToken,kotlin.coroutines.Continuation):46 -> p
+    379:398:java.lang.Object androidx.datastore.core.DataStoreImpl$handleUpdate$2$1$1.invokeSuspend(java.lang.Object):288 -> p
+    379:398:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
+    399:402:java.lang.Object androidx.datastore.core.DataStoreImpl$handleUpdate$2$1$1.invokeSuspend(java.lang.Object):294:294 -> p
+    399:402:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
+    403:406:java.lang.Object androidx.datastore.core.DataStoreImpl$handleUpdate$2$1$1.invokeSuspend(java.lang.Object):295:295 -> p
+    403:406:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
+    407:410:java.lang.Object androidx.datastore.core.DataStoreImpl$handleUpdate$2$1$1.invokeSuspend(java.lang.Object):316:316 -> p
+    407:410:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
+    411:420:java.lang.Object androidx.datastore.core.DataStoreImpl$handleUpdate$2$1$1.invokeSuspend(java.lang.Object):317:317 -> p
+    411:420:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
+    421:424:java.lang.Object androidx.datastore.core.DataStoreImpl$handleUpdate$2$1$1.invokeSuspend(java.lang.Object):284:284 -> p
+    421:424:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
+    425:426:java.lang.Object androidx.datastore.core.DataStoreImpl$handleUpdate$2$1$1.invokeSuspend(java.lang.Object):316:316 -> p
+    425:426:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
+    427:428:java.lang.Throwable androidx.datastore.core.Final.getFinalException():40:40 -> p
+    427:428:java.lang.Object androidx.datastore.core.DataStoreImpl$handleUpdate$2$1$1.invokeSuspend(java.lang.Object):316 -> p
+      # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
+    427:428:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
+    429:429:java.lang.Object androidx.datastore.core.DataStoreImpl$handleUpdate$2$1$1.invokeSuspend(java.lang.Object):316:316 -> p
+    429:429:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
+    430:433:androidx.datastore.core.State androidx.datastore.core.Message$Update.getLastState():37:37 -> p
+    430:433:java.lang.Object androidx.datastore.core.DataStoreImpl$handleUpdate$2$1$1.invokeSuspend(java.lang.Object):296 -> p
+      # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
+    430:433:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
+    434:435:java.lang.Object androidx.datastore.core.DataStoreImpl$handleUpdate$2$1$1.invokeSuspend(java.lang.Object):298:298 -> p
+    434:435:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
+    436:449:java.lang.Object androidx.datastore.core.DataStoreImpl.readAndInitOrPropagateAndThrowFailure(androidx.tracing.PropagationToken,kotlin.coroutines.Continuation):328:328 -> p
+    436:449:java.lang.Object androidx.datastore.core.DataStoreImpl.access$readAndInitOrPropagateAndThrowFailure(androidx.datastore.core.DataStoreImpl,androidx.tracing.PropagationToken,kotlin.coroutines.Continuation):46 -> p
+    436:449:java.lang.Object androidx.datastore.core.DataStoreImpl$handleUpdate$2$1$1.invokeSuspend(java.lang.Object):298 -> p
+    436:449:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
+    450:451:kotlin.jvm.functions.Function2 androidx.datastore.core.Message$Update.getTransform():34:34 -> p
+    450:451:java.lang.Object androidx.datastore.core.DataStoreImpl$handleUpdate$2$1$1.invokeSuspend(java.lang.Object):303 -> p
+      # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
+    450:451:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
+    452:453:kotlin.coroutines.CoroutineContext androidx.datastore.core.Message$Update.getCallerContext():38:38 -> p
+    452:453:java.lang.Object androidx.datastore.core.DataStoreImpl$handleUpdate$2$1$1.invokeSuspend(java.lang.Object):304 -> p
+      # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
+    452:453:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
+    454:455:java.lang.Object androidx.datastore.core.DataStoreImpl$handleUpdate$2$1$1.invokeSuspend(java.lang.Object):302:302 -> p
+    454:455:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
+    456:478:java.lang.Object androidx.datastore.core.DataStoreImpl.transformAndWrite(kotlin.jvm.functions.Function2,kotlin.coroutines.CoroutineContext,androidx.tracing.PropagationToken,kotlin.coroutines.Continuation):425:425 -> p
+    456:478:java.lang.Object androidx.datastore.core.DataStoreImpl.access$transformAndWrite(androidx.datastore.core.DataStoreImpl,kotlin.jvm.functions.Function2,kotlin.coroutines.CoroutineContext,androidx.tracing.PropagationToken,kotlin.coroutines.Continuation):46 -> p
+    456:478:java.lang.Object androidx.datastore.core.DataStoreImpl$handleUpdate$2$1$1.invokeSuspend(java.lang.Object):302 -> p
+    456:478:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
+    479:480:java.lang.Object androidx.datastore.core.DataStoreImpl$handleUpdate$2$1$1.invokeSuspend(java.lang.Object):312:312 -> p
+    479:480:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
+    481:482:java.lang.Throwable androidx.datastore.core.ReadException.getReadException():37:37 -> p
+    481:482:java.lang.Object androidx.datastore.core.DataStoreImpl$handleUpdate$2$1$1.invokeSuspend(java.lang.Object):312 -> p
+      # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
+    481:482:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
+    483:483:java.lang.Object androidx.datastore.core.DataStoreImpl$handleUpdate$2$1$1.invokeSuspend(java.lang.Object):312:312 -> p
+    483:483:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
+    484:487:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0:0 -> p
+    488:519:java.lang.Object invokeSuspend(java.lang.Object):952:952 -> p
+    488:519:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
+    520:525:java.lang.Object invokeSuspend(java.lang.Object):953:953 -> p
+    520:525:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
+    526:531:java.lang.Object com.gmail.comosense.calculator.domain.BigDecimalMath.access$cachedPi(com.gmail.comosense.calculator.domain.BigDecimalMath,java.math.MathContext,kotlin.coroutines.Continuation):15:15 -> p
+    526:531:java.lang.Object invokeSuspend(java.lang.Object):953 -> p
+    526:531:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
+    532:533:java.lang.Object invokeSuspend(java.lang.Object):952:952 -> p
+    532:533:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
+    534:541:java.lang.Object invokeSuspend(java.lang.Object):955:955 -> p
+    534:541:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
+    542:547:java.lang.Object com.gmail.comosense.calculator.domain.BigDecimalMath.access$cachedHalfPi(com.gmail.comosense.calculator.domain.BigDecimalMath,java.math.MathContext,kotlin.coroutines.Continuation):15:15 -> p
+    542:547:java.lang.Object invokeSuspend(java.lang.Object):955 -> p
+    542:547:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
+    548:558:java.lang.Object invokeSuspend(java.lang.Object):955:955 -> p
+    548:558:java.lang.Object BigDecimalMath$cachedThreeHalfPi$2.invokeSuspend(java.lang.Object):0 -> p
 com.gmail.comosense.calculator.domain.BigDecimalMath$calculateArccos$1 -> md:
 # {"id":"sourceFile","fileName":"BigDecimalMath.kt"}
     java.lang.Object L$0 -> g
