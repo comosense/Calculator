@@ -212,7 +212,9 @@ class Parser(
     ): UnifiedValue {
         val value: UnifiedValue = parseExpression(mc)
 
-        if (isEnd() || expression.getOrNull(position) !is Symbol.FactorEnd) {
+        if (isEnd() ||
+            expression.getOrNull(position) !is Symbol.FactorEnd
+        ) {
             throw IllegalFactorException()
         }
         position++

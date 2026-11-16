@@ -23,8 +23,9 @@ val AppState.completionExpression: List<Symbol>
     }
 val AppState.expression: List<Symbol>
     get() = baseExpression + completionExpression
-val AppState.isInputting: Boolean
-    get() = input.isNotEmpty()
+
+fun AppState.isInputting(): Boolean =
+    input.isNotEmpty()
 
 fun AppState.appendExpression(
     symbols: List<Symbol>,
@@ -35,7 +36,7 @@ fun AppState.appendExpression(
     val currentInput: List<Symbol> = if (
         firstSymbol is Symbol.Operator ||
         firstSymbol is Symbol.PostfixOperator ||
-        isInputting
+        isInputting()
     ) {
         result + input
     } else {
@@ -97,7 +98,7 @@ fun AppState.applyHistory(
         ?.result
         ?: return AppStateUpdateResult.HistoryNotFound
 
-    if (!isInputting) {
+    if (!isInputting()) {
         return applyResult(result)
     }
 
@@ -118,18 +119,17 @@ fun AppState.applyHistory(
     )
 }
 
-fun AppState.clearExpression(): AppStateUpdateResult {
-    return AppStateUpdateResult.Success(
+fun AppState.clearExpression(): AppStateUpdateResult =
+    AppStateUpdateResult.Success(
         appState = copy(
             result = emptyList(),
             input = emptyList(),
         ),
     )
-}
 
-fun AppState.dropLastExpressionSymbol(): AppStateUpdateResult {
-    return AppStateUpdateResult.Success(
-        appState = if (isInputting) {
+fun AppState.dropLastExpressionSymbol(): AppStateUpdateResult =
+    AppStateUpdateResult.Success(
+        appState = if (isInputting()) {
             copy(
                 input = input.dropLast(1),
             )
@@ -137,19 +137,18 @@ fun AppState.dropLastExpressionSymbol(): AppStateUpdateResult {
             this
         },
     )
-}
 
-fun AppState.toggleAngleMode(): AppStateUpdateResult {
-    return AppStateUpdateResult.Success(
+fun AppState.toggleAngleMode(): AppStateUpdateResult =
+    AppStateUpdateResult.Success(
         appState = copy(
             isRadians = !isRadians,
         ),
     )
-}
 
 fun AppState.canAppend(
     symbol: Symbol,
-): Boolean = canAppend(listOf(symbol))
+): Boolean =
+    canAppend(listOf(symbol))
 
 fun AppState.canAppend(
     symbols: List<Symbol>,
@@ -198,8 +197,8 @@ fun AppState.canAppend(
 
 private fun AppState.symbolsToAppendOrNull(
     symbols: List<Symbol>,
-): List<Symbol>? {
-    return if (canAppend(symbols)) {
+): List<Symbol>? =
+    if (canAppend(symbols)) {
         symbols
     } else {
         when (symbols.firstOrNull()) {
@@ -216,47 +215,48 @@ private fun AppState.symbolsToAppendOrNull(
                 return null
         }.takeIf(::canAppend)
     }
-}
 
 private fun Symbol.isAppendableAfter(
     previous: Symbol?,
-): Boolean = when (this) {
-    is Symbol.Sign ->
-        previous == null ||
-                previous is Symbol.Factor ||
-                previous is Symbol.FactorStart ||
-                previous is Symbol.Operator
+): Boolean =
+    when (this) {
+        is Symbol.Sign ->
+            previous == null ||
+                    previous is Symbol.Factor ||
+                    previous is Symbol.FactorStart ||
+                    previous is Symbol.Operator
 
-    is Symbol.Numeric.Digit ->
-        previous !is Symbol.Constant &&
-                previous !is Symbol.FactorEnd &&
-                previous !is Symbol.PostfixOperator
+        is Symbol.Numeric.Digit ->
+            previous !is Symbol.Constant &&
+                    previous !is Symbol.FactorEnd &&
+                    previous !is Symbol.PostfixOperator
 
-    is Symbol.Numeric.Point ->
-        previous is Symbol.Numeric.Digit
+        is Symbol.Numeric.Point ->
+            previous is Symbol.Numeric.Digit
 
-    is Symbol.Constant,
-    is Symbol.Factor,
-    is Symbol.FactorStart ->
-        previous == null ||
-                previous is Symbol.Sign ||
-                previous is Symbol.Factor ||
-                previous is Symbol.FactorStart ||
-                previous is Symbol.Operator
+        is Symbol.Constant,
+        is Symbol.Factor,
+        is Symbol.FactorStart ->
+            previous == null ||
+                    previous is Symbol.Sign ||
+                    previous is Symbol.Factor ||
+                    previous is Symbol.FactorStart ||
+                    previous is Symbol.Operator
 
-    is Symbol.FactorEnd,
-    is Symbol.Operator,
-    is Symbol.PostfixOperator ->
-        previous is Symbol.Numeric.Digit ||
-                previous is Symbol.Constant ||
-                previous is Symbol.FactorEnd ||
-                previous is Symbol.PostfixOperator
-}
-
-private fun Iterable<Symbol>.nestingDepth(): Int = sumOf { symbol ->
-    when (symbol) {
-        is Symbol.FactorStart -> 1
-        is Symbol.FactorEnd -> -1
-        else -> 0
+        is Symbol.FactorEnd,
+        is Symbol.Operator,
+        is Symbol.PostfixOperator ->
+            previous is Symbol.Numeric.Digit ||
+                    previous is Symbol.Constant ||
+                    previous is Symbol.FactorEnd ||
+                    previous is Symbol.PostfixOperator
     }
-}
+
+private fun Iterable<Symbol>.nestingDepth(): Int =
+    sumOf { symbol ->
+        when (symbol) {
+            is Symbol.FactorStart -> 1
+            is Symbol.FactorEnd -> -1
+            else -> 0
+        }
+    }

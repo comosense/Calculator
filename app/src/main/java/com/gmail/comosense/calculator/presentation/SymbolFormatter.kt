@@ -24,41 +24,34 @@ class SymbolFormatter(
         DecimalFormatSymbols
             .getInstance(locale)
             .decimalSeparator
-    private val Symbol.formatText: String
-        get() = when (this) {
-            is Symbol.FactorStart.Function ->
-                text(this) + text(Symbol.FactorStart.OpeningParenthesis)
 
-            else ->
-                text(this)
+    fun text(symbol: Symbol): String =
+        when (symbol) {
+            is Symbol.Sign.Positive -> "+"
+            is Symbol.Sign.Negative -> "-"
+            is Symbol.Numeric.Digit -> symbol.value.toString()
+            is Symbol.Numeric.Point -> decimalSeparator.toString()
+            is Symbol.Constant.Euler -> "e"
+            is Symbol.Constant.Pi -> "π"
+            is Symbol.Factor.Function.Sqrt -> "√"
+            is Symbol.FactorStart.OpeningParenthesis -> "("
+            is Symbol.FactorStart.Function.Exp -> "exp"
+            is Symbol.FactorStart.Function.Ln -> "ln"
+            is Symbol.FactorStart.Function.Log -> "log"
+            is Symbol.FactorStart.Function.Sin -> "sin"
+            is Symbol.FactorStart.Function.Cos -> "cos"
+            is Symbol.FactorStart.Function.Tan -> "tan"
+            is Symbol.FactorStart.Function.Arcsin -> "asin"
+            is Symbol.FactorStart.Function.Arccos -> "acos"
+            is Symbol.FactorStart.Function.Arctan -> "atan"
+            is Symbol.FactorEnd.ClosingParenthesis -> ")"
+            is Symbol.Operator.Add -> "+"
+            is Symbol.Operator.Subtract -> "-"
+            is Symbol.Operator.Multiply -> "×"
+            is Symbol.Operator.Divide -> "÷"
+            is Symbol.Operator.Power -> "^"
+            is Symbol.PostfixOperator.Factorial -> "!"
         }
-
-    fun text(symbol: Symbol): String = when (symbol) {
-        is Symbol.Sign.Positive -> "+"
-        is Symbol.Sign.Negative -> "-"
-        is Symbol.Numeric.Digit -> symbol.value.toString()
-        is Symbol.Numeric.Point -> decimalSeparator.toString()
-        is Symbol.Constant.Euler -> "e"
-        is Symbol.Constant.Pi -> "π"
-        is Symbol.Factor.Function.Sqrt -> "√"
-        is Symbol.FactorStart.OpeningParenthesis -> "("
-        is Symbol.FactorStart.Function.Exp -> "exp"
-        is Symbol.FactorStart.Function.Ln -> "ln"
-        is Symbol.FactorStart.Function.Log -> "log"
-        is Symbol.FactorStart.Function.Sin -> "sin"
-        is Symbol.FactorStart.Function.Cos -> "cos"
-        is Symbol.FactorStart.Function.Tan -> "tan"
-        is Symbol.FactorStart.Function.Arcsin -> "asin"
-        is Symbol.FactorStart.Function.Arccos -> "acos"
-        is Symbol.FactorStart.Function.Arctan -> "atan"
-        is Symbol.FactorEnd.ClosingParenthesis -> ")"
-        is Symbol.Operator.Add -> "+"
-        is Symbol.Operator.Subtract -> "-"
-        is Symbol.Operator.Multiply -> "×"
-        is Symbol.Operator.Divide -> "÷"
-        is Symbol.Operator.Power -> "^"
-        is Symbol.PostfixOperator.Factorial -> "!"
-    }
 
     fun format(
         symbols: List<Symbol>,
@@ -85,13 +78,22 @@ class SymbolFormatter(
 
                     else -> {
                         flushNumeric()
-                        append(symbol.formatText)
+                        append(symbol.toFormatText())
                     }
                 }
             }
             flushNumeric()
         }
     }
+
+    private fun Symbol.toFormatText(): String =
+        when (this) {
+            is Symbol.FactorStart.Function ->
+                text(this) + text(Symbol.FactorStart.OpeningParenthesis)
+
+            else ->
+                text(this)
+        }
 
     private fun formatNumericString(
         value: String,

@@ -330,11 +330,11 @@ private fun ExpressionBox(
             expression,
             needScroll,
             scrollState.maxValue,
-            appState.isInputting,
+            appState.isInputting(),
         ) {
             if (needScroll) {
                 scrollState.scrollTo(
-                    if (appState.isInputting) {
+                    if (appState.isInputting()) {
                         scrollState.maxValue
                     } else {
                         0
@@ -479,7 +479,7 @@ private fun KeyButton(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center,
         ) {
-            when (val display: Display = key.display(symbolFormatter)) {
+            when (val display: Display = key.toDisplay(symbolFormatter)) {
                 is Display.Text ->
                     Text(
                         text = display.text,
@@ -504,7 +504,7 @@ private fun mainKeyGrid(
     appState: AppState,
 ): List<List<Key?>> {
     val deleteKey: Key =
-        if (appState.isInputting) {
+        if (appState.isInputting()) {
             Key.Backspace
         } else {
             Key.Clear
@@ -618,37 +618,37 @@ private fun functionKeyGrid(
 }
 
 @Composable
-private fun Key.toAppearance(): KeyAppearance = when (style) {
-    Style.Digit ->
-        KeyAppearance(
-            containerColor = AppTheme.calculatorScreenColors.digitKeyContainer,
-            contentColor = AppTheme.calculatorScreenColors.digitKeyContent,
-            fontSize = AppTheme.calculatorScreenDimensions.keyTextFontSize,
-            iconSize = AppTheme.calculatorScreenDimensions.keyIconSize,
-        )
+private fun Key.toAppearance(): KeyAppearance =
+    when (style) {
+        Style.Digit ->
+            KeyAppearance(
+                containerColor = AppTheme.calculatorScreenColors.digitKeyContainer,
+                contentColor = AppTheme.calculatorScreenColors.digitKeyContent,
+                fontSize = AppTheme.calculatorScreenDimensions.keyTextFontSize,
+                iconSize = AppTheme.calculatorScreenDimensions.keyIconSize,
+            )
 
-    Style.Operator ->
-        KeyAppearance(
-            containerColor = AppTheme.calculatorScreenColors.operatorKeyContainer,
-            contentColor = AppTheme.calculatorScreenColors.operatorKeyContent,
-            fontSize = AppTheme.calculatorScreenDimensions.keyTextFontSize,
-            iconSize = AppTheme.calculatorScreenDimensions.keyIconSize,
-        )
+        Style.Operator ->
+            KeyAppearance(
+                containerColor = AppTheme.calculatorScreenColors.operatorKeyContainer,
+                contentColor = AppTheme.calculatorScreenColors.operatorKeyContent,
+                fontSize = AppTheme.calculatorScreenDimensions.keyTextFontSize,
+                iconSize = AppTheme.calculatorScreenDimensions.keyIconSize,
+            )
 
-    Style.Command ->
-        KeyAppearance(
-            containerColor = AppTheme.calculatorScreenColors.commandKeyContainer,
-            contentColor = AppTheme.calculatorScreenColors.commandKeyContent,
-            fontSize = AppTheme.calculatorScreenDimensions.keyTextFontSize,
-            iconSize = AppTheme.calculatorScreenDimensions.keyIconSize,
-        )
+        Style.Command ->
+            KeyAppearance(
+                containerColor = AppTheme.calculatorScreenColors.commandKeyContainer,
+                contentColor = AppTheme.calculatorScreenColors.commandKeyContent,
+                fontSize = AppTheme.calculatorScreenDimensions.keyTextFontSize,
+                iconSize = AppTheme.calculatorScreenDimensions.keyIconSize,
+            )
 
-    Style.Mode ->
-        KeyAppearance(
-            containerColor = AppTheme.calculatorScreenColors.modeKeyContainer,
-            contentColor = AppTheme.calculatorScreenColors.modeKeyContent,
-            fontSize = AppTheme.calculatorScreenDimensions.keyTextFontSize,
-            iconSize = AppTheme.calculatorScreenDimensions.keyIconSizeLarge,
-        )
-}
-
+        Style.Mode ->
+            KeyAppearance(
+                containerColor = AppTheme.calculatorScreenColors.modeKeyContainer,
+                contentColor = AppTheme.calculatorScreenColors.modeKeyContent,
+                fontSize = AppTheme.calculatorScreenDimensions.keyTextFontSize,
+                iconSize = AppTheme.calculatorScreenDimensions.keyIconSizeLarge,
+            )
+    }

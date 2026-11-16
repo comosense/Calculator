@@ -4,8 +4,8 @@ import com.gmail.comosense.calculator.domain.Symbol
 import com.gmail.comosense.calculator.data.proto.History as ProtoHistory
 import com.gmail.comosense.calculator.data.proto.Symbol as ProtoSymbol
 
-fun ProtoSymbol.toSymbolOrNull(): Symbol? {
-    return when (valueCase) {
+fun ProtoSymbol.toSymbolOrNull(): Symbol? =
+    when (valueCase) {
         ProtoSymbol.ValueCase.POSITIVE ->
             Symbol.Sign.Positive
 
@@ -85,10 +85,9 @@ fun ProtoSymbol.toSymbolOrNull(): Symbol? {
         ProtoSymbol.ValueCase.VALUE_NOT_SET ->
             null
     }
-}
 
-fun Symbol.toProtoSymbol(): ProtoSymbol {
-    return when (this) {
+fun Symbol.toProtoSymbol(): ProtoSymbol =
+    when (this) {
         Symbol.Sign.Positive ->
             ProtoSymbol.newBuilder()
                 .setPositive(true)
@@ -209,7 +208,6 @@ fun Symbol.toProtoSymbol(): ProtoSymbol {
                 .setFactorial(true)
                 .build()
     }
-}
 
 fun ProtoHistory.toHistoryOrNull(): History? {
     if (id.isEmpty()) {
@@ -241,11 +239,16 @@ fun ProtoHistory.toHistoryOrNull(): History? {
     )
 }
 
-fun History.toProtoHistory(): ProtoHistory {
-    return ProtoHistory
+fun History.toProtoHistory(): ProtoHistory =
+    ProtoHistory
         .newBuilder()
         .setId(id)
-        .addAllExpression(expression.map { symbol -> symbol.toProtoSymbol() })
-        .addAllResult(result.map { symbol -> symbol.toProtoSymbol() })
+        .addAllExpression(
+            expression.map { symbol ->
+                symbol.toProtoSymbol()
+            })
+        .addAllResult(
+            result.map { symbol ->
+                symbol.toProtoSymbol()
+            })
         .build()
-}

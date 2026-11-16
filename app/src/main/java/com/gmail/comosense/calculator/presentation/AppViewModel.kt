@@ -160,52 +160,49 @@ class AppViewModel(
         }
     }
 
-    private fun AppAction.isAllowedWhileCalculating(): Boolean = when (this) {
-        is AppAction.CalculateCancel,
-        is AppAction.DeleteHistory,
-        is AppAction.DeleteHistoryAll,
-        is AppAction.SetPrecision -> true
+    private fun AppAction.isAllowedWhileCalculating(): Boolean =
+        when (this) {
+            is AppAction.CalculateCancel,
+            is AppAction.DeleteHistory,
+            is AppAction.DeleteHistoryAll,
+            is AppAction.SetPrecision -> true
 
-        else -> false
-    }
+            else -> false
+        }
 
     private fun updatePrecision(
         value: Int,
-    ) {
+    ) =
         launchSettingsRepositoryAction {
             settingRepository.updatePrecision(value)
         }
-    }
 
     private fun selectHistory(
         id: String,
-    ) {
+    ) =
         updateAppState { appState ->
             resolveAppStateUpdate(
                 appState = appState,
                 appStateUpdateResult = appState.applyHistory(id),
             )
         }
-    }
 
     private fun deleteHistory(
         id: String,
-    ) {
+    ) =
         launchHistoryRepositoryAction {
             historyRepository.deleteHistory(id)
         }
-    }
 
-    private fun deleteHistoryAll() {
+    private fun deleteHistoryAll() =
         launchHistoryRepositoryAction {
             historyRepository.deleteHistoryAll()
         }
-    }
 
     private fun calculate() {
         val state: AppState = _appState.value
 
-        if (!state.isInputting || state.isCalculating) {
+        if (!state.isInputting() || state.isCalculating) {
             return
         }
 
@@ -268,9 +265,8 @@ class AppViewModel(
         job.start()
     }
 
-    private fun calculateCancel() {
+    private fun calculateCancel() =
         calculateJobOrNull?.cancel()
-    }
 
     private fun finishCalculation(jobOrNull: Job?) {
         if (calculateJobOrNull !== jobOrNull) {
@@ -288,45 +284,42 @@ class AppViewModel(
 
     private fun input(
         symbol: Symbol,
-    ) = inputs(listOf(symbol))
+    ) =
+        inputs(listOf(symbol))
 
     private fun inputs(
         symbols: List<Symbol>,
-    ) {
+    ) =
         updateAppState { appState ->
             resolveAppStateUpdate(
                 appState = appState,
                 appStateUpdateResult = appState.appendExpression(symbols),
             )
         }
-    }
 
-    private fun clear() {
+    private fun clear() =
         updateAppState { appState ->
             resolveAppStateUpdate(
                 appState = appState,
                 appStateUpdateResult = appState.clearExpression(),
             )
         }
-    }
 
-    private fun backspace() {
+    private fun backspace() =
         updateAppState { appState ->
             resolveAppStateUpdate(
                 appState = appState,
                 appStateUpdateResult = appState.dropLastExpressionSymbol(),
             )
         }
-    }
 
-    private fun toggleAngleMode() {
+    private fun toggleAngleMode() =
         updateAppState { appState ->
             resolveAppStateUpdate(
                 appState = appState,
                 appStateUpdateResult = appState.toggleAngleMode(),
             )
         }
-    }
 
     private inline fun updateAppState(
         crossinline appStateTransition: (AppState) -> AppStateTransition,
@@ -352,57 +345,56 @@ class AppViewModel(
     private fun resolveAppStateUpdate(
         appState: AppState,
         appStateUpdateResult: AppStateUpdateResult,
-    ): AppStateTransition = when (appStateUpdateResult) {
-        is AppStateUpdateResult.Success ->
-            AppStateTransition(
-                appState = appStateUpdateResult.appState,
-            )
+    ): AppStateTransition =
+        when (appStateUpdateResult) {
+            is AppStateUpdateResult.Success ->
+                AppStateTransition(
+                    appState = appStateUpdateResult.appState,
+                )
 
-        is AppStateUpdateResult.ExpressionTooLarge ->
-            AppStateTransition(
-                appState = appState,
-                appEvent = AppEvent.AppViewModelError(
-                    AppViewModelError.ExpressionTooLarge,
-                ),
-            )
+            is AppStateUpdateResult.ExpressionTooLarge ->
+                AppStateTransition(
+                    appState = appState,
+                    appEvent = AppEvent.AppViewModelError(
+                        AppViewModelError.ExpressionTooLarge,
+                    ),
+                )
 
-        is AppStateUpdateResult.UnacceptableSymbol ->
-            AppStateTransition(
-                appState = appState,
-                appEvent = AppEvent.AppViewModelError(
-                    AppViewModelError.UnacceptableSymbol,
-                ),
-            )
+            is AppStateUpdateResult.UnacceptableSymbol ->
+                AppStateTransition(
+                    appState = appState,
+                    appEvent = AppEvent.AppViewModelError(
+                        AppViewModelError.UnacceptableSymbol,
+                    ),
+                )
 
-        is AppStateUpdateResult.HistoryNotFound ->
-            AppStateTransition(
-                appState = appState,
-                appEvent = AppEvent.AppViewModelError(
-                    AppViewModelError.HistoryNotFound,
-                ),
-            )
-    }
+            is AppStateUpdateResult.HistoryNotFound ->
+                AppStateTransition(
+                    appState = appState,
+                    appEvent = AppEvent.AppViewModelError(
+                        AppViewModelError.HistoryNotFound,
+                    ),
+                )
+        }
 
     private fun launchSettingsRepositoryAction(
         action: suspend () -> Result<Unit, SettingsRepositoryError>,
-    ) {
+    ) =
         launchRepositoryAction(action) { error ->
             AppEvent.SettingsRepositoryError(error)
         }
-    }
 
     private fun launchHistoryRepositoryAction(
         action: suspend () -> Result<Unit, HistoryRepositoryError>,
-    ) {
+    ) =
         launchRepositoryAction(action) { error ->
             AppEvent.HistoryRepositoryError(error)
         }
-    }
 
     private fun <E> launchRepositoryAction(
         action: suspend () -> Result<Unit, E>,
         toAppEvent: (E) -> AppEvent,
-    ) {
+    ) =
         viewModelScope.launch {
             when (val result: Result<Unit, E> = action()) {
                 is Result.Ok ->
@@ -412,5 +404,4 @@ class AppViewModel(
                     _appEvent.tryEmit(toAppEvent(result.error))
             }
         }
-    }
 }

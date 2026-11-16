@@ -2,18 +2,18 @@ package com.gmail.comosense.calculator.presentation
 
 sealed interface AppEvent {
     data class AppViewModelError(
-        val appViewModelError: com.gmail.comosense.calculator.presentation.AppViewModelError
+        val appViewModelError: com.gmail.comosense.calculator.presentation.AppViewModelError,
     ) : AppEvent
 
     data class SettingsRepositoryError(
-        val settingsRepositoryError: com.gmail.comosense.calculator.data.SettingsRepositoryError
+        val settingsRepositoryError: com.gmail.comosense.calculator.data.SettingsRepositoryError,
     ) : AppEvent
 
     data class HistoryRepositoryError(
-        val historyRepositoryError: com.gmail.comosense.calculator.data.HistoryRepositoryError
+        val historyRepositoryError: com.gmail.comosense.calculator.data.HistoryRepositoryError,
     ) : AppEvent
 
     data class CalculatorError(
-        val calculatorError: com.gmail.comosense.calculator.domain.CalculatorError
+        val calculatorError: com.gmail.comosense.calculator.domain.CalculatorError,
     ) : AppEvent
 }

@@ -184,180 +184,181 @@ val Key.style: Style
         is Key.AngleMode -> Style.Mode
     }
 
-fun Key.display(symbolFormatter: SymbolFormatter): Display = when (this) {
-    is Key.Positive ->
-        Display.Icon(
-            painterResource = R.drawable.ic_add,
-            stringResource = R.string.content_description_positive,
-        )
+fun Key.toDisplay(symbolFormatter: SymbolFormatter): Display =
+    when (this) {
+        is Key.Positive ->
+            Display.Icon(
+                painterResource = R.drawable.ic_add,
+                stringResource = R.string.content_description_positive,
+            )
 
-    is Key.Negative ->
-        Display.Icon(
-            painterResource = R.drawable.ic_subtract,
-            stringResource = R.string.content_description_negative,
-        )
+        is Key.Negative ->
+            Display.Icon(
+                painterResource = R.drawable.ic_subtract,
+                stringResource = R.string.content_description_negative,
+            )
 
-    is Key.Digit ->
-        Display.Text(
-            text = symbolFormatter.text(Symbol.Numeric.Digit(value)),
-        )
+        is Key.Digit ->
+            Display.Text(
+                text = symbolFormatter.text(Symbol.Numeric.Digit(value)),
+            )
 
-    is Key.Point ->
-        Display.Text(
-            text = symbolFormatter.text(Symbol.Numeric.Point),
-        )
+        is Key.Point ->
+            Display.Text(
+                text = symbolFormatter.text(Symbol.Numeric.Point),
+            )
 
-    is Key.OpeningParenthesis ->
-        Display.Icon(
-            painterResource = R.drawable.ic_opening_parenthesis,
-            stringResource = R.string.content_description_opening_parenthesis,
-        )
+        is Key.OpeningParenthesis ->
+            Display.Icon(
+                painterResource = R.drawable.ic_opening_parenthesis,
+                stringResource = R.string.content_description_opening_parenthesis,
+            )
 
-    is Key.ClosingParenthesis ->
-        Display.Icon(
-            painterResource = R.drawable.ic_closing_parenthesis,
-            stringResource = R.string.content_description_closing_parenthesis,
-        )
+        is Key.ClosingParenthesis ->
+            Display.Icon(
+                painterResource = R.drawable.ic_closing_parenthesis,
+                stringResource = R.string.content_description_closing_parenthesis,
+            )
 
-    is Key.Add ->
-        Display.Icon(
-            painterResource = R.drawable.ic_add,
-            stringResource = R.string.content_description_add,
-        )
+        is Key.Add ->
+            Display.Icon(
+                painterResource = R.drawable.ic_add,
+                stringResource = R.string.content_description_add,
+            )
 
-    is Key.Subtract ->
-        Display.Icon(
-            painterResource = R.drawable.ic_subtract,
-            stringResource = R.string.content_description_subtract,
-        )
+        is Key.Subtract ->
+            Display.Icon(
+                painterResource = R.drawable.ic_subtract,
+                stringResource = R.string.content_description_subtract,
+            )
 
-    is Key.Multiply ->
-        Display.Icon(
-            painterResource = R.drawable.ic_multiply,
-            stringResource = R.string.content_description_multiply,
-        )
+        is Key.Multiply ->
+            Display.Icon(
+                painterResource = R.drawable.ic_multiply,
+                stringResource = R.string.content_description_multiply,
+            )
 
-    is Key.Divide ->
-        Display.Icon(
-            painterResource = R.drawable.ic_divide,
-            stringResource = R.string.content_description_divide,
-        )
+        is Key.Divide ->
+            Display.Icon(
+                painterResource = R.drawable.ic_divide,
+                stringResource = R.string.content_description_divide,
+            )
 
-    is Key.Equal ->
-        Display.Icon(
-            painterResource = R.drawable.ic_equal,
-            stringResource = R.string.content_description_equal,
-        )
+        is Key.Equal ->
+            Display.Icon(
+                painterResource = R.drawable.ic_equal,
+                stringResource = R.string.content_description_equal,
+            )
 
-    is Key.Clear ->
-        Display.Icon(
-            painterResource = R.drawable.ic_clear,
-            stringResource = R.string.content_description_clear,
-        )
+        is Key.Clear ->
+            Display.Icon(
+                painterResource = R.drawable.ic_clear,
+                stringResource = R.string.content_description_clear,
+            )
 
-    is Key.Backspace ->
-        Display.Icon(
-            painterResource = R.drawable.ic_backspace,
-            stringResource = R.string.content_description_backspace,
-        )
+        is Key.Backspace ->
+            Display.Icon(
+                painterResource = R.drawable.ic_backspace,
+                stringResource = R.string.content_description_backspace,
+            )
 
-    is Key.Euler ->
-        Display.Text(
-            text = symbolFormatter.text(Symbol.Constant.Euler),
-        )
+        is Key.Euler ->
+            Display.Text(
+                text = symbolFormatter.text(Symbol.Constant.Euler),
+            )
 
-    is Key.Pi ->
-        Display.Text(
-            text = symbolFormatter.text(Symbol.Constant.Pi),
-        )
+        is Key.Pi ->
+            Display.Text(
+                text = symbolFormatter.text(Symbol.Constant.Pi),
+            )
 
-    is Key.Sqrt ->
-        Display.Text(
-            text = symbolFormatter.text(Symbol.Factor.Function.Sqrt),
-        )
+        is Key.Sqrt ->
+            Display.Text(
+                text = symbolFormatter.text(Symbol.Factor.Function.Sqrt),
+            )
 
-    is Key.Power ->
-        Display.Text(
-            text = symbolFormatter.text(Symbol.Operator.Power),
-        )
+        is Key.Power ->
+            Display.Text(
+                text = symbolFormatter.text(Symbol.Operator.Power),
+            )
 
-    is Key.Factorial ->
-        Display.Text(
-            text = symbolFormatter.text(Symbol.PostfixOperator.Factorial),
-        )
+        is Key.Factorial ->
+            Display.Text(
+                text = symbolFormatter.text(Symbol.PostfixOperator.Factorial),
+            )
 
-    is Key.Log ->
-        Display.Text(
-            text = symbolFormatter.text(Symbol.FactorStart.Function.Log),
-        )
+        is Key.Log ->
+            Display.Text(
+                text = symbolFormatter.text(Symbol.FactorStart.Function.Log),
+            )
 
-    is Key.Ln ->
-        Display.Text(
-            text = symbolFormatter.text(Symbol.FactorStart.Function.Ln),
-        )
+        is Key.Ln ->
+            Display.Text(
+                text = symbolFormatter.text(Symbol.FactorStart.Function.Ln),
+            )
 
-    is Key.Sin ->
-        Display.Text(
-            text = symbolFormatter.text(Symbol.FactorStart.Function.Sin),
-        )
+        is Key.Sin ->
+            Display.Text(
+                text = symbolFormatter.text(Symbol.FactorStart.Function.Sin),
+            )
 
-    is Key.Cos ->
-        Display.Text(
-            text = symbolFormatter.text(Symbol.FactorStart.Function.Cos),
-        )
+        is Key.Cos ->
+            Display.Text(
+                text = symbolFormatter.text(Symbol.FactorStart.Function.Cos),
+            )
 
-    is Key.Tan ->
-        Display.Text(
-            text = symbolFormatter.text(Symbol.FactorStart.Function.Tan),
-        )
+        is Key.Tan ->
+            Display.Text(
+                text = symbolFormatter.text(Symbol.FactorStart.Function.Tan),
+            )
 
-    is Key.Square ->
-        Display.Text(
-            text = symbolFormatter.format(SYMBOLS_SQUARE),
-        )
+        is Key.Square ->
+            Display.Text(
+                text = symbolFormatter.format(SYMBOLS_SQUARE),
+            )
 
-    is Key.Pow10 ->
-        Display.Text(
-            text = symbolFormatter.format(SYMBOLS_POW10),
-        )
+        is Key.Pow10 ->
+            Display.Text(
+                text = symbolFormatter.format(SYMBOLS_POW10),
+            )
 
-    is Key.Exp ->
-        Display.Text(
-            text = symbolFormatter.text(Symbol.FactorStart.Function.Exp),
-        )
+        is Key.Exp ->
+            Display.Text(
+                text = symbolFormatter.text(Symbol.FactorStart.Function.Exp),
+            )
 
-    is Key.Arcsin ->
-        Display.Text(
-            text = symbolFormatter.text(Symbol.FactorStart.Function.Arcsin),
-        )
+        is Key.Arcsin ->
+            Display.Text(
+                text = symbolFormatter.text(Symbol.FactorStart.Function.Arcsin),
+            )
 
-    is Key.Arccos ->
-        Display.Text(
-            text = symbolFormatter.text(Symbol.FactorStart.Function.Arccos),
-        )
+        is Key.Arccos ->
+            Display.Text(
+                text = symbolFormatter.text(Symbol.FactorStart.Function.Arccos),
+            )
 
-    is Key.Arctan ->
-        Display.Text(
-            symbolFormatter.text(Symbol.FactorStart.Function.Arctan),
-        )
+        is Key.Arctan ->
+            Display.Text(
+                symbolFormatter.text(Symbol.FactorStart.Function.Arctan),
+            )
 
-    is Key.FunctionMode ->
-        Display.Icon(
-            painterResource = if (isInverseFunctionMode) {
-                R.drawable.ic_inverse_function
-            } else {
-                R.drawable.ic_function
-            },
-            stringResource = R.string.content_description_function_mode,
-        )
+        is Key.FunctionMode ->
+            Display.Icon(
+                painterResource = if (isInverseFunctionMode) {
+                    R.drawable.ic_inverse_function
+                } else {
+                    R.drawable.ic_function
+                },
+                stringResource = R.string.content_description_function_mode,
+            )
 
-    is Key.AngleMode ->
-        Display.Icon(
-            painterResource = if (isRadians) {
-                R.drawable.ic_radians
-            } else {
-                R.drawable.ic_degrees
-            },
-            stringResource = R.string.content_description_angle_mode,
-        )
-}
+        is Key.AngleMode ->
+            Display.Icon(
+                painterResource = if (isRadians) {
+                    R.drawable.ic_radians
+                } else {
+                    R.drawable.ic_degrees
+                },
+                stringResource = R.string.content_description_angle_mode,
+            )
+    }

@@ -63,8 +63,8 @@ class HistoryRepository(
 
     suspend fun deleteHistory(
         id: String,
-    ): Result<Unit, HistoryRepositoryError> {
-        return updateData(
+    ): Result<Unit, HistoryRepositoryError> =
+        updateData(
             error = HistoryRepositoryError.Delete,
             transform = { store ->
                 val index: Int = store.historiesList
@@ -79,10 +79,9 @@ class HistoryRepository(
                 }
             },
         )
-    }
 
-    suspend fun deleteHistoryAll(): Result<Unit, HistoryRepositoryError> {
-        return updateData(
+    suspend fun deleteHistoryAll(): Result<Unit, HistoryRepositoryError> =
+        updateData(
             error = HistoryRepositoryError.DeleteAll,
             transform = { store ->
                 store.toBuilder()
@@ -90,12 +89,11 @@ class HistoryRepository(
                     .build()
             },
         )
-    }
 
     private suspend fun updateData(
         error: HistoryRepositoryError,
         transform: suspend (HistoryStore) -> HistoryStore,
-    ): Result<Unit, HistoryRepositoryError> {
+    ): Result<Unit, HistoryRepositoryError> =
         try {
             dataStore.updateData(transform)
             return Result.Ok(Unit)
@@ -104,5 +102,4 @@ class HistoryRepository(
         } catch (_: Exception) {
             return Result.Err(error)
         }
-    }
 }

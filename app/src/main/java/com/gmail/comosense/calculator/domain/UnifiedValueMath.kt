@@ -316,7 +316,7 @@ private suspend fun UnifiedValue.toNormalizedPiMultipleOrNull(
         toPiMultipleOrNull()
             ?.toBigDecimal(workingMc(mc))
     } else {
-        if (hasPiFactor()) {
+        if (hasPiCoefficient()) {
             null
         } else {
             val workingMc: MathContext = workingMc(mc)
@@ -440,8 +440,8 @@ private fun Rational.toAngleUnifiedValue(
     isRadians: Boolean,
 ): UnifiedValue =
     if (isRadians) {
-        UnifiedValue.fromPiFactor(
-            piFactor = this,
+        UnifiedValue.fromPiCoefficient(
+            piCoefficient = this,
         )
     } else {
         UnifiedValue.fromApproximateValue(

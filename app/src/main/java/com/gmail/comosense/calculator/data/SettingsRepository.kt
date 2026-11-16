@@ -34,8 +34,8 @@ class SettingsRepository(
             )
         }
 
-    suspend fun repairInvalidSettings(): Result<Unit, SettingsRepositoryError> {
-        return edit(
+    suspend fun repairInvalidSettings(): Result<Unit, SettingsRepositoryError> =
+        edit(
             error = SettingsRepositoryError.RepairInvalidSettings,
             transform = { preferences ->
                 preferences[SettingsKeys.PRECISION]?.let { precision ->
@@ -46,7 +46,6 @@ class SettingsRepository(
                 }
             },
         )
-    }
 
     suspend fun updatePrecision(
         precision: Int,
@@ -63,13 +62,15 @@ class SettingsRepository(
         )
     }
 
-    private fun isValidPrecision(precision: Int): Boolean =
+    private fun isValidPrecision(
+        precision: Int,
+    ): Boolean =
         precision in SettingsConstraints.VALID_PRECISIONS
 
     private suspend fun edit(
         error: SettingsRepositoryError,
         transform: suspend (MutablePreferences) -> Unit,
-    ): Result<Unit, SettingsRepositoryError> {
+    ): Result<Unit, SettingsRepositoryError> =
         try {
             dataStore.edit(transform)
             return Result.Ok(Unit)
@@ -78,5 +79,4 @@ class SettingsRepository(
         } catch (_: Exception) {
             return Result.Err(error)
         }
-    }
 }
