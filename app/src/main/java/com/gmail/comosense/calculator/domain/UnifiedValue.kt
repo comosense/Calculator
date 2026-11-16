@@ -94,23 +94,23 @@ class UnifiedValue private constructor(
     suspend fun toBigDecimal(
         mc: MathContext,
     ): BigDecimal {
-        val workingMc: MathContext = workingMc(mc)
-
         var value: BigDecimal =
-            exactValue.add(approximateValue.toBigDecimal(workingMc))
+            exactValue.add(approximateValue.toBigDecimal(mc))
 
         if (hasPiCoefficient()) {
+            val workingMc: MathContext = workingMc(mc)
+
             value = value.add(
                 piCoefficient.toBigDecimal(workingMc)
                     .multiply(
                         BigDecimalMath.pi(workingMc),
                         workingMc,
                     ),
-                workingMc
+                mc,
             )
         }
 
-        return value.round(mc)
+        return value
     }
 
     fun toBigIntegerExactOrNull(): BigInteger? =
