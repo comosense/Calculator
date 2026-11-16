@@ -168,7 +168,7 @@ class UnifiedValue private constructor(
                     leftExactValueRational * other.approximateValue +
                     rightExactValueRational * approximateValue
 
-        if (hasPiCoefficient() && !other.hasPiCoefficient()) {
+        if (hasPiCoefficient() && other.hasPiCoefficient()) {
             val workingMc: MathContext = workingMc(mc)
 
             newApproximateValue += Rational.from(
