@@ -27,7 +27,7 @@ private val RATIONAL_ZERO: Rational = Rational.ZERO
 private val RATIONAL_HALF: Rational = Rational.HALF
 private val RATIONAL_ONE: Rational = Rational.ONE
 private val RATIONAL_THREE_HALF: Rational = Rational.ONE + Rational.HALF
-private val RATIONAL_TWO: Rational = Rational.ONE + Rational.ONE
+private val RATIONAL_TWO: Rational = 2.toRational()
 private val RATIONAL_ONE_HUNDRED_EIGHTY: Rational = 180.toRational()
 private val SIN_SPECIAL_ANGLES: List<Pair<Rational, UnifiedValue>> = listOf(
     RATIONAL_ZERO to ZERO,
@@ -359,6 +359,7 @@ private suspend fun UnifiedValue.toRadians(
         toBigDecimal(mc)
     } else {
         val workingMc: MathContext = workingMc(mc)
+
         toBigDecimal(workingMc)
             .multiply(BigDecimalMath.pi(workingMc))
             .divide(BIG_DECIMAL_ONE_HUNDRED_EIGHTY, mc)
@@ -378,22 +379,17 @@ private fun BigDecimal.toSpecialAngleOrNull(
     specialValues
         .firstOrNull { (key, _) -> this.compareTo(key) == 0 }
         ?.second
-        ?.toAngleUnifiedValue(
-            isRadians = isRadians,
-        )
-
-private fun Rational.toAngleUnifiedValue(
-    isRadians: Boolean,
-): UnifiedValue =
-    if (isRadians) {
-        UnifiedValue.fromPiCoefficient(
-            piCoefficient = this,
-        )
-    } else {
-        UnifiedValue.fromApproximateValue(
-            approximateValue = this * RATIONAL_ONE_HUNDRED_EIGHTY,
-        )
-    }
+        ?.let { value ->
+            if (isRadians) {
+                UnifiedValue.fromPiCoefficient(
+                    piCoefficient = value,
+                )
+            } else {
+                UnifiedValue.fromApproximateValue(
+                    approximateValue = value * RATIONAL_ONE_HUNDRED_EIGHTY,
+                )
+            }
+        }
 
 private fun workingMc(
     mc: MathContext,

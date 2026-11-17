@@ -28,7 +28,14 @@ class Rational private constructor(
         )
 
         fun Int.toRational(): Rational =
-            this.toBigDecimal().toRational()
+            if (this == 0) {
+                ZERO
+            } else {
+                Rational(
+                    numerator = this.toBigInteger(),
+                    denominator = BigInteger.ONE,
+                )
+            }
 
         fun BigDecimal.toRational(): Rational {
             if (this.signum() == 0) {
@@ -62,6 +69,13 @@ class Rational private constructor(
 
             if (numerator.signum() == 0) {
                 return ZERO
+            }
+
+            if (denominator == BigInteger.ONE) {
+                return Rational(
+                    numerator = numerator,
+                    denominator = denominator,
+                )
             }
 
             val gcd: BigInteger = numerator.gcd(denominator)
