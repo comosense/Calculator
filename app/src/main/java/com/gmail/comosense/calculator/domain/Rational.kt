@@ -172,8 +172,12 @@ class Rational private constructor(
     fun toBigDecimal(
         mc: MathContext,
     ): BigDecimal =
-        numerator.toBigDecimal()
-            .divide(denominator.toBigDecimal(), mc)
+        if (isZero()) {
+            BigDecimal.ZERO
+        } else {
+            numerator.toBigDecimal()
+                .divide(denominator.toBigDecimal(), mc)
+        }
 
     fun toBigIntegerExactOrNull(): BigInteger? =
         if (isInteger()) {

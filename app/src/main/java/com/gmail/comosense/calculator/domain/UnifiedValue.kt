@@ -73,9 +73,6 @@ class UnifiedValue private constructor(
             )
     }
 
-    fun hasPiCoefficient(): Boolean =
-        !piCoefficient.isZero()
-
     fun isZero(): Boolean =
         !hasExactValue() &&
                 !hasApproximateValue() &&
@@ -94,27 +91,38 @@ class UnifiedValue private constructor(
     suspend fun toBigDecimal(
         mc: MathContext,
     ): BigDecimal {
-        var value: BigDecimal =
-            exactValue.add(approximateValue.toBigDecimal(mc))
+        val workingMc: MathContext = workingMc(mc)
 
-        if (hasPiCoefficient()) {
-            val workingMc: MathContext = workingMc(mc)
-
-            value = value.add(
+        val approximatePart: BigDecimal =
+            if (hasApproximateValue()) {
+                approximateValue.toBigDecimal(workingMc)
+            } else {
+                BigDecimal.ZERO
+            }
+        val piPart: BigDecimal =
+            if (hasPiCoefficient()) {
                 piCoefficient.toBigDecimal(workingMc)
                     .multiply(
                         BigDecimalMath.pi(workingMc),
                         workingMc,
-                    ),
-                mc,
-            )
-        }
+                    )
+            } else {
+                BigDecimal.ZERO
+            }
+        val roundedValue: BigDecimal = approximatePart.add(piPart, mc)
 
-        return value
+        return exactValue.add(roundedValue)
     }
 
     fun toBigIntegerExactOrNull(): BigInteger? =
         toRationalOrNull()?.toBigIntegerExactOrNull()
+
+    fun toRationalOrNull(): Rational? =
+        if (!hasPiCoefficient()) {
+            approximateValue + Rational.from(exactValue)
+        } else {
+            null
+        }
 
     suspend fun signum(
         mc: MathContext,
@@ -287,12 +295,8 @@ class UnifiedValue private constructor(
     private fun hasApproximateValue(): Boolean =
         !approximateValue.isZero()
 
-    private fun toRationalOrNull(): Rational? =
-        if (!hasPiCoefficient()) {
-            approximateValue + Rational.from(exactValue)
-        } else {
-            null
-        }
+    private fun hasPiCoefficient(): Boolean =
+        !piCoefficient.isZero()
 
     private fun workingMc(
         mc: MathContext,

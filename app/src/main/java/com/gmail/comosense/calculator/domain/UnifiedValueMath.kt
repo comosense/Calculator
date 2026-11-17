@@ -308,7 +308,7 @@ private suspend fun powDecimalExponent(
     )
 }
 
-private suspend fun UnifiedValue.toNormalizedPiMultipleOrNull(
+private fun UnifiedValue.toNormalizedPiMultipleOrNull(
     isRadians: Boolean,
     mc: MathContext,
 ): BigDecimal? =
@@ -316,13 +316,10 @@ private suspend fun UnifiedValue.toNormalizedPiMultipleOrNull(
         toPiMultipleOrNull()
             ?.toBigDecimal(workingMc(mc))
     } else {
-        if (hasPiCoefficient()) {
-            null
-        } else {
-            val workingMc: MathContext = workingMc(mc)
-            toBigDecimal(workingMc(mc))
-                .divide(ONE_HUNDRED_EIGHTY, workingMc)
-        }
+        val workingMc: MathContext = workingMc(mc)
+        toRationalOrNull()
+            ?.toBigDecimal(workingMc)
+            ?.divide(ONE_HUNDRED_EIGHTY, workingMc)
     }?.remainder(TWO)
         ?.let { normalizedPiMultiple ->
             if (normalizedPiMultiple.signum() < 0) {
