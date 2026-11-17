@@ -1,5 +1,6 @@
 package com.gmail.comosense.calculator.domain
 
+import com.gmail.comosense.calculator.domain.Rational.Companion.toRational
 import java.math.BigDecimal
 import java.math.BigInteger
 import java.math.MathContext
@@ -38,7 +39,7 @@ class UnifiedValue private constructor(
             approximateValue: BigDecimal,
         ): UnifiedValue =
             UnifiedValue(
-                approximateValue = Rational.from(approximateValue),
+                approximateValue = approximateValue.toRational(),
             )
 
         fun fromApproximateValue(
@@ -104,9 +105,9 @@ class UnifiedValue private constructor(
             exactValue.multiply(other.exactValue)
 
         val leftExactValueRational: Rational =
-            Rational.from(exactValue)
+            exactValue.toRational()
         val rightExactValueRational: Rational =
-            Rational.from(other.exactValue)
+            other.exactValue.toRational()
 
         var newApproximateValue: Rational =
             approximateValue * other.approximateValue +
@@ -116,16 +117,16 @@ class UnifiedValue private constructor(
         if (hasPiCoefficient() && other.hasPiCoefficient()) {
             val workingMc: MathContext = workingMc(mc)
 
-            newApproximateValue += Rational.from(
-                (piCoefficient * other.piCoefficient).toBigDecimal(workingMc)
+            newApproximateValue +=
+                (piCoefficient * other.piCoefficient)
+                    .toBigDecimal(workingMc)
                     .multiply(
                         BigDecimalMath.powNaturalExponent(
                             base = BigDecimalMath.pi(workingMc),
                             exponent = 2,
                         ),
                         mc,
-                    ),
-            )
+                    ).toRational()
         }
 
         val newPiCoefficient: Rational =
@@ -152,23 +153,20 @@ class UnifiedValue private constructor(
 
         val denominator: Rational? = other.toRationalOrNull()
 
-        return if (denominator != null) {
-            UnifiedValue(
-                approximateValue = (Rational.from(exactValue) + approximateValue) / denominator,
+        if (denominator != null) {
+            return UnifiedValue(
+                approximateValue = (exactValue.toRational() + approximateValue) / denominator,
                 piCoefficient = piCoefficient / denominator,
             )
-        } else {
-            val workingMc: MathContext = workingMc(mc)
-            val approximateDenominator: BigDecimal = other.toBigDecimal(workingMc)
-            val approximateValue: Rational = Rational.from(
-                toBigDecimal(workingMc)
-                    .divide(approximateDenominator, mc)
-            )
-
-            UnifiedValue(
-                approximateValue = approximateValue,
-            )
         }
+
+        val workingMc: MathContext = workingMc(mc)
+
+        return UnifiedValue(
+            approximateValue = toBigDecimal(workingMc)
+                .divide(other.toBigDecimal(workingMc), mc)
+                .toRational(),
+        )
     }
 
     suspend fun pow(
@@ -271,7 +269,7 @@ class UnifiedValue private constructor(
 
     fun toRationalOrNull(): Rational? =
         if (!hasPiCoefficient()) {
-            approximateValue + Rational.from(exactValue)
+            approximateValue + exactValue.toRational()
         } else {
             null
         }
@@ -297,9 +295,12 @@ class UnifiedValue private constructor(
 
     private fun workingMc(
         mc: MathContext,
-    ): MathContext =
-        MathContext(
+    ): MathContext {
+        require(mc.precision > 0)
+
+        return MathContext(
             mc.precision + EXTRA_PRECISION_FOR_WORKING,
             mc.roundingMode,
         )
+    }
 }

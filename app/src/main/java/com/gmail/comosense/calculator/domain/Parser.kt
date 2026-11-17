@@ -339,9 +339,12 @@ class Parser(
 
     private fun workingMc(
         mc: MathContext,
-    ): MathContext =
-        MathContext(
+    ): MathContext {
+        require(mc.precision > 0)
+
+        return MathContext(
             mc.precision + EXTRA_PRECISION_FOR_WORKING,
             mc.roundingMode,
         )
+    }
 }

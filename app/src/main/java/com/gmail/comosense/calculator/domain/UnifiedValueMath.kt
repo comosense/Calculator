@@ -1,6 +1,7 @@
 package com.gmail.comosense.calculator.domain
 
 import com.gmail.comosense.calculator.common.Constraints
+import com.gmail.comosense.calculator.domain.Rational.Companion.toRational
 import java.math.BigDecimal
 import java.math.BigInteger
 import java.math.MathContext
@@ -27,7 +28,32 @@ private val RATIONAL_HALF: Rational = Rational.HALF
 private val RATIONAL_ONE: Rational = Rational.ONE
 private val RATIONAL_THREE_HALF: Rational = Rational.ONE + Rational.HALF
 private val RATIONAL_TWO: Rational = Rational.ONE + Rational.ONE
-private val RATIONAL_ONE_HUNDRED_EIGHTY: Rational = Rational.from(180.toBigDecimal())
+private val RATIONAL_ONE_HUNDRED_EIGHTY: Rational = 180.toRational()
+private val SIN_SPECIAL_ANGLES: List<Pair<Rational, UnifiedValue>> = listOf(
+    RATIONAL_ZERO to ZERO,
+    RATIONAL_ONE to ZERO,
+    RATIONAL_HALF to ONE,
+    RATIONAL_THREE_HALF to NEGATIVE_ONE,
+)
+private val COS_SPECIAL_ANGLES: List<Pair<Rational, UnifiedValue>> = listOf(
+    RATIONAL_HALF to ZERO,
+    RATIONAL_THREE_HALF to ZERO,
+    RATIONAL_ZERO to ONE,
+    RATIONAL_ONE to NEGATIVE_ONE,
+)
+private val ARCSIN_SPECIAL_VALUES: List<Pair<BigDecimal, Rational>> = listOf(
+    BIG_DECIMAL_ZERO to RATIONAL_ZERO,
+    BIG_DECIMAL_ONE to RATIONAL_HALF,
+    BIG_DECIMAL_NEGATIVE_ONE to RATIONAL_NEGATIVE_HALF,
+)
+private val ARCCOS_SPECIAL_VALUES: List<Pair<BigDecimal, Rational>> = listOf(
+    BIG_DECIMAL_ZERO to RATIONAL_HALF,
+    BIG_DECIMAL_ONE to RATIONAL_ZERO,
+    BIG_DECIMAL_NEGATIVE_ONE to RATIONAL_ONE,
+)
+private val ARCTAN_SPECIAL_VALUES: List<Pair<BigDecimal, Rational>> = listOf(
+    BIG_DECIMAL_ZERO to RATIONAL_ZERO,
+)
 
 class FactorialInvalidArgumentException : ArithmeticException()
 class FactorialLargeArgumentException : IllegalArgumentException()
@@ -125,7 +151,7 @@ internal suspend fun UnifiedValue.sin(
     trigonometricFunction(
         isRadians = isRadians,
         mc = mc,
-        specialOrNull = ::sinSpecialOrNull,
+        specialAngles = SIN_SPECIAL_ANGLES,
         calculate = BigDecimalMath::sin,
     )
 
@@ -136,20 +162,21 @@ internal suspend fun UnifiedValue.cos(
     trigonometricFunction(
         isRadians = isRadians,
         mc = mc,
-        specialOrNull = ::cosSpecialOrNull,
+        specialAngles = COS_SPECIAL_ANGLES,
         calculate = BigDecimalMath::cos,
     )
 
 private suspend fun UnifiedValue.trigonometricFunction(
     isRadians: Boolean,
     mc: MathContext,
-    specialOrNull: (Rational) -> UnifiedValue?,
+    specialAngles: List<Pair<Rational, UnifiedValue>>,
     calculate: suspend (BigDecimal, MathContext) -> BigDecimal,
 ): UnifiedValue {
     toNormalizedPiMultipleOrNull(
         isRadians = isRadians,
-    )?.let(specialOrNull)
-        ?.let { result -> return result }
+    )?.toSpecialValueOrNull(
+        specialAngles = specialAngles,
+    )?.let { value -> return value }
 
     return UnifiedValue.fromApproximateValue(
         approximateValue = calculate(
@@ -192,7 +219,7 @@ internal suspend fun UnifiedValue.arcsin(
     inverseTrigonometricFunction(
         isRadians = isRadians,
         mc = mc,
-        specialOrNull = ::arcsinSpecialOrNull,
+        specialValues = ARCSIN_SPECIAL_VALUES,
         calculate = BigDecimalMath::arcsin,
     )
 
@@ -203,7 +230,7 @@ internal suspend fun UnifiedValue.arccos(
     inverseTrigonometricFunction(
         isRadians = isRadians,
         mc = mc,
-        specialOrNull = ::arccosSpecialOrNull,
+        specialValues = ARCCOS_SPECIAL_VALUES,
         calculate = BigDecimalMath::arccos,
     )
 
@@ -214,21 +241,23 @@ internal suspend fun UnifiedValue.arctan(
     inverseTrigonometricFunction(
         isRadians = isRadians,
         mc = mc,
-        specialOrNull = ::arctanSpecialOrNull,
+        specialValues = ARCTAN_SPECIAL_VALUES,
         calculate = BigDecimalMath::arctan,
     )
 
 private suspend fun UnifiedValue.inverseTrigonometricFunction(
     isRadians: Boolean,
     mc: MathContext,
-    specialOrNull: (BigDecimal, Boolean) -> UnifiedValue?,
+    specialValues: List<Pair<BigDecimal, Rational>>,
     calculate: suspend (BigDecimal, MathContext) -> BigDecimal,
 ): UnifiedValue {
     val workingMc: MathContext = workingMc(mc)
     val value: BigDecimal = toBigDecimal(workingMc)
 
-    specialOrNull(value, isRadians)
-        ?.let { special -> return special }
+    value.toSpecialAngleOrNull(
+        isRadians = isRadians,
+        specialValues = specialValues,
+    )?.let { angle -> return angle }
 
     return UnifiedValue.fromApproximateValue(
         approximateValue =
@@ -335,93 +364,23 @@ private suspend fun UnifiedValue.toRadians(
             .divide(BIG_DECIMAL_ONE_HUNDRED_EIGHTY, mc)
     }
 
-private fun sinSpecialOrNull(
-    piMultiple: Rational,
+private fun Rational.toSpecialValueOrNull(
+    specialAngles: List<Pair<Rational, UnifiedValue>>,
 ): UnifiedValue? =
-    when (piMultiple) {
-        RATIONAL_ZERO, RATIONAL_ONE ->
-            ZERO
+    specialAngles
+        .firstOrNull { (key, _) -> this == key }
+        ?.second
 
-        RATIONAL_HALF ->
-            ONE
-
-        RATIONAL_THREE_HALF ->
-            NEGATIVE_ONE
-
-        else ->
-            null
-    }
-
-private fun cosSpecialOrNull(
-    piMultiple: Rational,
-): UnifiedValue? =
-    when (piMultiple) {
-        RATIONAL_HALF, RATIONAL_THREE_HALF ->
-            ZERO
-
-        RATIONAL_ZERO ->
-            ONE
-
-        RATIONAL_ONE ->
-            NEGATIVE_ONE
-
-        else ->
-            null
-    }
-
-private fun arcsinSpecialOrNull(
-    value: BigDecimal,
+private fun BigDecimal.toSpecialAngleOrNull(
     isRadians: Boolean,
+    specialValues: List<Pair<BigDecimal, Rational>>,
 ): UnifiedValue? =
-    when {
-        value.compareTo(BIG_DECIMAL_ZERO) == 0 ->
-            RATIONAL_ZERO
-
-        value.compareTo(BIG_DECIMAL_ONE) == 0 ->
-            RATIONAL_HALF
-
-        value.compareTo(BIG_DECIMAL_NEGATIVE_ONE) == 0 ->
-            RATIONAL_NEGATIVE_HALF
-
-        else ->
-            null
-    }?.toAngleUnifiedValue(
-        isRadians = isRadians,
-    )
-
-private fun arccosSpecialOrNull(
-    value: BigDecimal,
-    isRadians: Boolean,
-): UnifiedValue? =
-    when {
-        value.compareTo(BIG_DECIMAL_ZERO) == 0 ->
-            RATIONAL_HALF
-
-        value.compareTo(BIG_DECIMAL_ONE) == 0 ->
-            RATIONAL_ZERO
-
-        value.compareTo(BIG_DECIMAL_NEGATIVE_ONE) == 0 ->
-            RATIONAL_ONE
-
-        else ->
-            null
-    }?.toAngleUnifiedValue(
-        isRadians = isRadians,
-    )
-
-private fun arctanSpecialOrNull(
-    value: BigDecimal,
-    isRadians: Boolean,
-): UnifiedValue? =
-    when {
-        value.compareTo(BIG_DECIMAL_ZERO) == 0 ->
-            RATIONAL_ZERO
-
-        else ->
-            null
-    }?.toAngleUnifiedValue(
-        isRadians = isRadians,
-    )
+    specialValues
+        .firstOrNull { (key, _) -> this.compareTo(key) == 0 }
+        ?.second
+        ?.toAngleUnifiedValue(
+            isRadians = isRadians,
+        )
 
 private fun Rational.toAngleUnifiedValue(
     isRadians: Boolean,
@@ -432,14 +391,17 @@ private fun Rational.toAngleUnifiedValue(
         )
     } else {
         UnifiedValue.fromApproximateValue(
-            approximateValue = this * Rational.from(BIG_DECIMAL_ONE_HUNDRED_EIGHTY),
+            approximateValue = this * RATIONAL_ONE_HUNDRED_EIGHTY,
         )
     }
 
 private fun workingMc(
     mc: MathContext,
-): MathContext =
-    MathContext(
+): MathContext {
+    require(mc.precision > 0)
+
+    return MathContext(
         mc.precision + EXTRA_PRECISION_FOR_WORKING,
         mc.roundingMode,
     )
+}

@@ -27,25 +27,26 @@ class Rational private constructor(
             denominator = BigInteger.ONE,
         )
 
-        fun from(
-            value: BigDecimal,
-        ): Rational {
-            if (value.signum() == 0) {
+        fun Int.toRational(): Rational =
+            this.toBigDecimal().toRational()
+
+        fun BigDecimal.toRational(): Rational {
+            if (this.signum() == 0) {
                 return ZERO
             }
 
-            val scale: Int = value.scale()
+            val scale: Int = this.scale()
 
             return if (scale >= 0) {
                 of(
-                    numerator = value
+                    numerator = this
                         .unscaledValue(),
                     denominator = BigInteger.TEN
                         .pow(scale),
                 )
             } else {
                 of(
-                    numerator = value
+                    numerator = this
                         .unscaledValue()
                         .multiply(BigInteger.TEN.pow(-scale)),
                     denominator = BigInteger.ONE,

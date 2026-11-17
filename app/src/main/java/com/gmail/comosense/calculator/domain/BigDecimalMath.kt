@@ -1023,9 +1023,12 @@ internal object BigDecimalMath {
 
     private fun calculationMc(
         mc: MathContext,
-    ): MathContext =
-        MathContext(
+    ): MathContext {
+        require(mc.precision > 0)
+
+        return MathContext(
             mc.precision + EXTRA_PRECISION_FOR_INTERNAL_CALCULATIONS,
             mc.roundingMode,
         )
+    }
 }
