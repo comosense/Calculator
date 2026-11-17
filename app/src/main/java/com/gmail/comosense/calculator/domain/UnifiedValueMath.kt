@@ -16,11 +16,14 @@ private val MAX_EXPONENTIAL_ARGUMENT: BigDecimal =
 private const val EXTRA_PRECISION_FOR_WORKING: Int = 2
 private val NEGATIVE_ONE: BigDecimal = BigDecimal.ONE.negate()
 private val ZERO: BigDecimal = BigDecimal.ZERO
-private val HALF: BigDecimal = "0.5".toBigDecimal()
 private val ONE: BigDecimal = BigDecimal.ONE
-private val THREE_HALF: BigDecimal = "1.5".toBigDecimal()
-private val TWO: BigDecimal = 2.toBigDecimal()
 private val ONE_HUNDRED_EIGHTY: BigDecimal = 180.toBigDecimal()
+private val RATIONAL_ZERO: Rational = Rational.ZERO
+private val RATIONAL_HALF: Rational = Rational.HALF
+private val RATIONAL_ONE: Rational = Rational.ONE
+private val RATIONAL_THREE_HALF: Rational = Rational.from("1.5".toBigDecimal())
+private val RATIONAL_TWO: Rational = Rational.from(2.toBigDecimal())
+private val RATIONAL_ONE_HUNDRED_EIGHTY: Rational = Rational.from(180.toBigDecimal())
 
 class FactorialInvalidArgumentException : ArithmeticException()
 class FactorialLargeArgumentException : IllegalArgumentException()
@@ -136,14 +139,11 @@ internal suspend fun UnifiedValue.cos(
 private suspend fun UnifiedValue.trigonometricFunction(
     isRadians: Boolean,
     mc: MathContext,
-    specialOrNull: (BigDecimal) -> UnifiedValue?,
+    specialOrNull: (Rational) -> UnifiedValue?,
     calculate: suspend (BigDecimal, MathContext) -> BigDecimal,
 ): UnifiedValue {
-    val workingMc: MathContext = workingMc(mc)
-
     toNormalizedPiMultipleOrNull(
         isRadians = isRadians,
-        mc = workingMc,
     )?.let(specialOrNull)
         ?.let { result -> return result }
 
@@ -151,7 +151,7 @@ private suspend fun UnifiedValue.trigonometricFunction(
         approximateValue = calculate(
             toRadians(
                 isRadians = isRadians,
-                mc = workingMc,
+                mc = workingMc(mc),
             ),
             mc,
         ),
@@ -310,24 +310,13 @@ private suspend fun powDecimalExponent(
 
 private fun UnifiedValue.toNormalizedPiMultipleOrNull(
     isRadians: Boolean,
-    mc: MathContext,
-): BigDecimal? =
+): Rational? =
     if (isRadians) {
         toPiMultipleOrNull()
-            ?.toBigDecimal(workingMc(mc))
     } else {
-        val workingMc: MathContext = workingMc(mc)
         toRationalOrNull()
-            ?.toBigDecimal(workingMc)
-            ?.divide(ONE_HUNDRED_EIGHTY, workingMc)
-    }?.remainder(TWO)
-        ?.let { normalizedPiMultiple ->
-            if (normalizedPiMultiple.signum() < 0) {
-                normalizedPiMultiple.add(TWO)
-            } else {
-                normalizedPiMultiple
-            }
-        }
+            ?.div(RATIONAL_ONE_HUNDRED_EIGHTY)
+    }?.modulo(RATIONAL_TWO)
 
 private suspend fun UnifiedValue.toRadians(
     isRadians: Boolean,
@@ -343,17 +332,16 @@ private suspend fun UnifiedValue.toRadians(
     }
 
 private fun sinSpecialOrNull(
-    piMultiple: BigDecimal,
+    piMultiple: Rational,
 ): UnifiedValue? =
-    when {
-        piMultiple.compareTo(ZERO) == 0 ||
-                piMultiple.compareTo(ONE) == 0 ->
+    when (piMultiple) {
+        RATIONAL_ZERO, RATIONAL_ONE ->
             UnifiedValue.ZERO
 
-        piMultiple.compareTo(HALF) == 0 ->
+        RATIONAL_HALF ->
             UnifiedValue.ONE
 
-        piMultiple.compareTo(THREE_HALF) == 0 ->
+        RATIONAL_THREE_HALF ->
             UnifiedValue.NEGATIVE_ONE
 
         else ->
@@ -361,17 +349,16 @@ private fun sinSpecialOrNull(
     }
 
 private fun cosSpecialOrNull(
-    piMultiple: BigDecimal,
+    piMultiple: Rational,
 ): UnifiedValue? =
-    when {
-        piMultiple.compareTo(HALF) == 0 ||
-                piMultiple.compareTo(THREE_HALF) == 0 ->
+    when (piMultiple) {
+        RATIONAL_HALF, RATIONAL_THREE_HALF ->
             UnifiedValue.ZERO
 
-        piMultiple.compareTo(ZERO) == 0 ->
+        RATIONAL_ZERO ->
             UnifiedValue.ONE
 
-        piMultiple.compareTo(ONE) == 0 ->
+        RATIONAL_ONE ->
             UnifiedValue.NEGATIVE_ONE
 
         else ->

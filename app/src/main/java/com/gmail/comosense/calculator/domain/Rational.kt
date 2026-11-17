@@ -84,6 +84,15 @@ class Rational private constructor(
         }
     }
 
+    override fun equals(other: Any?): Boolean =
+        this === other ||
+                other is Rational &&
+                numerator == other.numerator &&
+                denominator == other.denominator
+
+    override fun hashCode(): Int =
+        31 * numerator.hashCode() + denominator.hashCode()
+
     operator fun plus(
         other: Rational,
     ): Rational {
@@ -154,37 +163,19 @@ class Rational private constructor(
         )
     }
 
-    fun negate(): Rational =
-        of(
-            numerator = numerator.negate(),
-            denominator = denominator,
-        )
+    fun modulo(
+        other: Rational,
+    ): Rational {
+        require(!other.isZero())
 
-    fun signum(): Int =
-        numerator.signum()
+        val result: Rational = remainder(other)
 
-    fun isZero(): Boolean =
-        numerator.signum() == 0
-
-    fun isInteger(): Boolean =
-        denominator == BigInteger.ONE
-
-    fun toBigDecimal(
-        mc: MathContext,
-    ): BigDecimal =
-        if (isZero()) {
-            BigDecimal.ZERO
+        return if (result.isZero() || result.signum() == other.signum()) {
+            result
         } else {
-            numerator.toBigDecimal()
-                .divide(denominator.toBigDecimal(), mc)
+            result + other
         }
-
-    fun toBigIntegerExactOrNull(): BigInteger? =
-        if (isInteger()) {
-            numerator
-        } else {
-            null
-        }
+    }
 
     suspend fun pow(
         exponent: Int,
@@ -224,5 +215,57 @@ class Rational private constructor(
                 denominator = numeratorResult,
             )
         }
+    }
+
+    fun negate(): Rational =
+        of(
+            numerator = numerator.negate(),
+            denominator = denominator,
+        )
+
+    fun signum(): Int =
+        numerator.signum()
+
+    fun isZero(): Boolean =
+        numerator.signum() == 0
+
+    fun isInteger(): Boolean =
+        denominator == BigInteger.ONE
+
+    fun toBigDecimal(
+        mc: MathContext,
+    ): BigDecimal =
+        if (isZero()) {
+            BigDecimal.ZERO
+        } else {
+            numerator.toBigDecimal()
+                .divide(denominator.toBigDecimal(), mc)
+        }
+
+    fun toBigIntegerExactOrNull(): BigInteger? =
+        if (isInteger()) {
+            numerator
+        } else {
+            null
+        }
+
+    private fun remainder(
+        other: Rational,
+    ): Rational {
+        require(!other.isZero())
+
+        val quotient: BigInteger =
+            numerator
+                .multiply(other.denominator)
+                .divide(denominator.multiply(other.numerator))
+
+        return minus(
+            other.times(
+                of(
+                    numerator = quotient,
+                    denominator = BigInteger.ONE,
+                ),
+            ),
+        )
     }
 }
