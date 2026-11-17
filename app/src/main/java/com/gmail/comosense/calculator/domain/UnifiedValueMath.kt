@@ -337,7 +337,6 @@ private suspend fun UnifiedValue.toRadians(
         toBigDecimal(mc)
     } else {
         val workingMc: MathContext = workingMc(mc)
-
         toBigDecimal(workingMc)
             .multiply(BigDecimalMath.pi(workingMc))
             .divide(ONE_HUNDRED_EIGHTY, mc)
