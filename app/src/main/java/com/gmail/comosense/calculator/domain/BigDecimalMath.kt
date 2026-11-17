@@ -845,13 +845,15 @@ internal object BigDecimalMath {
     ): BigDecimal =
         cachedConstant(
             cachedValue = cachedLnTen,
-            calculate = { mathContext ->
+            calculate = { workingMc ->
                 calculateLn(
                     value = TEN,
-                    mc = mathContext,
+                    mc = workingMc,
                 )
             },
-            updateCache = { cached -> cachedLnTen = cached },
+            updateCache = { cached ->
+                cachedLnTen = cached
+            },
             mc = mc,
         )
 
@@ -860,13 +862,15 @@ internal object BigDecimalMath {
     ): BigDecimal =
         cachedConstant(
             cachedValue = cachedSqrtTwo,
-            calculate = { mathContext ->
+            calculate = { workingMc ->
                 calculateSqrt(
                     value = TWO,
-                    mc = mathContext,
+                    mc = workingMc,
                 )
             },
-            updateCache = { cached -> cachedSqrtTwo = cached },
+            updateCache = { cached ->
+                cachedSqrtTwo = cached
+            },
             mc = mc,
         )
 
@@ -875,15 +879,17 @@ internal object BigDecimalMath {
     ): BigDecimal =
         cachedConstant(
             cachedValue = cachedInverseSqrtTwo,
-            calculate = { mathContext ->
+            calculate = { workingMc ->
                 ONE.divide(
                     cachedSqrtTwo(
-                        mc = mathContext,
+                        mc = workingMc,
                     ),
-                    mathContext,
+                    workingMc,
                 )
             },
-            updateCache = { cached -> cachedInverseSqrtTwo = cached },
+            updateCache = { cached ->
+                cachedInverseSqrtTwo = cached
+            },
             mc = mc,
         )
 
@@ -892,13 +898,15 @@ internal object BigDecimalMath {
     ): BigDecimal =
         cachedConstant(
             cachedValue = cachedLnTwo,
-            calculate = { mathContext ->
+            calculate = { workingMc ->
                 lnTaylor(
                     value = TWO,
-                    mc = mathContext,
+                    mc = workingMc,
                 )
             },
-            updateCache = { cached -> cachedLnTwo = cached },
+            updateCache = { cached ->
+                cachedLnTwo = cached
+            },
             mc = mc,
         )
 
@@ -907,12 +915,14 @@ internal object BigDecimalMath {
     ): BigDecimal =
         cachedConstant(
             cachedValue = cachedE,
-            calculate = { mathContext ->
+            calculate = { workingMc ->
                 calculateE(
-                    mc = mathContext,
+                    mc = workingMc,
                 )
             },
-            updateCache = { cached -> cachedE = cached },
+            updateCache = { cached ->
+                cachedE = cached
+            },
             mc = mc,
         )
 
@@ -921,12 +931,14 @@ internal object BigDecimalMath {
     ): BigDecimal =
         cachedConstant(
             cachedValue = cachedPi,
-            calculate = { mathContext ->
+            calculate = { workingMc ->
                 calculatePi(
-                    mc = mathContext,
+                    mc = workingMc,
                 )
             },
-            updateCache = { cached -> cachedPi = cached },
+            updateCache = { cached ->
+                cachedPi = cached
+            },
             mc = mc,
         )
 
@@ -935,12 +947,14 @@ internal object BigDecimalMath {
     ): BigDecimal =
         cachedConstant(
             cachedValue = cachedHalfPi,
-            calculate = { mathContext ->
+            calculate = { workingMc ->
                 cachedPi(
-                    mc = mathContext,
+                    mc = workingMc,
                 ).divide(TWO)
             },
-            updateCache = { cached -> cachedHalfPi = cached },
+            updateCache = { cached ->
+                cachedHalfPi = cached
+            },
             mc = mc,
         )
 
@@ -949,12 +963,14 @@ internal object BigDecimalMath {
     ): BigDecimal =
         cachedConstant(
             cachedValue = cachedThreeHalfPi,
-            calculate = { mathContext ->
+            calculate = { workingMc ->
                 cachedPi(
-                    mc = mathContext,
-                ).add(cachedHalfPi(mathContext), mathContext)
+                    mc = workingMc,
+                ).add(cachedHalfPi(workingMc), workingMc)
             },
-            updateCache = { cached -> cachedThreeHalfPi = cached },
+            updateCache = { cached ->
+                cachedThreeHalfPi = cached
+            },
             mc = mc,
         )
 
@@ -963,12 +979,14 @@ internal object BigDecimalMath {
     ): BigDecimal =
         cachedConstant(
             cachedValue = cachedTwoPi,
-            calculate = { mathContext ->
+            calculate = { workingMc ->
                 cachedPi(
-                    mc = mathContext,
+                    mc = workingMc,
                 ).multiply(TWO)
             },
-            updateCache = { cached -> cachedTwoPi = cached },
+            updateCache = { cached ->
+                cachedTwoPi = cached
+            },
             mc = mc,
         )
 
@@ -987,15 +1005,15 @@ internal object BigDecimalMath {
             }
         }
 
-        val mathContext = MathContext(
+        val workingMc = MathContext(
             mc.precision + EXTRA_PRECISION_FOR_CACHE,
             mc.roundingMode,
         )
-        val value = calculate(mathContext)
+        val value = calculate(workingMc)
 
         updateCache(
             MathConstant(
-                mc = mathContext,
+                mc = workingMc,
                 value = value,
             )
         )
