@@ -14,15 +14,19 @@ private val MAX_NON_INTEGER_EXPONENT: BigDecimal =
 private val MAX_EXPONENTIAL_ARGUMENT: BigDecimal =
     Constraints.MAX_EXPONENTIAL_ARGUMENT.toBigDecimal()
 private const val EXTRA_PRECISION_FOR_WORKING: Int = 2
-private val NEGATIVE_ONE: BigDecimal = BigDecimal.ONE.negate()
-private val ZERO: BigDecimal = BigDecimal.ZERO
-private val ONE: BigDecimal = BigDecimal.ONE
-private val ONE_HUNDRED_EIGHTY: BigDecimal = 180.toBigDecimal()
+private val NEGATIVE_ONE: UnifiedValue = UnifiedValue.ONE.negate()
+private val ZERO: UnifiedValue = UnifiedValue.ZERO
+private val ONE: UnifiedValue = UnifiedValue.ONE
+private val BIG_DECIMAL_NEGATIVE_ONE: BigDecimal = BigDecimal.ONE.negate()
+private val BIG_DECIMAL_ZERO: BigDecimal = BigDecimal.ZERO
+private val BIG_DECIMAL_ONE: BigDecimal = BigDecimal.ONE
+private val BIG_DECIMAL_ONE_HUNDRED_EIGHTY: BigDecimal = 180.toBigDecimal()
+private val RATIONAL_NEGATIVE_HALF: Rational = Rational.HALF.negate()
 private val RATIONAL_ZERO: Rational = Rational.ZERO
 private val RATIONAL_HALF: Rational = Rational.HALF
 private val RATIONAL_ONE: Rational = Rational.ONE
-private val RATIONAL_THREE_HALF: Rational = Rational.from("1.5".toBigDecimal())
-private val RATIONAL_TWO: Rational = Rational.from(2.toBigDecimal())
+private val RATIONAL_THREE_HALF: Rational = Rational.ONE + Rational.HALF
+private val RATIONAL_TWO: Rational = Rational.ONE + Rational.ONE
 private val RATIONAL_ONE_HUNDRED_EIGHTY: Rational = Rational.from(180.toBigDecimal())
 
 class FactorialInvalidArgumentException : ArithmeticException()
@@ -45,13 +49,13 @@ internal suspend fun UnifiedValue.pow(
 ): UnifiedValue {
     if (isZero()) {
         if (exponent.signum(mc) > 0) {
-            return UnifiedValue.ZERO
+            return ZERO
         }
         throw PowInvalidArgumentException()
     }
 
     if (exponent.isZero()) {
-        return UnifiedValue.ONE
+        return ONE
     }
 
     return integerExponentOrNull(exponent)
@@ -232,7 +236,7 @@ private suspend fun UnifiedValue.inverseTrigonometricFunction(
                 calculate(value, mc)
             } else {
                 calculate(value, workingMc)
-                    .multiply(ONE_HUNDRED_EIGHTY)
+                    .multiply(BIG_DECIMAL_ONE_HUNDRED_EIGHTY)
                     .divide(BigDecimalMath.pi(workingMc), mc)
             },
     )
@@ -328,7 +332,7 @@ private suspend fun UnifiedValue.toRadians(
         val workingMc: MathContext = workingMc(mc)
         toBigDecimal(workingMc)
             .multiply(BigDecimalMath.pi(workingMc))
-            .divide(ONE_HUNDRED_EIGHTY, mc)
+            .divide(BIG_DECIMAL_ONE_HUNDRED_EIGHTY, mc)
     }
 
 private fun sinSpecialOrNull(
@@ -336,13 +340,13 @@ private fun sinSpecialOrNull(
 ): UnifiedValue? =
     when (piMultiple) {
         RATIONAL_ZERO, RATIONAL_ONE ->
-            UnifiedValue.ZERO
+            ZERO
 
         RATIONAL_HALF ->
-            UnifiedValue.ONE
+            ONE
 
         RATIONAL_THREE_HALF ->
-            UnifiedValue.NEGATIVE_ONE
+            NEGATIVE_ONE
 
         else ->
             null
@@ -353,13 +357,13 @@ private fun cosSpecialOrNull(
 ): UnifiedValue? =
     when (piMultiple) {
         RATIONAL_HALF, RATIONAL_THREE_HALF ->
-            UnifiedValue.ZERO
+            ZERO
 
         RATIONAL_ZERO ->
-            UnifiedValue.ONE
+            ONE
 
         RATIONAL_ONE ->
-            UnifiedValue.NEGATIVE_ONE
+            NEGATIVE_ONE
 
         else ->
             null
@@ -370,14 +374,14 @@ private fun arcsinSpecialOrNull(
     isRadians: Boolean,
 ): UnifiedValue? =
     when {
-        value.compareTo(ZERO) == 0 ->
-            Rational.ZERO
+        value.compareTo(BIG_DECIMAL_ZERO) == 0 ->
+            RATIONAL_ZERO
 
-        value.compareTo(ONE) == 0 ->
-            Rational.HALF
+        value.compareTo(BIG_DECIMAL_ONE) == 0 ->
+            RATIONAL_HALF
 
-        value.compareTo(NEGATIVE_ONE) == 0 ->
-            Rational.NEGATIVE_HALF
+        value.compareTo(BIG_DECIMAL_NEGATIVE_ONE) == 0 ->
+            RATIONAL_NEGATIVE_HALF
 
         else ->
             null
@@ -390,14 +394,14 @@ private fun arccosSpecialOrNull(
     isRadians: Boolean,
 ): UnifiedValue? =
     when {
-        value.compareTo(ZERO) == 0 ->
-            Rational.HALF
+        value.compareTo(BIG_DECIMAL_ZERO) == 0 ->
+            RATIONAL_HALF
 
-        value.compareTo(ONE) == 0 ->
-            Rational.ZERO
+        value.compareTo(BIG_DECIMAL_ONE) == 0 ->
+            RATIONAL_ZERO
 
-        value.compareTo(NEGATIVE_ONE) == 0 ->
-            Rational.ONE
+        value.compareTo(BIG_DECIMAL_NEGATIVE_ONE) == 0 ->
+            RATIONAL_ONE
 
         else ->
             null
@@ -410,8 +414,8 @@ private fun arctanSpecialOrNull(
     isRadians: Boolean,
 ): UnifiedValue? =
     when {
-        value.compareTo(ZERO) == 0 ->
-            Rational.ZERO
+        value.compareTo(BIG_DECIMAL_ZERO) == 0 ->
+            RATIONAL_ZERO
 
         else ->
             null
@@ -428,7 +432,7 @@ private fun Rational.toAngleUnifiedValue(
         )
     } else {
         UnifiedValue.fromApproximateValue(
-            approximateValue = this * Rational.from(ONE_HUNDRED_EIGHTY),
+            approximateValue = this * Rational.from(BIG_DECIMAL_ONE_HUNDRED_EIGHTY),
         )
     }
 

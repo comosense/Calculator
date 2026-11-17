@@ -14,10 +14,6 @@ class Rational private constructor(
     }
 
     companion object {
-        val NEGATIVE_HALF: Rational = Rational(
-            numerator = BigInteger.ONE.negate(),
-            denominator = 2.toBigInteger(),
-        )
         val ZERO: Rational = Rational(
             numerator = BigInteger.ZERO,
             denominator = BigInteger.ONE,

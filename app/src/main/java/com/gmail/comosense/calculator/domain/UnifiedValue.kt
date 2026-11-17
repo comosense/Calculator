@@ -15,9 +15,6 @@ class UnifiedValue private constructor(
     companion object {
         private const val EXTRA_PRECISION_FOR_WORKING: Int = 2
 
-        val NEGATIVE_ONE: UnifiedValue = UnifiedValue(
-            exactValue = BigDecimal.ONE.negate(),
-        )
         val ZERO: UnifiedValue = UnifiedValue()
         val ONE: UnifiedValue = UnifiedValue(
             exactValue = BigDecimal.ONE,
