@@ -312,6 +312,8 @@ private fun ExpressionBox(
             LocalDensity.current
         val minFontSize: TextUnit =
             AppTheme.calculatorScreenDimensions.expressionMinFontSize
+        val maxFontSize: TextUnit =
+            AppTheme.calculatorScreenDimensions.expressionMaxFontSize
         val style: TextStyle =
             LocalTextStyle.current.copy(
                 fontSize = minFontSize,
@@ -361,7 +363,7 @@ private fun ExpressionBox(
                     text = expression,
                     style = TextStyle(
                         color = expressionColor,
-                        fontSize = AppTheme.calculatorScreenDimensions.expressionMinFontSize,
+                        fontSize = minFontSize,
                         fontWeight = FontWeight.Bold,
                     ),
                     softWrap = false,
@@ -378,8 +380,8 @@ private fun ExpressionBox(
                 softWrap = false,
                 maxLines = 1,
                 autoSize = TextAutoSize.StepBased(
-                    maxFontSize = AppTheme.calculatorScreenDimensions.expressionMaxFontSize,
-                    minFontSize = AppTheme.calculatorScreenDimensions.expressionMinFontSize,
+                    minFontSize = minFontSize,
+                    maxFontSize = maxFontSize,
                 ),
             )
         }
