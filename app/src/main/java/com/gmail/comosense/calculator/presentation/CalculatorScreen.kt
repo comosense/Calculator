@@ -24,8 +24,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.TextAutoSize
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -308,23 +308,31 @@ private fun ExpressionBox(
             },
         contentAlignment = Alignment.Center,
     ) {
-        val density: Density = LocalDensity.current
-        val minFontSize: TextUnit = AppTheme.calculatorScreenDimensions.expressionMinFontSize
-        val style: TextStyle = LocalTextStyle.current.copy(fontSize = minFontSize)
-        val measured: TextLayoutResult = remember(
-            expression,
-            minFontSize,
-            maxWidth,
-        ) {
-            textMeasurer.measure(
-                text = expression,
-                style = style,
+        val density: Density =
+            LocalDensity.current
+        val minFontSize: TextUnit =
+            AppTheme.calculatorScreenDimensions.expressionMinFontSize
+        val style: TextStyle =
+            LocalTextStyle.current.copy(
+                fontSize = minFontSize,
+                fontWeight = FontWeight.Bold
             )
-        }
-
-        val needScroll: Boolean = with(density) {
-            measured.size.width > maxWidth.toPx()
-        }
+        val measured: TextLayoutResult =
+            remember(
+                expression,
+                minFontSize,
+                style,
+                maxWidth,
+            ) {
+                textMeasurer.measure(
+                    text = expression,
+                    style = style,
+                )
+            }
+        val needScroll: Boolean =
+            with(density) {
+                measured.size.width > maxWidth.toPx()
+            }
 
         LaunchedEffect(
             expression,
@@ -349,24 +357,30 @@ private fun ExpressionBox(
                     .fillMaxWidth()
                     .horizontalScroll(scrollState),
             ) {
-                Text(
+                BasicText(
                     text = expression,
-                    color = expressionColor,
-                    fontSize = AppTheme.calculatorScreenDimensions.expressionMinFontSize,
-                    fontWeight = FontWeight.Bold,
+                    style = TextStyle(
+                        color = expressionColor,
+                        fontSize = AppTheme.calculatorScreenDimensions.expressionMinFontSize,
+                        fontWeight = FontWeight.Bold,
+                    ),
+                    softWrap = false,
                     maxLines = 1,
                 )
             }
         } else {
-            Text(
+            BasicText(
                 text = expression,
-                color = expressionColor,
+                style = TextStyle(
+                    color = expressionColor,
+                    fontWeight = FontWeight.Bold,
+                ),
+                softWrap = false,
+                maxLines = 1,
                 autoSize = TextAutoSize.StepBased(
                     maxFontSize = AppTheme.calculatorScreenDimensions.expressionMaxFontSize,
                     minFontSize = AppTheme.calculatorScreenDimensions.expressionMinFontSize,
                 ),
-                fontWeight = FontWeight.Bold,
-                maxLines = 1,
             )
         }
 
@@ -481,11 +495,13 @@ private fun KeyButton(
         ) {
             when (val display: Display = key.toDisplay(symbolFormatter)) {
                 is Display.Text ->
-                    Text(
+                    BasicText(
                         text = display.text,
-                        color = keyAppearance.contentColor,
-                        fontSize = keyAppearance.fontSize,
-                        textAlign = TextAlign.Center,
+                        style = TextStyle(
+                            color = keyAppearance.contentColor,
+                            fontSize = keyAppearance.fontSize,
+                            textAlign = TextAlign.Center,
+                        ),
                     )
 
                 is Display.Icon ->
