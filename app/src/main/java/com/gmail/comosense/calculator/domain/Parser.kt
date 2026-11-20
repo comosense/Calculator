@@ -18,21 +18,20 @@ class Parser(
         private const val EXTRA_PRECISION_FOR_WORKING: Int = 2
     }
 
-    private var maxPrecisionMc = MathContext.UNLIMITED
     private var position: Int = 0
 
     suspend fun parse(
         mc: MathContext,
         maxPrecision: Int,
     ): UnifiedValue {
-        maxPrecisionMc = MathContext(
-            maxPrecision,
-            mc.roundingMode,
-        )
         position = 0
 
         val parsed: UnifiedValue = parseExpression(
             mc = mc,
+            maxPrecisionMc = MathContext(
+                maxPrecision,
+                mc.roundingMode,
+            ),
         )
 
         if (!isEnd()) {
@@ -47,10 +46,16 @@ class Parser(
 
     private suspend fun parseExpression(
         mc: MathContext,
+        maxPrecisionMc: MathContext,
     ): UnifiedValue {
-        val coroutineContext: CoroutineContext = currentCoroutineContext()
+        val coroutineContext: CoroutineContext =
+            currentCoroutineContext()
 
-        var value: UnifiedValue = parseTerm(mc)
+        var value: UnifiedValue =
+            parseTerm(
+                mc = mc,
+                maxPrecisionMc = maxPrecisionMc,
+            )
 
         while (!isEnd()) {
             coroutineContext.ensureActive()
@@ -58,12 +63,22 @@ class Parser(
             value = when (expression.getOrNull(position)) {
                 is Symbol.Operator.Add -> {
                     position++
-                    value.add(parseTerm(mc), maxPrecisionMc)
+                    value.add(
+                        other = parseTerm(
+                            mc = mc,
+                            maxPrecisionMc = maxPrecisionMc,
+                        ),
+                    )
                 }
 
                 is Symbol.Operator.Subtract -> {
                     position++
-                    value.subtract(parseTerm(mc), maxPrecisionMc)
+                    value.subtract(
+                        other = parseTerm(
+                            mc = mc,
+                            maxPrecisionMc = maxPrecisionMc,
+                        ),
+                    )
                 }
 
                 else ->
@@ -76,10 +91,16 @@ class Parser(
 
     private suspend fun parseTerm(
         mc: MathContext,
+        maxPrecisionMc: MathContext,
     ): UnifiedValue {
-        val coroutineContext: CoroutineContext = currentCoroutineContext()
+        val coroutineContext: CoroutineContext =
+            currentCoroutineContext()
 
-        var value: UnifiedValue = parseSign(mc)
+        var value: UnifiedValue =
+            parseSign(
+                mc = mc,
+                maxPrecisionMc = maxPrecisionMc,
+            )
 
         while (!isEnd()) {
             coroutineContext.ensureActive()
@@ -87,12 +108,25 @@ class Parser(
             value = when (expression.getOrNull(position)) {
                 is Symbol.Operator.Multiply -> {
                     position++
-                    value.multiply(parseSign(mc), mc, maxPrecisionMc)
+                    value.multiply(
+                        other = parseSign(
+                            mc = mc,
+                            maxPrecisionMc = maxPrecisionMc,
+                        ),
+                        mc = mc,
+                        maxPrecisionMc = maxPrecisionMc,
+                    )
                 }
 
                 is Symbol.Operator.Divide -> {
                     position++
-                    value.divide(parseSign(mc), mc)
+                    value.divide(
+                        other = parseSign(
+                            mc = mc,
+                            maxPrecisionMc = maxPrecisionMc,
+                        ),
+                        mc = mc,
+                    )
                 }
 
                 else ->
@@ -104,33 +138,61 @@ class Parser(
 
     private suspend fun parseSign(
         mc: MathContext,
+        maxPrecisionMc: MathContext,
     ): UnifiedValue {
-        return when (expression.getOrNull(position)) {
-            is Symbol.Sign.Positive -> {
-                position++
-                parseSign(mc)
-            }
+        val coroutineContext: CoroutineContext =
+            currentCoroutineContext()
 
-            is Symbol.Sign.Negative -> {
-                position++
-                parseSign(mc).negate()
-            }
+        var negative = false
 
-            else ->
-                parseBinaryOperation(mc)
+        while (!isEnd()) {
+            coroutineContext.ensureActive()
+
+            when (expression.getOrNull(position)) {
+                is Symbol.Sign.Positive ->
+                    position++
+
+                is Symbol.Sign.Negative -> {
+                    position++
+                    negative = !negative
+                }
+
+                else ->
+                    break
+            }
+        }
+
+        val value: UnifiedValue =
+            parseBinaryOperation(
+                mc = mc,
+                maxPrecisionMc = maxPrecisionMc,
+            )
+
+        return if (negative) {
+            value.negate()
+        } else {
+            value
         }
     }
 
     private suspend fun parseBinaryOperation(
         mc: MathContext,
+        maxPrecisionMc: MathContext,
     ): UnifiedValue {
-        val base: UnifiedValue = parsePostfixOperation(mc)
+        val base: UnifiedValue =
+            parsePostfixOperation(
+                mc = mc,
+                maxPrecisionMc = maxPrecisionMc,
+            )
 
         return when (expression.getOrNull(position)) {
             is Symbol.Operator.Power -> {
                 position++
                 base.pow(
-                    exponent = parseSign(workingMc(mc)),
+                    exponent = parseSign(
+                        mc = mc.withExtraPrecision(EXTRA_PRECISION_FOR_WORKING),
+                        maxPrecisionMc = maxPrecisionMc,
+                    ),
                     mc = mc,
                     maxPrecisionMc = maxPrecisionMc,
                 )
@@ -143,10 +205,15 @@ class Parser(
 
     private suspend fun parsePostfixOperation(
         mc: MathContext,
+        maxPrecisionMc: MathContext,
     ): UnifiedValue {
         val coroutineContext: CoroutineContext = currentCoroutineContext()
 
-        var value: UnifiedValue = parseFactor(mc)
+        var value: UnifiedValue =
+            parseFactor(
+                mc = mc,
+                maxPrecisionMc = maxPrecisionMc,
+            )
 
         while (!isEnd()) {
             coroutineContext.ensureActive()
@@ -167,6 +234,7 @@ class Parser(
 
     private suspend fun parseFactor(
         mc: MathContext,
+        maxPrecisionMc: MathContext,
     ): UnifiedValue {
         if (isEnd()) {
             throw MissingFactorException()
@@ -188,7 +256,10 @@ class Parser(
                 position++
                 applyFunction(
                     function = symbol,
-                    value = parseSign(workingMc(mc)),
+                    value = parseSign(
+                        mc = mc.withExtraPrecision(EXTRA_PRECISION_FOR_WORKING),
+                        maxPrecisionMc = maxPrecisionMc,
+                    ),
                     mc = mc,
                 )
             }
@@ -197,6 +268,7 @@ class Parser(
                 position++
                 parseFactorBody(
                     mc = mc,
+                    maxPrecisionMc = maxPrecisionMc
                 )
             }
 
@@ -204,7 +276,10 @@ class Parser(
                 position++
                 applyFunction(
                     function = symbol,
-                    value = parseFactorBody(workingMc(mc)),
+                    value = parseFactorBody(
+                        mc = mc.withExtraPrecision(EXTRA_PRECISION_FOR_WORKING),
+                        maxPrecisionMc = maxPrecisionMc,
+                    ),
                     mc = mc,
                 )
             }
@@ -216,8 +291,13 @@ class Parser(
 
     private suspend fun parseFactorBody(
         mc: MathContext,
+        maxPrecisionMc: MathContext,
     ): UnifiedValue {
-        val value: UnifiedValue = parseExpression(mc)
+        val value: UnifiedValue =
+            parseExpression(
+                mc = mc,
+                maxPrecisionMc = maxPrecisionMc,
+            )
 
         if (isEnd() ||
             expression.getOrNull(position) !is Symbol.FactorEnd
@@ -343,15 +423,4 @@ class Parser(
                     mc = mc,
                 )
         }
-
-    private fun workingMc(
-        mc: MathContext,
-    ): MathContext {
-        require(mc.precision > 0)
-
-        return MathContext(
-            mc.precision + EXTRA_PRECISION_FOR_WORKING,
-            mc.roundingMode,
-        )
-    }
 }

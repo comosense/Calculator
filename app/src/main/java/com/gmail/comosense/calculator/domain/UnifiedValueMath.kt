@@ -17,12 +17,12 @@ internal object UnifiedValueMathConstraints {
         Constraints.MAX_EXPONENTIAL_ARGUMENT.toBigDecimal()
 }
 
-class FactorialInvalidArgumentException : ArithmeticException()
-class FactorialLargeArgumentException : IllegalArgumentException()
-class PowInvalidArgumentException : ArithmeticException()
-class PowLimitExceededException : IllegalArgumentException()
-class ExpLargeArgumentException : IllegalArgumentException()
-class TanInvalidArgumentException : ArithmeticException()
+internal class FactorialInvalidArgumentException : ArithmeticException()
+internal class FactorialLargeArgumentException : IllegalArgumentException()
+internal class PowInvalidArgumentException : ArithmeticException()
+internal class PowLimitExceededException : IllegalArgumentException()
+internal class ExpLargeArgumentException : IllegalArgumentException()
+internal class TanInvalidArgumentException : ArithmeticException()
 
 private const val EXTRA_PRECISION_FOR_WORKING: Int = 2
 private val NEGATIVE_ONE: UnifiedValue = UnifiedValue.ONE.negate()
@@ -108,7 +108,9 @@ internal suspend fun UnifiedValue.sqrt(
 ): UnifiedValue =
     UnifiedValue.fromApproximateValue(
         approximateValue = BigDecimalMath.sqrt(
-            value = toBigDecimal(workingMc(mc)),
+            value = toBigDecimal(
+                mc = mc.withExtraPrecision(EXTRA_PRECISION_FOR_WORKING),
+            ),
             mc = mc,
         ),
     )
@@ -116,7 +118,9 @@ internal suspend fun UnifiedValue.sqrt(
 internal suspend fun UnifiedValue.exp(
     mc: MathContext,
 ): UnifiedValue {
-    val value: BigDecimal = toBigDecimal(workingMc(mc))
+    val value: BigDecimal = toBigDecimal(
+        mc = mc.withExtraPrecision(EXTRA_PRECISION_FOR_WORKING),
+    )
     if (value.abs() > UnifiedValueMathConstraints.MAX_EXPONENTIAL_ARGUMENT) {
         throw ExpLargeArgumentException()
     }
@@ -134,7 +138,9 @@ internal suspend fun UnifiedValue.ln(
 ): UnifiedValue =
     UnifiedValue.fromApproximateValue(
         approximateValue = BigDecimalMath.ln(
-            value = toBigDecimal(workingMc(mc)),
+            value = toBigDecimal(
+                mc = mc.withExtraPrecision(EXTRA_PRECISION_FOR_WORKING),
+            ),
             mc = mc,
         ),
     )
@@ -144,7 +150,9 @@ internal suspend fun UnifiedValue.log(
 ): UnifiedValue =
     UnifiedValue.fromApproximateValue(
         approximateValue = BigDecimalMath.log(
-            value = toBigDecimal(workingMc(mc)),
+            value = toBigDecimal(
+                mc = mc.withExtraPrecision(EXTRA_PRECISION_FOR_WORKING),
+            ),
             mc = mc,
         ),
     )
@@ -187,7 +195,7 @@ private suspend fun UnifiedValue.trigonometricFunction(
         approximateValue = calculate(
             toRadians(
                 isRadians = isRadians,
-                mc = workingMc(mc),
+                mc = mc.withExtraPrecision(EXTRA_PRECISION_FOR_WORKING),
             ),
             mc,
         ),
@@ -198,7 +206,8 @@ internal suspend fun UnifiedValue.tan(
     isRadians: Boolean,
     mc: MathContext,
 ): UnifiedValue {
-    val workingMc: MathContext = workingMc(mc)
+    val workingMc: MathContext =
+        mc.withExtraPrecision(EXTRA_PRECISION_FOR_WORKING)
 
     val cos: UnifiedValue = cos(
         isRadians = isRadians,
@@ -256,7 +265,8 @@ private suspend fun UnifiedValue.inverseTrigonometricFunction(
     specialValues: List<Pair<BigDecimal, Rational>>,
     calculate: suspend (BigDecimal, MathContext) -> BigDecimal,
 ): UnifiedValue {
-    val workingMc: MathContext = workingMc(mc)
+    val workingMc: MathContext =
+        mc.withExtraPrecision(EXTRA_PRECISION_FOR_WORKING)
     val value: BigDecimal = toBigDecimal(workingMc)
 
     value.toSpecialAngleOrNull(
@@ -328,14 +338,16 @@ private suspend fun powDecimalExponent(
     exponent: UnifiedValue,
     mc: MathContext,
 ): UnifiedValue {
-    val workingMc: MathContext = workingMc(mc)
+    val workingMc: MathContext =
+        mc.withExtraPrecision(EXTRA_PRECISION_FOR_WORKING)
 
-    val bigDecimalBase: BigDecimal = base.toBigDecimal(workingMc)
+    val bigDecimalBase: BigDecimal =
+        base.toBigDecimal(workingMc)
     if (bigDecimalBase.signum() < 0) {
         throw PowInvalidArgumentException()
     }
 
-    val bigDecimalExponent: BigDecimal = exponent.toBigDecimal(workingMc(mc))
+    val bigDecimalExponent: BigDecimal = exponent.toBigDecimal(workingMc)
     if (bigDecimalExponent.abs() > UnifiedValueMathConstraints.MAX_NON_INTEGER_EXPONENT) {
         throw PowLimitExceededException()
     }
@@ -366,7 +378,8 @@ private suspend fun UnifiedValue.toRadians(
     if (isRadians) {
         toBigDecimal(mc)
     } else {
-        val workingMc: MathContext = workingMc(mc)
+        val workingMc: MathContext =
+            mc.withExtraPrecision(EXTRA_PRECISION_FOR_WORKING)
 
         toBigDecimal(workingMc)
             .multiply(BigDecimalMath.pi(workingMc))
@@ -398,14 +411,3 @@ private fun BigDecimal.toSpecialAngleOrNull(
                 )
             }
         }
-
-private fun workingMc(
-    mc: MathContext,
-): MathContext {
-    require(mc.precision > 0)
-
-    return MathContext(
-        mc.precision + EXTRA_PRECISION_FOR_WORKING,
-        mc.roundingMode,
-    )
-}

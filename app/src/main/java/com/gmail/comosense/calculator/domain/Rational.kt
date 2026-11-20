@@ -43,6 +43,7 @@ class Rational private constructor(
             }
 
             val scale: Int = this.scale()
+            require(scale != Int.MIN_VALUE)
 
             return if (scale >= 0) {
                 of(

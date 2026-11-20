@@ -7,13 +7,13 @@ import java.math.BigInteger
 import java.math.MathContext
 import kotlin.coroutines.CoroutineContext
 
-class SqrtInvalidArgumentException : ArithmeticException()
-class LogInvalidArgumentException : ArithmeticException()
-class ArcsinInvalidArgumentException : ArithmeticException()
-class ArccosInvalidArgumentException : ArithmeticException()
+internal class SqrtInvalidArgumentException : ArithmeticException()
+internal class LogInvalidArgumentException : ArithmeticException()
+internal class ArcsinInvalidArgumentException : ArithmeticException()
+internal class ArccosInvalidArgumentException : ArithmeticException()
 
 internal object BigDecimalMath {
-    private const val EXTRA_PRECISION_FOR_INTERNAL_CALCULATIONS: Int = 8
+    private const val EXTRA_PRECISION_FOR_CALCULATIONS: Int = 8
     private const val EXTRA_PRECISION_FOR_ROUNDING: Int = 2
     private const val EXTRA_PRECISION_FOR_CACHE: Int = 8
     private val NEGATIVE_ONE: BigDecimal = BigDecimal.ONE.negate()
@@ -66,14 +66,14 @@ internal object BigDecimalMath {
         mc: MathContext,
     ): BigDecimal =
         cachedE(
-            mc = calculationMc(mc),
+            mc = mc.withExtraPrecision(EXTRA_PRECISION_FOR_CALCULATIONS),
         ).round(mc)
 
     suspend fun pi(
         mc: MathContext,
     ): BigDecimal =
         cachedPi(
-            mc = calculationMc(mc),
+            mc = mc.withExtraPrecision(EXTRA_PRECISION_FOR_CALCULATIONS),
         ).round(mc)
 
     suspend fun factorial(
@@ -102,7 +102,7 @@ internal object BigDecimalMath {
     ): BigDecimal =
         calculateSqrt(
             value = value,
-            mc = calculationMc(mc),
+            mc = mc.withExtraPrecision(EXTRA_PRECISION_FOR_CALCULATIONS),
         ).round(mc)
 
     suspend fun exp(
@@ -115,7 +115,7 @@ internal object BigDecimalMath {
 
         return calculateExp(
             value = value,
-            mc = calculationMc(mc),
+            mc = mc.withExtraPrecision(EXTRA_PRECISION_FOR_CALCULATIONS),
         ).round(mc)
     }
 
@@ -202,7 +202,8 @@ internal object BigDecimalMath {
             return ZERO
         }
 
-        val calculationMc: MathContext = calculationMc(mc)
+        val calculationMc: MathContext =
+            mc.withExtraPrecision(EXTRA_PRECISION_FOR_CALCULATIONS)
 
         return calculateExp(
             value = exponent.multiply(
@@ -222,14 +223,15 @@ internal object BigDecimalMath {
     ): BigDecimal =
         calculateLn(
             value = value,
-            mc = calculationMc(mc),
+            mc = mc.withExtraPrecision(EXTRA_PRECISION_FOR_CALCULATIONS),
         ).round(mc)
 
     suspend fun log(
         value: BigDecimal,
         mc: MathContext,
     ): BigDecimal {
-        val calculationMc: MathContext = calculationMc(mc)
+        val calculationMc: MathContext =
+            mc.withExtraPrecision(EXTRA_PRECISION_FOR_CALCULATIONS)
 
         return calculateLn(value, calculationMc)
             .divide(cachedLnTen(calculationMc), mc)
@@ -241,7 +243,7 @@ internal object BigDecimalMath {
     ): BigDecimal =
         calculateSin(
             radians = radians,
-            mc = calculationMc(mc),
+            mc = mc.withExtraPrecision(EXTRA_PRECISION_FOR_CALCULATIONS),
         ).round(mc)
 
     suspend fun cos(
@@ -250,7 +252,7 @@ internal object BigDecimalMath {
     ): BigDecimal =
         calculateCos(
             radians = radians,
-            mc = calculationMc(mc),
+            mc = mc.withExtraPrecision(EXTRA_PRECISION_FOR_CALCULATIONS),
         ).round(mc)
 
     suspend fun arcsin(
@@ -259,7 +261,7 @@ internal object BigDecimalMath {
     ): BigDecimal =
         calculateArcsin(
             value = value,
-            mc = calculationMc(mc),
+            mc = mc.withExtraPrecision(EXTRA_PRECISION_FOR_CALCULATIONS),
         ).round(mc)
 
     suspend fun arccos(
@@ -268,7 +270,7 @@ internal object BigDecimalMath {
     ): BigDecimal =
         calculateArccos(
             value = value,
-            mc = calculationMc(mc),
+            mc = mc.withExtraPrecision(EXTRA_PRECISION_FOR_CALCULATIONS),
         ).round(mc)
 
     suspend fun arctan(
@@ -277,7 +279,7 @@ internal object BigDecimalMath {
     ): BigDecimal =
         calculateArctan(
             value = value,
-            mc = calculationMc(mc),
+            mc = mc.withExtraPrecision(EXTRA_PRECISION_FOR_CALCULATIONS),
         ).round(mc)
 
     private suspend fun calculateE(
@@ -1006,10 +1008,7 @@ internal object BigDecimalMath {
             }
         }
 
-        val workingMc = MathContext(
-            mc.precision + EXTRA_PRECISION_FOR_CACHE,
-            mc.roundingMode,
-        )
+        val workingMc = mc.withExtraPrecision(EXTRA_PRECISION_FOR_CACHE)
         val value = calculate(workingMc)
 
         updateCache(
@@ -1020,16 +1019,5 @@ internal object BigDecimalMath {
         )
 
         return value.round(mc)
-    }
-
-    private fun calculationMc(
-        mc: MathContext,
-    ): MathContext {
-        require(mc.precision > 0)
-
-        return MathContext(
-            mc.precision + EXTRA_PRECISION_FOR_INTERNAL_CALCULATIONS,
-            mc.roundingMode,
-        )
     }
 }

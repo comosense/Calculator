@@ -82,10 +82,6 @@ private suspend fun parse(
         expression = expression,
         isRadians = isRadians,
     )
-    val workingMc = MathContext(
-        precision + EXTRA_PRECISION_FOR_WORKING,
-        RoundingMode.HALF_UP,
-    )
     val mc = MathContext(
         precision,
         RoundingMode.HALF_UP,
@@ -95,7 +91,7 @@ private suspend fun parse(
         Result.Ok(
             parser
                 .parse(
-                    mc = workingMc,
+                    mc = mc.withExtraPrecision(EXTRA_PRECISION_FOR_WORKING),
                     maxPrecision = CalculatorConstraints.MAX_RESULT_SIZE
                 )
                 .toBigDecimal(

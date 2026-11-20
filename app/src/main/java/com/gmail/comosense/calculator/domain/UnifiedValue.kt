@@ -6,7 +6,7 @@ import java.math.BigInteger
 import java.math.MathContext
 import kotlin.math.abs
 
-class DivisionByZeroException : ArithmeticException()
+internal class DivisionByZeroException : ArithmeticException()
 
 class UnifiedValue private constructor(
     val exactValue: BigDecimal = BigDecimal.ZERO,
@@ -73,7 +73,6 @@ class UnifiedValue private constructor(
 
     fun add(
         other: UnifiedValue,
-        maxPrecisionMc: MathContext,
     ): UnifiedValue {
         if (other.isZero()) {
             return this
@@ -83,7 +82,7 @@ class UnifiedValue private constructor(
         }
 
         return UnifiedValue(
-            exactValue = exactValue.add(other.exactValue, maxPrecisionMc),
+            exactValue = exactValue.add(other.exactValue),
             approximateValue = approximateValue + other.approximateValue,
             piCoefficient = piCoefficient + other.piCoefficient,
         )
@@ -91,12 +90,8 @@ class UnifiedValue private constructor(
 
     fun subtract(
         other: UnifiedValue,
-        maxPrecisionMc: MathContext,
     ): UnifiedValue =
-        add(
-            other = other.negate(),
-            maxPrecisionMc = maxPrecisionMc,
-        )
+        add(other = other.negate())
 
     suspend fun multiply(
         other: UnifiedValue,
@@ -123,7 +118,8 @@ class UnifiedValue private constructor(
                     rightExactValueRational * approximateValue
 
         if (hasPiCoefficient() && other.hasPiCoefficient()) {
-            val workingMc: MathContext = workingMc(mc)
+            val workingMc: MathContext =
+                mc.withExtraPrecision(EXTRA_PRECISION_FOR_WORKING)
 
             newApproximateValue +=
                 (piCoefficient * other.piCoefficient)
@@ -169,7 +165,8 @@ class UnifiedValue private constructor(
             )
         }
 
-        val workingMc: MathContext = workingMc(mc)
+        val workingMc: MathContext =
+            mc.withExtraPrecision(EXTRA_PRECISION_FOR_WORKING)
 
         return UnifiedValue(
             approximateValue = toBigDecimal(workingMc)
@@ -194,9 +191,9 @@ class UnifiedValue private constructor(
             }
         }
 
-        val absExponent: Int = abs(exponent)
         // Each decimal digit requires log_2 10 (about 3.32 bits), so we allocate 4 bits per digit.
         val maxBitLength: Long = maxPrecisionMc.precision.toLong() * 4L
+        val absExponent: Int = abs(exponent)
 
         val hasOnlyApproximateValue: Boolean =
             !hasExactValue() && !hasPiCoefficient()
@@ -217,7 +214,9 @@ class UnifiedValue private constructor(
         val base: BigDecimal = if (hasOnlyExactValue) {
             exactValue
         } else {
-            toBigDecimal(workingMc(mc))
+            toBigDecimal(
+                mc = mc.withExtraPrecision(EXTRA_PRECISION_FOR_WORKING),
+            )
         }
         val result: BigDecimal = BigDecimalMath.powNaturalExponent(
             base = base,
@@ -278,7 +277,9 @@ class UnifiedValue private constructor(
             approximateValue
                 .toBigDecimal(mc)
         } else {
-            val workingMc: MathContext = workingMc(mc)
+            val workingMc: MathContext =
+                mc.withExtraPrecision(EXTRA_PRECISION_FOR_WORKING)
+
             approximateValue
                 .toBigDecimal(workingMc)
                 .add(
@@ -321,15 +322,4 @@ class UnifiedValue private constructor(
 
     private fun hasPiCoefficient(): Boolean =
         !piCoefficient.isZero()
-
-    private fun workingMc(
-        mc: MathContext,
-    ): MathContext {
-        require(mc.precision > 0)
-
-        return MathContext(
-            mc.precision + EXTRA_PRECISION_FOR_WORKING,
-            mc.roundingMode,
-        )
-    }
 }

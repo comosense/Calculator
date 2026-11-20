@@ -11,6 +11,8 @@ enum class SymbolizerError {
 fun BigDecimal.toSymbols(
     maxSymbolSize: Long
 ): Result<List<Symbol>, SymbolizerError> {
+    require(maxSymbolSize >= 0L)
+
     val plainString: String =
         toDisplayStringOrNull(maxSymbolSize)
             ?: return Result.Err(SymbolizerError.TooLarge)
