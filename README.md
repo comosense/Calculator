@@ -2,7 +2,8 @@
 
 A simple calculator app designed specifically for Wear OS smartwatches.
 
-Designed for small, round watch displays, with large, easy-to-tap keys and a compact operator overlay.
+Designed for small, round watch displays, with large, easy-to-tap keys and a compact operator
+overlay.
 
 [![Get it on Google Play](https://img.shields.io/badge/Google_Play-Download-414141?style=for-the-badge&logo=google-play&logoColor=white)](https://play.google.com/store/apps/details?id=com.gmail.comosense.calculator)
 
@@ -34,10 +35,14 @@ Designed for small, round watch displays, with large, easy-to-tap keys and a com
 * Follows standard mathematical operator precedence
 * Supports grouped expressions such as `(1 + 2) × 3`
 * Supports unary `+` and `-`
-* **Continuous calculation**: Pressing an operator or special operator (`+`, `-`, `×`, `÷`, `^`, `!`) immediately after evaluating an expression continues calculation using the previous result
-* **Implicit multiplication**: Automatically inserts `×` when entering constants, functions, or opening parentheses after numbers (e.g., entering `π` after `2` becomes `2×π`)
-* **Auto-completion**: Unclosed parentheses are displayed with a semi-transparent preview and automatically closed when evaluating
-* **Smart decimal point**: Automatically prefixes with `0` when `.` is entered at the beginning of an input or after an operator
+* **Continuous calculation**: Pressing an operator or special operator (`+`, `-`, `×`, `÷`, `^`,
+  `!`) immediately after evaluating an expression continues calculation using the previous result
+* **Implicit multiplication**: Automatically inserts `×` when entering constants, functions, or
+  opening parentheses after numbers (e.g., entering `π` after `2` becomes `2×π`)
+* **Auto-completion**: Unclosed parentheses are displayed with a semi-transparent preview and
+  automatically closed when evaluating
+* **Smart decimal point**: Automatically prefixes with `0` when `.` is entered at the beginning of
+  an input or after an operator
 
 ### Smart keypad
 
@@ -48,14 +53,16 @@ Designed for small, round watch displays, with large, easy-to-tap keys and a com
 * The delete key switches between Backspace and Clear, depending on the input state
 * Long-press the Backspace key to clear the current expression
 * Switch between the main keypad and the scientific function keypad
-* Long-press scientific function keys to access corresponding alternative functions, such as switching between `sin` and `asin`, `cos` and `acos`, or `tan` and `atan`
+* Long-press scientific function keys to access corresponding alternative functions, such as
+  switching between `sin` and `asin`, `cos` and `acos`, or `tan` and `atan`
 
 ### Display
 
 * Locale-aware thousands and decimal separators
 * Text size adjusts automatically to fit the available display area
 * Long expressions remain accessible through horizontal scrolling
-* A calculation progress indicator is displayed while calculating, with an option to cancel the calculation
+* A calculation progress indicator is displayed while calculating, with an option to cancel the
+  calculation
 
 ### Calculation history
 
@@ -75,7 +82,8 @@ Designed for small, round watch displays, with large, easy-to-tap keys and a com
 
 Enter an expression using the keypad and press `=`.
 
-The calculator follows standard mathematical operator precedence, so multiplication is performed before addition.
+The calculator follows standard mathematical operator precedence, so multiplication is performed
+before addition.
 
 For example:
 
@@ -104,11 +112,17 @@ log(100) = 2
 ln(e) = 1
 ```
 
-The scientific keypad also provides squaring, powers of ten, the exponential function, and inverse trigonometric functions.
+The scientific keypad also provides squaring, powers of ten, the exponential function, and inverse
+trigonometric functions.
 
-* Tap the `RAD` / `DEG` key on the scientific keypad to toggle between radian and degree angle modes.
-* Long-press a scientific function key to access its alternative function where available. For example, long-press `sin` to enter `asin`.
-* **Precision and rounding:** Calculations involving irrational constants and transcendental functions (such as `ln(e)`) are subject to the configured precision. At certain settings (such as 8 or 16 digits), results may display slight rounding discrepancies (e.g., `0.999999...` instead of an exact `1`) due to finite series approximations.
+* Tap the `RAD` / `DEG` key on the scientific keypad to toggle between radian and degree angle
+  modes.
+* Long-press a scientific function key to access its alternative function where available. For
+  example, long-press `sin` to enter `asin`.
+* **Precision and rounding:** Calculations involving irrational constants and transcendental
+  functions (such as `ln(e)`) are subject to the configured precision. At certain settings (such as
+  8 or 16 digits), results may display slight rounding discrepancies (e.g., `0.999999...` instead of
+  an exact `1`) due to finite series approximations.
 
 ### Deleting and clearing
 
@@ -123,7 +137,8 @@ Tap the expression display at the top of the calculator to open calculation hist
 From the history screen, you can:
 
 * **Reuse result:** Tap a history item to paste its result into the current input.
-* **Deletion mode:** Long-press any item to enter deletion mode. Tap individual items to delete them, or tap Delete all at the bottom.
+* **Deletion mode:** Long-press any item to enter deletion mode. Tap individual items to delete
+  them, or tap Delete all at the bottom.
 * **Return:** Swipe from the left edge, or press the undo button.
 
 The history is stored locally on the watch using Jetpack DataStore and is limited to 50 entries.
@@ -151,7 +166,8 @@ Long-press the expression display at the top of the calculator to open settings.
 
 ## Calculation engine
 
-The calculator uses a custom expression parser and mathematical calculation engine implemented in Kotlin.
+The calculator uses a custom expression parser and mathematical calculation engine implemented in
+Kotlin.
 
 It does not rely on a general-purpose expression evaluation library.
 
@@ -162,20 +178,22 @@ The engine includes:
 * Unary `+` and `-`
 * Parentheses and grouped expressions
 * Arbitrary-precision decimal arithmetic via `BigDecimal` using `HALF_UP` rounding
-* Custom implementations of square root, exponentiation, factorial, trigonometric functions, logarithms, and mathematical constants
+* Custom implementations of square root, exponentiation, factorial, trigonometric functions,
+  logarithms, and mathematical constants
 
 ### Calculation limits
 
 To keep calculations and displayed results within defined limits:
 
-* Factorial arguments: Non-negative integers up to 253
+* Factorial arguments: Non-negative integers up to 258
 * Integer exponents: Absolute value of 1024 or less
 * Non-integer exponents: Absolute value of 1024 or less
 * Nesting depth: Up to 64 nested levels of parentheses and function calls
 * Result size: Limited to 512 characters when represented in plain decimal notation
 * Expression length: Up to 1024 input symbols
 
-Invalid operations (such as division by zero or negative arguments for square roots/logarithms) are gracefully handled and reported via subtle tactile and visual error messages.
+Invalid operations (such as division by zero or negative arguments for square roots/logarithms) are
+gracefully handled and reported via subtle tactile and visual error messages.
 
 ## Privacy
 
