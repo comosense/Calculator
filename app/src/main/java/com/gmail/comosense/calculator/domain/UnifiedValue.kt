@@ -14,6 +14,11 @@ class UnifiedValue private constructor(
     val piCoefficient: Rational = Rational.ZERO,
 ) {
     companion object {
+        // log2(10) is approximately 3.32 bits per decimal digit, rounded up to 4.
+        private const val DECIMAL_DIGIT_BITS: Long = 4L
+
+        // Prevent excessively large or small BigDecimal scales.
+        private const val SCALE_LIMIT_FACTOR: Long = 2L
         private const val EXTRA_PRECISION_FOR_WORKING: Int = 2
 
         val ZERO: UnifiedValue = UnifiedValue()
@@ -191,9 +196,9 @@ class UnifiedValue private constructor(
             }
         }
 
-        // Each decimal digit requires log_2 10 (about 3.32 bits), so we allocate 4 bits per digit.
-        val maxBitLength: Long = maxPrecisionMc.precision.toLong() * 4L
         val absExponent: Int = abs(exponent)
+        val maxBitLength: Long =
+            maxPrecisionMc.precision.toLong() * DECIMAL_DIGIT_BITS
 
         val hasOnlyApproximateValue: Boolean =
             !hasExactValue() && !hasPiCoefficient()
@@ -224,7 +229,8 @@ class UnifiedValue private constructor(
             mc = maxPrecisionMc,
         )
 
-        val scaleLimit: Long = maxPrecisionMc.precision.toLong() * 2L
+        val scaleLimit: Long =
+            maxPrecisionMc.precision.toLong() * SCALE_LIMIT_FACTOR
         if (abs(result.scale().toLong()) > scaleLimit) {
             throw PowLimitExceededException()
         }
