@@ -75,6 +75,7 @@ internal suspend fun UnifiedValue.factorial(): UnifiedValue =
 internal suspend fun UnifiedValue.pow(
     exponent: UnifiedValue,
     mc: MathContext,
+    maxPrecisionMc: MathContext,
 ): UnifiedValue {
     if (isZero()) {
         if (exponent.signum(mc) > 0) {
@@ -92,6 +93,7 @@ internal suspend fun UnifiedValue.pow(
             pow(
                 exponent = integerExponent,
                 mc = mc,
+                maxPrecisionMc = maxPrecisionMc,
             )
         }
         ?: powDecimalExponent(

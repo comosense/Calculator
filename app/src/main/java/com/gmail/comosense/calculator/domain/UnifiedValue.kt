@@ -132,6 +132,7 @@ class UnifiedValue private constructor(
                         BigDecimalMath.powNaturalExponent(
                             base = BigDecimalMath.pi(workingMc),
                             exponent = 2,
+                            mc = maxPrecisionMc,
                         ),
                         mc,
                     ).toRational()
@@ -180,6 +181,7 @@ class UnifiedValue private constructor(
     suspend fun pow(
         exponent: Int,
         mc: MathContext,
+        maxPrecisionMc: MathContext,
     ): UnifiedValue {
         require(exponent != Int.MIN_VALUE)
 
@@ -192,10 +194,20 @@ class UnifiedValue private constructor(
             }
         }
 
+        val absExponent: Int = abs(exponent)
+        val maxBitLength: Long = maxPrecisionMc.precision.toLong() * 4L
+
         if (!hasExactValue() && !hasPiCoefficient()) {
-            return fromApproximateValue(
-                approximateValue = approximateValue.pow(exponent),
-            )
+            if (
+                maxOf(
+                    approximateValue.numerator.bitLength(),
+                    approximateValue.denominator.bitLength(),
+                ).toLong() * absExponent <= maxBitLength
+            ) {
+                return fromApproximateValue(
+                    approximateValue = approximateValue.pow(exponent),
+                )
+            }
         }
 
         val isExactValue: Boolean = !hasApproximateValue() && !hasPiCoefficient()
@@ -206,7 +218,8 @@ class UnifiedValue private constructor(
         }
         val result: BigDecimal = BigDecimalMath.powNaturalExponent(
             base = base,
-            exponent = abs(exponent),
+            exponent = absExponent,
+            mc = maxPrecisionMc,
         )
 
         return when {

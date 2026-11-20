@@ -132,6 +132,7 @@ class Parser(
                 base.pow(
                     exponent = parseSign(workingMc(mc)),
                     mc = mc,
+                    maxPrecisionMc = maxPrecisionMc,
                 )
             }
 
