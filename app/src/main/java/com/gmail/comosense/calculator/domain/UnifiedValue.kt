@@ -195,23 +195,26 @@ class UnifiedValue private constructor(
         }
 
         val absExponent: Int = abs(exponent)
+        // Each decimal digit requires log_2 10 (about 3.32 bits), so we allocate 4 bits per digit.
         val maxBitLength: Long = maxPrecisionMc.precision.toLong() * 4L
 
-        if (!hasExactValue() && !hasPiCoefficient()) {
-            if (
-                maxOf(
-                    approximateValue.numerator.bitLength(),
-                    approximateValue.denominator.bitLength(),
-                ).toLong() * absExponent <= maxBitLength
-            ) {
+        val hasOnlyApproximateValue: Boolean =
+            !hasExactValue() && !hasPiCoefficient()
+        if (hasOnlyApproximateValue) {
+            val approximateValueBitLength: Long = maxOf(
+                approximateValue.numerator.bitLength(),
+                approximateValue.denominator.bitLength(),
+            ).toLong()
+
+            if (approximateValueBitLength * absExponent <= maxBitLength) {
                 return fromApproximateValue(
                     approximateValue = approximateValue.pow(exponent),
                 )
             }
         }
 
-        val isExactValue: Boolean = !hasApproximateValue() && !hasPiCoefficient()
-        val base: BigDecimal = if (isExactValue) {
+        val hasOnlyExactValue: Boolean = !hasApproximateValue() && !hasPiCoefficient()
+        val base: BigDecimal = if (hasOnlyExactValue) {
             exactValue
         } else {
             toBigDecimal(workingMc(mc))
@@ -222,6 +225,11 @@ class UnifiedValue private constructor(
             mc = maxPrecisionMc,
         )
 
+        val scaleLimit: Long = maxPrecisionMc.precision.toLong() * 2L
+        if (abs(result.scale().toLong()) > scaleLimit) {
+            throw PowLimitExceededException()
+        }
+
         return when {
             exponent < 0 ->
                 fromApproximateValue(
@@ -229,7 +237,7 @@ class UnifiedValue private constructor(
                         .divide(result, mc),
                 )
 
-            isExactValue ->
+            hasOnlyExactValue ->
                 fromExactValue(
                     exactValue = result,
                 )
