@@ -6,14 +6,24 @@ import java.math.BigDecimal
 import java.math.BigInteger
 import java.math.MathContext
 
-private const val MAX_FACTORIAL_ARGUMENT: Int =
-    Constraints.MAX_FACTORIAL_ARGUMENT
-private const val MAX_INTEGER_EXPONENT: Int =
-    Constraints.MAX_INTEGER_EXPONENT
-private val MAX_NON_INTEGER_EXPONENT: BigDecimal =
-    Constraints.MAX_NON_INTEGER_EXPONENT.toBigDecimal()
-private val MAX_EXPONENTIAL_ARGUMENT: BigDecimal =
-    Constraints.MAX_EXPONENTIAL_ARGUMENT.toBigDecimal()
+internal object UnifiedValueMathConstraints {
+    const val MAX_FACTORIAL_ARGUMENT: Int =
+        Constraints.MAX_FACTORIAL_ARGUMENT
+    const val MAX_INTEGER_EXPONENT: Int =
+        Constraints.MAX_INTEGER_EXPONENT
+    val MAX_NON_INTEGER_EXPONENT: BigDecimal =
+        Constraints.MAX_NON_INTEGER_EXPONENT.toBigDecimal()
+    val MAX_EXPONENTIAL_ARGUMENT: BigDecimal =
+        Constraints.MAX_EXPONENTIAL_ARGUMENT.toBigDecimal()
+}
+
+class FactorialInvalidArgumentException : ArithmeticException()
+class FactorialLargeArgumentException : IllegalArgumentException()
+class PowInvalidArgumentException : ArithmeticException()
+class PowLimitExceededException : IllegalArgumentException()
+class ExpLargeArgumentException : IllegalArgumentException()
+class TanInvalidArgumentException : ArithmeticException()
+
 private const val EXTRA_PRECISION_FOR_WORKING: Int = 2
 private val NEGATIVE_ONE: UnifiedValue = UnifiedValue.ONE.negate()
 private val ZERO: UnifiedValue = UnifiedValue.ZERO
@@ -54,13 +64,6 @@ private val ARCCOS_SPECIAL_VALUES: List<Pair<BigDecimal, Rational>> = listOf(
 private val ARCTAN_SPECIAL_VALUES: List<Pair<BigDecimal, Rational>> = listOf(
     BIG_DECIMAL_ZERO to RATIONAL_ZERO,
 )
-
-class FactorialInvalidArgumentException : ArithmeticException()
-class FactorialLargeArgumentException : IllegalArgumentException()
-class PowInvalidArgumentException : ArithmeticException()
-class PowLimitExceededException : IllegalArgumentException()
-class ExpLargeArgumentException : IllegalArgumentException()
-class TanInvalidArgumentException : ArithmeticException()
 
 internal suspend fun UnifiedValue.factorial(): UnifiedValue =
     UnifiedValue.fromExactValue(
@@ -112,7 +115,7 @@ internal suspend fun UnifiedValue.exp(
     mc: MathContext,
 ): UnifiedValue {
     val value: BigDecimal = toBigDecimal(workingMc(mc))
-    if (value.abs() > MAX_EXPONENTIAL_ARGUMENT) {
+    if (value.abs() > UnifiedValueMathConstraints.MAX_EXPONENTIAL_ARGUMENT) {
         throw ExpLargeArgumentException()
     }
 
@@ -288,7 +291,7 @@ private fun factorialArgument(
         throw FactorialLargeArgumentException()
     }
 
-    if (argument > MAX_FACTORIAL_ARGUMENT) {
+    if (argument > UnifiedValueMathConstraints.MAX_FACTORIAL_ARGUMENT) {
         throw FactorialLargeArgumentException()
     }
 
@@ -308,7 +311,10 @@ private fun integerExponentOrNull(
         throw PowLimitExceededException()
     }
 
-    if (exponent !in -MAX_INTEGER_EXPONENT..MAX_INTEGER_EXPONENT) {
+    if (exponent !in
+        -UnifiedValueMathConstraints.MAX_INTEGER_EXPONENT..
+        UnifiedValueMathConstraints.MAX_INTEGER_EXPONENT
+    ) {
         throw PowLimitExceededException()
     }
 
@@ -328,7 +334,7 @@ private suspend fun powDecimalExponent(
     }
 
     val bigDecimalExponent: BigDecimal = exponent.toBigDecimal(workingMc(mc))
-    if (bigDecimalExponent.abs() > MAX_NON_INTEGER_EXPONENT) {
+    if (bigDecimalExponent.abs() > UnifiedValueMathConstraints.MAX_NON_INTEGER_EXPONENT) {
         throw PowLimitExceededException()
     }
 

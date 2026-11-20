@@ -5,7 +5,7 @@ import com.gmail.comosense.calculator.common.Result
 import java.math.BigDecimal
 
 internal object SymbolizerConstraints {
-    const val MAX_RESULT_SIZE: Int = Constraints.MAX_RESULT_SIZE
+    const val MAX_RESULT_SIZE: Long = Constraints.MAX_RESULT_SIZE.toLong()
 }
 
 enum class SymbolizerError {
@@ -14,11 +14,10 @@ enum class SymbolizerError {
 }
 
 fun BigDecimal.toSymbols(): Result<List<Symbol>, SymbolizerError> {
-    val plainString: String = stripTrailingZeros().toPlainString()
-
-    if (plainString.length > SymbolizerConstraints.MAX_RESULT_SIZE) {
-        return Result.Err(SymbolizerError.TooLarge)
-    }
+    val plainString: String =
+        stripTrailingZeros()
+            .toPlainStringOrNull(SymbolizerConstraints.MAX_RESULT_SIZE)
+            ?: return Result.Err(SymbolizerError.TooLarge)
 
     val symbols: List<Symbol> = buildList {
         for (c in plainString) {
@@ -41,4 +40,28 @@ fun BigDecimal.toSymbols(): Result<List<Symbol>, SymbolizerError> {
     }
 
     return Result.Ok(symbols)
+}
+
+private fun BigDecimal.toPlainStringOrNull(
+    maxLength: Long,
+): String? {
+    val sign: Long = if (signum() < 0) {
+        1L
+    } else {
+        0
+    }
+    val precision: Long = precision().toLong()
+    val scale: Long = scale().toLong()
+
+    val length: Long = sign + when {
+        scale <= 0 -> precision - scale
+        precision > scale -> precision + 1
+        else -> scale + 2
+    }
+
+    return if (length <= maxLength) {
+        toPlainString()
+    } else {
+        null
+    }
 }
