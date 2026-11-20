@@ -249,26 +249,25 @@ class UnifiedValue private constructor(
     suspend fun toBigDecimal(
         mc: MathContext,
     ): BigDecimal {
-        val workingMc: MathContext = workingMc(mc)
+        if (!hasApproximateValue() && !hasPiCoefficient()) {
+            return exactValue
+        }
 
-        val approximatePart: BigDecimal =
-            if (hasApproximateValue()) {
-                approximateValue.toBigDecimal(workingMc)
-            } else {
-                BigDecimal.ZERO
-            }
-        val piPart: BigDecimal =
-            if (hasPiCoefficient()) {
-                piCoefficient.toBigDecimal(workingMc)
-                    .multiply(
-                        BigDecimalMath.pi(workingMc),
-                        workingMc,
-                    )
-            } else {
-                BigDecimal.ZERO
-            }
-        val roundedValue: BigDecimal =
-            approximatePart.add(piPart, mc)
+        val roundedValue: BigDecimal = if (!hasPiCoefficient()) {
+            approximateValue
+                .toBigDecimal(mc)
+        } else {
+            val workingMc: MathContext = workingMc(mc)
+            approximateValue
+                .toBigDecimal(workingMc)
+                .add(
+                    piCoefficient.toBigDecimal(workingMc)
+                        .multiply(
+                            BigDecimalMath.pi(workingMc),
+                            workingMc
+                        )
+                ).round(mc)
+        }
 
         return exactValue.add(roundedValue)
     }

@@ -41,13 +41,22 @@ fun BigDecimal.toSymbols(
 private fun BigDecimal.toDisplayStringOrNull(
     maxLength: Long,
 ): String? {
-    val sign: Long = if (signum() < 0) {
+    if (signum() == 0) {
+        return if (maxLength >= 1L) {
+            "0"
+        } else {
+            null
+        }
+    }
+
+    val stripped: BigDecimal = stripTrailingZeros()
+    val sign: Long = if (stripped.signum() < 0) {
         1L
     } else {
         0
     }
-    val precision: Long = precision().toLong()
-    val scale: Long = scale().toLong()
+    val precision: Long = stripped.precision().toLong()
+    val scale: Long = stripped.scale().toLong()
 
     val length: Long = sign + when {
         scale <= 0 -> precision - scale
@@ -56,7 +65,7 @@ private fun BigDecimal.toDisplayStringOrNull(
     }
 
     return if (length <= maxLength) {
-        stripTrailingZeros().toPlainString()
+        stripped.toPlainString()
     } else {
         null
     }

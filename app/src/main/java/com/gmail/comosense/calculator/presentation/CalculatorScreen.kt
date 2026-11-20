@@ -62,6 +62,7 @@ import androidx.wear.compose.material3.Icon
 import androidx.wear.compose.material3.IconButton
 import androidx.wear.compose.material3.LocalTextStyle
 import androidx.wear.compose.material3.ScreenScaffold
+import androidx.wear.compose.material3.Text
 import com.gmail.comosense.calculator.R
 import com.gmail.comosense.calculator.domain.Symbol
 import com.gmail.comosense.calculator.presentation.theme.AppTheme
@@ -314,21 +315,23 @@ private fun ExpressionBox(
             AppTheme.calculatorScreenDimensions.expressionMinFontSize
         val maxFontSize: TextUnit =
             AppTheme.calculatorScreenDimensions.expressionMaxFontSize
-        val style: TextStyle =
+        val baseStyle: TextStyle =
             LocalTextStyle.current.copy(
+                fontWeight = FontWeight.Bold,
+            )
+        val measureStyle: TextStyle =
+            baseStyle.copy(
                 fontSize = minFontSize,
-                fontWeight = FontWeight.Bold
             )
         val measured: TextLayoutResult =
             remember(
                 expression,
-                minFontSize,
-                style,
+                measureStyle,
                 maxWidth,
             ) {
                 textMeasurer.measure(
                     text = expression,
-                    style = style,
+                    style = measureStyle,
                 )
             }
         val needScroll: Boolean =
@@ -361,10 +364,8 @@ private fun ExpressionBox(
             ) {
                 BasicText(
                     text = expression,
-                    style = TextStyle(
+                    style = measureStyle.copy(
                         color = expressionColor,
-                        fontSize = minFontSize,
-                        fontWeight = FontWeight.Bold,
                     ),
                     softWrap = false,
                     maxLines = 1,
@@ -373,9 +374,9 @@ private fun ExpressionBox(
         } else {
             BasicText(
                 text = expression,
-                style = TextStyle(
+                style = baseStyle.copy(
                     color = expressionColor,
-                    fontWeight = FontWeight.Bold,
+                    fontSize = TextUnit.Unspecified,
                 ),
                 softWrap = false,
                 maxLines = 1,
@@ -497,13 +498,11 @@ private fun KeyButton(
         ) {
             when (val display: Display = key.toDisplay(symbolFormatter)) {
                 is Display.Text ->
-                    BasicText(
+                    Text(
                         text = display.text,
-                        style = TextStyle(
-                            color = keyAppearance.contentColor,
-                            fontSize = keyAppearance.fontSize,
-                            textAlign = TextAlign.Center,
-                        ),
+                        color = keyAppearance.contentColor,
+                        fontSize = keyAppearance.fontSize,
+                        textAlign = TextAlign.Center,
                     )
 
                 is Display.Icon ->
