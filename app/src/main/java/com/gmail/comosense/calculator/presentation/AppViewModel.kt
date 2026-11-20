@@ -33,6 +33,7 @@ import kotlinx.coroutines.withContext
 enum class AppViewModelError {
     HistoryNotFound,
     UnacceptableSymbol,
+    ExpressionInsertionNotAllowed,
     ExpressionTooLarge,
 }
 
@@ -365,6 +366,14 @@ class AppViewModel(
                     appState = appState,
                     appEvent = AppEvent.AppViewModelError(
                         AppViewModelError.UnacceptableSymbol,
+                    ),
+                )
+
+            is AppStateUpdateResult.ExpressionInsertionNotAllowed ->
+                AppStateTransition(
+                    appState = appState,
+                    appEvent = AppEvent.AppViewModelError(
+                        AppViewModelError.ExpressionInsertionNotAllowed,
                     ),
                 )
 

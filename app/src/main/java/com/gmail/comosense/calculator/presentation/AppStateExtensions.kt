@@ -12,7 +12,8 @@ sealed interface AppStateUpdateResult {
     data class Success(val appState: AppState) : AppStateUpdateResult
     data object ExpressionTooLarge : AppStateUpdateResult
     data object UnacceptableSymbol : AppStateUpdateResult
-    data object HistoryNotFound : AppStateUpdateResult
+    data object ExpressionInsertionNotAllowed : AppStateUpdateResult
+    object HistoryNotFound : AppStateUpdateResult
 }
 
 val AppState.baseExpression: List<Symbol>
@@ -103,7 +104,7 @@ fun AppState.applyHistory(
     }
 
     if (!canAppend(result)) {
-        return AppStateUpdateResult.UnacceptableSymbol
+        return AppStateUpdateResult.ExpressionInsertionNotAllowed
     }
 
     if (expression.size + result.size >
