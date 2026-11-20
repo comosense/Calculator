@@ -18,11 +18,17 @@ class Parser(
         private const val EXTRA_PRECISION_FOR_WORKING: Int = 2
     }
 
+    private var maxPrecisionMc = MathContext.UNLIMITED
     private var position: Int = 0
 
     suspend fun parse(
         mc: MathContext,
+        maxPrecision: Int,
     ): UnifiedValue {
+        maxPrecisionMc = MathContext(
+            maxPrecision,
+            mc.roundingMode,
+        )
         position = 0
 
         val parsed: UnifiedValue = parseExpression(
@@ -52,12 +58,12 @@ class Parser(
             value = when (expression.getOrNull(position)) {
                 is Symbol.Operator.Add -> {
                     position++
-                    value.add(parseTerm(mc))
+                    value.add(parseTerm(mc), maxPrecisionMc)
                 }
 
                 is Symbol.Operator.Subtract -> {
                     position++
-                    value.subtract(parseTerm(mc))
+                    value.subtract(parseTerm(mc), maxPrecisionMc)
                 }
 
                 else ->
@@ -81,7 +87,7 @@ class Parser(
             value = when (expression.getOrNull(position)) {
                 is Symbol.Operator.Multiply -> {
                     position++
-                    value.multiply(parseSign(mc), mc)
+                    value.multiply(parseSign(mc), mc, maxPrecisionMc)
                 }
 
                 is Symbol.Operator.Divide -> {

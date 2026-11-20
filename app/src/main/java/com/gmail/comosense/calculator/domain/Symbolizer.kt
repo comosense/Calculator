@@ -1,21 +1,18 @@
 package com.gmail.comosense.calculator.domain
 
-import com.gmail.comosense.calculator.common.Constraints
 import com.gmail.comosense.calculator.common.Result
 import java.math.BigDecimal
-
-internal object SymbolizerConstraints {
-    const val MAX_RESULT_SIZE: Long = Constraints.MAX_RESULT_SIZE.toLong()
-}
 
 enum class SymbolizerError {
     TooLarge,
     Unsupported,
 }
 
-fun BigDecimal.toSymbols(): Result<List<Symbol>, SymbolizerError> {
+fun BigDecimal.toSymbols(
+    maxSymbolSize: Long
+): Result<List<Symbol>, SymbolizerError> {
     val plainString: String =
-        toDisplayStringOrNull(SymbolizerConstraints.MAX_RESULT_SIZE)
+        toDisplayStringOrNull(maxSymbolSize)
             ?: return Result.Err(SymbolizerError.TooLarge)
 
     val symbols: List<Symbol> = buildList {

@@ -73,6 +73,7 @@ class UnifiedValue private constructor(
 
     fun add(
         other: UnifiedValue,
+        maxPrecisionMc: MathContext,
     ): UnifiedValue {
         if (other.isZero()) {
             return this
@@ -82,7 +83,7 @@ class UnifiedValue private constructor(
         }
 
         return UnifiedValue(
-            exactValue = exactValue.add(other.exactValue),
+            exactValue = exactValue.add(other.exactValue, maxPrecisionMc),
             approximateValue = approximateValue + other.approximateValue,
             piCoefficient = piCoefficient + other.piCoefficient,
         )
@@ -90,19 +91,26 @@ class UnifiedValue private constructor(
 
     fun subtract(
         other: UnifiedValue,
+        maxPrecisionMc: MathContext,
     ): UnifiedValue =
-        add(other.negate())
+        add(
+            other = other.negate(),
+            maxPrecisionMc = maxPrecisionMc,
+        )
 
     suspend fun multiply(
         other: UnifiedValue,
         mc: MathContext,
+        maxPrecisionMc: MathContext,
     ): UnifiedValue {
+        require(maxPrecisionMc.precision >= mc.precision)
+
         if (other.isZero() || isZero()) {
             return ZERO
         }
 
         val newExactValue: BigDecimal =
-            exactValue.multiply(other.exactValue)
+            exactValue.multiply(other.exactValue, maxPrecisionMc)
 
         val leftExactValueRational: Rational =
             exactValue.toRational()
@@ -259,7 +267,8 @@ class UnifiedValue private constructor(
             } else {
                 BigDecimal.ZERO
             }
-        val roundedValue: BigDecimal = approximatePart.add(piPart, mc)
+        val roundedValue: BigDecimal =
+            approximatePart.add(piPart, mc)
 
         return exactValue.add(roundedValue)
     }

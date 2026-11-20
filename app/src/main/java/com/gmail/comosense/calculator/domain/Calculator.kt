@@ -1,10 +1,15 @@
 package com.gmail.comosense.calculator.domain
 
+import com.gmail.comosense.calculator.common.Constraints
 import com.gmail.comosense.calculator.common.Result
 import kotlinx.coroutines.CancellationException
 import java.math.BigDecimal
 import java.math.MathContext
 import java.math.RoundingMode
+
+internal object CalculatorConstraints {
+    const val MAX_RESULT_SIZE: Int = Constraints.MAX_RESULT_SIZE
+}
 
 enum class CalculatorError {
     Unsupported,
@@ -49,7 +54,9 @@ suspend fun calculate(
     }
 
     val calculatedSymbolsResult: Result<List<Symbol>, SymbolizerError> =
-        calculated.toSymbols()
+        calculated.toSymbols(
+            maxSymbolSize = CalculatorConstraints.MAX_RESULT_SIZE.toLong(),
+        )
 
     return when (calculatedSymbolsResult) {
         is Result.Ok ->
@@ -87,8 +94,13 @@ private suspend fun parse(
     return try {
         Result.Ok(
             parser
-                .parse(workingMc)
-                .toBigDecimal(mc),
+                .parse(
+                    mc = workingMc,
+                    maxPrecision = CalculatorConstraints.MAX_RESULT_SIZE
+                )
+                .toBigDecimal(
+                    mc = mc,
+                ),
         )
     } catch (e: CancellationException) {
         throw e
