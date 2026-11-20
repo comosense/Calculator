@@ -48,11 +48,12 @@ fun WearApp(
     onAppAction: (AppAction) -> Unit,
     locale: Locale,
 ) {
+    val coroutineScope: CoroutineScope = rememberCoroutineScope()
+    val swipeToDismissBoxState: SwipeToDismissBoxState = rememberSwipeToDismissBoxState()
+    val symbolFormatter: SymbolFormatter = remember(locale) { SymbolFormatter(locale) }
+
     var currentScreen: AppScreen by remember { mutableStateOf(AppScreen.Calculator) }
     var isHistoryDeleteMode: Boolean by remember { mutableStateOf(false) }
-    val swipeToDismissBoxState: SwipeToDismissBoxState = rememberSwipeToDismissBoxState()
-    val coroutineScope: CoroutineScope = rememberCoroutineScope()
-    val symbolFormatter: SymbolFormatter = remember(locale) { SymbolFormatter(locale) }
 
     fun changeScreen(
         appScreen: AppScreen? = null,
@@ -150,6 +151,8 @@ private fun HandleEvent(
     val context: Context = LocalContext.current
     val view: View = LocalView.current
 
+    var currentToast: Toast? by remember { mutableStateOf(null) }
+
     LaunchedEffect(appEvent) {
         appEvent.collect { appEvent ->
             view.performHapticFeedback(
@@ -172,12 +175,13 @@ private fun HandleEvent(
             }
 
             messageResourceId?.let { resId ->
-                Toast.makeText(
+                currentToast?.cancel()
+
+                currentToast = Toast.makeText(
                     context,
                     resId,
                     Toast.LENGTH_SHORT,
-                ).show()
-
+                ).apply { show() }
             }
         }
     }

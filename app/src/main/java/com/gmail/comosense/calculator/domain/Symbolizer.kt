@@ -15,8 +15,7 @@ enum class SymbolizerError {
 
 fun BigDecimal.toSymbols(): Result<List<Symbol>, SymbolizerError> {
     val plainString: String =
-        stripTrailingZeros()
-            .toPlainStringOrNull(SymbolizerConstraints.MAX_RESULT_SIZE)
+        toDisplayStringOrNull(SymbolizerConstraints.MAX_RESULT_SIZE)
             ?: return Result.Err(SymbolizerError.TooLarge)
 
     val symbols: List<Symbol> = buildList {
@@ -42,7 +41,7 @@ fun BigDecimal.toSymbols(): Result<List<Symbol>, SymbolizerError> {
     return Result.Ok(symbols)
 }
 
-private fun BigDecimal.toPlainStringOrNull(
+private fun BigDecimal.toDisplayStringOrNull(
     maxLength: Long,
 ): String? {
     val sign: Long = if (signum() < 0) {
@@ -60,7 +59,7 @@ private fun BigDecimal.toPlainStringOrNull(
     }
 
     return if (length <= maxLength) {
-        toPlainString()
+        stripTrailingZeros().toPlainString()
     } else {
         null
     }
