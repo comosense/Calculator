@@ -14,9 +14,6 @@ class UnifiedValue private constructor(
     val piCoefficient: Rational = Rational.ZERO,
 ) {
     companion object {
-        // log2(10) is approximately 3.32 bits per decimal digit, rounded up to 4.
-        private const val DECIMAL_DIGIT_BITS: Long = 4L
-
         // Prevent excessively large or small BigDecimal scales.
         private const val SCALE_LIMIT_FACTOR: Long = 2L
         private const val EXTRA_PRECISION_FOR_WORKING: Int = 2
@@ -196,22 +193,13 @@ class UnifiedValue private constructor(
             }
         }
 
-        val absExponent: Int = abs(exponent)
-        val maxBitLength: Long =
-            maxPrecisionMc.precision.toLong() * DECIMAL_DIGIT_BITS
-
         val hasOnlyApproximateValue: Boolean =
             !hasExactValue() && !hasPiCoefficient()
         if (hasOnlyApproximateValue) {
-            val approximateValueBitLength: Long = maxOf(
-                approximateValue.numerator.bitLength(),
-                approximateValue.denominator.bitLength(),
-            ).toLong()
-
-            if (approximateValueBitLength * absExponent <= maxBitLength) {
-                return fromApproximateValue(
-                    approximateValue = approximateValue.pow(exponent),
-                )
+            approximateValue.powOrNull(
+                exponent = exponent,
+            )?.let { result ->
+                return fromApproximateValue(result)
             }
         }
 
@@ -225,7 +213,7 @@ class UnifiedValue private constructor(
         }
         val result: BigDecimal = BigDecimalMath.powNaturalExponent(
             base = base,
-            exponent = absExponent,
+            exponent = abs(exponent),
             mc = maxPrecisionMc,
         )
 

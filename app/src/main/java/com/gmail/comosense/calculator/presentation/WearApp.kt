@@ -226,5 +226,6 @@ private fun CalculatorError.messageResourceId(): Int =
         CalculatorError.TanInvalidArgument -> R.string.calculator_error_tan_invalid_argument
         CalculatorError.ArcsinInvalidArgument -> R.string.calculator_error_arcsin_invalid_argument
         CalculatorError.ArccosInvalidArgument -> R.string.calculator_error_arccos_invalid_argument
+        CalculatorError.CalculationLimitExceeded -> R.string.calculator_error_calculation_limit_exceeded
         CalculatorError.Arithmetic -> R.string.calculator_error_arithmetic
     }

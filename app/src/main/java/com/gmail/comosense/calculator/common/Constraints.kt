@@ -13,6 +13,8 @@ internal object Constraints {
     const val MAX_RESULT_SIZE: Int = 512
     const val MAX_EXPRESSION_SIZE: Int = 1024
     const val MAX_NESTING_DEPTH: Int = 64
+    const val MAX_RATIONAL_DECIMAL_SCALE: Long = MAX_EXPRESSION_SIZE.toLong()
+    const val MAX_RATIONAL_POW_COMPONENT_BIT_LENGTH: Long = 4096L
     const val MAX_FACTORIAL_ARGUMENT: Int = 258
     const val MAX_EXPONENTIAL_ARGUMENT: Int = 1024
     const val MAX_INTEGER_EXPONENT: Int = 1024

@@ -26,6 +26,7 @@ enum class CalculatorError {
     TanInvalidArgument,
     ArcsinInvalidArgument,
     ArccosInvalidArgument,
+    CalculationLimitExceeded,
     Arithmetic,
 }
 
@@ -130,6 +131,8 @@ private suspend fun parse(
         Result.Err(CalculatorError.ArccosInvalidArgument)
     } catch (_: IllegalArgumentException) {
         Result.Err(CalculatorError.InvalidExpression)
+    } catch (_: RationalLimitExceededException) {
+        Result.Err(CalculatorError.CalculationLimitExceeded)
     } catch (_: ArithmeticException) {
         Result.Err(CalculatorError.Arithmetic)
     }

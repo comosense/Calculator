@@ -1,9 +1,12 @@
 package com.gmail.comosense.calculator.domain
 
+import com.gmail.comosense.calculator.common.Constraints
 import java.math.BigDecimal
 import java.math.BigInteger
 import java.math.MathContext
 import kotlin.math.abs
+
+class RationalLimitExceededException : ArithmeticException()
 
 class Rational private constructor(
     val numerator: BigInteger,
@@ -14,6 +17,11 @@ class Rational private constructor(
     }
 
     companion object {
+        private const val MAX_RATIONAL_DECIMAL_SCALE: Long =
+            Constraints.MAX_RATIONAL_DECIMAL_SCALE
+        private const val MAX_RATIONAL_POW_COMPONENT_BIT_LENGTH: Long =
+            Constraints.MAX_RATIONAL_POW_COMPONENT_BIT_LENGTH
+
         val ZERO: Rational = Rational(
             numerator = BigInteger.ZERO,
             denominator = BigInteger.ONE,
@@ -42,19 +50,24 @@ class Rational private constructor(
                 return ZERO
             }
 
-            val scale: Int = this.scale()
+            val stripped: BigDecimal = this.stripTrailingZeros()
+            val scale: Int = stripped.scale()
             require(scale != Int.MIN_VALUE)
+
+            if (abs(scale.toLong()) > MAX_RATIONAL_DECIMAL_SCALE) {
+                throw RationalLimitExceededException()
+            }
 
             return if (scale >= 0) {
                 of(
-                    numerator = this
+                    numerator = stripped
                         .unscaledValue(),
                     denominator = BigInteger.TEN
                         .pow(scale),
                 )
             } else {
                 of(
-                    numerator = this
+                    numerator = stripped
                         .unscaledValue()
                         .multiply(BigInteger.TEN.pow(-scale)),
                     denominator = BigInteger.ONE,
@@ -189,7 +202,56 @@ class Rational private constructor(
         }
     }
 
-    suspend fun pow(
+    suspend fun powOrNull(
+        exponent: Int,
+    ): Rational? {
+        require(exponent != Int.MIN_VALUE)
+
+        val estimatedBits: Long = maxOf(
+            numerator.bitLength(),
+            denominator.bitLength(),
+        ).toLong() * abs(exponent.toLong())
+
+        return if (estimatedBits > MAX_RATIONAL_POW_COMPONENT_BIT_LENGTH) {
+            null
+        } else {
+            pow(exponent)
+        }
+    }
+
+    fun negate(): Rational =
+        of(
+            numerator = numerator.negate(),
+            denominator = denominator,
+        )
+
+    fun signum(): Int =
+        numerator.signum()
+
+    fun isZero(): Boolean =
+        numerator.signum() == 0
+
+    fun isInteger(): Boolean =
+        denominator == BigInteger.ONE
+
+    fun toBigDecimal(
+        mc: MathContext,
+    ): BigDecimal =
+        if (isZero()) {
+            BigDecimal.ZERO
+        } else {
+            numerator.toBigDecimal()
+                .divide(denominator.toBigDecimal(), mc)
+        }
+
+    fun toBigIntegerExactOrNull(): BigInteger? =
+        if (isInteger()) {
+            numerator
+        } else {
+            null
+        }
+
+    private suspend fun pow(
         exponent: Int,
     ): Rational {
         require(exponent != Int.MIN_VALUE)
@@ -228,38 +290,6 @@ class Rational private constructor(
             )
         }
     }
-
-    fun negate(): Rational =
-        of(
-            numerator = numerator.negate(),
-            denominator = denominator,
-        )
-
-    fun signum(): Int =
-        numerator.signum()
-
-    fun isZero(): Boolean =
-        numerator.signum() == 0
-
-    fun isInteger(): Boolean =
-        denominator == BigInteger.ONE
-
-    fun toBigDecimal(
-        mc: MathContext,
-    ): BigDecimal =
-        if (isZero()) {
-            BigDecimal.ZERO
-        } else {
-            numerator.toBigDecimal()
-                .divide(denominator.toBigDecimal(), mc)
-        }
-
-    fun toBigIntegerExactOrNull(): BigInteger? =
-        if (isInteger()) {
-            numerator
-        } else {
-            null
-        }
 
     private fun remainder(
         other: Rational,
