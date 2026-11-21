@@ -17,10 +17,8 @@ class Rational private constructor(
     }
 
     companion object {
-        private const val MAX_RATIONAL_DECIMAL_SCALE: Long =
-            Constraints.MAX_RATIONAL_DECIMAL_SCALE
-        private const val MAX_RATIONAL_POW_COMPONENT_BIT_LENGTH: Long =
-            Constraints.MAX_RATIONAL_POW_COMPONENT_BIT_LENGTH
+        private const val MAX_DECIMAL_SCALE: Long = Constraints.MAX_DECIMAL_SCALE
+        private const val MAX_DECIMAL_BITS: Long = Constraints.MAX_DECIMAL_BITS
 
         val ZERO: Rational = Rational(
             numerator = BigInteger.ZERO,
@@ -54,7 +52,7 @@ class Rational private constructor(
             val scale: Int = stripped.scale()
             require(scale != Int.MIN_VALUE)
 
-            if (abs(scale.toLong()) > MAX_RATIONAL_DECIMAL_SCALE) {
+            if (abs(scale.toLong()) > MAX_DECIMAL_SCALE) {
                 throw RationalLimitExceededException()
             }
 
@@ -213,7 +211,7 @@ class Rational private constructor(
                 denominator.bitLength(),
             ).toLong() * abs(exponent.toLong())
 
-        return if (estimatedBits > MAX_RATIONAL_POW_COMPONENT_BIT_LENGTH) {
+        return if (estimatedBits > MAX_DECIMAL_BITS) {
             null
         } else {
             pow(exponent)

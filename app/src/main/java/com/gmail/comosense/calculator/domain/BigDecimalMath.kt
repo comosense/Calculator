@@ -122,7 +122,6 @@ internal object BigDecimalMath {
     suspend fun powNaturalExponent(
         base: BigDecimal,
         exponent: Int,
-        mc: MathContext,
     ): BigDecimal =
         powNaturalExponent(
             base = base,
@@ -130,7 +129,7 @@ internal object BigDecimalMath {
             zero = ZERO,
             one = ONE,
             isZero = { value -> value.signum() == 0 },
-            multiply = { value, other -> value.multiply(other, mc) },
+            multiply = BigDecimal::multiply,
         )
 
     suspend fun powNaturalExponent(

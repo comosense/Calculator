@@ -1,12 +1,13 @@
 package com.gmail.comosense.calculator.domain
 
+import com.gmail.comosense.calculator.common.Constraints
 import com.gmail.comosense.calculator.domain.Rational.Companion.toRational
 import java.math.BigDecimal
 import java.math.BigInteger
 import java.math.MathContext
-import kotlin.math.abs
 
 internal class DivisionByZeroException : ArithmeticException()
+internal class CalculationLimitExceededException : ArithmeticException()
 
 class UnifiedValue private constructor(
     val exactValue: BigDecimal = BigDecimal.ZERO,
@@ -14,8 +15,7 @@ class UnifiedValue private constructor(
     val piCoefficient: Rational = Rational.ZERO,
 ) {
     companion object {
-        // Prevent excessively large or small BigDecimal scales.
-        private const val SCALE_LIMIT_FACTOR: Long = 2L
+        private const val MAX_INTERMEDIATE_PRECISION = Constraints.MAX_INTERMEDIATE_PRECISION
         private const val EXTRA_PRECISION_FOR_WORKING: Int = 2
 
         val ZERO: UnifiedValue = UnifiedValue()
@@ -98,16 +98,19 @@ class UnifiedValue private constructor(
     suspend fun multiply(
         other: UnifiedValue,
         mc: MathContext,
-        maxPrecisionMc: MathContext,
     ): UnifiedValue {
-        require(maxPrecisionMc.precision >= mc.precision)
-
         if (other.isZero() || isZero()) {
             return ZERO
         }
 
+        if (exactValue.precision() + other.exactValue.precision()
+            > MAX_INTERMEDIATE_PRECISION
+        ) {
+            throw CalculationLimitExceededException()
+        }
+
         val newExactValue: BigDecimal =
-            exactValue.multiply(other.exactValue, maxPrecisionMc)
+            exactValue.multiply(other.exactValue)
 
         val leftExactValueRational: Rational =
             exactValue.toRational()
@@ -130,7 +133,6 @@ class UnifiedValue private constructor(
                         BigDecimalMath.powNaturalExponent(
                             base = BigDecimalMath.pi(workingMc),
                             exponent = 2,
-                            mc = maxPrecisionMc,
                         ),
                         mc,
                     ).toRational()
@@ -175,71 +177,6 @@ class UnifiedValue private constructor(
                 .divide(other.toBigDecimal(workingMc), mc)
                 .toRational(),
         )
-    }
-
-    suspend fun pow(
-        exponent: Int,
-        mc: MathContext,
-        maxPrecisionMc: MathContext,
-    ): UnifiedValue {
-        require(exponent != Int.MIN_VALUE)
-
-        if (isZero()) {
-            require(exponent >= 0)
-            return if (exponent == 0) {
-                ONE
-            } else {
-                ZERO
-            }
-        }
-
-        val hasOnlyApproximateValue: Boolean =
-            !hasExactValue() && !hasPiCoefficient()
-        if (hasOnlyApproximateValue) {
-            approximateValue.powOrNull(
-                exponent = exponent,
-            )?.let { result ->
-                return fromApproximateValue(result)
-            }
-        }
-
-        val hasOnlyExactValue: Boolean = !hasApproximateValue() && !hasPiCoefficient()
-        val base: BigDecimal = if (hasOnlyExactValue) {
-            exactValue
-        } else {
-            toBigDecimal(
-                mc = mc.withExtraPrecision(EXTRA_PRECISION_FOR_WORKING),
-            )
-        }
-        val result: BigDecimal = BigDecimalMath.powNaturalExponent(
-            base = base,
-            exponent = abs(exponent),
-            mc = maxPrecisionMc,
-        )
-
-        val scaleLimit: Long =
-            maxPrecisionMc.precision.toLong() * SCALE_LIMIT_FACTOR
-        if (abs(result.scale().toLong()) > scaleLimit) {
-            throw PowLimitExceededException()
-        }
-
-        return when {
-            exponent < 0 ->
-                fromApproximateValue(
-                    approximateValue = BigDecimal.ONE
-                        .divide(result, mc),
-                )
-
-            hasOnlyExactValue ->
-                fromExactValue(
-                    exactValue = result,
-                )
-
-            else ->
-                fromApproximateValue(
-                    approximateValue = result,
-                )
-        }
     }
 
     fun negate(): UnifiedValue =

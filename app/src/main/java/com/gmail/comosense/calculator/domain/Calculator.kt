@@ -93,7 +93,6 @@ private suspend fun parse(
             parser
                 .parse(
                     mc = mc.withExtraPrecision(EXTRA_PRECISION_FOR_WORKING),
-                    maxPrecision = CalculatorConstraints.MAX_RESULT_SIZE
                 )
                 .toBigDecimal(
                     mc = mc,
@@ -131,6 +130,8 @@ private suspend fun parse(
         Result.Err(CalculatorError.ArccosInvalidArgument)
     } catch (_: IllegalArgumentException) {
         Result.Err(CalculatorError.InvalidExpression)
+    } catch (_: CalculationLimitExceededException) {
+        Result.Err(CalculatorError.CalculationLimitExceeded)
     } catch (_: RationalLimitExceededException) {
         Result.Err(CalculatorError.CalculationLimitExceeded)
     } catch (_: ArithmeticException) {

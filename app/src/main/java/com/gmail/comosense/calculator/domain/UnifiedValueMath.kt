@@ -5,8 +5,13 @@ import com.gmail.comosense.calculator.domain.Rational.Companion.toRational
 import java.math.BigDecimal
 import java.math.BigInteger
 import java.math.MathContext
+import kotlin.math.abs
 
 internal object UnifiedValueMathConstraints {
+    const val MAX_DECIMAL_SCALE: Long =
+        Constraints.MAX_DECIMAL_SCALE
+    const val MAX_DECIMAL_BITS: Long =
+        Constraints.MAX_DECIMAL_BITS
     const val MAX_FACTORIAL_ARGUMENT: Int =
         Constraints.MAX_FACTORIAL_ARGUMENT
     const val MAX_INTEGER_EXPONENT: Int =
@@ -75,7 +80,6 @@ internal suspend fun UnifiedValue.factorial(): UnifiedValue =
 internal suspend fun UnifiedValue.pow(
     exponent: UnifiedValue,
     mc: MathContext,
-    maxPrecisionMc: MathContext,
 ): UnifiedValue {
     if (isZero()) {
         if (exponent.signum(mc) > 0) {
@@ -90,14 +94,12 @@ internal suspend fun UnifiedValue.pow(
 
     return integerExponentOrNull(exponent)
         ?.let { integerExponent ->
-            pow(
+            powIntegerExponent(
                 exponent = integerExponent,
                 mc = mc,
-                maxPrecisionMc = maxPrecisionMc,
             )
         }
         ?: powDecimalExponent(
-            base = this,
             exponent = exponent,
             mc = mc,
         )
@@ -333,16 +335,75 @@ private fun integerExponentOrNull(
     return exponent
 }
 
-private suspend fun powDecimalExponent(
-    base: UnifiedValue,
+private suspend fun UnifiedValue.powIntegerExponent(
+    exponent: Int,
+    mc: MathContext,
+): UnifiedValue {
+    require(exponent != Int.MIN_VALUE)
+
+    toBigIntegerExactOrNull()?.let { base ->
+        val estimateBits: Long =
+            base.bitLength().toLong() * abs(exponent.toLong())
+        if (estimateBits > UnifiedValueMathConstraints.MAX_DECIMAL_BITS) {
+            throw CalculationLimitExceededException()
+        }
+
+        val result: BigInteger = BigDecimalMath.powNaturalExponent(
+            base = base,
+            exponent = abs(exponent),
+        )
+
+        return if (exponent >= 0) {
+            UnifiedValue.fromExactValue(
+                exactValue = result,
+            )
+        } else {
+            UnifiedValue.fromApproximateValue(
+                approximateValue = BIG_DECIMAL_ONE
+                    .divide(result.toBigDecimal(), mc),
+            )
+        }
+    }
+
+    toRationalOrNull()?.let { base ->
+        val result: Rational = base.powOrNull(exponent)
+            ?: throw CalculationLimitExceededException()
+
+        return UnifiedValue.fromApproximateValue(
+            approximateValue = result,
+        )
+    }
+
+    val result: BigDecimal = BigDecimalMath.powNaturalExponent(
+        base = toBigDecimal(mc.withExtraPrecision(EXTRA_PRECISION_FOR_WORKING)),
+        exponent = abs(exponent),
+    )
+
+    if (abs(result.scale().toLong())
+        > UnifiedValueMathConstraints.MAX_DECIMAL_SCALE
+    ) {
+        throw CalculationLimitExceededException()
+    }
+
+    return UnifiedValue.fromApproximateValue(
+        approximateValue =
+            if (exponent >= 0) {
+                result
+            } else {
+                BIG_DECIMAL_ONE
+                    .divide(result, mc)
+            },
+    )
+}
+
+private suspend fun UnifiedValue.powDecimalExponent(
     exponent: UnifiedValue,
     mc: MathContext,
 ): UnifiedValue {
     val workingMc: MathContext =
         mc.withExtraPrecision(EXTRA_PRECISION_FOR_WORKING)
 
-    val bigDecimalBase: BigDecimal =
-        base.toBigDecimal(workingMc)
+    val bigDecimalBase: BigDecimal = toBigDecimal(workingMc)
     if (bigDecimalBase.signum() < 0) {
         throw PowInvalidArgumentException()
     }
