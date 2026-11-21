@@ -340,60 +340,31 @@ private suspend fun UnifiedValue.powIntegerExponent(
     mc: MathContext,
 ): UnifiedValue {
     require(exponent != Int.MIN_VALUE)
-
     toBigIntegerExactOrNull()?.let { base ->
-        val estimateBits: Long =
-            base.bitLength().toLong() * abs(exponent.toLong())
-        if (estimateBits > UnifiedValueMathConstraints.MAX_DECIMAL_BITS) {
-            throw CalculationLimitExceededException()
-        }
+        val result: UnifiedValue = base.powIntegerExponentOrNull(
+            exponent = exponent,
+            mc = mc,
+        ) ?: throw CalculationLimitExceededException()
 
-        val result: BigInteger = BigDecimalMath.powNaturalExponent(
-            base = base,
-            exponent = abs(exponent),
-        )
-
-        return if (exponent >= 0) {
-            UnifiedValue.fromExactValue(
-                exactValue = result,
-            )
-        } else {
-            UnifiedValue.fromApproximateValue(
-                approximateValue = BIG_DECIMAL_ONE
-                    .divide(result.toBigDecimal(), mc),
-            )
-        }
+        return result
     }
 
     toRationalOrNull()?.let { base ->
-        val result: Rational = base.powOrNull(exponent)
-            ?: throw CalculationLimitExceededException()
+        val result: UnifiedValue = base.powIntegerExponentOrNull(
+            exponent = exponent,
+        ) ?: return@let
 
-        return UnifiedValue.fromApproximateValue(
-            approximateValue = result,
-        )
+        return result
     }
 
-    val result: BigDecimal = BigDecimalMath.powNaturalExponent(
-        base = toBigDecimal(mc.withExtraPrecision(EXTRA_PRECISION_FOR_WORKING)),
-        exponent = abs(exponent),
-    )
+    val result: UnifiedValue =
+        toBigDecimal(mc.withExtraPrecision(EXTRA_PRECISION_FOR_WORKING))
+            .powIntegerExponentOrNUll(
+                exponent = exponent,
+                mc = mc,
+            ) ?: throw CalculationLimitExceededException()
 
-    if (abs(result.scale().toLong())
-        > UnifiedValueMathConstraints.MAX_DECIMAL_SCALE
-    ) {
-        throw CalculationLimitExceededException()
-    }
-
-    return UnifiedValue.fromApproximateValue(
-        approximateValue =
-            if (exponent >= 0) {
-                result
-            } else {
-                BIG_DECIMAL_ONE
-                    .divide(result, mc)
-            },
-    )
+    return result
 }
 
 private suspend fun UnifiedValue.powDecimalExponent(
@@ -420,6 +391,70 @@ private suspend fun UnifiedValue.powDecimalExponent(
             mc = mc,
         ),
     )
+}
+
+private suspend fun BigInteger.powIntegerExponentOrNull(
+    exponent: Int,
+    mc: MathContext,
+): UnifiedValue? {
+    val estimateBits: Long =
+        this.bitLength().toLong() * abs(exponent.toLong())
+    if (estimateBits > UnifiedValueMathConstraints.MAX_DECIMAL_BITS) {
+        return null
+    }
+
+    val result: BigInteger = BigDecimalMath.powNaturalExponent(
+        base = this,
+        exponent = abs(exponent),
+    )
+
+    return if (exponent >= 0) {
+        UnifiedValue.fromExactValue(
+            exactValue = result,
+        )
+    } else {
+        UnifiedValue.fromApproximateValue(
+            approximateValue = BIG_DECIMAL_ONE
+                .divide(result.toBigDecimal(), mc),
+        )
+    }
+}
+
+private suspend fun Rational.powIntegerExponentOrNull(
+    exponent: Int,
+): UnifiedValue? {
+    return this.powOrNull(exponent)?.let { result ->
+        UnifiedValue.fromApproximateValue(
+            approximateValue = result,
+        )
+    }
+}
+
+private suspend fun BigDecimal.powIntegerExponentOrNUll(
+    exponent: Int,
+    mc: MathContext,
+): UnifiedValue? {
+    val result: BigDecimal = BigDecimalMath.powNaturalExponent(
+        base = this,
+        exponent = abs(exponent),
+    )
+
+    return if (abs(result.scale().toLong())
+        > UnifiedValueMathConstraints.MAX_DECIMAL_SCALE
+    ) {
+        null
+    } else {
+        val approximateValue: BigDecimal = if (exponent >= 0) {
+            result
+        } else {
+            BIG_DECIMAL_ONE
+                .divide(result, mc)
+        }
+
+        UnifiedValue.fromApproximateValue(
+            approximateValue = approximateValue,
+        )
+    }
 }
 
 private fun UnifiedValue.toNormalizedPiMultipleOrNull(
