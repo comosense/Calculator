@@ -207,10 +207,11 @@ class Rational private constructor(
     ): Rational? {
         require(exponent != Int.MIN_VALUE)
 
-        val estimatedBits: Long = maxOf(
-            numerator.bitLength(),
-            denominator.bitLength(),
-        ).toLong() * abs(exponent.toLong())
+        val estimatedBits: Long =
+            maxOf(
+                numerator.bitLength(),
+                denominator.bitLength(),
+            ).toLong() * abs(exponent.toLong())
 
         return if (estimatedBits > MAX_RATIONAL_POW_COMPONENT_BIT_LENGTH) {
             null
