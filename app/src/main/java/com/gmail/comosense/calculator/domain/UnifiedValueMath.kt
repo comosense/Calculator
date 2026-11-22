@@ -73,7 +73,7 @@ private val ARCTAN_SPECIAL_VALUES: List<Pair<BigDecimal, Rational>> = listOf(
 internal suspend fun UnifiedValue.factorial(): UnifiedValue =
     UnifiedValue.fromExactValue(
         exactValue = BigDecimalMath.factorial(
-            value = factorialArgument(this),
+            value = toFactorialArgument(),
         ),
     )
 
@@ -109,12 +109,13 @@ internal suspend fun UnifiedValue.sqrt(
     mc: MathContext,
 ): UnifiedValue =
     UnifiedValue.fromApproximateValue(
-        approximateValue = BigDecimalMath.sqrt(
-            value = toBigDecimal(
-                mc = mc.withExtraPrecision(EXTRA_PRECISION_FOR_WORKING),
+        approximateValue =
+            BigDecimalMath.sqrt(
+                value = toBigDecimal(
+                    mc = mc.withExtraPrecision(EXTRA_PRECISION_FOR_WORKING),
+                ),
+                mc = mc,
             ),
-            mc = mc,
-        ),
     )
 
 internal suspend fun UnifiedValue.exp(
@@ -128,10 +129,11 @@ internal suspend fun UnifiedValue.exp(
     }
 
     return UnifiedValue.fromApproximateValue(
-        approximateValue = BigDecimalMath.exp(
-            value = value,
-            mc = mc,
-        ),
+        approximateValue =
+            BigDecimalMath.exp(
+                value = value,
+                mc = mc,
+            ),
     )
 }
 
@@ -139,24 +141,26 @@ internal suspend fun UnifiedValue.ln(
     mc: MathContext,
 ): UnifiedValue =
     UnifiedValue.fromApproximateValue(
-        approximateValue = BigDecimalMath.ln(
-            value = toBigDecimal(
-                mc = mc.withExtraPrecision(EXTRA_PRECISION_FOR_WORKING),
+        approximateValue =
+            BigDecimalMath.ln(
+                value = toBigDecimal(
+                    mc = mc.withExtraPrecision(EXTRA_PRECISION_FOR_WORKING),
+                ),
+                mc = mc,
             ),
-            mc = mc,
-        ),
     )
 
 internal suspend fun UnifiedValue.log(
     mc: MathContext,
 ): UnifiedValue =
     UnifiedValue.fromApproximateValue(
-        approximateValue = BigDecimalMath.log(
-            value = toBigDecimal(
-                mc = mc.withExtraPrecision(EXTRA_PRECISION_FOR_WORKING),
+        approximateValue =
+            BigDecimalMath.log(
+                value = toBigDecimal(
+                    mc = mc.withExtraPrecision(EXTRA_PRECISION_FOR_WORKING),
+                ),
+                mc = mc,
             ),
-            mc = mc,
-        ),
     )
 
 internal suspend fun UnifiedValue.sin(
@@ -194,13 +198,14 @@ private suspend fun UnifiedValue.trigonometricFunction(
     )?.let { value -> return value }
 
     return UnifiedValue.fromApproximateValue(
-        approximateValue = calculate(
-            toRadians(
-                isRadians = isRadians,
-                mc = mc.withExtraPrecision(EXTRA_PRECISION_FOR_WORKING),
+        approximateValue =
+            calculate(
+                toRadians(
+                    isRadians = isRadians,
+                    mc = mc.withExtraPrecision(EXTRA_PRECISION_FOR_WORKING),
+                ),
+                mc,
             ),
-            mc,
-        ),
     )
 }
 
@@ -288,11 +293,9 @@ private suspend fun UnifiedValue.inverseTrigonometricFunction(
     )
 }
 
-private fun factorialArgument(
-    value: UnifiedValue,
-): Int {
+private fun UnifiedValue.toFactorialArgument(): Int {
     val bigIntegerArgument: BigInteger =
-        value.toBigIntegerExactOrNull()
+        toBigIntegerExactOrNull()
             ?: throw FactorialInvalidArgumentException()
 
     if (bigIntegerArgument.signum() < 0) {
@@ -340,6 +343,7 @@ private suspend fun UnifiedValue.powIntegerExponent(
     mc: MathContext,
 ): UnifiedValue {
     require(exponent != Int.MIN_VALUE)
+
     toBigIntegerExactOrNull()?.let { base ->
         val result: UnifiedValue = base.powIntegerExponentOrNull(
             exponent = exponent,
@@ -359,7 +363,7 @@ private suspend fun UnifiedValue.powIntegerExponent(
 
     val result: UnifiedValue =
         toBigDecimal(mc.withExtraPrecision(EXTRA_PRECISION_FOR_WORKING))
-            .powIntegerExponentOrNUll(
+            .powIntegerExponentOrNull(
                 exponent = exponent,
                 mc = mc,
             ) ?: throw CalculationLimitExceededException()
@@ -385,11 +389,12 @@ private suspend fun UnifiedValue.powDecimalExponent(
     }
 
     return UnifiedValue.fromApproximateValue(
-        approximateValue = BigDecimalMath.powDecimalExponent(
-            base = bigDecimalBase,
-            exponent = bigDecimalExponent,
-            mc = mc,
-        ),
+        approximateValue =
+            BigDecimalMath.powDecimalExponent(
+                base = bigDecimalBase,
+                exponent = bigDecimalExponent,
+                mc = mc,
+            ),
     )
 }
 
@@ -398,7 +403,8 @@ private suspend fun BigInteger.powIntegerExponentOrNull(
     mc: MathContext,
 ): UnifiedValue? {
     val estimateBits: Long =
-        this.bitLength().toLong() * abs(exponent.toLong())
+        bitLength().toLong() * abs(exponent.toLong())
+
     if (estimateBits > UnifiedValueMathConstraints.MAX_DECIMAL_BITS) {
         return null
     }
@@ -423,38 +429,40 @@ private suspend fun BigInteger.powIntegerExponentOrNull(
 private suspend fun Rational.powIntegerExponentOrNull(
     exponent: Int,
 ): UnifiedValue? {
-    return this.powOrNull(exponent)?.let { result ->
+    return powOrNull(exponent)?.let { result ->
         UnifiedValue.fromApproximateValue(
             approximateValue = result,
         )
     }
 }
 
-private suspend fun BigDecimal.powIntegerExponentOrNUll(
+private suspend fun BigDecimal.powIntegerExponentOrNull(
     exponent: Int,
     mc: MathContext,
 ): UnifiedValue? {
     val result: BigDecimal = BigDecimalMath.powNaturalExponent(
         base = this,
         exponent = abs(exponent),
+        mc = if (exponent >= 0) {
+            mc
+        } else {
+            mc.withExtraPrecision(EXTRA_PRECISION_FOR_WORKING)
+        },
     )
 
-    return if (abs(result.scale().toLong())
+    if (abs(result.scale().toLong())
         > UnifiedValueMathConstraints.MAX_DECIMAL_SCALE
     ) {
-        null
-    } else {
-        val approximateValue: BigDecimal = if (exponent >= 0) {
+        return null
+    }
+
+    return UnifiedValue.fromApproximateValue(
+        approximateValue = if (exponent >= 0) {
             result
         } else {
-            BIG_DECIMAL_ONE
-                .divide(result, mc)
-        }
-
-        UnifiedValue.fromApproximateValue(
-            approximateValue = approximateValue,
-        )
-    }
+            BIG_DECIMAL_ONE.divide(result, mc)
+        },
+    )
 }
 
 private fun UnifiedValue.toNormalizedPiMultipleOrNull(
@@ -494,7 +502,7 @@ private fun BigDecimal.toSpecialAngleOrNull(
     specialValues: List<Pair<BigDecimal, Rational>>,
 ): UnifiedValue? =
     specialValues
-        .firstOrNull { (key, _) -> this.compareTo(key) == 0 }
+        .firstOrNull { (key, _) -> compareTo(key) == 0 }
         ?.second
         ?.let { value ->
             if (isRadians) {

@@ -5,6 +5,7 @@ import com.gmail.comosense.calculator.domain.Rational.Companion.toRational
 import java.math.BigDecimal
 import java.math.BigInteger
 import java.math.MathContext
+import kotlin.math.abs
 
 internal class DivisionByZeroException : ArithmeticException()
 internal class CalculationLimitExceededException : ArithmeticException()
@@ -16,7 +17,9 @@ class UnifiedValue private constructor(
 ) {
     companion object {
         private const val MAX_INTERMEDIATE_PRECISION = Constraints.MAX_INTERMEDIATE_PRECISION
+        private const val MAX_DECIMAL_SCALE: Long = Constraints.MAX_DECIMAL_SCALE
         private const val EXTRA_PRECISION_FOR_WORKING: Int = 2
+        private val BIG_DECIMAL_ZERO: BigDecimal = BigDecimal.ZERO
 
         val ZERO: UnifiedValue = UnifiedValue()
         val ONE: UnifiedValue = UnifiedValue(
@@ -103,14 +106,27 @@ class UnifiedValue private constructor(
             return ZERO
         }
 
-        if (exactValue.precision() + other.exactValue.precision()
-            > MAX_INTERMEDIATE_PRECISION
-        ) {
-            throw CalculationLimitExceededException()
-        }
-
         val newExactValue: BigDecimal =
-            exactValue.multiply(other.exactValue)
+            if (!hasExactValue() || !other.hasExactValue()) {
+                BIG_DECIMAL_ZERO
+            } else {
+                if ((exactValue.precision() + other.exactValue.precision())
+                    > MAX_INTERMEDIATE_PRECISION
+                ) {
+                    throw CalculationLimitExceededException()
+                }
+
+                val product: BigDecimal =
+                    exactValue
+                        .multiply(other.exactValue)
+                        .stripTrailingZeros()
+
+                if (abs(product.scale().toLong()) > MAX_DECIMAL_SCALE) {
+                    throw CalculationLimitExceededException()
+                }
+
+                product
+            }
 
         val leftExactValueRational: Rational =
             exactValue.toRational()
@@ -125,17 +141,14 @@ class UnifiedValue private constructor(
         if (hasPiCoefficient() && other.hasPiCoefficient()) {
             val workingMc: MathContext =
                 mc.withExtraPrecision(EXTRA_PRECISION_FOR_WORKING)
+            val pi: BigDecimal = BigDecimalMath.pi(workingMc)
+            val piSquared: BigDecimal = pi.multiply(pi, workingMc)
 
             newApproximateValue +=
                 (piCoefficient * other.piCoefficient)
                     .toBigDecimal(workingMc)
-                    .multiply(
-                        BigDecimalMath.powNaturalExponent(
-                            base = BigDecimalMath.pi(workingMc),
-                            exponent = 2,
-                        ),
-                        mc,
-                    ).toRational()
+                    .multiply(piSquared, mc)
+                    .toRational()
         }
 
         val newPiCoefficient: Rational =

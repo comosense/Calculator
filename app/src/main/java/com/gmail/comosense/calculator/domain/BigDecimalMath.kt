@@ -61,20 +61,37 @@ internal object BigDecimalMath {
 
     @Volatile
     private var cachedTwoPi: MathConstant? = null
-
     suspend fun e(
         mc: MathContext,
     ): BigDecimal =
-        cachedE(
-            mc = mc.withExtraPrecision(EXTRA_PRECISION_FOR_CALCULATIONS),
-        ).round(mc)
+        cachedConstant(
+            cachedValue = cachedE,
+            calculate = { workingMc ->
+                calculateE(
+                    mc = workingMc,
+                )
+            },
+            updateCache = { cached ->
+                cachedE = cached
+            },
+            mc = mc,
+        )
 
     suspend fun pi(
         mc: MathContext,
     ): BigDecimal =
-        cachedPi(
-            mc = mc.withExtraPrecision(EXTRA_PRECISION_FOR_CALCULATIONS),
-        ).round(mc)
+        cachedConstant(
+            cachedValue = cachedPi,
+            calculate = { workingMc ->
+                calculatePi(
+                    mc = workingMc,
+                )
+            },
+            updateCache = { cached ->
+                cachedPi = cached
+            },
+            mc = mc,
+        )
 
     suspend fun factorial(
         value: Int,
@@ -122,6 +139,7 @@ internal object BigDecimalMath {
     suspend fun powNaturalExponent(
         base: BigDecimal,
         exponent: Int,
+        mc: MathContext,
     ): BigDecimal =
         powNaturalExponent(
             base = base,
@@ -129,8 +147,13 @@ internal object BigDecimalMath {
             zero = ZERO,
             one = ONE,
             isZero = { value -> value.signum() == 0 },
-            multiply = BigDecimal::multiply,
-        )
+            multiply = { value, other ->
+                value.multiply(
+                    other,
+                    mc.withExtraPrecision(EXTRA_PRECISION_FOR_CALCULATIONS),
+                )
+            },
+        ).round(mc)
 
     suspend fun powNaturalExponent(
         base: BigInteger,
@@ -233,7 +256,7 @@ internal object BigDecimalMath {
             mc.withExtraPrecision(EXTRA_PRECISION_FOR_CALCULATIONS)
 
         return calculateLn(value, calculationMc)
-            .divide(cachedLnTen(calculationMc), mc)
+            .divide(lnTen(calculationMc), mc)
     }
 
     suspend fun sin(
@@ -430,9 +453,9 @@ internal object BigDecimalMath {
         }
 
         val coroutineContext: CoroutineContext = currentCoroutineContext()
-        val sqrtTwo: BigDecimal = cachedSqrtTwo(mc)
-        val inverseSqrtTwo: BigDecimal = cachedInverseSqrtTwo(mc)
-        val lnTwo: BigDecimal = cachedLnTwo(mc)
+        val sqrtTwo: BigDecimal = sqrtTwo(mc)
+        val inverseSqrtTwo: BigDecimal = inverseSqrtTwo(mc)
+        val lnTwo: BigDecimal = lnTwo(mc)
 
         var x: BigDecimal = value
         var exponent = 0
@@ -467,10 +490,10 @@ internal object BigDecimalMath {
         radians: BigDecimal,
         mc: MathContext,
     ): BigDecimal {
-        val pi: BigDecimal = cachedPi(mc)
-        val halfPi: BigDecimal = cachedHalfPi(mc)
-        val threeHalfPi: BigDecimal = cachedThreeHalfPi(mc)
-        val twoPi: BigDecimal = cachedTwoPi(mc)
+        val pi: BigDecimal = pi(mc)
+        val halfPi: BigDecimal = halfPi(mc)
+        val threeHalfPi: BigDecimal = threeHalfPi(mc)
+        val twoPi: BigDecimal = twoPi(mc)
 
         val normalizedRadians: BigDecimal =
             radians.toNormalizedRadians(mc)
@@ -515,10 +538,10 @@ internal object BigDecimalMath {
         radians: BigDecimal,
         mc: MathContext,
     ): BigDecimal {
-        val pi: BigDecimal = cachedPi(mc)
-        val halfPi: BigDecimal = cachedHalfPi(mc)
-        val threeHalfPi: BigDecimal = cachedThreeHalfPi(mc)
-        val twoPi: BigDecimal = cachedTwoPi(mc)
+        val pi: BigDecimal = pi(mc)
+        val halfPi: BigDecimal = halfPi(mc)
+        val threeHalfPi: BigDecimal = threeHalfPi(mc)
+        val twoPi: BigDecimal = twoPi(mc)
 
         val normalizedRadians: BigDecimal =
             radians.toNormalizedRadians(mc)
@@ -568,11 +591,11 @@ internal object BigDecimalMath {
         }
 
         if (value.compareTo(ONE) == 0) {
-            return cachedPi(mc).divide(TWO)
+            return pi(mc).divide(TWO)
         }
 
         if (value.compareTo(NEGATIVE_ONE) == 0) {
-            return cachedPi(mc).divide(TWO).negate()
+            return pi(mc).divide(TWO).negate()
         }
 
         if (value.signum() == 0) {
@@ -584,7 +607,7 @@ internal object BigDecimalMath {
             mc = mc,
         )
 
-        val result: BigDecimal = cachedHalfPi(mc)
+        val result: BigDecimal = halfPi(mc)
             .subtract(acuteAngle, mc)
 
         return if (value.signum() < 0) {
@@ -607,11 +630,11 @@ internal object BigDecimalMath {
         }
 
         if (value.compareTo(NEGATIVE_ONE) == 0) {
-            return cachedPi(mc)
+            return pi(mc)
         }
 
         if (value.signum() == 0) {
-            return cachedPi(mc).divide(TWO)
+            return pi(mc).divide(TWO)
         }
 
         val acuteAngle: BigDecimal = calculateInverseTrigonometricAcuteAngle(
@@ -622,7 +645,7 @@ internal object BigDecimalMath {
         return if (value.signum() > 0) {
             acuteAngle
         } else {
-            cachedPi(mc).subtract(acuteAngle, mc)
+            pi(mc).subtract(acuteAngle, mc)
         }
     }
 
@@ -638,7 +661,7 @@ internal object BigDecimalMath {
         }
 
         if (value > ONE) {
-            return cachedPi(mc).divide(TWO)
+            return pi(mc).divide(TWO)
                 .subtract(
                     calculateArctan(
                         value = ONE.divide(value, mc),
@@ -652,7 +675,7 @@ internal object BigDecimalMath {
             val reduced: BigDecimal = value.subtract(ONE)
                 .divide(value.add(ONE), mc)
 
-            return cachedPi(mc).divide(FOUR)
+            return pi(mc).divide(FOUR)
                 .add(
                     calculateArctan(
                         value = reduced,
@@ -808,7 +831,7 @@ internal object BigDecimalMath {
     private suspend fun BigDecimal.toNormalizedRadians(
         mc: MathContext,
     ): BigDecimal {
-        val twoPi: BigDecimal = cachedTwoPi(mc)
+        val twoPi: BigDecimal = twoPi(mc)
 
         return remainder(twoPi)
             .let { normalizedRadians ->
@@ -842,7 +865,7 @@ internal object BigDecimalMath {
         )
     }
 
-    private suspend fun cachedLnTen(
+    private suspend fun lnTen(
         mc: MathContext,
     ): BigDecimal =
         cachedConstant(
@@ -859,7 +882,7 @@ internal object BigDecimalMath {
             mc = mc,
         )
 
-    private suspend fun cachedSqrtTwo(
+    private suspend fun sqrtTwo(
         mc: MathContext,
     ): BigDecimal =
         cachedConstant(
@@ -876,14 +899,14 @@ internal object BigDecimalMath {
             mc = mc,
         )
 
-    private suspend fun cachedInverseSqrtTwo(
+    private suspend fun inverseSqrtTwo(
         mc: MathContext,
     ): BigDecimal =
         cachedConstant(
             cachedValue = cachedInverseSqrtTwo,
             calculate = { workingMc ->
                 ONE.divide(
-                    cachedSqrtTwo(
+                    sqrtTwo(
                         mc = workingMc,
                     ),
                     workingMc,
@@ -895,7 +918,7 @@ internal object BigDecimalMath {
             mc = mc,
         )
 
-    private suspend fun cachedLnTwo(
+    private suspend fun lnTwo(
         mc: MathContext,
     ): BigDecimal =
         cachedConstant(
@@ -912,45 +935,13 @@ internal object BigDecimalMath {
             mc = mc,
         )
 
-    private suspend fun cachedE(
-        mc: MathContext,
-    ): BigDecimal =
-        cachedConstant(
-            cachedValue = cachedE,
-            calculate = { workingMc ->
-                calculateE(
-                    mc = workingMc,
-                )
-            },
-            updateCache = { cached ->
-                cachedE = cached
-            },
-            mc = mc,
-        )
-
-    private suspend fun cachedPi(
-        mc: MathContext,
-    ): BigDecimal =
-        cachedConstant(
-            cachedValue = cachedPi,
-            calculate = { workingMc ->
-                calculatePi(
-                    mc = workingMc,
-                )
-            },
-            updateCache = { cached ->
-                cachedPi = cached
-            },
-            mc = mc,
-        )
-
-    private suspend fun cachedHalfPi(
+    private suspend fun halfPi(
         mc: MathContext,
     ): BigDecimal =
         cachedConstant(
             cachedValue = cachedHalfPi,
             calculate = { workingMc ->
-                cachedPi(
+                pi(
                     mc = workingMc,
                 ).divide(TWO)
             },
@@ -960,15 +951,15 @@ internal object BigDecimalMath {
             mc = mc,
         )
 
-    private suspend fun cachedThreeHalfPi(
+    private suspend fun threeHalfPi(
         mc: MathContext,
     ): BigDecimal =
         cachedConstant(
             cachedValue = cachedThreeHalfPi,
             calculate = { workingMc ->
-                cachedPi(
+                pi(
                     mc = workingMc,
-                ).add(cachedHalfPi(workingMc), workingMc)
+                ).add(halfPi(workingMc), workingMc)
             },
             updateCache = { cached ->
                 cachedThreeHalfPi = cached
@@ -976,13 +967,13 @@ internal object BigDecimalMath {
             mc = mc,
         )
 
-    private suspend fun cachedTwoPi(
+    private suspend fun twoPi(
         mc: MathContext,
     ): BigDecimal =
         cachedConstant(
             cachedValue = cachedTwoPi,
             calculate = { workingMc ->
-                cachedPi(
+                pi(
                     mc = workingMc,
                 ).multiply(TWO)
             },

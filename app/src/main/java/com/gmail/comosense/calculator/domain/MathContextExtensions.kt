@@ -7,6 +7,7 @@ internal fun MathContext.withExtraPrecision(
 ): MathContext {
     require(precision > 0)
     require(extra >= 0)
+    require(precision <= Int.MIN_VALUE - extra)
 
     return MathContext(
         precision + extra,
