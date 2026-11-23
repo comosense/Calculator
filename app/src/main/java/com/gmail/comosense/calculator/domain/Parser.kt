@@ -18,28 +18,45 @@ class Parser(
         private const val EXTRA_PRECISION_FOR_WORKING: Int = 2
     }
 
-    private var position: Int = 0
+    private class Cursor(
+        private val symbols: List<Symbol>,
+    ) {
+        private var position: Int = 0
+
+        fun isEnd(): Boolean =
+            position >= symbols.size
+
+        fun peek(): Symbol? =
+            symbols.getOrNull(position)
+
+        fun consume(): Symbol? {
+            if (isEnd()) {
+                return null
+            }
+
+            return symbols[position++]
+        }
+    }
 
     suspend fun parse(
         mc: MathContext,
     ): UnifiedValue {
-        position = 0
+        val cursor = Cursor(expression)
 
         val parsed: UnifiedValue = parseExpression(
+            cursor = cursor,
             mc = mc,
         )
 
-        if (!isEnd()) {
+        if (!cursor.isEnd()) {
             throw IllegalFactorException()
         }
 
         return parsed
     }
 
-    private fun isEnd(): Boolean =
-        position >= expression.size
-
     private suspend fun parseExpression(
+        cursor: Cursor,
         mc: MathContext,
     ): UnifiedValue {
         val coroutineContext: CoroutineContext =
@@ -47,26 +64,31 @@ class Parser(
 
         var value: UnifiedValue =
             parseTerm(
+                cursor = cursor,
                 mc = mc,
             )
 
-        while (!isEnd()) {
+        while (!cursor.isEnd()) {
             coroutineContext.ensureActive()
 
-            value = when (expression.getOrNull(position)) {
+            value = when (cursor.peek()) {
                 is Symbol.Operator.Add -> {
-                    position++
+                    cursor.consume()
+
                     value.add(
                         other = parseTerm(
+                            cursor = cursor,
                             mc = mc,
                         ),
                     )
                 }
 
                 is Symbol.Operator.Subtract -> {
-                    position++
+                    cursor.consume()
+
                     value.subtract(
                         other = parseTerm(
+                            cursor = cursor,
                             mc = mc,
                         ),
                     )
@@ -81,6 +103,7 @@ class Parser(
     }
 
     private suspend fun parseTerm(
+        cursor: Cursor,
         mc: MathContext,
     ): UnifiedValue {
         val coroutineContext: CoroutineContext =
@@ -88,17 +111,20 @@ class Parser(
 
         var value: UnifiedValue =
             parseSign(
+                cursor = cursor,
                 mc = mc,
             )
 
-        while (!isEnd()) {
+        while (!cursor.isEnd()) {
             coroutineContext.ensureActive()
 
-            value = when (expression.getOrNull(position)) {
+            value = when (cursor.peek()) {
                 is Symbol.Operator.Multiply -> {
-                    position++
+                    cursor.consume()
+
                     value.multiply(
                         other = parseSign(
+                            cursor = cursor,
                             mc = mc,
                         ),
                         mc = mc,
@@ -106,9 +132,11 @@ class Parser(
                 }
 
                 is Symbol.Operator.Divide -> {
-                    position++
+                    cursor.consume()
+
                     value.divide(
                         other = parseSign(
+                            cursor = cursor,
                             mc = mc,
                         ),
                         mc = mc,
@@ -123,6 +151,7 @@ class Parser(
     }
 
     private suspend fun parseSign(
+        cursor: Cursor,
         mc: MathContext,
     ): UnifiedValue {
         val coroutineContext: CoroutineContext =
@@ -130,15 +159,16 @@ class Parser(
 
         var negative = false
 
-        while (!isEnd()) {
+        while (!cursor.isEnd()) {
             coroutineContext.ensureActive()
 
-            when (expression.getOrNull(position)) {
+            when (cursor.peek()) {
                 is Symbol.Sign.Positive ->
-                    position++
+                    cursor.consume()
 
                 is Symbol.Sign.Negative -> {
-                    position++
+                    cursor.consume()
+
                     negative = !negative
                 }
 
@@ -149,6 +179,7 @@ class Parser(
 
         val value: UnifiedValue =
             parseBinaryOperation(
+                cursor = cursor,
                 mc = mc,
             )
 
@@ -160,18 +191,22 @@ class Parser(
     }
 
     private suspend fun parseBinaryOperation(
+        cursor: Cursor,
         mc: MathContext,
     ): UnifiedValue {
         val base: UnifiedValue =
             parsePostfixOperation(
+                cursor = cursor,
                 mc = mc,
             )
 
-        return when (expression.getOrNull(position)) {
+        return when (cursor.peek()) {
             is Symbol.Operator.Power -> {
-                position++
+                cursor.consume()
+
                 base.pow(
                     exponent = parseSign(
+                        cursor = cursor,
                         mc = mc.withExtraPrecision(EXTRA_PRECISION_FOR_WORKING),
                     ),
                     mc = mc,
@@ -184,21 +219,25 @@ class Parser(
     }
 
     private suspend fun parsePostfixOperation(
+        cursor: Cursor,
         mc: MathContext,
     ): UnifiedValue {
-        val coroutineContext: CoroutineContext = currentCoroutineContext()
+        val coroutineContext: CoroutineContext =
+            currentCoroutineContext()
 
         var value: UnifiedValue =
             parseFactor(
+                cursor = cursor,
                 mc = mc,
             )
 
-        while (!isEnd()) {
+        while (!cursor.isEnd()) {
             coroutineContext.ensureActive()
 
-            when (expression.getOrNull(position)) {
+            when (cursor.peek()) {
                 is Symbol.PostfixOperator.Factorial -> {
-                    position++
+                    cursor.consume()
+
                     value = value.factorial()
                 }
 
@@ -211,18 +250,18 @@ class Parser(
     }
 
     private suspend fun parseFactor(
+        cursor: Cursor,
         mc: MathContext,
-    ): UnifiedValue {
-        if (isEnd()) {
-            throw MissingFactorException()
-        }
-
-        return when (val symbol: Symbol? = expression.getOrNull(position)) {
+    ): UnifiedValue =
+        when (val symbol: Symbol? = cursor.peek()) {
             is Symbol.Numeric ->
-                parseNumeric()
+                parseNumeric(
+                    cursor = cursor,
+                )
 
             is Symbol.Constant -> {
-                position++
+                cursor.consume()
+
                 parseConstant(
                     constant = symbol,
                     mc = mc,
@@ -230,10 +269,12 @@ class Parser(
             }
 
             is Symbol.Factor.Function -> {
-                position++
+                cursor.consume()
+
                 applyFunction(
                     function = symbol,
                     value = parseSign(
+                        cursor = cursor,
                         mc = mc.withExtraPrecision(EXTRA_PRECISION_FOR_WORKING),
                     ),
                     mc = mc,
@@ -241,17 +282,21 @@ class Parser(
             }
 
             is Symbol.FactorStart.OpeningParenthesis -> {
-                position++
+                cursor.consume()
+
                 parseFactorBody(
+                    cursor = cursor,
                     mc = mc,
                 )
             }
 
             is Symbol.FactorStart.Function -> {
-                position++
+                cursor.consume()
+
                 applyFunction(
                     function = symbol,
                     value = parseFactorBody(
+                        cursor = cursor,
                         mc = mc.withExtraPrecision(EXTRA_PRECISION_FOR_WORKING),
                     ),
                     mc = mc,
@@ -261,42 +306,46 @@ class Parser(
             else ->
                 throw MissingFactorException()
         }
-    }
 
     private suspend fun parseFactorBody(
+        cursor: Cursor,
         mc: MathContext,
     ): UnifiedValue {
         val value: UnifiedValue =
             parseExpression(
+                cursor = cursor,
                 mc = mc,
             )
 
-        if (isEnd() ||
-            expression.getOrNull(position) !is Symbol.FactorEnd
-        ) {
+        if (cursor.peek() !is Symbol.FactorEnd) {
             throw IllegalFactorException()
         }
-        position++
+        cursor.consume()
 
         return value
     }
 
-    private suspend fun parseNumeric(): UnifiedValue {
-        val coroutineContext: CoroutineContext = currentCoroutineContext()
+    private suspend fun parseNumeric(
+        cursor: Cursor,
+    ): UnifiedValue {
+        val coroutineContext: CoroutineContext =
+            currentCoroutineContext()
         val buffer = StringBuilder()
 
-        while (!isEnd()) {
+        while (!cursor.isEnd()) {
             coroutineContext.ensureActive()
 
-            when (val symbol: Symbol? = expression.getOrNull(position)) {
+            when (val symbol: Symbol? = cursor.peek()) {
                 is Symbol.Numeric.Digit -> {
+                    cursor.consume()
+
                     buffer.append(symbol.value)
-                    position++
                 }
 
                 is Symbol.Numeric.Point -> {
+                    cursor.consume()
+
                     buffer.append('.')
-                    position++
                 }
 
                 else ->
