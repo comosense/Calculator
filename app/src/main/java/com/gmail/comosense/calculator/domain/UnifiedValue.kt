@@ -218,24 +218,47 @@ class UnifiedValue private constructor(
             return exactValue
         }
 
-        val roundedValue: BigDecimal =
-            if (!hasPiCoefficient()) {
-                approximateValue.toBigDecimal(mc)
-            } else {
-                val workingMc: MathContext =
-                    mc.withExtraPrecision(EXTRA_PRECISION_FOR_WORKING)
-
-                approximateValue.toBigDecimal(workingMc)
-                    .add(
-                        piCoefficient.toBigDecimal(workingMc)
-                            .multiply(
-                                BigDecimalMath.pi(workingMc),
-                                workingMc
-                            )
-                    ).round(mc)
+        if (!hasPiCoefficient()) {
+            if (!hasExactValue()) {
+                return approximateValue.toBigDecimal(mc)
             }
 
-        return exactValue.add(roundedValue)
+            val rationalValue: Rational =
+                exactValue.toRational() + approximateValue
+            if (rationalValue.isZero()) {
+                return BigDecimal.ZERO
+            }
+
+            if (rationalValue.abs() < approximateValue.abs()) {
+                return rationalValue.toBigDecimal(mc)
+            }
+
+            return exactValue.add(approximateValue.toBigDecimal(mc))
+        }
+
+        val rationalValue: Rational =
+            exactValue.toRational() + approximateValue
+        val workingMc: MathContext =
+            mc.withExtraPrecision(EXTRA_PRECISION_FOR_WORKING)
+        val piTerm: BigDecimal =
+            piCoefficient.toBigDecimal(workingMc)
+                .multiply(BigDecimalMath.pi(workingMc), workingMc)
+
+        if (
+            hasExactValue() &&
+            hasApproximateValue() &&
+            (rationalValue.isZero() || (rationalValue.abs() < approximateValue.abs()))
+        ) {
+            return rationalValue.toBigDecimal(workingMc)
+                .add(piTerm)
+                .round(mc)
+        }
+
+        return exactValue.add(
+            approximateValue.toBigDecimal(workingMc)
+                .add(piTerm)
+                .round(mc)
+        )
     }
 
     fun toBigIntegerExactOrNull(): BigInteger? =
@@ -243,7 +266,7 @@ class UnifiedValue private constructor(
 
     fun toRationalOrNull(): Rational? =
         if (!hasPiCoefficient()) {
-            approximateValue + exactValue.toRational()
+            exactValue.toRational() + approximateValue
         } else {
             null
         }

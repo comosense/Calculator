@@ -189,6 +189,19 @@ class Rational private constructor(
         )
     }
 
+    operator fun compareTo(
+        other: Rational,
+    ): Int =
+        numerator.multiply(other.denominator)
+            .compareTo(other.numerator.multiply(denominator))
+
+    fun abs(): Rational =
+        if (signum() < 0) {
+            negate()
+        } else {
+            this
+        }
+
     fun modulo(
         other: Rational,
     ): Rational {
