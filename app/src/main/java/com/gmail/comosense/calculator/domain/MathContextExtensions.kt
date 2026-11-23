@@ -7,10 +7,17 @@ internal fun MathContext.withExtraPrecision(
 ): MathContext {
     require(precision > 0)
     require(extra >= 0)
-    require(precision <= Int.MIN_VALUE - extra)
+    require(precision <= Int.MAX_VALUE - extra)
 
     return MathContext(
         precision + extra,
         roundingMode,
     )
 }
+
+internal fun MathContext.hasBiggerPrecisionThan(
+    other: MathContext,
+    extraPrecision: Int,
+): Boolean =
+    (roundingMode == other.roundingMode) &&
+            (precision.toLong() >= (other.precision.toLong() + extraPrecision.toLong()))

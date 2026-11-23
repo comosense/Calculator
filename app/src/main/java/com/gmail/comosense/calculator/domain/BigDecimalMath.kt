@@ -405,10 +405,8 @@ internal object BigDecimalMath {
             reductions++
         }
 
-        val extendedMc = MathContext(
-            mc.precision + reductions,
-            mc.roundingMode,
-        )
+        val extendedMc: MathContext =
+            mc.withExtraPrecision(reductions)
 
         var sum: BigDecimal = ONE
         var term: BigDecimal = ONE
@@ -991,9 +989,10 @@ internal object BigDecimalMath {
         mc: MathContext,
     ): BigDecimal {
         cachedValue?.let { cached ->
-            if ((cached.mc.precision >=
-                        (mc.precision + EXTRA_PRECISION_FOR_ROUNDING) &&
-                        (cached.mc.roundingMode == mc.roundingMode))
+            if (cached.mc.hasBiggerPrecisionThan(
+                    other = mc,
+                    extraPrecision = EXTRA_PRECISION_FOR_ROUNDING
+                )
             ) {
                 return cached.value.round(mc)
             }

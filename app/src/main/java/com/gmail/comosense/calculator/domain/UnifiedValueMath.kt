@@ -7,21 +7,6 @@ import java.math.BigInteger
 import java.math.MathContext
 import kotlin.math.abs
 
-internal object UnifiedValueMathConstraints {
-    const val MAX_DECIMAL_SCALE: Long =
-        Constraints.MAX_DECIMAL_SCALE
-    const val MAX_DECIMAL_BITS: Long =
-        Constraints.MAX_DECIMAL_BITS
-    const val MAX_FACTORIAL_ARGUMENT: Int =
-        Constraints.MAX_FACTORIAL_ARGUMENT
-    const val MAX_INTEGER_EXPONENT: Int =
-        Constraints.MAX_INTEGER_EXPONENT
-    val MAX_NON_INTEGER_EXPONENT: BigDecimal =
-        Constraints.MAX_NON_INTEGER_EXPONENT.toBigDecimal()
-    val MAX_EXPONENTIAL_ARGUMENT: BigDecimal =
-        Constraints.MAX_EXPONENTIAL_ARGUMENT.toBigDecimal()
-}
-
 internal class FactorialInvalidArgumentException : ArithmeticException()
 internal class FactorialLargeArgumentException : IllegalArgumentException()
 internal class PowInvalidArgumentException : ArithmeticException()
@@ -29,6 +14,18 @@ internal class PowLimitExceededException : IllegalArgumentException()
 internal class ExpLargeArgumentException : IllegalArgumentException()
 internal class TanInvalidArgumentException : ArithmeticException()
 
+private const val MAX_DECIMAL_SCALE: Long =
+    Constraints.MAX_DECIMAL_SCALE
+private const val MAX_DECIMAL_BITS: Long =
+    Constraints.MAX_DECIMAL_BITS
+private const val MAX_FACTORIAL_ARGUMENT: Int =
+    Constraints.MAX_FACTORIAL_ARGUMENT
+private const val MAX_INTEGER_EXPONENT: Int =
+    Constraints.MAX_INTEGER_EXPONENT
+private val MAX_NON_INTEGER_EXPONENT: BigDecimal =
+    Constraints.MAX_NON_INTEGER_EXPONENT.toBigDecimal()
+private val MAX_EXPONENTIAL_ARGUMENT: BigDecimal =
+    Constraints.MAX_EXPONENTIAL_ARGUMENT.toBigDecimal()
 private const val EXTRA_PRECISION_FOR_WORKING: Int = 2
 private val NEGATIVE_ONE: UnifiedValue = UnifiedValue.ONE.negate()
 private val ZERO: UnifiedValue = UnifiedValue.ZERO
@@ -124,7 +121,7 @@ internal suspend fun UnifiedValue.exp(
     val value: BigDecimal = toBigDecimal(
         mc = mc.withExtraPrecision(EXTRA_PRECISION_FOR_WORKING),
     )
-    if (value.abs() > UnifiedValueMathConstraints.MAX_EXPONENTIAL_ARGUMENT) {
+    if (value.abs() > MAX_EXPONENTIAL_ARGUMENT) {
         throw ExpLargeArgumentException()
     }
 
@@ -308,7 +305,7 @@ private fun UnifiedValue.toFactorialArgument(): Int {
         throw FactorialLargeArgumentException()
     }
 
-    if (argument > UnifiedValueMathConstraints.MAX_FACTORIAL_ARGUMENT) {
+    if (argument > MAX_FACTORIAL_ARGUMENT) {
         throw FactorialLargeArgumentException()
     }
 
@@ -329,8 +326,7 @@ private fun integerExponentOrNull(
     }
 
     if (exponent !in
-        -UnifiedValueMathConstraints.MAX_INTEGER_EXPONENT..
-        UnifiedValueMathConstraints.MAX_INTEGER_EXPONENT
+        -MAX_INTEGER_EXPONENT..MAX_INTEGER_EXPONENT
     ) {
         throw PowLimitExceededException()
     }
@@ -384,7 +380,7 @@ private suspend fun UnifiedValue.powDecimalExponent(
     }
 
     val bigDecimalExponent: BigDecimal = exponent.toBigDecimal(workingMc)
-    if (bigDecimalExponent.abs() > UnifiedValueMathConstraints.MAX_NON_INTEGER_EXPONENT) {
+    if (bigDecimalExponent.abs() > MAX_NON_INTEGER_EXPONENT) {
         throw PowLimitExceededException()
     }
 
@@ -405,7 +401,7 @@ private suspend fun BigInteger.powIntegerExponentOrNull(
     val estimateBits: Long =
         bitLength().toLong() * abs(exponent.toLong())
 
-    if (estimateBits > UnifiedValueMathConstraints.MAX_DECIMAL_BITS) {
+    if (estimateBits > MAX_DECIMAL_BITS) {
         return null
     }
 
@@ -450,9 +446,7 @@ private suspend fun BigDecimal.powIntegerExponentOrNull(
         },
     )
 
-    if (abs(result.scale().toLong())
-        > UnifiedValueMathConstraints.MAX_DECIMAL_SCALE
-    ) {
+    if (abs(result.scale().toLong()) > MAX_DECIMAL_SCALE) {
         return null
     }
 

@@ -3,11 +3,6 @@ package com.gmail.comosense.calculator.presentation
 import com.gmail.comosense.calculator.common.Constraints
 import com.gmail.comosense.calculator.domain.Symbol
 
-internal object AppStateExtensionsConstraints {
-    const val MAX_EXPRESSION_SIZE: Int = Constraints.MAX_EXPRESSION_SIZE
-    const val MAX_NESTING_DEPTH: Int = Constraints.MAX_NESTING_DEPTH
-}
-
 sealed interface AppStateUpdateResult {
     data class Success(val appState: AppState) : AppStateUpdateResult
     data object ExpressionTooLarge : AppStateUpdateResult
@@ -15,6 +10,9 @@ sealed interface AppStateUpdateResult {
     data object ExpressionInsertionNotAllowed : AppStateUpdateResult
     object HistoryNotFound : AppStateUpdateResult
 }
+
+private const val MAX_EXPRESSION_SIZE: Int = Constraints.MAX_EXPRESSION_SIZE
+private const val MAX_NESTING_DEPTH: Int = Constraints.MAX_NESTING_DEPTH
 
 val AppState.baseExpression: List<Symbol>
     get() = input.ifEmpty { result }
@@ -63,9 +61,10 @@ fun AppState.appendExpression(
         appendingAppState.symbolsToAppendOrNull(symbols)
             ?: return AppStateUpdateResult.UnacceptableSymbol
 
-    if (appendingAppState.expression.size + symbolsToAppend.size >
-        AppStateExtensionsConstraints.MAX_EXPRESSION_SIZE
-    ) {
+    val expressionSize: Int =
+        appendingAppState.expression.size + symbolsToAppend.size
+
+    if (expressionSize > MAX_EXPRESSION_SIZE) {
         return AppStateUpdateResult.ExpressionTooLarge
     }
 
@@ -79,7 +78,7 @@ fun AppState.appendExpression(
 fun AppState.applyResult(
     result: List<Symbol>,
 ): AppStateUpdateResult {
-    if (result.size > AppStateExtensionsConstraints.MAX_EXPRESSION_SIZE) {
+    if (result.size > MAX_EXPRESSION_SIZE) {
         return AppStateUpdateResult.ExpressionTooLarge
     }
 
@@ -107,9 +106,7 @@ fun AppState.applyHistory(
         return AppStateUpdateResult.ExpressionInsertionNotAllowed
     }
 
-    if (expression.size + result.size >
-        AppStateExtensionsConstraints.MAX_EXPRESSION_SIZE
-    ) {
+    if (expression.size + result.size > MAX_EXPRESSION_SIZE) {
         return AppStateUpdateResult.ExpressionTooLarge
     }
 
@@ -168,7 +165,7 @@ fun AppState.canAppend(
 
                 is Symbol.FactorStart ->
                     symbol.isAppendableAfter(tempInput.lastOrNull()) &&
-                            nestingDepth < AppStateExtensionsConstraints.MAX_NESTING_DEPTH
+                            nestingDepth < MAX_NESTING_DEPTH
 
                 is Symbol.FactorEnd ->
                     symbol.isAppendableAfter(tempInput.lastOrNull()) &&

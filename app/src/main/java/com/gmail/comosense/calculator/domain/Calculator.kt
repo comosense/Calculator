@@ -7,10 +7,6 @@ import java.math.BigDecimal
 import java.math.MathContext
 import java.math.RoundingMode
 
-internal object CalculatorConstraints {
-    const val MAX_RESULT_SIZE: Int = Constraints.MAX_RESULT_SIZE
-}
-
 enum class CalculatorError {
     Unsupported,
     ResultTooLarge,
@@ -30,8 +26,8 @@ enum class CalculatorError {
     Arithmetic,
 }
 
+private const val MAX_RESULT_SIZE: Long = Constraints.MAX_RESULT_SIZE.toLong()
 private const val EXTRA_PRECISION_FOR_WORKING: Int = 2
-
 suspend fun calculate(
     expression: List<Symbol>,
     isRadians: Boolean,
@@ -56,7 +52,7 @@ suspend fun calculate(
 
     val calculatedSymbolsResult: Result<List<Symbol>, SymbolizerError> =
         calculated.toSymbols(
-            maxSymbolSize = CalculatorConstraints.MAX_RESULT_SIZE.toLong(),
+            maxSymbolSize = MAX_RESULT_SIZE,
         )
 
     return when (calculatedSymbolsResult) {

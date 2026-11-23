@@ -14,8 +14,10 @@ internal object Constraints {
     const val MAX_EXPRESSION_SIZE: Int = 1024
     const val MAX_NESTING_DEPTH: Int = 64
     const val MAX_INTERMEDIATE_PRECISION: Int = MAX_EXPRESSION_SIZE * 2
-    const val MAX_DECIMAL_SCALE: Long = MAX_INTERMEDIATE_PRECISION.toLong()
-    const val MAX_DECIMAL_BITS: Long = MAX_DECIMAL_SCALE * 4
+    const val MAX_DECIMAL_SCALE: Long =
+        MAX_INTERMEDIATE_PRECISION.toLong()
+    const val MAX_DECIMAL_BITS: Long =
+        MAX_DECIMAL_SCALE * 4L // log2(10) is approximately 3.32, rounded up to 4
     const val MAX_FACTORIAL_ARGUMENT: Int = 258
     const val MAX_EXPONENTIAL_ARGUMENT: Int = 1024
     const val MAX_INTEGER_EXPONENT: Int = 1024

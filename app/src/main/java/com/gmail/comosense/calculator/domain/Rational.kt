@@ -17,8 +17,10 @@ class Rational private constructor(
     }
 
     companion object {
-        private const val MAX_DECIMAL_SCALE: Long = Constraints.MAX_DECIMAL_SCALE
-        private const val MAX_DECIMAL_BITS: Long = Constraints.MAX_DECIMAL_BITS
+        private const val MAX_DECIMAL_SCALE: Long =
+            Constraints.MAX_DECIMAL_SCALE
+        private const val MAX_DECIMAL_BITS: Long =
+            Constraints.MAX_DECIMAL_BITS
 
         val ZERO: Rational = Rational(
             numerator = BigInteger.ZERO,
