@@ -29,12 +29,10 @@ class Parser(
         fun peek(): Symbol? =
             symbols.getOrNull(position)
 
-        fun consume(): Symbol? {
-            if (isEnd()) {
-                return null
+        fun consume() {
+            if (!isEnd()) {
+                position++
             }
-
-            return symbols[position++]
         }
     }
 
