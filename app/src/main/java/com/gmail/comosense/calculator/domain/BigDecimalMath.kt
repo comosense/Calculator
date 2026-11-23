@@ -16,10 +16,13 @@ internal object BigDecimalMath {
     private const val EXTRA_PRECISION_FOR_CALCULATIONS: Int = 8
     private const val EXTRA_PRECISION_FOR_ROUNDING: Int = 2
     private const val EXTRA_PRECISION_FOR_CACHE: Int = 8
+    private const val EXTRA_PRECISION_FOR_SOURCE_CACHE: Int =
+        EXTRA_PRECISION_FOR_CACHE + (EXTRA_PRECISION_FOR_ROUNDING * 2)
     private val NEGATIVE_ONE: BigDecimal = BigDecimal.ONE.negate()
     private val ZERO: BigDecimal = BigDecimal.ZERO
     private val HALF: BigDecimal = "0.5".toBigDecimal()
     private val ONE: BigDecimal = BigDecimal.ONE
+    private val ONE_HALF: BigDecimal = "1.5".toBigDecimal()
     private val TWO: BigDecimal = 2.toBigDecimal()
     private val FOUR: BigDecimal = 4.toBigDecimal()
     private val FIVE: BigDecimal = 5.toBigDecimal()
@@ -46,9 +49,6 @@ internal object BigDecimalMath {
 
     @Volatile
     private var cachedSqrtTwo: MathConstant? = null
-
-    @Volatile
-    private var cachedInverseSqrtTwo: MathConstant? = null
 
     @Volatile
     private var cachedLnTwo: MathConstant? = null
@@ -83,6 +83,7 @@ internal object BigDecimalMath {
     ): BigDecimal =
         cachedConstant(
             cachedValue = cachedPi,
+            isSourceCache = true,
             calculate = { workingMc ->
                 calculatePi(
                     mc = workingMc,
@@ -453,7 +454,7 @@ internal object BigDecimalMath {
 
         val coroutineContext: CoroutineContext = currentCoroutineContext()
         val sqrtTwo: BigDecimal = sqrtTwo(mc)
-        val inverseSqrtTwo: BigDecimal = inverseSqrtTwo(mc)
+        val inverseSqrtTwo: BigDecimal = sqrtTwo.divide(TWO)
         val lnTwo: BigDecimal = lnTwo(mc)
 
         var x: BigDecimal = value
@@ -864,6 +865,42 @@ internal object BigDecimalMath {
         )
     }
 
+    private suspend fun sqrtTwo(
+        mc: MathContext,
+    ): BigDecimal =
+        cachedConstant(
+            cachedValue = cachedSqrtTwo,
+            isSourceCache = true,
+            calculate = { workingMc ->
+                calculateSqrt(
+                    value = TWO,
+                    mc = workingMc,
+                )
+            },
+            updateCache = { cached ->
+                cachedSqrtTwo = cached
+            },
+            mc = mc,
+        )
+
+    private suspend fun lnTwo(
+        mc: MathContext,
+    ): BigDecimal =
+        cachedConstant(
+            cachedValue = cachedLnTwo,
+            isSourceCache = true,
+            calculate = { workingMc ->
+                lnTaylor(
+                    value = TWO,
+                    mc = workingMc,
+                )
+            },
+            updateCache = { cached ->
+                cachedLnTwo = cached
+            },
+            mc = mc,
+        )
+
     private suspend fun lnTen(
         mc: MathContext,
     ): BigDecimal =
@@ -877,59 +914,6 @@ internal object BigDecimalMath {
             },
             updateCache = { cached ->
                 cachedLnTen = cached
-            },
-            mc = mc,
-        )
-
-    private suspend fun sqrtTwo(
-        mc: MathContext,
-    ): BigDecimal =
-        cachedConstant(
-            cachedValue = cachedSqrtTwo,
-            calculate = { workingMc ->
-                calculateSqrt(
-                    value = TWO,
-                    mc = workingMc,
-                )
-            },
-            updateCache = { cached ->
-                cachedSqrtTwo = cached
-            },
-            mc = mc,
-        )
-
-    private suspend fun inverseSqrtTwo(
-        mc: MathContext,
-    ): BigDecimal =
-        cachedConstant(
-            cachedValue = cachedInverseSqrtTwo,
-            calculate = { workingMc ->
-                ONE.divide(
-                    sqrtTwo(
-                        mc = workingMc,
-                    ),
-                    workingMc,
-                )
-            },
-            updateCache = { cached ->
-                cachedInverseSqrtTwo = cached
-            },
-            mc = mc,
-        )
-
-    private suspend fun lnTwo(
-        mc: MathContext,
-    ): BigDecimal =
-        cachedConstant(
-            cachedValue = cachedLnTwo,
-            calculate = { workingMc ->
-                lnTaylor(
-                    value = TWO,
-                    mc = workingMc,
-                )
-            },
-            updateCache = { cached ->
-                cachedLnTwo = cached
             },
             mc = mc,
         )
@@ -958,7 +942,7 @@ internal object BigDecimalMath {
             calculate = { workingMc ->
                 pi(
                     mc = workingMc,
-                ).add(halfPi(workingMc), workingMc)
+                ).multiply(ONE_HALF, workingMc)
             },
             updateCache = { cached ->
                 cachedThreeHalfPi = cached
@@ -984,6 +968,7 @@ internal object BigDecimalMath {
 
     private suspend fun cachedConstant(
         cachedValue: MathConstant?,
+        isSourceCache: Boolean = false,
         calculate: suspend (MathContext) -> BigDecimal,
         updateCache: (MathConstant) -> Unit,
         mc: MathContext,
@@ -998,7 +983,13 @@ internal object BigDecimalMath {
             }
         }
 
-        val workingMc = mc.withExtraPrecision(EXTRA_PRECISION_FOR_CACHE)
+        val extraPrecisionForCache: Int =
+            if (isSourceCache) {
+                EXTRA_PRECISION_FOR_SOURCE_CACHE
+            } else {
+                EXTRA_PRECISION_FOR_CACHE
+            }
+        val workingMc = mc.withExtraPrecision(extraPrecisionForCache)
         val value = calculate(workingMc)
 
         updateCache(
