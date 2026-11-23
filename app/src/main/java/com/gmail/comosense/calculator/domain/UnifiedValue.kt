@@ -16,8 +16,10 @@ class UnifiedValue private constructor(
     val piCoefficient: Rational = Rational.ZERO,
 ) {
     companion object {
-        private const val MAX_INTERMEDIATE_PRECISION = Constraints.MAX_INTERMEDIATE_PRECISION
-        private const val MAX_DECIMAL_SCALE: Long = Constraints.MAX_DECIMAL_SCALE
+        private const val MAX_INTERMEDIATE_PRECISION =
+            Constraints.MAX_INTERMEDIATE_PRECISION
+        private const val MAX_DECIMAL_SCALE: Long =
+            Constraints.MAX_DECIMAL_SCALE
         private const val EXTRA_PRECISION_FOR_WORKING: Int = 2
         private val BIG_DECIMAL_ZERO: BigDecimal = BigDecimal.ZERO
 
@@ -70,9 +72,10 @@ class UnifiedValue private constructor(
             mc: MathContext,
         ): UnifiedValue =
             fromApproximateValue(
-                approximateValue = BigDecimalMath.e(
-                    mc = mc,
-                ),
+                approximateValue =
+                    BigDecimalMath.e(
+                        mc = mc,
+                    ),
             )
     }
 
@@ -82,6 +85,7 @@ class UnifiedValue private constructor(
         if (other.isZero()) {
             return this
         }
+
         if (isZero()) {
             return other
         }
@@ -128,32 +132,29 @@ class UnifiedValue private constructor(
                 product
             }
 
-        val leftExactValueRational: Rational =
-            exactValue.toRational()
-        val rightExactValueRational: Rational =
-            other.exactValue.toRational()
+        val piSquaredPartValue: Rational =
+            if (hasPiCoefficient() && other.hasPiCoefficient()) {
+                val workingMc: MathContext =
+                    mc.withExtraPrecision(EXTRA_PRECISION_FOR_WORKING)
+                val pi: BigDecimal = BigDecimalMath.pi(workingMc)
+                val piSquared: Rational = pi.multiply(pi, mc).toRational()
 
-        var newApproximateValue: Rational =
+                piCoefficient * other.piCoefficient * piSquared
+            } else {
+                Rational.ZERO
+            }
+        val exactValueRational: Rational = exactValue.toRational()
+        val otherExactValueRational: Rational = other.exactValue.toRational()
+
+        val newApproximateValue: Rational =
             approximateValue * other.approximateValue +
-                    leftExactValueRational * other.approximateValue +
-                    rightExactValueRational * approximateValue
-
-        if (hasPiCoefficient() && other.hasPiCoefficient()) {
-            val workingMc: MathContext =
-                mc.withExtraPrecision(EXTRA_PRECISION_FOR_WORKING)
-            val pi: BigDecimal = BigDecimalMath.pi(workingMc)
-            val piSquared: BigDecimal = pi.multiply(pi, workingMc)
-
-            newApproximateValue +=
-                (piCoefficient * other.piCoefficient)
-                    .toBigDecimal(workingMc)
-                    .multiply(piSquared, mc)
-                    .toRational()
-        }
+                    exactValueRational * other.approximateValue +
+                    approximateValue * otherExactValueRational +
+                    piSquaredPartValue
 
         val newPiCoefficient: Rational =
-            (leftExactValueRational + approximateValue) * other.piCoefficient +
-                    (rightExactValueRational + other.approximateValue) * piCoefficient
+            (exactValueRational + approximateValue) * other.piCoefficient +
+                    (otherExactValueRational + other.approximateValue) * piCoefficient
 
         return UnifiedValue(
             exactValue = newExactValue,
@@ -169,16 +170,17 @@ class UnifiedValue private constructor(
         if (other.isZero()) {
             throw DivisionByZeroException()
         }
+
         if (isZero()) {
             return ZERO
         }
 
-        val denominator: Rational? = other.toRationalOrNull()
-
-        if (denominator != null) {
+        other.toRationalOrNull()?.let { denominator ->
             return UnifiedValue(
-                approximateValue = (exactValue.toRational() + approximateValue) / denominator,
-                piCoefficient = piCoefficient / denominator,
+                approximateValue =
+                    (exactValue.toRational() + approximateValue) / denominator,
+                piCoefficient =
+                    piCoefficient / denominator,
             )
         }
 
@@ -186,9 +188,10 @@ class UnifiedValue private constructor(
             mc.withExtraPrecision(EXTRA_PRECISION_FOR_WORKING)
 
         return UnifiedValue(
-            approximateValue = toBigDecimal(workingMc)
-                .divide(other.toBigDecimal(workingMc), mc)
-                .toRational(),
+            approximateValue =
+                toBigDecimal(workingMc)
+                    .divide(other.toBigDecimal(workingMc), mc)
+                    .toRational(),
         )
     }
 
@@ -217,23 +220,22 @@ class UnifiedValue private constructor(
             return exactValue
         }
 
-        val roundedValue: BigDecimal = if (!hasPiCoefficient()) {
-            approximateValue
-                .toBigDecimal(mc)
-        } else {
-            val workingMc: MathContext =
-                mc.withExtraPrecision(EXTRA_PRECISION_FOR_WORKING)
+        val roundedValue: BigDecimal =
+            if (!hasPiCoefficient()) {
+                approximateValue.toBigDecimal(mc)
+            } else {
+                val workingMc: MathContext =
+                    mc.withExtraPrecision(EXTRA_PRECISION_FOR_WORKING)
 
-            approximateValue
-                .toBigDecimal(workingMc)
-                .add(
-                    piCoefficient.toBigDecimal(workingMc)
-                        .multiply(
-                            BigDecimalMath.pi(workingMc),
-                            workingMc
-                        )
-                ).round(mc)
-        }
+                approximateValue.toBigDecimal(workingMc)
+                    .add(
+                        piCoefficient.toBigDecimal(workingMc)
+                            .multiply(
+                                BigDecimalMath.pi(workingMc),
+                                workingMc
+                            )
+                    ).round(mc)
+            }
 
         return exactValue.add(roundedValue)
     }

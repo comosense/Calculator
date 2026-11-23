@@ -40,17 +40,17 @@ class Rational private constructor(
                 ZERO
             } else {
                 Rational(
-                    numerator = this.toBigInteger(),
+                    numerator = toBigInteger(),
                     denominator = BigInteger.ONE,
                 )
             }
 
         fun BigDecimal.toRational(): Rational {
-            if (this.signum() == 0) {
+            if (signum() == 0) {
                 return ZERO
             }
 
-            val stripped: BigDecimal = this.stripTrailingZeros()
+            val stripped: BigDecimal = stripTrailingZeros()
             val scale: Int = stripped.scale()
             require(scale != Int.MIN_VALUE)
 
@@ -124,6 +124,7 @@ class Rational private constructor(
         if (other.isZero()) {
             return this
         }
+
         if (isZero()) {
             return other
         }
@@ -267,13 +268,13 @@ class Rational private constructor(
 
         val n: Int = abs(exponent)
 
-        val numeratorResult: BigInteger =
+        val newNumerator: BigInteger =
             BigDecimalMath.powNaturalExponent(
                 base = numerator,
                 exponent = n,
             )
 
-        val denominatorResult: BigInteger =
+        val newDenominator: BigInteger =
             BigDecimalMath.powNaturalExponent(
                 base = denominator,
                 exponent = n,
@@ -281,13 +282,13 @@ class Rational private constructor(
 
         return if (exponent > 0) {
             of(
-                numerator = numeratorResult,
-                denominator = denominatorResult,
+                numerator = newNumerator,
+                denominator = newDenominator,
             )
         } else {
             of(
-                numerator = denominatorResult,
-                denominator = numeratorResult,
+                numerator = newDenominator,
+                denominator = newNumerator,
             )
         }
     }
