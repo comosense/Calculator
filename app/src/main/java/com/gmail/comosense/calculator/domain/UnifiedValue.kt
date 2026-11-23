@@ -253,10 +253,23 @@ class UnifiedValue private constructor(
         val piTerm: BigDecimal =
             piCoefficient.toBigDecimal(workingMc)
                 .multiply(BigDecimalMath.pi(workingMc), workingMc)
+
+        if (hasExactValue() &&
+            hasApproximateValue()
+        ) {
+            val rationalValue: Rational = rationalValue()
+            if (rationalValue.isZero() ||
+                rationalValue.abs() < approximateValue.abs()
+            ) {
+                return rationalValue().toBigDecimal(workingMc)
+                    .add(piTerm)
+                    .round(mc)
+            }
+        }
+
         val approximatePlusPiPartValue: BigDecimal =
             approximateValue.toBigDecimal(workingMc)
                 .add(piTerm)
-
         val sumWithExact: BigDecimal =
             exactValue.add(approximatePlusPiPartValue)
 
