@@ -209,9 +209,7 @@ class UnifiedValue private constructor(
             ?: toBigDecimal(mc).signum()
 
     fun isZero(): Boolean =
-        !hasExactValue() &&
-                !hasApproximateValue() &&
-                !hasPiCoefficient()
+        toRationalOrNull()?.isZero() ?: false
 
     suspend fun toBigDecimal(
         mc: MathContext,

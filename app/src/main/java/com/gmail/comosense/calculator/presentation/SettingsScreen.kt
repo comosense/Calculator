@@ -1,5 +1,6 @@
 package com.gmail.comosense.calculator.presentation
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -45,6 +46,10 @@ fun SettingsScreen(
     onAppAction: (AppAction) -> Unit,
     onBack: () -> Unit,
 ) {
+    BackHandler {
+        onBack()
+    }
+
     ScreenScaffold(timeText = {}) {
         val precisionIndex: Int = SettingsConstraints.VALID_PRECISIONS
             .indexOf(settings.precision)
