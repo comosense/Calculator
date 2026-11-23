@@ -261,7 +261,7 @@ class UnifiedValue private constructor(
             if (rationalValue.isZero() ||
                 rationalValue.abs() < approximateValue.abs()
             ) {
-                return rationalValue().toBigDecimal(workingMc)
+                return rationalValue.toBigDecimal(workingMc)
                     .add(piTerm)
                     .round(mc)
             }
