@@ -357,11 +357,13 @@ private suspend fun UnifiedValue.powIntegerExponent(
         return result
     }
 
-    return toBigDecimal(mc.withExtraPrecision(EXTRA_PRECISION_FOR_WORKING))
-        .powIntegerExponentOrNull(
-            exponent = exponent,
-            mc = mc,
-        ) ?: throw CalculationLimitExceededException()
+    val bigDecimalBase: BigDecimal =
+        toBigDecimal(mc.withExtraPrecision(EXTRA_PRECISION_FOR_WORKING))
+
+    return bigDecimalBase.powIntegerExponentOrNull(
+        exponent = exponent,
+        mc = mc,
+    ) ?: throw CalculationLimitExceededException()
 }
 
 private suspend fun UnifiedValue.powUnifiedValueExponent(
@@ -376,7 +378,8 @@ private suspend fun UnifiedValue.powUnifiedValueExponent(
         throw PowInvalidArgumentException()
     }
 
-    val bigDecimalExponent: BigDecimal = exponent.toBigDecimal(workingMc)
+    val bigDecimalExponent: BigDecimal =
+        exponent.toBigDecimal(workingMc)
 
     if (bigDecimalExponent.abs() > MAX_NON_INTEGER_EXPONENT) {
         throw PowLimitExceededException()

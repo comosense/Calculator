@@ -343,15 +343,17 @@ internal object BigDecimalMath {
 
         val calculationMc: MathContext =
             mc.withExtraPrecision(EXTRA_PRECISION_FOR_CALCULATIONS)
-
-        return calculateExp(
-            value = exponent.multiply(
+        val exponentProduct: BigDecimal =
+            exponent.multiply(
                 calculateLn(
                     value = base,
                     mc = calculationMc,
                 ),
                 calculationMc,
-            ),
+            )
+
+        return calculateExp(
+            value = exponentProduct,
             mc = calculationMc,
         ).round(mc)
     }
