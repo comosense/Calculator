@@ -55,15 +55,20 @@ private fun BigDecimal.toDisplayStringOrNull(
     val sign: Long = if (stripped.signum() < 0) {
         1L
     } else {
-        0
+        0L
     }
     val precision: Long = stripped.precision().toLong()
     val scale: Long = stripped.scale().toLong()
 
     val length: Long = sign + when {
-        scale <= 0 -> precision - scale
-        precision > scale -> precision + 1
-        else -> scale + 2
+        scale <= 0 ->
+            precision - scale
+
+        precision > scale ->
+            precision + 1
+
+        else ->
+            scale + 2
     }
 
     return if (length <= maxLength) {
