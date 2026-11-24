@@ -36,9 +36,9 @@ internal object BigDecimalMath {
         val value: BigDecimal,
     )
 
-    private class CachedConstant(
-        private vararg val dependencies: CachedConstant,
-        private val calculate: suspend (MathContext) -> BigDecimal,
+    private class CachedConstant private constructor(
+        private val dependencies: List<CachedConstant>,
+        private val calculate: suspend (MathContext, List<BigDecimal>) -> BigDecimal,
     ) {
         private var extraPrecision: Int = EXTRA_PRECISION_FOR_CACHE
 
@@ -81,7 +81,19 @@ internal object BigDecimalMath {
             }
 
             val workingMc = mc.withExtraPrecision(extraPrecision)
-            val value = calculate(workingMc)
+            val dependencyValues: List<BigDecimal> =
+                if (dependencies.isEmpty()) {
+                    emptyList()
+                } else {
+                    dependencies.map { dependency ->
+                        dependency.get(workingMc)
+                    }
+                }
+            val value: BigDecimal =
+                calculate(
+                    workingMc,
+                    dependencyValues,
+                )
 
             cached = MathConstant(
                 mc = workingMc,
@@ -89,6 +101,46 @@ internal object BigDecimalMath {
             )
 
             return value.round(mc)
+        }
+
+        companion object {
+            operator fun invoke(
+                calculate: suspend (MathContext) -> BigDecimal,
+            ): CachedConstant =
+                CachedConstant(
+                    dependencies = emptyList(),
+                    calculate = { mc, _ -> calculate(mc) }
+                )
+
+            operator fun invoke(
+                d1: CachedConstant,
+                calculate: suspend (MathContext, BigDecimal) -> BigDecimal,
+            ): CachedConstant =
+                CachedConstant(
+                    dependencies = listOf(d1),
+                    calculate = { mc, deps -> calculate(mc, deps[0]) }
+                )
+
+            operator fun invoke(
+                d1: CachedConstant,
+                d2: CachedConstant,
+                calculate: suspend (MathContext, BigDecimal, BigDecimal) -> BigDecimal,
+            ): CachedConstant =
+                CachedConstant(
+                    dependencies = listOf(d1, d2),
+                    calculate = { mc, deps -> calculate(mc, deps[0], deps[1]) }
+                )
+
+            operator fun invoke(
+                d1: CachedConstant,
+                d2: CachedConstant,
+                d3: CachedConstant,
+                calculate: suspend (MathContext, BigDecimal, BigDecimal, BigDecimal) -> BigDecimal,
+            ): CachedConstant =
+                CachedConstant(
+                    dependencies = listOf(d1, d2, d3),
+                    calculate = { mc, deps -> calculate(mc, deps[0], deps[1], deps[2]) }
+                )
         }
     }
 
@@ -110,10 +162,8 @@ internal object BigDecimalMath {
     }
     private val cachedInverseSqrtTwo = CachedConstant(
         cachedSqrtTwo,
-    ) { workingMc ->
-        sqrtTwo(
-            mc = workingMc,
-        ).divide(TWO)
+    ) { _, sqrtTwo ->
+        sqrtTwo.divide(TWO)
     }
     private val cachedLnTwo = CachedConstant { workingMc ->
         lnTaylor(
@@ -125,32 +175,29 @@ internal object BigDecimalMath {
         cachedSqrtTwo,
         cachedInverseSqrtTwo,
         cachedLnTwo,
-    ) { workingMc ->
-        calculateLn(
+    ) { workingMc, sqrtTwo, inverseSqrtTwo, lnTwo ->
+        calculateLnMain(
             value = TEN,
             mc = workingMc,
+            sqrtTwo = sqrtTwo,
+            inverseSqrtTwo = inverseSqrtTwo,
+            lnTwo = lnTwo,
         )
     }
     private val cachedHalfPi = CachedConstant(
         cachedPi,
-    ) { workingMc ->
-        pi(
-            mc = workingMc,
-        ).divide(TWO)
+    ) { _, pi ->
+        pi.divide(TWO)
     }
     private val cachedThreeHalfPi = CachedConstant(
         cachedPi,
-    ) { workingMc ->
-        pi(
-            mc = workingMc,
-        ).multiply(ONE_HALF, workingMc)
+    ) { workingMc, pi ->
+        pi.multiply(ONE_HALF, workingMc)
     }
     private val cachedTwoPi = CachedConstant(
         cachedPi,
-    ) { workingMc ->
-        pi(
-            mc = workingMc,
-        ).multiply(TWO)
+    ) { _, pi ->
+        pi.multiply(TWO)
     }
 
     suspend fun e(
@@ -325,7 +372,10 @@ internal object BigDecimalMath {
         val calculationMc: MathContext =
             mc.withExtraPrecision(EXTRA_PRECISION_FOR_CALCULATIONS)
 
-        return calculateLn(value, calculationMc)
+        return calculateLn(
+            value = value,
+            mc = calculationMc,
+        )
             .divide(lnTen(calculationMc), mc)
     }
 
@@ -520,10 +570,23 @@ internal object BigDecimalMath {
             return ZERO
         }
 
+        return calculateLnMain(
+            value = value,
+            mc = mc,
+            sqrtTwo = sqrtTwo(mc),
+            inverseSqrtTwo = inverseSqrtTwo(mc),
+            lnTwo = lnTwo(mc),
+        )
+    }
+
+    private suspend fun calculateLnMain(
+        value: BigDecimal,
+        mc: MathContext,
+        sqrtTwo: BigDecimal,
+        inverseSqrtTwo: BigDecimal,
+        lnTwo: BigDecimal,
+    ): BigDecimal {
         val coroutineContext: CoroutineContext = currentCoroutineContext()
-        val sqrtTwo: BigDecimal = sqrtTwo(mc)
-        val inverseSqrtTwo: BigDecimal = inverseSqrtTwo(mc)
-        val lnTwo: BigDecimal = lnTwo(mc)
 
         var x: BigDecimal = value
         var exponent = 0
