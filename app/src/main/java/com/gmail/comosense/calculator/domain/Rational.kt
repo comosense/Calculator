@@ -252,11 +252,18 @@ class Rational private constructor(
     fun toBigDecimal(
         mc: MathContext,
     ): BigDecimal =
-        if (isZero()) {
-            BigDecimal.ZERO
-        } else {
-            numerator.toBigDecimal()
-                .divide(denominator.toBigDecimal(), mc)
+        when {
+            isZero() ->
+                BigDecimal.ZERO
+
+            isInteger() ->
+                numerator.toBigDecimal(
+                    mathContext = mc,
+                )
+
+            else ->
+                numerator.toBigDecimal()
+                    .divide(denominator.toBigDecimal(), mc)
         }
 
     fun toBigIntegerExactOrNull(): BigInteger? =

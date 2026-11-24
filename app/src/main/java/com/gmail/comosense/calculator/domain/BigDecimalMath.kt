@@ -16,8 +16,6 @@ internal object BigDecimalMath {
     private const val EXTRA_PRECISION_FOR_CALCULATIONS: Int = 8
     private const val EXTRA_PRECISION_FOR_ROUNDING: Int = 2
     private const val EXTRA_PRECISION_FOR_CACHE: Int = 8
-    private const val EXTRA_PRECISION_FOR_SOURCE_CACHE: Int =
-        EXTRA_PRECISION_FOR_CACHE + (EXTRA_PRECISION_FOR_ROUNDING * 2)
     private val NEGATIVE_ONE: BigDecimal = BigDecimal.ONE.negate()
     private val ZERO: BigDecimal = BigDecimal.ZERO
     private val HALF: BigDecimal = "0.5".toBigDecimal()
@@ -38,62 +36,132 @@ internal object BigDecimalMath {
         val value: BigDecimal,
     )
 
-    @Volatile
-    private var cachedE: MathConstant? = null
+    private class CachedConstant(
+        private vararg val dependencies: CachedConstant,
+        private val calculate: suspend (MathContext) -> BigDecimal,
+    ) {
+        private var extraPrecision: Int = EXTRA_PRECISION_FOR_CACHE
 
-    @Volatile
-    private var cachedPi: MathConstant? = null
+        @Volatile
+        private var cached: MathConstant? = null
 
-    @Volatile
-    private var cachedLnTen: MathConstant? = null
+        init {
+            propagateExtraPrecision()
+        }
 
-    @Volatile
-    private var cachedSqrtTwo: MathConstant? = null
+        private fun ensureExtraPrecision(
+            required: Int,
+        ) {
+            if (required > extraPrecision) {
+                extraPrecision = required
+                propagateExtraPrecision()
+            }
+        }
 
-    @Volatile
-    private var cachedLnTwo: MathConstant? = null
+        private fun propagateExtraPrecision() {
+            val requiredForDependency: Int =
+                extraPrecision + EXTRA_PRECISION_FOR_ROUNDING
 
-    @Volatile
-    private var cachedHalfPi: MathConstant? = null
+            for (dependency in dependencies) {
+                dependency.ensureExtraPrecision(requiredForDependency)
+            }
+        }
 
-    @Volatile
-    private var cachedThreeHalfPi: MathConstant? = null
+        suspend fun get(
+            mc: MathContext,
+        ): BigDecimal {
+            cached?.let { current ->
+                if (current.mc.hasBiggerPrecisionThan(
+                        other = mc,
+                        extraPrecision = EXTRA_PRECISION_FOR_ROUNDING
+                    )
+                ) {
+                    return current.value.round(mc)
+                }
+            }
 
-    @Volatile
-    private var cachedTwoPi: MathConstant? = null
+            val workingMc = mc.withExtraPrecision(extraPrecision)
+            val value = calculate(workingMc)
+
+            cached = MathConstant(
+                mc = workingMc,
+                value = value,
+            )
+
+            return value.round(mc)
+        }
+    }
+
+    private val cachedE = CachedConstant { workingMc ->
+        calculateE(
+            mc = workingMc,
+        )
+    }
+    private val cachedPi = CachedConstant { workingMc ->
+        calculatePi(
+            mc = workingMc,
+        )
+    }
+    private val cachedSqrtTwo = CachedConstant { workingMc ->
+        calculateSqrt(
+            value = TWO,
+            mc = workingMc,
+        )
+    }
+    private val cachedInverseSqrtTwo = CachedConstant(
+        cachedSqrtTwo,
+    ) { workingMc ->
+        sqrtTwo(
+            mc = workingMc,
+        ).divide(TWO)
+    }
+    private val cachedLnTwo = CachedConstant { workingMc ->
+        lnTaylor(
+            value = TWO,
+            mc = workingMc,
+        )
+    }
+    private val cachedLnTen = CachedConstant(
+        cachedSqrtTwo,
+        cachedInverseSqrtTwo,
+        cachedLnTwo,
+    ) { workingMc ->
+        calculateLn(
+            value = TEN,
+            mc = workingMc,
+        )
+    }
+    private val cachedHalfPi = CachedConstant(
+        cachedPi,
+    ) { workingMc ->
+        pi(
+            mc = workingMc,
+        ).divide(TWO)
+    }
+    private val cachedThreeHalfPi = CachedConstant(
+        cachedPi,
+    ) { workingMc ->
+        pi(
+            mc = workingMc,
+        ).multiply(ONE_HALF, workingMc)
+    }
+    private val cachedTwoPi = CachedConstant(
+        cachedPi,
+    ) { workingMc ->
+        pi(
+            mc = workingMc,
+        ).multiply(TWO)
+    }
 
     suspend fun e(
         mc: MathContext,
     ): BigDecimal =
-        cachedConstant(
-            cachedValue = cachedE,
-            calculate = { workingMc ->
-                calculateE(
-                    mc = workingMc,
-                )
-            },
-            updateCache = { cached ->
-                cachedE = cached
-            },
-            mc = mc,
-        )
+        cachedE.get(mc)
 
     suspend fun pi(
         mc: MathContext,
     ): BigDecimal =
-        cachedConstant(
-            cachedValue = cachedPi,
-            isSourceCache = true,
-            calculate = { workingMc ->
-                calculatePi(
-                    mc = workingMc,
-                )
-            },
-            updateCache = { cached ->
-                cachedPi = cached
-            },
-            mc = mc,
-        )
+        cachedPi.get(mc)
 
     suspend fun factorial(
         value: Int,
@@ -454,7 +522,7 @@ internal object BigDecimalMath {
 
         val coroutineContext: CoroutineContext = currentCoroutineContext()
         val sqrtTwo: BigDecimal = sqrtTwo(mc)
-        val inverseSqrtTwo: BigDecimal = sqrtTwo.divide(TWO)
+        val inverseSqrtTwo: BigDecimal = inverseSqrtTwo(mc)
         val lnTwo: BigDecimal = lnTwo(mc)
 
         var x: BigDecimal = value
@@ -868,137 +936,35 @@ internal object BigDecimalMath {
     private suspend fun sqrtTwo(
         mc: MathContext,
     ): BigDecimal =
-        cachedConstant(
-            cachedValue = cachedSqrtTwo,
-            isSourceCache = true,
-            calculate = { workingMc ->
-                calculateSqrt(
-                    value = TWO,
-                    mc = workingMc,
-                )
-            },
-            updateCache = { cached ->
-                cachedSqrtTwo = cached
-            },
-            mc = mc,
-        )
+        cachedSqrtTwo.get(mc)
+
+    private suspend fun inverseSqrtTwo(
+        mc: MathContext,
+    ): BigDecimal =
+        cachedInverseSqrtTwo.get(mc)
 
     private suspend fun lnTwo(
         mc: MathContext,
     ): BigDecimal =
-        cachedConstant(
-            cachedValue = cachedLnTwo,
-            isSourceCache = true,
-            calculate = { workingMc ->
-                lnTaylor(
-                    value = TWO,
-                    mc = workingMc,
-                )
-            },
-            updateCache = { cached ->
-                cachedLnTwo = cached
-            },
-            mc = mc,
-        )
+        cachedLnTwo.get(mc)
 
     private suspend fun lnTen(
         mc: MathContext,
     ): BigDecimal =
-        cachedConstant(
-            cachedValue = cachedLnTen,
-            calculate = { workingMc ->
-                calculateLn(
-                    value = TEN,
-                    mc = workingMc,
-                )
-            },
-            updateCache = { cached ->
-                cachedLnTen = cached
-            },
-            mc = mc,
-        )
+        cachedLnTen.get(mc)
 
     private suspend fun halfPi(
         mc: MathContext,
     ): BigDecimal =
-        cachedConstant(
-            cachedValue = cachedHalfPi,
-            calculate = { workingMc ->
-                pi(
-                    mc = workingMc,
-                ).divide(TWO)
-            },
-            updateCache = { cached ->
-                cachedHalfPi = cached
-            },
-            mc = mc,
-        )
+        cachedHalfPi.get(mc)
 
     private suspend fun threeHalfPi(
         mc: MathContext,
     ): BigDecimal =
-        cachedConstant(
-            cachedValue = cachedThreeHalfPi,
-            calculate = { workingMc ->
-                pi(
-                    mc = workingMc,
-                ).multiply(ONE_HALF, workingMc)
-            },
-            updateCache = { cached ->
-                cachedThreeHalfPi = cached
-            },
-            mc = mc,
-        )
+        cachedThreeHalfPi.get(mc)
 
     private suspend fun twoPi(
         mc: MathContext,
     ): BigDecimal =
-        cachedConstant(
-            cachedValue = cachedTwoPi,
-            calculate = { workingMc ->
-                pi(
-                    mc = workingMc,
-                ).multiply(TWO)
-            },
-            updateCache = { cached ->
-                cachedTwoPi = cached
-            },
-            mc = mc,
-        )
-
-    private suspend fun cachedConstant(
-        cachedValue: MathConstant?,
-        isSourceCache: Boolean = false,
-        calculate: suspend (MathContext) -> BigDecimal,
-        updateCache: (MathConstant) -> Unit,
-        mc: MathContext,
-    ): BigDecimal {
-        cachedValue?.let { cached ->
-            if (cached.mc.hasBiggerPrecisionThan(
-                    other = mc,
-                    extraPrecision = EXTRA_PRECISION_FOR_ROUNDING
-                )
-            ) {
-                return cached.value.round(mc)
-            }
-        }
-
-        val extraPrecisionForCache: Int =
-            if (isSourceCache) {
-                EXTRA_PRECISION_FOR_SOURCE_CACHE
-            } else {
-                EXTRA_PRECISION_FOR_CACHE
-            }
-        val workingMc = mc.withExtraPrecision(extraPrecisionForCache)
-        val value = calculate(workingMc)
-
-        updateCache(
-            MathConstant(
-                mc = workingMc,
-                value = value,
-            )
-        )
-
-        return value.round(mc)
-    }
+        cachedTwoPi.get(mc)
 }

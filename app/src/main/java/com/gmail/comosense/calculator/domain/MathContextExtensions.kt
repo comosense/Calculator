@@ -17,7 +17,7 @@ internal fun MathContext.withExtraPrecision(
 
 internal fun MathContext.hasBiggerPrecisionThan(
     other: MathContext,
-    extraPrecision: Int,
+    extraPrecision: Int = 0,
 ): Boolean =
     roundingMode == other.roundingMode &&
             precision.toLong() >= (other.precision.toLong() + extraPrecision.toLong())
