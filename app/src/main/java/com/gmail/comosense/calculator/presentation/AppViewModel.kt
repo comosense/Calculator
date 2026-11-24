@@ -18,14 +18,15 @@ import com.gmail.comosense.calculator.domain.calculate
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.ensureActive
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -83,8 +84,11 @@ class AppViewModel(
 
     private val _appState: MutableStateFlow<AppState> =
         MutableStateFlow(AppState())
-    private val _appEvent: MutableSharedFlow<AppEvent> =
-        MutableSharedFlow(extraBufferCapacity = 1)
+    private val _appEvent: Channel<AppEvent> =
+        Channel(
+            capacity = Channel.BUFFERED,
+            onBufferOverflow = BufferOverflow.DROP_OLDEST,
+        )
     private var calculateJobOrNull: Job? = null
 
     init {
@@ -114,7 +118,12 @@ class AppViewModel(
     }
 
     val appState: StateFlow<AppState> = _appState.asStateFlow()
-    val appEvent: SharedFlow<AppEvent> = _appEvent.asSharedFlow()
+    val appEvent: Flow<AppEvent> = _appEvent.receiveAsFlow()
+
+    override fun onCleared() {
+        super.onCleared()
+        _appEvent.close()
+    }
 
     fun onAppAction(
         appAction: AppAction,
@@ -239,7 +248,7 @@ class AppViewModel(
                         calculatedResult.value
 
                     is Result.Err -> {
-                        _appEvent.tryEmit(AppEvent.CalculatorError(calculatedResult.error))
+                        _appEvent.trySend(AppEvent.CalculatorError(calculatedResult.error))
                         return@launch
                     }
                 }
@@ -335,7 +344,7 @@ class AppViewModel(
                 )
             ) {
                 nextAppStateTransition.appEvent?.let { appEvent ->
-                    _appEvent.tryEmit(appEvent)
+                    _appEvent.trySend(appEvent)
                 }
 
                 return
@@ -410,7 +419,7 @@ class AppViewModel(
                     Unit
 
                 is Result.Err ->
-                    _appEvent.tryEmit(toAppEvent(result.error))
+                    _appEvent.trySend(toAppEvent(result.error))
             }
         }
 }

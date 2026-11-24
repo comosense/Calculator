@@ -20,6 +20,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.wear.compose.foundation.SwipeToDismissBoxState
 import androidx.wear.compose.foundation.SwipeToDismissValue
 import androidx.wear.compose.foundation.rememberSwipeToDismissBoxState
@@ -31,8 +35,10 @@ import com.gmail.comosense.calculator.data.SettingsRepositoryError
 import com.gmail.comosense.calculator.domain.CalculatorError
 import com.gmail.comosense.calculator.presentation.theme.AppTheme
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.Locale
 
 enum class AppScreen {
@@ -150,38 +156,43 @@ private fun HandleEvent(
 ) {
     val context: Context = LocalContext.current
     val view: View = LocalView.current
+    val lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
 
     var currentToast: Toast? by remember { mutableStateOf(null) }
 
     LaunchedEffect(appEvent) {
-        appEvent.collect { appEvent ->
-            view.performHapticFeedback(
-                HapticFeedbackConstants.REJECT,
-                HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING,
-            )
+        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            withContext(Dispatchers.Main.immediate) {
+                appEvent.collect { appEvent ->
+                    view.performHapticFeedback(
+                        HapticFeedbackConstants.REJECT,
+                        HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING,
+                    )
 
-            val messageResourceId: Int? = when (appEvent) {
-                is AppEvent.AppViewModelError ->
-                    appEvent.appViewModelError.messageResourceId()
+                    val messageResourceId: Int? = when (appEvent) {
+                        is AppEvent.AppViewModelError ->
+                            appEvent.appViewModelError.messageResourceId()
 
-                is AppEvent.SettingsRepositoryError ->
-                    appEvent.settingsRepositoryError.messageResourceId()
+                        is AppEvent.SettingsRepositoryError ->
+                            appEvent.settingsRepositoryError.messageResourceId()
 
-                is AppEvent.HistoryRepositoryError ->
-                    appEvent.historyRepositoryError.messageResourceId()
+                        is AppEvent.HistoryRepositoryError ->
+                            appEvent.historyRepositoryError.messageResourceId()
 
-                is AppEvent.CalculatorError ->
-                    appEvent.calculatorError.messageResourceId()
-            }
+                        is AppEvent.CalculatorError ->
+                            appEvent.calculatorError.messageResourceId()
+                    }
 
-            messageResourceId?.let { resId ->
-                currentToast?.cancel()
+                    messageResourceId?.let { resId ->
+                        currentToast?.cancel()
 
-                currentToast = Toast.makeText(
-                    context,
-                    resId,
-                    Toast.LENGTH_SHORT,
-                ).apply { show() }
+                        currentToast = Toast.makeText(
+                            context,
+                            resId,
+                            Toast.LENGTH_SHORT,
+                        ).apply { show() }
+                    }
+                }
             }
         }
     }
