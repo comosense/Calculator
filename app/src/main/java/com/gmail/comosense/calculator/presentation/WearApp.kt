@@ -11,6 +11,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.scaleIn
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -19,7 +20,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -87,62 +90,66 @@ fun WearApp(
         }
     }
 
-    AppScaffold {
-        CalculatorScreen(
-            appState = appState,
-            onAppAction = onAppAction,
-            onShow = { appScreen -> changeScreen(appScreen) },
-            symbolFormatter = symbolFormatter,
-        )
+    CompositionLocalProvider(
+        LocalLayoutDirection provides LayoutDirection.Ltr
+    ) {
+        AppScaffold {
+            CalculatorScreen(
+                appState = appState,
+                onAppAction = onAppAction,
+                onShow = { appScreen -> changeScreen(appScreen) },
+                symbolFormatter = symbolFormatter,
+            )
 
-        AnimatedVisibility(
-            visible = (currentScreen != AppScreen.Calculator),
-            enter = fadeIn(
-                animationSpec = tween(180),
-            ) + scaleIn(
-                initialScale = 0.875f,
-                animationSpec = tween(180),
-            ),
-            exit = ExitTransition.None,
-            modifier = Modifier.fillMaxSize(),
-        ) {
-            SwipeToDismissBox(
-                state = swipeToDismissBoxState,
-                userSwipeEnabled = !isHistoryDeleteMode,
-                backgroundScrimColor = AppTheme.calculatorScreenColors.background,
-                backgroundKey = "CalculatorScreen",
-                contentKey = currentScreen,
-            ) { isBackground ->
-                if (isBackground) {
-                    CalculatorScreen(
-                        appState = appState,
-                        onAppAction = onAppAction,
-                        onShow = {},
-                        symbolFormatter = symbolFormatter,
-                    )
-                } else {
-                    val onBack: () -> Unit = { changeScreen(null) }
+            AnimatedVisibility(
+                visible = (currentScreen != AppScreen.Calculator),
+                enter = fadeIn(
+                    animationSpec = tween(180),
+                ) + scaleIn(
+                    initialScale = 0.875f,
+                    animationSpec = tween(180),
+                ),
+                exit = ExitTransition.None,
+                modifier = Modifier.fillMaxSize(),
+            ) {
+                SwipeToDismissBox(
+                    state = swipeToDismissBoxState,
+                    userSwipeEnabled = !isHistoryDeleteMode,
+                    backgroundScrimColor = AppTheme.calculatorScreenColors.background,
+                    backgroundKey = "CalculatorScreen",
+                    contentKey = currentScreen,
+                ) { isBackground ->
+                    if (isBackground) {
+                        CalculatorScreen(
+                            appState = appState,
+                            onAppAction = onAppAction,
+                            onShow = {},
+                            symbolFormatter = symbolFormatter,
+                        )
+                    } else {
+                        val onBack: () -> Unit = { changeScreen(null) }
 
-                    when (currentScreen) {
-                        AppScreen.Settings ->
-                            SettingsScreen(
-                                settings = appState.settings,
-                                onAppAction = onAppAction,
-                                onBack = onBack,
-                            )
+                        when (currentScreen) {
+                            AppScreen.Settings ->
+                                SettingsScreen(
+                                    settings = appState.settings,
+                                    onAppAction = onAppAction,
+                                    onBack = onBack,
+                                )
 
-                        AppScreen.History ->
-                            HistoryScreen(
-                                histories = appState.histories,
-                                onAppAction = onAppAction,
-                                onBack = onBack,
-                                onDeleteModeChanged = { deleteMode ->
-                                    isHistoryDeleteMode = deleteMode
-                                },
-                                symbolFormatter = symbolFormatter,
-                            )
+                            AppScreen.History ->
+                                HistoryScreen(
+                                    histories = appState.histories,
+                                    onAppAction = onAppAction,
+                                    onBack = onBack,
+                                    onDeleteModeChanged = { deleteMode ->
+                                        isHistoryDeleteMode = deleteMode
+                                    },
+                                    symbolFormatter = symbolFormatter,
+                                )
 
-                        AppScreen.Calculator -> Unit
+                            AppScreen.Calculator -> Unit
+                        }
                     }
                 }
             }
@@ -160,7 +167,10 @@ private fun HandleEvent(
 
     var currentToast: Toast? by remember { mutableStateOf(null) }
 
-    LaunchedEffect(appEvent) {
+    LaunchedEffect(
+        appEvent,
+        lifecycleOwner,
+    ) {
         lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
             withContext(Dispatchers.Main.immediate) {
                 appEvent.collect { appEvent ->

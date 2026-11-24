@@ -56,22 +56,20 @@ fun AppState.appendExpression(
         result = emptyList(),
         input = baseInput,
     )
-
     val symbolsToAppend: List<Symbol> =
         appendingAppState.symbolsToAppendOrNull(symbols)
             ?: return AppStateUpdateResult.UnacceptableSymbol
+    val nextAppState: AppState =
+        appendingAppState.copy(
+            input = baseInput + symbolsToAppend,
+        )
 
-    val expressionSize: Int =
-        appendingAppState.expression.size + symbolsToAppend.size
-
-    if (expressionSize > MAX_EXPRESSION_SIZE) {
+    if (nextAppState.expression.size > MAX_EXPRESSION_SIZE) {
         return AppStateUpdateResult.ExpressionTooLarge
     }
 
     return AppStateUpdateResult.Success(
-        appState = appendingAppState.copy(
-            input = baseInput + symbolsToAppend,
-        ),
+        appState = nextAppState,
     )
 }
 

@@ -13,8 +13,18 @@ class SymbolFormatter(
         private const val INTERNAL_DECIMAL_SEPARATOR: Char = '.'
     }
 
+    private val numberLocale: Locale =
+        runCatching {
+            Locale.Builder()
+                .setLocale(locale)
+                .setUnicodeLocaleKeyword("nu", "latn")
+                .build()
+        }.getOrDefault(locale)
     private val integerFormatter: DecimalFormat? =
-        (NumberFormat.getNumberInstance(locale) as? DecimalFormat)?.apply {
+        (NumberFormat.getNumberInstance(numberLocale) as? DecimalFormat)?.apply {
+            decimalFormatSymbols = decimalFormatSymbols.apply {
+                zeroDigit = '0'
+            }
             isGroupingUsed = true
             maximumIntegerDigits = Int.MAX_VALUE
             minimumFractionDigits = 0
@@ -22,7 +32,7 @@ class SymbolFormatter(
         }
     private val decimalSeparator: Char =
         DecimalFormatSymbols
-            .getInstance(locale)
+            .getInstance(numberLocale)
             .decimalSeparator
 
     fun text(symbol: Symbol): String =
@@ -118,8 +128,23 @@ class SymbolFormatter(
             return integerString
         }
 
-        return integerString.toBigIntegerOrNull()?.let { integerValue ->
-            integerFormatter.format(integerValue)
-        } ?: integerString
+        val firstNonZeroIndex: Int =
+            integerString.indexOfFirst { c -> c != '0' }
+
+        if (firstNonZeroIndex < 0) {
+            return integerString
+        }
+
+        val leadingZeros: String =
+            integerString.substring(0, firstNonZeroIndex)
+        val significantDigits: String =
+            integerString.substring(firstNonZeroIndex)
+
+        val formattedDigits: String =
+            significantDigits.toBigIntegerOrNull()?.let { integerValue ->
+                integerFormatter.format(integerValue)
+            } ?: significantDigits
+
+        return leadingZeros + formattedDigits
     }
 }

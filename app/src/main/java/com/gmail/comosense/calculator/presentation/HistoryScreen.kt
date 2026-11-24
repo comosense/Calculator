@@ -270,7 +270,7 @@ private fun HistoryItem(
                 )
             }
             Column(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Text(

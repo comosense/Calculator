@@ -629,9 +629,9 @@ internal object BigDecimalMath {
         val twoPi: BigDecimal = twoPi(mc)
 
         val normalizedRadians: BigDecimal =
-            radians.toNormalizedRadians(mc)
+            radians.abs().remainder(twoPi)
 
-        return when {
+        val result: BigDecimal = when {
             normalizedRadians <= halfPi ->
                 sinTaylor(
                     radians = normalizedRadians,
@@ -664,6 +664,12 @@ internal object BigDecimalMath {
                     ),
                     mc = mc,
                 ).negate()
+        }
+
+        return if (radians.signum() < 0) {
+            result.negate()
+        } else {
+            result
         }
     }
 
@@ -677,9 +683,9 @@ internal object BigDecimalMath {
         val twoPi: BigDecimal = twoPi(mc)
 
         val normalizedRadians: BigDecimal =
-            radians.toNormalizedRadians(mc)
+            radians.abs().remainder(twoPi)
 
-        return when {
+        val result: BigDecimal = when {
             normalizedRadians <= halfPi ->
                 cosTaylor(
                     radians = normalizedRadians,
@@ -713,6 +719,8 @@ internal object BigDecimalMath {
                     mc = mc,
                 )
         }
+
+        return result
     }
 
     private suspend fun calculateArcsin(
@@ -735,13 +743,30 @@ internal object BigDecimalMath {
             return ZERO
         }
 
-        val acuteAngle: BigDecimal = calculateInverseTrigonometricAcuteAngle(
-            value = value,
-            mc = mc,
-        )
+        val absValue: BigDecimal = value.abs()
+        val result: BigDecimal =
+            if (absValue <= HALF) {
+                val valueSquared: BigDecimal =
+                    absValue.multiply(absValue, mc)
+                val denominator: BigDecimal =
+                    calculateSqrt(
+                        value = ONE.subtract(valueSquared, mc),
+                        mc = mc,
+                    )
 
-        val result: BigDecimal = halfPi(mc)
-            .subtract(acuteAngle, mc)
+                calculateArctan(
+                    value = absValue.divide(denominator, mc),
+                    mc = mc,
+                )
+            } else {
+                val acuteAngle: BigDecimal =
+                    calculateInverseTrigonometricAcuteAngle(
+                        value = value,
+                        mc = mc,
+                    )
+
+                halfPi(mc).subtract(acuteAngle, mc)
+            }
 
         return if (value.signum() < 0) {
             result.negate()
@@ -770,10 +795,11 @@ internal object BigDecimalMath {
             return pi(mc).divide(TWO)
         }
 
-        val acuteAngle: BigDecimal = calculateInverseTrigonometricAcuteAngle(
-            value = value,
-            mc = mc,
-        )
+        val acuteAngle: BigDecimal =
+            calculateInverseTrigonometricAcuteAngle(
+                value = value,
+                mc = mc,
+            )
 
         return if (value.signum() > 0) {
             acuteAngle
@@ -959,21 +985,6 @@ internal object BigDecimalMath {
             sum = nextSum
             sign = -sign
         }
-    }
-
-    private suspend fun BigDecimal.toNormalizedRadians(
-        mc: MathContext,
-    ): BigDecimal {
-        val twoPi: BigDecimal = twoPi(mc)
-
-        return remainder(twoPi)
-            .let { normalizedRadians ->
-                if (normalizedRadians.signum() < 0) {
-                    normalizedRadians.add(twoPi, mc)
-                } else {
-                    normalizedRadians
-                }
-            }
     }
 
     private suspend fun calculateInverseTrigonometricAcuteAngle(

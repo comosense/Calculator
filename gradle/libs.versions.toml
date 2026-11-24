@@ -12,6 +12,7 @@ protobufKotlinLite = "4.36.2"
 wearToolingPreview = "1.0.0"
 activityCompose = "1.13.0"
 coreSplashscreen = "1.2.0"
+runtime = "1.13.0"
 
 [libraries]
 # Compose BOM
@@ -52,6 +53,7 @@ protobuf-kotlin-lite = { group = "com.google.protobuf", name = "protobuf-kotlin-
 # Test
 ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
+androidx-runtime = { group = "androidx.compose.runtime", name = "runtime", version.ref = "runtime" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
