@@ -244,7 +244,7 @@ private fun CalculatorError.messageResourceId(): Int =
         CalculatorError.FactorialInvalidArgument -> R.string.calculator_error_factorial_invalid_argument
         CalculatorError.FactorialArgumentTooLarge -> R.string.calculator_error_factorial_argument_too_large
         CalculatorError.SqrtInvalidArgument -> R.string.calculator_error_sqrt_invalid_argument
-        CalculatorError.ExpArgumentTooLarge -> R.string.calculator_error_exp_argument_too_Large
+        CalculatorError.ExpArgumentTooLarge -> R.string.calculator_error_exp_argument_too_large
         CalculatorError.PowInvalidArgument -> R.string.calculator_error_pow_invalid_argument
         CalculatorError.PowLimitExceeded -> R.string.calculator_error_pow_limit_exceeded
         CalculatorError.LogInvalidArgument -> R.string.calculator_error_log_invalid_argument
