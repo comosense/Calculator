@@ -5,7 +5,9 @@ import kotlinx.coroutines.ensureActive
 import java.math.BigDecimal
 import java.math.BigInteger
 import java.math.MathContext
+import java.util.EnumMap
 import kotlin.coroutines.CoroutineContext
+import kotlin.enums.enumEntries
 
 internal class SqrtInvalidArgumentException : ArithmeticException()
 internal class LogInvalidArgumentException : ArithmeticException()
@@ -20,7 +22,7 @@ internal object BigDecimalMath {
     private val ZERO: BigDecimal = BigDecimal.ZERO
     private val HALF: BigDecimal = "0.5".toBigDecimal()
     private val ONE: BigDecimal = BigDecimal.ONE
-    private val ONE_HALF: BigDecimal = "1.5".toBigDecimal()
+    private val THREE_HALF: BigDecimal = "1.5".toBigDecimal()
     private val TWO: BigDecimal = 2.toBigDecimal()
     private val FOUR: BigDecimal = 4.toBigDecimal()
     private val FIVE: BigDecimal = 5.toBigDecimal()
@@ -31,184 +33,167 @@ internal object BigDecimalMath {
     private val BIG_INTEGER_ONE: BigInteger = BigInteger.ONE
     private val BIG_INTEGER_TWO: BigInteger = 2.toBigInteger()
 
-    private data class MathConstant(
-        val mc: MathContext,
-        val value: BigDecimal,
-    )
+    private enum class EConstant {
+        E,
+    }
 
-    private class CachedConstant private constructor(
-        private val dependencies: List<CachedConstant>,
-        private val calculate: suspend (MathContext, List<BigDecimal>) -> BigDecimal,
-    ) {
-        private var extraPrecision: Int = EXTRA_PRECISION_FOR_CACHE
+    private enum class PiConstant {
+        HALF,
+        ONE,
+        THREE_HALF,
+        TWO,
+    }
+
+    private enum class LnConstant {
+        SQRT_TWO,
+        INVERSE_SQRT_TWO,
+        LN_TWO,
+        TEN,
+    }
+
+    private inline fun <reified E : Enum<E>> filledMap(
+        transform: (E) -> BigDecimal,
+    ): EnumMap<E, BigDecimal> =
+        enumEntries<E>().associateWithTo(
+            EnumMap(E::class.java),
+            transform,
+        )
+
+    private abstract class Constants<E : Enum<E>> {
+        private data class Cache<E : Enum<E>>(
+            val mc: MathContext,
+            val map: EnumMap<E, BigDecimal>,
+        )
 
         @Volatile
-        private var cached: MathConstant? = null
+        private var cache: Cache<E>? = null
 
-        init {
-            propagateExtraPrecision()
-        }
-
-        private fun ensureExtraPrecision(
-            required: Int,
-        ) {
-            if (required > extraPrecision) {
-                extraPrecision = required
-                propagateExtraPrecision()
-            }
-        }
-
-        private fun propagateExtraPrecision() {
-            val requiredForDependency: Int =
-                extraPrecision + EXTRA_PRECISION_FOR_ROUNDING
-
-            for (dependency in dependencies) {
-                dependency.ensureExtraPrecision(requiredForDependency)
-            }
-        }
+        protected abstract suspend fun calculateConstants(
+            mc: MathContext,
+        ): EnumMap<E, BigDecimal>
 
         suspend fun get(
+            constant: E,
             mc: MathContext,
-        ): BigDecimal {
-            cached?.let { current ->
-                if (current.mc.hasBiggerPrecisionThan(
-                        other = mc,
-                        extraPrecision = EXTRA_PRECISION_FOR_ROUNDING
-                    )
-                ) {
-                    return current.value.round(mc)
-                }
+        ): BigDecimal =
+            map(mc).getValue(constant).round(mc)
+
+        private suspend fun map(
+            mc: MathContext,
+        ): Map<E, BigDecimal> {
+            cache?.takeIf { cached ->
+                cached.mc.hasBiggerPrecisionThan(
+                    other = mc,
+                    extraPrecision = EXTRA_PRECISION_FOR_ROUNDING,
+                )
+            }?.let { cached ->
+                return cached.map
             }
 
-            val workingMc = mc.withExtraPrecision(extraPrecision)
-            val dependencyValues: List<BigDecimal> =
-                if (dependencies.isEmpty()) {
-                    emptyList()
-                } else {
-                    dependencies.map { dependency ->
-                        dependency.get(workingMc)
-                    }
-                }
-            val value: BigDecimal =
-                calculate(
-                    workingMc,
-                    dependencyValues,
-                )
+            val newMc: MathContext =
+                mc.withExtraPrecision(EXTRA_PRECISION_FOR_CACHE)
+            val map: EnumMap<E, BigDecimal> =
+                calculateConstants(newMc)
 
-            cached = MathConstant(
-                mc = workingMc,
-                value = value,
+            cache = Cache(
+                mc = newMc,
+                map = map,
             )
 
-            return value.round(mc)
-        }
-
-        companion object {
-            operator fun invoke(
-                calculate: suspend (MathContext) -> BigDecimal,
-            ): CachedConstant =
-                CachedConstant(
-                    dependencies = emptyList(),
-                    calculate = { mc, _ -> calculate(mc) }
-                )
-
-            operator fun invoke(
-                d1: CachedConstant,
-                calculate: suspend (MathContext, BigDecimal) -> BigDecimal,
-            ): CachedConstant =
-                CachedConstant(
-                    dependencies = listOf(d1),
-                    calculate = { mc, deps -> calculate(mc, deps[0]) }
-                )
-
-            operator fun invoke(
-                d1: CachedConstant,
-                d2: CachedConstant,
-                calculate: suspend (MathContext, BigDecimal, BigDecimal) -> BigDecimal,
-            ): CachedConstant =
-                CachedConstant(
-                    dependencies = listOf(d1, d2),
-                    calculate = { mc, deps -> calculate(mc, deps[0], deps[1]) }
-                )
-
-            operator fun invoke(
-                d1: CachedConstant,
-                d2: CachedConstant,
-                d3: CachedConstant,
-                calculate: suspend (MathContext, BigDecimal, BigDecimal, BigDecimal) -> BigDecimal,
-            ): CachedConstant =
-                CachedConstant(
-                    dependencies = listOf(d1, d2, d3),
-                    calculate = { mc, deps -> calculate(mc, deps[0], deps[1], deps[2]) }
-                )
+            return map
         }
     }
 
-    private val cachedE = CachedConstant { workingMc ->
-        calculateE(
-            mc = workingMc,
-        )
+    private class EConstants : Constants<EConstant>() {
+        override suspend fun calculateConstants(
+            mc: MathContext,
+        ): EnumMap<EConstant, BigDecimal> =
+            filledMap { constant ->
+                when (constant) {
+                    EConstant.E ->
+                        calculateE(
+                            mc = mc,
+                        )
+                }
+            }
     }
-    private val cachedPi = CachedConstant { workingMc ->
-        calculatePi(
-            mc = workingMc,
-        )
+
+    private class PiConstants : Constants<PiConstant>() {
+        override suspend fun calculateConstants(
+            mc: MathContext,
+        ): EnumMap<PiConstant, BigDecimal> {
+            val pi: BigDecimal = calculatePi(mc)
+
+            return filledMap { constant ->
+                when (constant) {
+                    PiConstant.HALF ->
+                        pi.divide(TWO)
+
+                    PiConstant.ONE ->
+                        pi
+
+                    PiConstant.THREE_HALF ->
+                        pi.multiply(THREE_HALF)
+
+                    PiConstant.TWO ->
+                        pi.multiply(TWO)
+                }
+            }
+        }
     }
-    private val cachedSqrtTwo = CachedConstant { workingMc ->
-        calculateSqrt(
-            value = TWO,
-            mc = workingMc,
-        )
+
+    private class LnConstants : Constants<LnConstant>() {
+        override suspend fun calculateConstants(
+            mc: MathContext,
+        ): EnumMap<LnConstant, BigDecimal> {
+            val sqrtTwo: BigDecimal = calculateSqrt(
+                value = TWO,
+                mc = mc,
+            )
+            val inverseSqrtTwo: BigDecimal = sqrtTwo.divide(TWO)
+            val lnTwo: BigDecimal = lnTaylor(
+                value = TWO,
+                mc = mc,
+            )
+            val lnTen: BigDecimal = calculateLnMain(
+                value = TEN,
+                mc = mc,
+                sqrtTwo = sqrtTwo,
+                inverseSqrtTwo = inverseSqrtTwo,
+                lnTwo = lnTwo,
+            )
+
+            return filledMap { constant ->
+                when (constant) {
+                    LnConstant.SQRT_TWO ->
+                        sqrtTwo
+
+                    LnConstant.INVERSE_SQRT_TWO ->
+                        inverseSqrtTwo
+
+                    LnConstant.LN_TWO ->
+                        lnTwo
+
+                    LnConstant.TEN ->
+                        lnTen
+                }
+            }
+        }
     }
-    private val cachedInverseSqrtTwo = CachedConstant(
-        cachedSqrtTwo,
-    ) { _, sqrtTwo ->
-        sqrtTwo.divide(TWO)
-    }
-    private val cachedLnTwo = CachedConstant { workingMc ->
-        lnTaylor(
-            value = TWO,
-            mc = workingMc,
-        )
-    }
-    private val cachedLnTen = CachedConstant(
-        cachedSqrtTwo,
-        cachedInverseSqrtTwo,
-        cachedLnTwo,
-    ) { workingMc, sqrtTwo, inverseSqrtTwo, lnTwo ->
-        calculateLnMain(
-            value = TEN,
-            mc = workingMc,
-            sqrtTwo = sqrtTwo,
-            inverseSqrtTwo = inverseSqrtTwo,
-            lnTwo = lnTwo,
-        )
-    }
-    private val cachedHalfPi = CachedConstant(
-        cachedPi,
-    ) { _, pi ->
-        pi.divide(TWO)
-    }
-    private val cachedThreeHalfPi = CachedConstant(
-        cachedPi,
-    ) { workingMc, pi ->
-        pi.multiply(ONE_HALF, workingMc)
-    }
-    private val cachedTwoPi = CachedConstant(
-        cachedPi,
-    ) { _, pi ->
-        pi.multiply(TWO)
-    }
+
+    private val eConstants = EConstants()
+    private val piConstants = PiConstants()
+    private val lnConstants = LnConstants()
 
     suspend fun e(
         mc: MathContext,
     ): BigDecimal =
-        cachedE.get(mc)
+        eConstants.get(EConstant.E, mc)
 
     suspend fun pi(
         mc: MathContext,
     ): BigDecimal =
-        cachedPi.get(mc)
+        piConstants.get(PiConstant.ONE, mc)
 
     suspend fun factorial(
         value: Int,
@@ -377,8 +362,7 @@ internal object BigDecimalMath {
         return calculateLn(
             value = value,
             mc = calculationMc,
-        )
-            .divide(lnTen(calculationMc), mc)
+        ).divide(lnConstants.get(LnConstant.TEN, calculationMc), mc)
     }
 
     suspend fun sin(
@@ -575,9 +559,12 @@ internal object BigDecimalMath {
         return calculateLnMain(
             value = value,
             mc = mc,
-            sqrtTwo = sqrtTwo(mc),
-            inverseSqrtTwo = inverseSqrtTwo(mc),
-            lnTwo = lnTwo(mc),
+            sqrtTwo =
+                lnConstants.get(LnConstant.SQRT_TWO, mc),
+            inverseSqrtTwo =
+                lnConstants.get(LnConstant.INVERSE_SQRT_TWO, mc),
+            lnTwo =
+                lnConstants.get(LnConstant.LN_TWO, mc),
         )
     }
 
@@ -623,10 +610,14 @@ internal object BigDecimalMath {
         radians: BigDecimal,
         mc: MathContext,
     ): BigDecimal {
-        val pi: BigDecimal = pi(mc)
-        val halfPi: BigDecimal = halfPi(mc)
-        val threeHalfPi: BigDecimal = threeHalfPi(mc)
-        val twoPi: BigDecimal = twoPi(mc)
+        val pi: BigDecimal =
+            piConstants.get(PiConstant.ONE, mc)
+        val halfPi: BigDecimal =
+            piConstants.get(PiConstant.HALF, mc)
+        val threeHalfPi: BigDecimal =
+            piConstants.get(PiConstant.THREE_HALF, mc)
+        val twoPi: BigDecimal =
+            piConstants.get(PiConstant.TWO, mc)
 
         val normalizedRadians: BigDecimal =
             radians.abs().remainder(twoPi)
@@ -677,10 +668,14 @@ internal object BigDecimalMath {
         radians: BigDecimal,
         mc: MathContext,
     ): BigDecimal {
-        val pi: BigDecimal = pi(mc)
-        val halfPi: BigDecimal = halfPi(mc)
-        val threeHalfPi: BigDecimal = threeHalfPi(mc)
-        val twoPi: BigDecimal = twoPi(mc)
+        val pi: BigDecimal =
+            piConstants.get(PiConstant.ONE, mc)
+        val halfPi: BigDecimal =
+            piConstants.get(PiConstant.HALF, mc)
+        val threeHalfPi: BigDecimal =
+            piConstants.get(PiConstant.THREE_HALF, mc)
+        val twoPi: BigDecimal =
+            piConstants.get(PiConstant.TWO, mc)
 
         val normalizedRadians: BigDecimal =
             radians.abs().remainder(twoPi)
@@ -732,11 +727,11 @@ internal object BigDecimalMath {
         }
 
         if (value.compareTo(ONE) == 0) {
-            return pi(mc).divide(TWO)
+            return piConstants.get(PiConstant.HALF, mc)
         }
 
         if (value.compareTo(NEGATIVE_ONE) == 0) {
-            return pi(mc).divide(TWO).negate()
+            return piConstants.get(PiConstant.HALF, mc).negate()
         }
 
         if (value.signum() == 0) {
@@ -765,7 +760,8 @@ internal object BigDecimalMath {
                         mc = mc,
                     )
 
-                halfPi(mc).subtract(acuteAngle, mc)
+                piConstants.get(PiConstant.HALF, mc)
+                    .subtract(acuteAngle, mc)
             }
 
         return if (value.signum() < 0) {
@@ -788,11 +784,11 @@ internal object BigDecimalMath {
         }
 
         if (value.compareTo(NEGATIVE_ONE) == 0) {
-            return pi(mc)
+            return piConstants.get(PiConstant.ONE, mc)
         }
 
         if (value.signum() == 0) {
-            return pi(mc).divide(TWO)
+            return piConstants.get(PiConstant.HALF, mc)
         }
 
         val acuteAngle: BigDecimal =
@@ -804,7 +800,8 @@ internal object BigDecimalMath {
         return if (value.signum() > 0) {
             acuteAngle
         } else {
-            pi(mc).subtract(acuteAngle, mc)
+            piConstants.get(PiConstant.ONE, mc)
+                .subtract(acuteAngle, mc)
         }
     }
 
@@ -820,7 +817,7 @@ internal object BigDecimalMath {
         }
 
         if (value > ONE) {
-            return pi(mc).divide(TWO)
+            return piConstants.get(PiConstant.HALF, mc)
                 .subtract(
                     calculateArctan(
                         value = ONE.divide(value, mc),
@@ -834,7 +831,8 @@ internal object BigDecimalMath {
             val reduced: BigDecimal = value.subtract(ONE)
                 .divide(value.add(ONE), mc)
 
-            return pi(mc).divide(FOUR)
+            return piConstants.get(PiConstant.ONE, mc)
+                .divide(FOUR)
                 .add(
                     calculateArctan(
                         value = reduced,
@@ -1008,39 +1006,4 @@ internal object BigDecimalMath {
             mc,
         )
     }
-
-    private suspend fun sqrtTwo(
-        mc: MathContext,
-    ): BigDecimal =
-        cachedSqrtTwo.get(mc)
-
-    private suspend fun inverseSqrtTwo(
-        mc: MathContext,
-    ): BigDecimal =
-        cachedInverseSqrtTwo.get(mc)
-
-    private suspend fun lnTwo(
-        mc: MathContext,
-    ): BigDecimal =
-        cachedLnTwo.get(mc)
-
-    private suspend fun lnTen(
-        mc: MathContext,
-    ): BigDecimal =
-        cachedLnTen.get(mc)
-
-    private suspend fun halfPi(
-        mc: MathContext,
-    ): BigDecimal =
-        cachedHalfPi.get(mc)
-
-    private suspend fun threeHalfPi(
-        mc: MathContext,
-    ): BigDecimal =
-        cachedThreeHalfPi.get(mc)
-
-    private suspend fun twoPi(
-        mc: MathContext,
-    ): BigDecimal =
-        cachedTwoPi.get(mc)
 }
