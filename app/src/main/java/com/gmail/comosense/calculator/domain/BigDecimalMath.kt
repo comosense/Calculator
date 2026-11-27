@@ -33,6 +33,13 @@ internal object BigDecimalMath {
     private val BIG_INTEGER_ONE: BigInteger = BigInteger.ONE
     private val BIG_INTEGER_TWO: BigInteger = 2.toBigInteger()
 
+    private enum class Quadrant {
+        FIRST,
+        SECOND,
+        THIRD,
+        FOURTH,
+    }
+
     private enum class EConstant {
         E,
     }
@@ -606,71 +613,35 @@ internal object BigDecimalMath {
     private suspend fun calculateSin(
         radians: BigDecimal,
         mc: MathContext,
-    ): BigDecimal {
-        val pi: BigDecimal = piCache.get(
-            constant = PiConstant.ONE,
+    ): BigDecimal =
+        calculateTrigonometric(
+            radians = radians,
             mc = mc,
+            taylor = ::sinTaylor,
+            isNegative = { quadrant ->
+                (quadrant == Quadrant.THIRD || quadrant == Quadrant.FOURTH) xor
+                        (radians.signum() < 0)
+            },
         )
-        val halfPi: BigDecimal = piCache.get(
-            constant = PiConstant.HALF,
-            mc = mc,
-        )
-        val threeHalfPi: BigDecimal = piCache.get(
-            constant = PiConstant.THREE_HALVES,
-            mc = mc,
-        )
-        val twoPi: BigDecimal = piCache.get(
-            constant = PiConstant.TWO,
-            mc = mc,
-        )
-
-        val normalizedRadians: BigDecimal = radians.abs().remainder(twoPi)
-
-        val result: BigDecimal = when {
-            normalizedRadians <= halfPi ->
-                sinTaylor(
-                    radians = normalizedRadians,
-                    mc = mc,
-                )
-
-            normalizedRadians <= pi ->
-                sinTaylor(
-                    radians = pi.subtract(
-                        normalizedRadians,
-                        mc,
-                    ),
-                    mc = mc,
-                )
-
-            normalizedRadians <= threeHalfPi ->
-                sinTaylor(
-                    radians = normalizedRadians.subtract(
-                        pi,
-                        mc,
-                    ),
-                    mc = mc,
-                ).negate()
-
-            else ->
-                sinTaylor(
-                    radians = twoPi.subtract(
-                        normalizedRadians,
-                        mc,
-                    ),
-                    mc = mc,
-                ).negate()
-        }
-
-        return if (radians.signum() < 0) {
-            result.negate()
-        } else {
-            result
-        }
-    }
 
     private suspend fun calculateCos(
         radians: BigDecimal,
         mc: MathContext,
+    ): BigDecimal =
+        calculateTrigonometric(
+            radians = radians,
+            mc = mc,
+            taylor = ::cosTaylor,
+            isNegative = { quadrant ->
+                quadrant == Quadrant.SECOND || quadrant == Quadrant.THIRD
+            },
+        )
+
+    private suspend fun calculateTrigonometric(
+        radians: BigDecimal,
+        mc: MathContext,
+        taylor: suspend (BigDecimal, MathContext) -> BigDecimal,
+        isNegative: (Quadrant) -> Boolean,
     ): BigDecimal {
         val pi: BigDecimal = piCache.get(
             constant = PiConstant.ONE,
@@ -680,7 +651,7 @@ internal object BigDecimalMath {
             constant = PiConstant.HALF,
             mc = mc,
         )
-        val threeHalfPi: BigDecimal = piCache.get(
+        val threeHalvesPi: BigDecimal = piCache.get(
             constant = PiConstant.THREE_HALVES,
             mc = mc,
         )
@@ -689,44 +660,28 @@ internal object BigDecimalMath {
             mc = mc,
         )
 
-        val normalizedRadians: BigDecimal = radians.abs().remainder(twoPi)
+        val normalized: BigDecimal = radians.abs().remainder(twoPi)
+        val (reduced: BigDecimal, quadrant: Quadrant) = when {
+            normalized <= halfPi ->
+                normalized to Quadrant.FIRST
 
-        val result: BigDecimal = when {
-            normalizedRadians <= halfPi ->
-                cosTaylor(
-                    radians = normalizedRadians,
-                    mc = mc,
-                )
+            normalized <= pi ->
+                pi.subtract(normalized, mc) to Quadrant.SECOND
 
-            normalizedRadians <= pi ->
-                cosTaylor(
-                    radians = pi.subtract(
-                        normalizedRadians,
-                        mc,
-                    ),
-                    mc = mc,
-                ).negate()
-
-            normalizedRadians <= threeHalfPi ->
-                cosTaylor(
-                    radians = normalizedRadians.subtract(
-                        pi,
-                        mc,
-                    ),
-                    mc = mc,
-                ).negate()
+            normalized <= threeHalvesPi ->
+                normalized.subtract(pi, mc) to Quadrant.THIRD
 
             else ->
-                cosTaylor(
-                    radians = twoPi.subtract(
-                        normalizedRadians,
-                        mc,
-                    ),
-                    mc = mc,
-                )
+                twoPi.subtract(normalized, mc) to Quadrant.FOURTH
         }
 
-        return result
+        val result: BigDecimal = taylor(reduced, mc)
+
+        return if (isNegative(quadrant)) {
+            result.negate()
+        } else {
+            result
+        }
     }
 
     private suspend fun calculateArcsin(
