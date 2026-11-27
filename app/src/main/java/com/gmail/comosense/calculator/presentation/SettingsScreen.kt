@@ -9,7 +9,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,7 +39,6 @@ import com.gmail.comosense.calculator.presentation.theme.AppTheme
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.map
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -61,22 +66,44 @@ fun SettingsScreen(
                         .indexOf(SettingsConstraints.DEFAULT_PRECISION)
                 }
             }
-        val precisionPickerState: PickerState =
-            rememberPickerState(
-                initialNumberOfOptions = SettingsConstraints.VALID_PRECISIONS.size,
-                initiallySelectedIndex = precisionIndex,
-                shouldRepeatOptions = false,
+        val precisionPickerState: PickerState = rememberPickerState(
+            initialNumberOfOptions = SettingsConstraints.VALID_PRECISIONS.size,
+            initiallySelectedIndex = precisionIndex,
+            shouldRepeatOptions = false,
+        )
+        val currentOnAppAction: (AppAction) -> Unit by rememberUpdatedState(onAppAction)
+
+        var lastDispatchedPrecision: Int by remember(precisionPickerState) {
+            mutableIntStateOf(
+                SettingsConstraints.VALID_PRECISIONS[precisionPickerState.selectedOptionIndex]
             )
+        }
+
+        fun dispatchPrecisionIfChanged(
+            precision: Int,
+        ) {
+            if (precision != lastDispatchedPrecision) {
+                lastDispatchedPrecision = precision
+                currentOnAppAction(AppAction.SetPrecision(precision))
+            }
+        }
 
         LaunchedEffect(precisionPickerState) {
             snapshotFlow { precisionPickerState.selectedOptionIndex }
                 .map { index -> SettingsConstraints.VALID_PRECISIONS[index] }
                 .distinctUntilChanged()
-                .drop(1)
                 .debounce(500.milliseconds)
-                .collect { precision ->
-                    onAppAction(AppAction.SetPrecision(precision))
-                }
+                .collect { precision -> dispatchPrecisionIfChanged(precision) }
+        }
+
+        DisposableEffect(precisionPickerState) {
+            onDispose {
+                dispatchPrecisionIfChanged(
+                    precision = SettingsConstraints.VALID_PRECISIONS[
+                        precisionPickerState.selectedOptionIndex
+                    ],
+                )
+            }
         }
 
         BoxWithConstraints(

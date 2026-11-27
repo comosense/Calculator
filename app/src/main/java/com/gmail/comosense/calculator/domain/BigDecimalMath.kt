@@ -112,7 +112,6 @@ internal object BigDecimalMath {
             return filledMap { constant ->
                 when (constant) {
                     EConstant.E -> e
-
                 }
             }
         }
