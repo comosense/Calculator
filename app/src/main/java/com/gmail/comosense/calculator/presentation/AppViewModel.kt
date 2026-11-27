@@ -82,13 +82,11 @@ class AppViewModel(
         val appEvent: AppEvent? = null,
     )
 
-    private val _appState: MutableStateFlow<AppState> =
-        MutableStateFlow(AppState())
-    private val _appEvent: Channel<AppEvent> =
-        Channel(
-            capacity = Channel.BUFFERED,
-            onBufferOverflow = BufferOverflow.DROP_OLDEST,
-        )
+    private val _appState: MutableStateFlow<AppState> = MutableStateFlow(AppState())
+    private val _appEvent: Channel<AppEvent> = Channel(
+        capacity = Channel.BUFFERED,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST,
+    )
     private var calculateJob: Job? = null
 
     init {
@@ -135,38 +133,17 @@ class AppViewModel(
         }
 
         when (appAction) {
-            is AppAction.SetPrecision ->
-                updatePrecision(appAction.value)
-
-            is AppAction.SelectHistory ->
-                selectHistory(appAction.id)
-
-            is AppAction.DeleteHistory ->
-                deleteHistory(appAction.id)
-
-            is AppAction.DeleteAllHistory ->
-                deleteAllHistory()
-
-            is AppAction.Calculate ->
-                calculate()
-
-            is AppAction.CancelCalculation ->
-                cancelCalculation()
-
-            is AppAction.Input ->
-                input(appAction.symbol)
-
-            is AppAction.InputMultiple ->
-                inputMultiple(appAction.symbols)
-
-            is AppAction.Clear ->
-                clear()
-
-            is AppAction.Backspace ->
-                backspace()
-
-            is AppAction.ToggleAngleMode ->
-                toggleAngleMode()
+            is AppAction.SetPrecision -> updatePrecision(appAction.value)
+            is AppAction.SelectHistory -> selectHistory(appAction.id)
+            is AppAction.DeleteHistory -> deleteHistory(appAction.id)
+            is AppAction.DeleteAllHistory -> deleteAllHistory()
+            is AppAction.Calculate -> calculate()
+            is AppAction.CancelCalculation -> cancelCalculation()
+            is AppAction.Input -> input(appAction.symbol)
+            is AppAction.InputMultiple -> inputMultiple(appAction.symbols)
+            is AppAction.Clear -> clear()
+            is AppAction.Backspace -> backspace()
+            is AppAction.ToggleAngleMode -> toggleAngleMode()
         }
     }
 
@@ -226,7 +203,9 @@ class AppViewModel(
                     isCalculating = true,
                 ),
             )
-        ) return
+        ) {
+            return
+        }
 
         val job: Job = viewModelScope.launch(
             start = CoroutineStart.LAZY,

@@ -20,12 +20,11 @@ enum class HistoryRepositoryError {
 class HistoryRepository(
     private val dataStore: DataStore<HistoryStore>,
 ) {
-    val histories: Flow<List<History>> =
-        dataStore.data.map { store ->
-            store.historiesList
-                .take(HistoryConstraints.MAX_HISTORY_COUNT)
-                .mapNotNull { protoHistory -> protoHistory.toHistoryOrNull() }
-        }
+    val histories: Flow<List<History>> = dataStore.data.map { store ->
+        store.historiesList
+            .take(HistoryConstraints.MAX_HISTORY_COUNT)
+            .mapNotNull { protoHistory -> protoHistory.toHistoryOrNull() }
+    }
 
     suspend fun addHistory(
         expression: List<Symbol>,

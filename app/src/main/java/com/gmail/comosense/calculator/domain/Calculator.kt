@@ -35,32 +35,24 @@ suspend fun calculate(
 ): Result<List<Symbol>, CalculatorError> {
     require(precision > 0)
 
-    val calculatedResult: Result<BigDecimal, CalculatorError> =
-        parse(
-            expression = expression,
-            isRadians = isRadians,
-            precision = precision,
-        )
+    val calculatedResult: Result<BigDecimal, CalculatorError> = parse(
+        expression = expression,
+        isRadians = isRadians,
+        precision = precision,
+    )
 
     val calculated: BigDecimal = when (calculatedResult) {
-        is Result.Ok ->
-            calculatedResult.value
-
-        is Result.Err ->
-            return Result.Err(calculatedResult.error)
+        is Result.Ok -> calculatedResult.value
+        is Result.Err -> return Result.Err(calculatedResult.error)
     }
 
-    val calculatedSymbolsResult: Result<List<Symbol>, SymbolizerError> =
-        calculated.toSymbols(
-            maxLength = MAX_RESULT_SIZE,
-        )
+    val calculatedSymbolsResult: Result<List<Symbol>, SymbolizerError> = calculated.toSymbols(
+        maxLength = MAX_RESULT_SIZE,
+    )
 
     return when (calculatedSymbolsResult) {
-        is Result.Ok ->
-            Result.Ok(calculatedSymbolsResult.value)
-
-        is Result.Err ->
-            Result.Err(calculatedSymbolsResult.error.toCalculatorError())
+        is Result.Ok -> Result.Ok(calculatedSymbolsResult.value)
+        is Result.Err -> Result.Err(calculatedSymbolsResult.error.toCalculatorError())
     }
 }
 
@@ -137,9 +129,6 @@ private suspend fun parse(
 
 private fun SymbolizerError.toCalculatorError(): CalculatorError =
     when (this) {
-        SymbolizerError.Unsupported ->
-            CalculatorError.Unsupported
-
-        SymbolizerError.TooLarge ->
-            CalculatorError.ResultTooLarge
+        SymbolizerError.Unsupported -> CalculatorError.Unsupported
+        SymbolizerError.TooLarge -> CalculatorError.ResultTooLarge
     }

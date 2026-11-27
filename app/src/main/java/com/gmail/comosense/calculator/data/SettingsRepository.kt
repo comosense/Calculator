@@ -19,20 +19,18 @@ class SettingsRepository(
     private val dataStore: DataStore<Preferences>,
 ) {
     private object SettingsKeys {
-        val PRECISION: Preferences.Key<Int> =
-            intPreferencesKey("precision")
+        val PRECISION: Preferences.Key<Int> = intPreferencesKey("precision")
     }
 
-    val settings: Flow<Settings> =
-        dataStore.data.map { preferences ->
-            val precision: Int = preferences[SettingsKeys.PRECISION]
-                ?.takeIf(::isValidPrecision)
-                ?: SettingsConstraints.DEFAULT_PRECISION
+    val settings: Flow<Settings> = dataStore.data.map { preferences ->
+        val precision: Int = preferences[SettingsKeys.PRECISION]
+            ?.takeIf(::isValidPrecision)
+            ?: SettingsConstraints.DEFAULT_PRECISION
 
-            Settings(
-                precision = precision,
-            )
-        }
+        Settings(
+            precision = precision,
+        )
+    }
 
     suspend fun repairInvalidSettings(): Result<Unit, SettingsRepositoryError> =
         edit(

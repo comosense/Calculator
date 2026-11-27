@@ -57,14 +57,12 @@ class Parser(
         cursor: Cursor,
         mc: MathContext,
     ): UnifiedValue {
-        val coroutineContext: CoroutineContext =
-            currentCoroutineContext()
+        val coroutineContext: CoroutineContext = currentCoroutineContext()
 
-        var value: UnifiedValue =
-            parseTerm(
-                cursor = cursor,
-                mc = mc,
-            )
+        var value: UnifiedValue = parseTerm(
+            cursor = cursor,
+            mc = mc,
+        )
 
         while (!cursor.isEnd()) {
             coroutineContext.ensureActive()
@@ -92,8 +90,7 @@ class Parser(
                     )
                 }
 
-                else ->
-                    break
+                else -> break
             }
         }
 
@@ -104,14 +101,12 @@ class Parser(
         cursor: Cursor,
         mc: MathContext,
     ): UnifiedValue {
-        val coroutineContext: CoroutineContext =
-            currentCoroutineContext()
+        val coroutineContext: CoroutineContext = currentCoroutineContext()
 
-        var value: UnifiedValue =
-            parseSign(
-                cursor = cursor,
-                mc = mc,
-            )
+        var value: UnifiedValue = parseSign(
+            cursor = cursor,
+            mc = mc,
+        )
 
         while (!cursor.isEnd()) {
             coroutineContext.ensureActive()
@@ -141,8 +136,7 @@ class Parser(
                     )
                 }
 
-                else ->
-                    break
+                else -> break
             }
         }
         return value
@@ -152,8 +146,7 @@ class Parser(
         cursor: Cursor,
         mc: MathContext,
     ): UnifiedValue {
-        val coroutineContext: CoroutineContext =
-            currentCoroutineContext()
+        val coroutineContext: CoroutineContext = currentCoroutineContext()
 
         var negative = false
 
@@ -170,16 +163,14 @@ class Parser(
                     negative = !negative
                 }
 
-                else ->
-                    break
+                else -> break
             }
         }
 
-        val value: UnifiedValue =
-            parseBinaryOperation(
-                cursor = cursor,
-                mc = mc,
-            )
+        val value: UnifiedValue = parseBinaryOperation(
+            cursor = cursor,
+            mc = mc,
+        )
 
         return if (negative) {
             value.negate()
@@ -192,11 +183,10 @@ class Parser(
         cursor: Cursor,
         mc: MathContext,
     ): UnifiedValue {
-        val base: UnifiedValue =
-            parsePostfixOperation(
-                cursor = cursor,
-                mc = mc,
-            )
+        val base: UnifiedValue = parsePostfixOperation(
+            cursor = cursor,
+            mc = mc,
+        )
 
         return when (cursor.peek()) {
             is Symbol.Operator.Power -> {
@@ -211,8 +201,7 @@ class Parser(
                 )
             }
 
-            else ->
-                base
+            else -> base
         }
     }
 
@@ -220,14 +209,12 @@ class Parser(
         cursor: Cursor,
         mc: MathContext,
     ): UnifiedValue {
-        val coroutineContext: CoroutineContext =
-            currentCoroutineContext()
+        val coroutineContext: CoroutineContext = currentCoroutineContext()
 
-        var value: UnifiedValue =
-            parseFactor(
-                cursor = cursor,
-                mc = mc,
-            )
+        var value: UnifiedValue = parseFactor(
+            cursor = cursor,
+            mc = mc,
+        )
 
         while (!cursor.isEnd()) {
             coroutineContext.ensureActive()
@@ -239,8 +226,7 @@ class Parser(
                     value = value.factorial()
                 }
 
-                else ->
-                    break
+                else -> break
             }
         }
 
@@ -301,19 +287,17 @@ class Parser(
                 )
             }
 
-            else ->
-                throw MissingFactorException()
+            else -> throw MissingFactorException()
         }
 
     private suspend fun parseFactorBody(
         cursor: Cursor,
         mc: MathContext,
     ): UnifiedValue {
-        val value: UnifiedValue =
-            parseExpression(
-                cursor = cursor,
-                mc = mc,
-            )
+        val value: UnifiedValue = parseExpression(
+            cursor = cursor,
+            mc = mc,
+        )
 
         if (cursor.peek() !is Symbol.FactorEnd) {
             throw IllegalFactorException()
@@ -326,8 +310,7 @@ class Parser(
     private suspend fun parseNumeric(
         cursor: Cursor,
     ): UnifiedValue {
-        val coroutineContext: CoroutineContext =
-            currentCoroutineContext()
+        val coroutineContext: CoroutineContext = currentCoroutineContext()
         val buffer = StringBuilder()
 
         while (!cursor.isEnd()) {
@@ -346,8 +329,7 @@ class Parser(
                     buffer.append('.')
                 }
 
-                else ->
-                    break
+                else -> break
             }
         }
 

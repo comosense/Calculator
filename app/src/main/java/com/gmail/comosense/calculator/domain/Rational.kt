@@ -17,10 +17,8 @@ class Rational private constructor(
     }
 
     companion object {
-        private const val MAX_DECIMAL_SCALE: Long =
-            Constraints.MAX_DECIMAL_SCALE
-        private const val MAX_DECIMAL_BITS: Long =
-            Constraints.MAX_DECIMAL_BITS
+        private const val MAX_DECIMAL_SCALE: Long = Constraints.MAX_DECIMAL_SCALE
+        private const val MAX_DECIMAL_BITS: Long = Constraints.MAX_DECIMAL_BITS
 
         val ZERO: Rational = Rational(
             numerator = BigInteger.ZERO,
@@ -221,11 +219,10 @@ class Rational private constructor(
     ): Rational? {
         require(exponent != Int.MIN_VALUE)
 
-        val estimatedBits: Long =
-            maxOf(
-                numerator.bitLength(),
-                denominator.bitLength(),
-            ).toLong() * abs(exponent.toLong())
+        val estimatedBits: Long = maxOf(
+            numerator.bitLength(),
+            denominator.bitLength(),
+        ).toLong() * abs(exponent.toLong())
 
         return if (estimatedBits > MAX_DECIMAL_BITS) {
             null
@@ -318,10 +315,9 @@ class Rational private constructor(
     ): Rational {
         require(!other.isZero())
 
-        val quotient: BigInteger =
-            numerator
-                .multiply(other.denominator)
-                .divide(denominator.multiply(other.numerator))
+        val quotient: BigInteger = numerator
+            .multiply(other.denominator)
+            .divide(denominator.multiply(other.numerator))
 
         return minus(
             other.times(

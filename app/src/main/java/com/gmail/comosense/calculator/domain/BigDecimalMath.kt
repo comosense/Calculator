@@ -81,11 +81,13 @@ internal object BigDecimalMath {
         private suspend fun map(
             mc: MathContext,
         ): Map<E, BigDecimal> {
-            cache?.takeIf { cached ->
-                cached.mc.precision >=
-                        mc.precision + EXTRA_PRECISION_FOR_ROUNDING &&
-                        cached.mc.roundingMode == mc.roundingMode
-            }?.let { cached -> return cached.map }
+            cache
+                ?.takeIf { cached ->
+                    cached.mc.precision >=
+                            mc.precision + EXTRA_PRECISION_FOR_ROUNDING &&
+                            cached.mc.roundingMode == mc.roundingMode
+                }
+                ?.let { cached -> return cached.map }
 
             val newMc: MathContext = mc.withExtraPrecision(EXTRA_PRECISION_FOR_CACHE)
             val map: EnumMap<E, BigDecimal> = calculateConstants(newMc)
@@ -102,36 +104,34 @@ internal object BigDecimalMath {
     private class ECache : ConstantCache<EConstant>() {
         override suspend fun calculateConstants(
             mc: MathContext,
-        ): EnumMap<EConstant, BigDecimal> =
-            filledMap { constant ->
+        ): EnumMap<EConstant, BigDecimal> {
+            val e: BigDecimal = calculateE(
+                mc = mc,
+            )
+
+            return filledMap { constant ->
                 when (constant) {
-                    EConstant.E ->
-                        calculateE(
-                            mc = mc,
-                        )
+                    EConstant.E -> e
+
                 }
             }
+        }
     }
 
     private class PiCache : ConstantCache<PiConstant>() {
         override suspend fun calculateConstants(
             mc: MathContext,
         ): EnumMap<PiConstant, BigDecimal> {
-            val pi: BigDecimal = calculatePi(mc)
+            val pi: BigDecimal = calculatePi(
+                mc = mc,
+            )
 
             return filledMap { constant ->
                 when (constant) {
-                    PiConstant.HALF ->
-                        pi.divide(TWO)
-
-                    PiConstant.ONE ->
-                        pi
-
-                    PiConstant.THREE_HALVES ->
-                        pi.multiply(THREE_HALVES)
-
-                    PiConstant.TWO ->
-                        pi.multiply(TWO)
+                    PiConstant.HALF -> pi.divide(TWO)
+                    PiConstant.ONE -> pi
+                    PiConstant.THREE_HALVES -> pi.multiply(THREE_HALVES)
+                    PiConstant.TWO -> pi.multiply(TWO)
                 }
             }
         }
@@ -160,17 +160,10 @@ internal object BigDecimalMath {
 
             return filledMap { constant ->
                 when (constant) {
-                    LnConstant.SQRT_TWO ->
-                        sqrtTwo
-
-                    LnConstant.INVERSE_SQRT_TWO ->
-                        inverseSqrtTwo
-
-                    LnConstant.LN_TWO ->
-                        lnTwo
-
-                    LnConstant.LN_TEN ->
-                        lnTen
+                    LnConstant.SQRT_TWO -> sqrtTwo
+                    LnConstant.INVERSE_SQRT_TWO -> inverseSqrtTwo
+                    LnConstant.LN_TWO -> lnTwo
+                    LnConstant.LN_TEN -> lnTen
                 }
             }
         }
@@ -327,16 +320,14 @@ internal object BigDecimalMath {
             return ZERO
         }
 
-        val calculationMc: MathContext =
-            mc.withExtraPrecision(EXTRA_PRECISION_FOR_CALCULATIONS)
-        val exponentProduct: BigDecimal =
-            exponent.multiply(
-                calculateLn(
-                    value = base,
-                    mc = calculationMc,
-                ),
-                calculationMc,
-            )
+        val calculationMc: MathContext = mc.withExtraPrecision(EXTRA_PRECISION_FOR_CALCULATIONS)
+        val exponentProduct: BigDecimal = exponent.multiply(
+            calculateLn(
+                value = base,
+                mc = calculationMc,
+            ),
+            calculationMc,
+        )
 
         return calculateExp(
             value = exponentProduct,
@@ -357,8 +348,7 @@ internal object BigDecimalMath {
         value: BigDecimal,
         mc: MathContext,
     ): BigDecimal {
-        val calculationMc: MathContext =
-            mc.withExtraPrecision(EXTRA_PRECISION_FOR_CALCULATIONS)
+        val calculationMc: MathContext = mc.withExtraPrecision(EXTRA_PRECISION_FOR_CALCULATIONS)
 
         val lnValue: BigDecimal = calculateLn(
             value = value,
@@ -457,16 +447,8 @@ internal object BigDecimalMath {
         )
 
         return SIXTEEN
-            .multiply(
-                arctanOneFifth,
-                mc,
-            )
-            .subtract(
-                FOUR.multiply(
-                    arctanOneTwoHundredThirtyNine, mc,
-                ),
-                mc,
-            )
+            .multiply(arctanOneFifth, mc)
+            .subtract(FOUR.multiply(arctanOneTwoHundredThirtyNine, mc), mc)
     }
 
     private suspend fun calculateSqrt(
@@ -643,8 +625,7 @@ internal object BigDecimalMath {
             mc = mc,
         )
 
-        val normalizedRadians: BigDecimal =
-            radians.abs().remainder(twoPi)
+        val normalizedRadians: BigDecimal = radians.abs().remainder(twoPi)
 
         val result: BigDecimal = when {
             normalizedRadians <= halfPi ->
@@ -709,8 +690,7 @@ internal object BigDecimalMath {
             mc = mc,
         )
 
-        val normalizedRadians: BigDecimal =
-            radians.abs().remainder(twoPi)
+        val normalizedRadians: BigDecimal = radians.abs().remainder(twoPi)
 
         val result: BigDecimal = when {
             normalizedRadians <= halfPi ->
@@ -837,11 +817,10 @@ internal object BigDecimalMath {
             )
         }
 
-        val acuteAngle: BigDecimal =
-            calculateInverseTrigonometricAcuteAngle(
-                value = value,
-                mc = mc,
-            )
+        val acuteAngle: BigDecimal = calculateInverseTrigonometricAcuteAngle(
+            value = value,
+            mc = mc,
+        )
 
         return if (value.signum() > 0) {
             acuteAngle

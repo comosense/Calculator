@@ -184,7 +184,9 @@ val Key.style: Style
         is Key.AngleMode -> Style.Mode
     }
 
-fun Key.toDisplay(symbolFormatter: SymbolFormatter): Display =
+fun Key.toDisplay(
+    symbolFormatter: SymbolFormatter,
+): Display =
     when (this) {
         is Key.Positive ->
             Display.Icon(

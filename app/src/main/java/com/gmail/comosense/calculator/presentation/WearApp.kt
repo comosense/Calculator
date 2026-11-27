@@ -65,18 +65,22 @@ fun WearApp(
     var isHistoryDeleteMode: Boolean by remember { mutableStateOf(false) }
 
     fun changeScreen(
-        appScreen: AppScreen? = null,
+        appScreen: AppScreen,
     ) {
         coroutineScope.launch {
-            if (appScreen != null) {
-                swipeToDismissBoxState.snapTo(
-                    targetValue = SwipeToDismissValue.Default,
-                )
-                currentScreen = appScreen
-            } else {
-                swipeToDismissBoxState.snapTo(
-                    targetValue = SwipeToDismissValue.Dismissed,
-                )
+            when (appScreen) {
+                AppScreen.Calculator ->
+                    swipeToDismissBoxState.snapTo(
+                        targetValue = SwipeToDismissValue.Dismissed,
+                    )
+
+                AppScreen.Settings,
+                AppScreen.History -> {
+                    swipeToDismissBoxState.snapTo(
+                        targetValue = SwipeToDismissValue.Default,
+                    )
+                    currentScreen = appScreen
+                }
             }
         }
     }
@@ -127,7 +131,7 @@ fun WearApp(
                             symbolFormatter = symbolFormatter,
                         )
                     } else {
-                        val onBack: () -> Unit = { changeScreen(null) }
+                        val onBack: () -> Unit = { changeScreen(AppScreen.Calculator) }
 
                         when (currentScreen) {
                             AppScreen.Settings ->

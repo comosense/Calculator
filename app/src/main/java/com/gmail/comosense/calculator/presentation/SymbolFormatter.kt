@@ -13,13 +13,12 @@ class SymbolFormatter(
         private const val INTERNAL_DECIMAL_SEPARATOR: Char = '.'
     }
 
-    private val numberLocale: Locale =
-        runCatching {
-            Locale.Builder()
-                .setLocale(locale)
-                .setUnicodeLocaleKeyword("nu", "latn")
-                .build()
-        }.getOrDefault(locale)
+    private val numberLocale: Locale = runCatching {
+        Locale.Builder()
+            .setLocale(locale)
+            .setUnicodeLocaleKeyword("nu", "latn")
+            .build()
+    }.getOrDefault(locale)
     private val integerFormatter: DecimalFormat? =
         (NumberFormat.getNumberInstance(numberLocale) as? DecimalFormat)?.apply {
             decimalFormatSymbols = decimalFormatSymbols.apply {
@@ -30,12 +29,13 @@ class SymbolFormatter(
             minimumFractionDigits = 0
             maximumFractionDigits = 0
         }
-    private val decimalSeparator: Char =
-        DecimalFormatSymbols
-            .getInstance(numberLocale)
-            .decimalSeparator
+    private val decimalSeparator: Char = DecimalFormatSymbols
+        .getInstance(numberLocale)
+        .decimalSeparator
 
-    fun text(symbol: Symbol): String =
+    fun text(
+        symbol: Symbol,
+    ): String =
         when (symbol) {
             is Symbol.Sign.Positive -> "+"
             is Symbol.Sign.Negative -> "-"

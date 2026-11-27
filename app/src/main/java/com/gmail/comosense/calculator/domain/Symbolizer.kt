@@ -21,17 +21,10 @@ fun BigDecimal.toSymbols(
         for (c in plainString) {
             add(
                 when (c) {
-                    in '0'..'9' ->
-                        Symbol.Numeric.Digit(c.digitToInt())
-
-                    '.' ->
-                        Symbol.Numeric.Point
-
-                    '-' ->
-                        Symbol.Sign.Negative
-
-                    else ->
-                        return Result.Err(SymbolizerError.Unsupported)
+                    in '0'..'9' -> Symbol.Numeric.Digit(c.digitToInt())
+                    '.' -> Symbol.Numeric.Point
+                    '-' -> Symbol.Sign.Negative
+                    else -> return Result.Err(SymbolizerError.Unsupported)
                 }
             )
         }
@@ -61,14 +54,9 @@ private fun BigDecimal.toDisplayStringOrNull(
     val scale: Long = stripped.scale().toLong()
 
     val length: Long = sign + when {
-        scale <= 0 ->
-            precision - scale
-
-        precision > scale ->
-            precision + 1
-
-        else ->
-            scale + 2
+        scale <= 0 -> precision - scale
+        precision > scale -> precision + 1
+        else -> scale + 2
     }
 
     return if (length <= maxLength) {
