@@ -211,22 +211,22 @@ private fun HandleEvent(
 private fun AppViewModelError.messageResourceId(): Int? =
     when (this) {
         AppViewModelError.ExpressionTooLarge -> R.string.app_view_model_error_expression_too_large
-        AppViewModelError.UnacceptableSymbol -> null
+        AppViewModelError.InvalidSymbol -> null
         AppViewModelError.ExpressionInsertionNotAllowed -> R.string.app_view_model_error_expression_insertion_not_allowed
         AppViewModelError.HistoryNotFound -> R.string.app_view_model_error_history_not_found
     }
 
 private fun SettingsRepositoryError.messageResourceId(): Int? =
     when (this) {
-        SettingsRepositoryError.RepairInvalidSettings -> null
-        SettingsRepositoryError.UpdatePrecision -> R.string.settings_repository_error_update_precision
+        SettingsRepositoryError.RepairFailed -> null
+        SettingsRepositoryError.PrecisionUpdateFailed -> R.string.settings_repository_error_precision_update_failed
     }
 
 private fun HistoryRepositoryError.messageResourceId(): Int =
     when (this) {
-        HistoryRepositoryError.Add -> R.string.history_repository_error_add
-        HistoryRepositoryError.Delete -> R.string.history_repository_error_delete
-        HistoryRepositoryError.DeleteAll -> R.string.history_repository_error_delete_all
+        HistoryRepositoryError.AddFailed -> R.string.history_repository_error_add_failed
+        HistoryRepositoryError.DeleteFailed -> R.string.history_repository_error_delete_failed
+        HistoryRepositoryError.DeleteAllFailed -> R.string.history_repository_error_delete_all_failed
         HistoryRepositoryError.TooLarge -> R.string.history_repository_error_too_large
         HistoryRepositoryError.InvalidHistory -> R.string.history_repository_error_invalid_history
     }
@@ -238,9 +238,9 @@ private fun CalculatorError.messageResourceId(): Int =
         CalculatorError.InvalidExpression -> R.string.calculator_error_invalid_expression
         CalculatorError.DivisionByZero -> R.string.calculator_error_division_by_zero
         CalculatorError.FactorialInvalidArgument -> R.string.calculator_error_factorial_invalid_argument
-        CalculatorError.FactorialLargeArgument -> R.string.calculator_error_factorial_large_argument
+        CalculatorError.FactorialArgumentTooLarge -> R.string.calculator_error_factorial_argument_too_large
         CalculatorError.SqrtInvalidArgument -> R.string.calculator_error_sqrt_invalid_argument
-        CalculatorError.ExpLargeArgument -> R.string.calculator_error_exp_large_argument
+        CalculatorError.ExpArgumentTooLarge -> R.string.calculator_error_exp_argument_too_Large
         CalculatorError.PowInvalidArgument -> R.string.calculator_error_pow_invalid_argument
         CalculatorError.PowLimitExceeded -> R.string.calculator_error_pow_limit_exceeded
         CalculatorError.LogInvalidArgument -> R.string.calculator_error_log_invalid_argument

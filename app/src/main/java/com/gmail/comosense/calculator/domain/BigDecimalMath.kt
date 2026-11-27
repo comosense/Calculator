@@ -22,7 +22,7 @@ internal object BigDecimalMath {
     private val ZERO: BigDecimal = BigDecimal.ZERO
     private val HALF: BigDecimal = "0.5".toBigDecimal()
     private val ONE: BigDecimal = BigDecimal.ONE
-    private val THREE_HALF: BigDecimal = "1.5".toBigDecimal()
+    private val THREE_HALVES: BigDecimal = "1.5".toBigDecimal()
     private val TWO: BigDecimal = 2.toBigDecimal()
     private val FOUR: BigDecimal = 4.toBigDecimal()
     private val FIVE: BigDecimal = 5.toBigDecimal()
@@ -40,7 +40,7 @@ internal object BigDecimalMath {
     private enum class PiConstant {
         HALF,
         ONE,
-        THREE_HALF,
+        THREE_HALVES,
         TWO,
     }
 
@@ -48,7 +48,7 @@ internal object BigDecimalMath {
         SQRT_TWO,
         INVERSE_SQRT_TWO,
         LN_TWO,
-        TEN,
+        LN_TEN,
     }
 
     private inline fun <reified E : Enum<E>> filledMap(
@@ -59,7 +59,7 @@ internal object BigDecimalMath {
             transform,
         )
 
-    private abstract class Constants<E : Enum<E>> {
+    private abstract class ConstantCache<E : Enum<E>> {
         private data class Cache<E : Enum<E>>(
             val mc: MathContext,
             val map: EnumMap<E, BigDecimal>,
@@ -82,18 +82,13 @@ internal object BigDecimalMath {
             mc: MathContext,
         ): Map<E, BigDecimal> {
             cache?.takeIf { cached ->
-                cached.mc.hasBiggerPrecisionThan(
-                    other = mc,
-                    extraPrecision = EXTRA_PRECISION_FOR_ROUNDING,
-                )
-            }?.let { cached ->
-                return cached.map
-            }
+                cached.mc.precision >=
+                        mc.precision + EXTRA_PRECISION_FOR_ROUNDING &&
+                        cached.mc.roundingMode == mc.roundingMode
+            }?.let { cached -> return cached.map }
 
-            val newMc: MathContext =
-                mc.withExtraPrecision(EXTRA_PRECISION_FOR_CACHE)
-            val map: EnumMap<E, BigDecimal> =
-                calculateConstants(newMc)
+            val newMc: MathContext = mc.withExtraPrecision(EXTRA_PRECISION_FOR_CACHE)
+            val map: EnumMap<E, BigDecimal> = calculateConstants(newMc)
 
             cache = Cache(
                 mc = newMc,
@@ -104,7 +99,7 @@ internal object BigDecimalMath {
         }
     }
 
-    private class EConstants : Constants<EConstant>() {
+    private class ECache : ConstantCache<EConstant>() {
         override suspend fun calculateConstants(
             mc: MathContext,
         ): EnumMap<EConstant, BigDecimal> =
@@ -118,7 +113,7 @@ internal object BigDecimalMath {
             }
     }
 
-    private class PiConstants : Constants<PiConstant>() {
+    private class PiCache : ConstantCache<PiConstant>() {
         override suspend fun calculateConstants(
             mc: MathContext,
         ): EnumMap<PiConstant, BigDecimal> {
@@ -132,8 +127,8 @@ internal object BigDecimalMath {
                     PiConstant.ONE ->
                         pi
 
-                    PiConstant.THREE_HALF ->
-                        pi.multiply(THREE_HALF)
+                    PiConstant.THREE_HALVES ->
+                        pi.multiply(THREE_HALVES)
 
                     PiConstant.TWO ->
                         pi.multiply(TWO)
@@ -142,7 +137,7 @@ internal object BigDecimalMath {
         }
     }
 
-    private class LnConstants : Constants<LnConstant>() {
+    private class LnCache : ConstantCache<LnConstant>() {
         override suspend fun calculateConstants(
             mc: MathContext,
         ): EnumMap<LnConstant, BigDecimal> {
@@ -174,26 +169,32 @@ internal object BigDecimalMath {
                     LnConstant.LN_TWO ->
                         lnTwo
 
-                    LnConstant.TEN ->
+                    LnConstant.LN_TEN ->
                         lnTen
                 }
             }
         }
     }
 
-    private val eConstants = EConstants()
-    private val piConstants = PiConstants()
-    private val lnConstants = LnConstants()
+    private val eCache: ECache = ECache()
+    private val piCache: PiCache = PiCache()
+    private val lnCache: LnCache = LnCache()
 
     suspend fun e(
         mc: MathContext,
     ): BigDecimal =
-        eConstants.get(EConstant.E, mc)
+        eCache.get(
+            constant = EConstant.E,
+            mc = mc,
+        )
 
     suspend fun pi(
         mc: MathContext,
     ): BigDecimal =
-        piConstants.get(PiConstant.ONE, mc)
+        piCache.get(
+            constant = PiConstant.ONE,
+            mc = mc,
+        )
 
     suspend fun factorial(
         value: Int,
@@ -359,10 +360,19 @@ internal object BigDecimalMath {
         val calculationMc: MathContext =
             mc.withExtraPrecision(EXTRA_PRECISION_FOR_CALCULATIONS)
 
-        return calculateLn(
+        val lnValue: BigDecimal = calculateLn(
             value = value,
             mc = calculationMc,
-        ).divide(lnConstants.get(LnConstant.TEN, calculationMc), mc)
+        )
+        val logValue: BigDecimal = lnValue.divide(
+            lnCache.get(
+                constant = LnConstant.LN_TEN,
+                mc = calculationMc
+            ),
+            mc,
+        )
+
+        return logValue
     }
 
     suspend fun sin(
@@ -559,12 +569,18 @@ internal object BigDecimalMath {
         return calculateLnMain(
             value = value,
             mc = mc,
-            sqrtTwo =
-                lnConstants.get(LnConstant.SQRT_TWO, mc),
-            inverseSqrtTwo =
-                lnConstants.get(LnConstant.INVERSE_SQRT_TWO, mc),
-            lnTwo =
-                lnConstants.get(LnConstant.LN_TWO, mc),
+            sqrtTwo = lnCache.get(
+                constant = LnConstant.SQRT_TWO,
+                mc = mc,
+            ),
+            inverseSqrtTwo = lnCache.get(
+                constant = LnConstant.INVERSE_SQRT_TWO,
+                mc = mc,
+            ),
+            lnTwo = lnCache.get(
+                constant = LnConstant.LN_TWO,
+                mc = mc,
+            ),
         )
     }
 
@@ -610,14 +626,22 @@ internal object BigDecimalMath {
         radians: BigDecimal,
         mc: MathContext,
     ): BigDecimal {
-        val pi: BigDecimal =
-            piConstants.get(PiConstant.ONE, mc)
-        val halfPi: BigDecimal =
-            piConstants.get(PiConstant.HALF, mc)
-        val threeHalfPi: BigDecimal =
-            piConstants.get(PiConstant.THREE_HALF, mc)
-        val twoPi: BigDecimal =
-            piConstants.get(PiConstant.TWO, mc)
+        val pi: BigDecimal = piCache.get(
+            constant = PiConstant.ONE,
+            mc = mc,
+        )
+        val halfPi: BigDecimal = piCache.get(
+            constant = PiConstant.HALF,
+            mc = mc,
+        )
+        val threeHalfPi: BigDecimal = piCache.get(
+            constant = PiConstant.THREE_HALVES,
+            mc = mc,
+        )
+        val twoPi: BigDecimal = piCache.get(
+            constant = PiConstant.TWO,
+            mc = mc,
+        )
 
         val normalizedRadians: BigDecimal =
             radians.abs().remainder(twoPi)
@@ -668,14 +692,22 @@ internal object BigDecimalMath {
         radians: BigDecimal,
         mc: MathContext,
     ): BigDecimal {
-        val pi: BigDecimal =
-            piConstants.get(PiConstant.ONE, mc)
-        val halfPi: BigDecimal =
-            piConstants.get(PiConstant.HALF, mc)
-        val threeHalfPi: BigDecimal =
-            piConstants.get(PiConstant.THREE_HALF, mc)
-        val twoPi: BigDecimal =
-            piConstants.get(PiConstant.TWO, mc)
+        val pi: BigDecimal = piCache.get(
+            constant = PiConstant.ONE,
+            mc = mc,
+        )
+        val halfPi: BigDecimal = piCache.get(
+            constant = PiConstant.HALF,
+            mc = mc,
+        )
+        val threeHalfPi: BigDecimal = piCache.get(
+            constant = PiConstant.THREE_HALVES,
+            mc = mc,
+        )
+        val twoPi: BigDecimal = piCache.get(
+            constant = PiConstant.TWO,
+            mc = mc,
+        )
 
         val normalizedRadians: BigDecimal =
             radians.abs().remainder(twoPi)
@@ -727,11 +759,17 @@ internal object BigDecimalMath {
         }
 
         if (value.compareTo(ONE) == 0) {
-            return piConstants.get(PiConstant.HALF, mc)
+            return piCache.get(
+                constant = PiConstant.HALF,
+                mc = mc,
+            )
         }
 
         if (value.compareTo(NEGATIVE_ONE) == 0) {
-            return piConstants.get(PiConstant.HALF, mc).negate()
+            return piCache.get(
+                constant = PiConstant.HALF,
+                mc = mc,
+            ).negate()
         }
 
         if (value.signum() == 0) {
@@ -760,8 +798,10 @@ internal object BigDecimalMath {
                         mc = mc,
                     )
 
-                piConstants.get(PiConstant.HALF, mc)
-                    .subtract(acuteAngle, mc)
+                piCache.get(
+                    constant = PiConstant.HALF,
+                    mc = mc,
+                ).subtract(acuteAngle, mc)
             }
 
         return if (value.signum() < 0) {
@@ -784,11 +824,17 @@ internal object BigDecimalMath {
         }
 
         if (value.compareTo(NEGATIVE_ONE) == 0) {
-            return piConstants.get(PiConstant.ONE, mc)
+            return piCache.get(
+                constant = PiConstant.ONE,
+                mc = mc,
+            )
         }
 
         if (value.signum() == 0) {
-            return piConstants.get(PiConstant.HALF, mc)
+            return piCache.get(
+                constant = PiConstant.HALF,
+                mc = mc,
+            )
         }
 
         val acuteAngle: BigDecimal =
@@ -800,8 +846,10 @@ internal object BigDecimalMath {
         return if (value.signum() > 0) {
             acuteAngle
         } else {
-            piConstants.get(PiConstant.ONE, mc)
-                .subtract(acuteAngle, mc)
+            piCache.get(
+                constant = PiConstant.ONE,
+                mc = mc,
+            ).subtract(acuteAngle, mc)
         }
     }
 
@@ -817,22 +865,26 @@ internal object BigDecimalMath {
         }
 
         if (value > ONE) {
-            return piConstants.get(PiConstant.HALF, mc)
-                .subtract(
-                    calculateArctan(
-                        value = ONE.divide(value, mc),
-                        mc = mc,
-                    ),
-                    mc,
-                )
+            return piCache.get(
+                constant = PiConstant.HALF,
+                mc = mc,
+            ).subtract(
+                calculateArctan(
+                    value = ONE.divide(value, mc),
+                    mc = mc,
+                ),
+                mc,
+            )
         }
 
         if (value > HALF) {
             val reduced: BigDecimal = value.subtract(ONE)
                 .divide(value.add(ONE), mc)
 
-            return piConstants.get(PiConstant.ONE, mc)
-                .divide(FOUR)
+            return piCache.get(
+                constant = PiConstant.ONE,
+                mc = mc,
+            ).divide(FOUR)
                 .add(
                     calculateArctan(
                         value = reduced,

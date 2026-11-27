@@ -13,9 +13,9 @@ enum class CalculatorError {
     InvalidExpression,
     DivisionByZero,
     FactorialInvalidArgument,
-    FactorialLargeArgument,
+    FactorialArgumentTooLarge,
     SqrtInvalidArgument,
-    ExpLargeArgument,
+    ExpArgumentTooLarge,
     PowInvalidArgument,
     PowLimitExceeded,
     LogInvalidArgument,
@@ -52,7 +52,7 @@ suspend fun calculate(
 
     val calculatedSymbolsResult: Result<List<Symbol>, SymbolizerError> =
         calculated.toSymbols(
-            maxSymbolSize = MAX_RESULT_SIZE,
+            maxLength = MAX_RESULT_SIZE,
         )
 
     return when (calculatedSymbolsResult) {
@@ -102,12 +102,12 @@ private suspend fun parse(
         Result.Err(CalculatorError.InvalidExpression)
     } catch (_: IllegalFactorException) {
         Result.Err(CalculatorError.InvalidExpression)
-    } catch (_: FactorialLargeArgumentException) {
-        Result.Err(CalculatorError.FactorialLargeArgument)
+    } catch (_: FactorialArgumentTooLargeException) {
+        Result.Err(CalculatorError.FactorialArgumentTooLarge)
     } catch (_: FactorialInvalidArgumentException) {
         Result.Err(CalculatorError.FactorialInvalidArgument)
-    } catch (_: ExpLargeArgumentException) {
-        Result.Err(CalculatorError.ExpLargeArgument)
+    } catch (_: ExpArgumentTooLargeException) {
+        Result.Err(CalculatorError.ExpArgumentTooLarge)
     } catch (_: PowInvalidArgumentException) {
         Result.Err(CalculatorError.PowInvalidArgument)
     } catch (_: PowLimitExceededException) {

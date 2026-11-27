@@ -188,10 +188,9 @@ private fun MainPanel(
                     width = panelWidth,
                     height = inscribedLength * (4f / 5f),
                 ),
-
-                ) { isShowFunctionKeyGrid ->
+            ) { showFunctionKeyGrid ->
                 KeyGrid(
-                    keyGrid = if (isShowFunctionKeyGrid) {
+                    keyGrid = if (showFunctionKeyGrid) {
                         functionKeyGrid(
                             isInverseFunctionMode = keyState.isInverseFunctionMode,
                             appState = appState,
@@ -334,20 +333,20 @@ private fun ExpressionBox(
                     style = measureStyle,
                 )
             }
-        val needScroll: Boolean =
+        val shouldScroll: Boolean =
             with(density) {
                 measured.size.width > maxWidth.toPx()
             }
 
         LaunchedEffect(
             expression,
-            needScroll,
+            shouldScroll,
             scrollState.maxValue,
-            appState.isInputting(),
+            appState.hasInput(),
         ) {
-            if (needScroll) {
+            if (shouldScroll) {
                 scrollState.scrollTo(
-                    if (appState.isInputting()) {
+                    if (appState.hasInput()) {
                         scrollState.maxValue
                     } else {
                         0
@@ -356,7 +355,7 @@ private fun ExpressionBox(
             }
         }
 
-        if (needScroll) {
+        if (shouldScroll) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -391,7 +390,7 @@ private fun ExpressionBox(
             val size: Dp = maxHeight * 0.75f
             IconButton(
                 onClick = {
-                    onCalculatorAction(CalculatorAction.App(AppAction.CalculateCancel))
+                    onCalculatorAction(CalculatorAction.App(AppAction.CancelCalculation))
                 },
                 modifier = Modifier.size(size),
             ) {
@@ -507,8 +506,8 @@ private fun KeyButton(
 
                 is Display.Icon ->
                     Icon(
-                        painter = painterResource(display.painterResource),
-                        contentDescription = stringResource(display.stringResource),
+                        painter = painterResource(display.iconResId),
+                        contentDescription = stringResource(display.contentDescriptionResId),
                         modifier = Modifier.size(keyAppearance.iconSize),
                         tint = keyAppearance.contentColor,
                     )
@@ -521,7 +520,7 @@ private fun mainKeyGrid(
     appState: AppState,
 ): List<List<Key?>> {
     val deleteKey: Key =
-        if (appState.isInputting()) {
+        if (appState.hasInput()) {
             Key.Backspace
         } else {
             Key.Clear

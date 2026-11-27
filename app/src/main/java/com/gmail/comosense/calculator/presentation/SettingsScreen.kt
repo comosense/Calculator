@@ -89,12 +89,12 @@ fun SettingsScreen(
 
             val inscribedLength: Dp =
                 minOf(displayWidth, displayHeight) * INSCRIBED_LENGTH_RATIO
-            val topOrBottomMargin: Dp =
+            val verticalMargin: Dp =
                 (displayHeight - inscribedLength) / 2f
 
-            val labelHeight: Dp = topOrBottomMargin
+            val labelHeight: Dp = verticalMargin
             val subLabelHeight: Dp = labelHeight
-            val buttonHeight: Dp = topOrBottomMargin * 1.5f
+            val buttonHeight: Dp = verticalMargin * 1.5f
             val pickerHeight: Dp =
                 (displayHeight - (labelHeight + subLabelHeight + buttonHeight))
                     .coerceAtLeast(0.dp)

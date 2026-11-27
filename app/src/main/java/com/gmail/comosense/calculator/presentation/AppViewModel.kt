@@ -33,7 +33,7 @@ import kotlinx.coroutines.withContext
 
 enum class AppViewModelError {
     HistoryNotFound,
-    UnacceptableSymbol,
+    InvalidSymbol,
     ExpressionInsertionNotAllowed,
     ExpressionTooLarge,
 }
@@ -42,18 +42,18 @@ sealed interface AppAction {
     data class SetPrecision(val value: Int) : AppAction
     data class SelectHistory(val id: String) : AppAction
     data class DeleteHistory(val id: String) : AppAction
-    data object DeleteHistoryAll : AppAction
+    data object DeleteAllHistory : AppAction
     data object Calculate : AppAction
-    data object CalculateCancel : AppAction
+    data object CancelCalculation : AppAction
     data class Input(val symbol: Symbol) : AppAction
-    data class Inputs(val symbols: List<Symbol>) : AppAction
+    data class InputMultiple(val symbols: List<Symbol>) : AppAction
     data object Clear : AppAction
     data object Backspace : AppAction
     data object ToggleAngleMode : AppAction
 }
 
 class AppViewModel(
-    private val settingRepository: SettingsRepository,
+    private val settingsRepository: SettingsRepository,
     private val historyRepository: HistoryRepository,
 ) : ViewModel() {
     class Factory(
@@ -63,7 +63,7 @@ class AppViewModel(
             if (AppViewModel::class.java.isAssignableFrom(modelClass)) {
                 @Suppress("UNCHECKED_CAST")
                 return AppViewModel(
-                    settingRepository = SettingsRepository(
+                    settingsRepository = SettingsRepository(
                         dataStore = application.settingsDataStore,
                     ),
                     historyRepository = HistoryRepository(
@@ -89,15 +89,15 @@ class AppViewModel(
             capacity = Channel.BUFFERED,
             onBufferOverflow = BufferOverflow.DROP_OLDEST,
         )
-    private var calculateJobOrNull: Job? = null
+    private var calculateJob: Job? = null
 
     init {
         launchSettingsRepositoryAction {
-            settingRepository.repairInvalidSettings()
+            settingsRepository.repairInvalidSettings()
         }
 
         viewModelScope.launch {
-            settingRepository.settings.collect { settings ->
+            settingsRepository.settings.collect { settings ->
                 _appState.update { appState ->
                     appState.copy(
                         settings = settings,
@@ -144,20 +144,20 @@ class AppViewModel(
             is AppAction.DeleteHistory ->
                 deleteHistory(appAction.id)
 
-            is AppAction.DeleteHistoryAll ->
-                deleteHistoryAll()
+            is AppAction.DeleteAllHistory ->
+                deleteAllHistory()
 
             is AppAction.Calculate ->
                 calculate()
 
-            is AppAction.CalculateCancel ->
-                calculateCancel()
+            is AppAction.CancelCalculation ->
+                cancelCalculation()
 
             is AppAction.Input ->
                 input(appAction.symbol)
 
-            is AppAction.Inputs ->
-                inputs(appAction.symbols)
+            is AppAction.InputMultiple ->
+                inputMultiple(appAction.symbols)
 
             is AppAction.Clear ->
                 clear()
@@ -172,9 +172,9 @@ class AppViewModel(
 
     private fun AppAction.isAllowedWhileCalculating(): Boolean =
         when (this) {
-            is AppAction.CalculateCancel,
+            is AppAction.CancelCalculation,
             is AppAction.DeleteHistory,
-            is AppAction.DeleteHistoryAll,
+            is AppAction.DeleteAllHistory,
             is AppAction.SetPrecision -> true
 
             else -> false
@@ -184,7 +184,7 @@ class AppViewModel(
         value: Int,
     ) =
         launchSettingsRepositoryAction {
-            settingRepository.updatePrecision(value)
+            settingsRepository.updatePrecision(value)
         }
 
     private fun selectHistory(
@@ -204,15 +204,15 @@ class AppViewModel(
             historyRepository.deleteHistory(id)
         }
 
-    private fun deleteHistoryAll() =
+    private fun deleteAllHistory() =
         launchHistoryRepositoryAction {
-            historyRepository.deleteHistoryAll()
+            historyRepository.deleteAllHistory()
         }
 
     private fun calculate() {
         val state: AppState = _appState.value
 
-        if (!state.isInputting() || state.isCalculating) {
+        if (!state.hasInput() || state.isCalculating) {
             return
         }
 
@@ -271,19 +271,19 @@ class AppViewModel(
             }
         }
 
-        calculateJobOrNull = job
+        calculateJob = job
         job.start()
     }
 
-    private fun calculateCancel() =
-        calculateJobOrNull?.cancel()
+    private fun cancelCalculation() =
+        calculateJob?.cancel()
 
-    private fun finishCalculation(jobOrNull: Job?) {
-        if (calculateJobOrNull !== jobOrNull) {
+    private fun finishCalculation(job: Job?) {
+        if (calculateJob !== job) {
             return
         }
 
-        calculateJobOrNull = null
+        calculateJob = null
 
         _appState.update { appState ->
             appState.copy(
@@ -295,9 +295,9 @@ class AppViewModel(
     private fun input(
         symbol: Symbol,
     ) =
-        inputs(listOf(symbol))
+        inputMultiple(listOf(symbol))
 
-    private fun inputs(
+    private fun inputMultiple(
         symbols: List<Symbol>,
     ) =
         updateAppState { appState ->
@@ -370,11 +370,11 @@ class AppViewModel(
                     ),
                 )
 
-            is AppStateUpdateResult.UnacceptableSymbol ->
+            is AppStateUpdateResult.InvalidSymbol ->
                 AppStateTransition(
                     appState = appState,
                     appEvent = AppEvent.AppViewModelError(
-                        AppViewModelError.UnacceptableSymbol,
+                        AppViewModelError.InvalidSymbol,
                     ),
                 )
 

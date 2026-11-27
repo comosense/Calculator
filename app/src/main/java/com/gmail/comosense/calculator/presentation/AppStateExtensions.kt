@@ -6,7 +6,7 @@ import com.gmail.comosense.calculator.domain.Symbol
 sealed interface AppStateUpdateResult {
     data class Success(val appState: AppState) : AppStateUpdateResult
     data object ExpressionTooLarge : AppStateUpdateResult
-    data object UnacceptableSymbol : AppStateUpdateResult
+    data object InvalidSymbol : AppStateUpdateResult
     data object ExpressionInsertionNotAllowed : AppStateUpdateResult
     object HistoryNotFound : AppStateUpdateResult
 }
@@ -23,19 +23,19 @@ val AppState.completionExpression: List<Symbol>
 val AppState.expression: List<Symbol>
     get() = baseExpression + completionExpression
 
-fun AppState.isInputting(): Boolean =
+fun AppState.hasInput(): Boolean =
     input.isNotEmpty()
 
 fun AppState.appendExpression(
     symbols: List<Symbol>,
 ): AppStateUpdateResult {
     val firstSymbol: Symbol = symbols.firstOrNull()
-        ?: return AppStateUpdateResult.UnacceptableSymbol
+        ?: return AppStateUpdateResult.InvalidSymbol
 
     val currentInput: List<Symbol> = if (
         firstSymbol is Symbol.Operator ||
         firstSymbol is Symbol.PostfixOperator ||
-        isInputting()
+        hasInput()
     ) {
         result + input
     } else {
@@ -58,7 +58,7 @@ fun AppState.appendExpression(
     )
     val symbolsToAppend: List<Symbol> =
         appendingAppState.symbolsToAppendOrNull(symbols)
-            ?: return AppStateUpdateResult.UnacceptableSymbol
+            ?: return AppStateUpdateResult.InvalidSymbol
     val nextAppState: AppState =
         appendingAppState.copy(
             input = baseInput + symbolsToAppend,
@@ -96,7 +96,7 @@ fun AppState.applyHistory(
         ?.result
         ?: return AppStateUpdateResult.HistoryNotFound
 
-    if (!isInputting()) {
+    if (!hasInput()) {
         return applyResult(result)
     }
 
@@ -125,7 +125,7 @@ fun AppState.clearExpression(): AppStateUpdateResult =
 
 fun AppState.dropLastExpressionSymbol(): AppStateUpdateResult =
     AppStateUpdateResult.Success(
-        appState = if (isInputting()) {
+        appState = if (hasInput()) {
             copy(
                 input = input.dropLast(1),
             )

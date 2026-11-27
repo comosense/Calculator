@@ -8,10 +8,10 @@ import java.math.MathContext
 import kotlin.math.abs
 
 internal class FactorialInvalidArgumentException : ArithmeticException()
-internal class FactorialLargeArgumentException : IllegalArgumentException()
+internal class FactorialArgumentTooLargeException : IllegalArgumentException()
 internal class PowInvalidArgumentException : ArithmeticException()
 internal class PowLimitExceededException : IllegalArgumentException()
-internal class ExpLargeArgumentException : IllegalArgumentException()
+internal class ExpArgumentTooLargeException : IllegalArgumentException()
 internal class TanInvalidArgumentException : ArithmeticException()
 
 private const val MAX_DECIMAL_SCALE: Long =
@@ -38,18 +38,18 @@ private val RATIONAL_NEGATIVE_HALF: Rational = Rational.HALF.negate()
 private val RATIONAL_ZERO: Rational = Rational.ZERO
 private val RATIONAL_HALF: Rational = Rational.HALF
 private val RATIONAL_ONE: Rational = Rational.ONE
-private val RATIONAL_THREE_HALF: Rational = Rational.ONE + Rational.HALF
+private val RATIONAL_THREE_HALVES: Rational = Rational.ONE + Rational.HALF
 private val RATIONAL_TWO: Rational = 2.toRational()
 private val RATIONAL_ONE_HUNDRED_EIGHTY: Rational = 180.toRational()
 private val SIN_SPECIAL_ANGLES: List<Pair<Rational, UnifiedValue>> = listOf(
     RATIONAL_ZERO to ZERO,
     RATIONAL_ONE to ZERO,
     RATIONAL_HALF to ONE,
-    RATIONAL_THREE_HALF to NEGATIVE_ONE,
+    RATIONAL_THREE_HALVES to NEGATIVE_ONE,
 )
 private val COS_SPECIAL_ANGLES: List<Pair<Rational, UnifiedValue>> = listOf(
     RATIONAL_HALF to ZERO,
-    RATIONAL_THREE_HALF to ZERO,
+    RATIONAL_THREE_HALVES to ZERO,
     RATIONAL_ZERO to ONE,
     RATIONAL_ONE to NEGATIVE_ONE,
 )
@@ -124,7 +124,7 @@ internal suspend fun UnifiedValue.exp(
     )
 
     if (value.abs() > MAX_EXPONENTIAL_ARGUMENT) {
-        throw ExpLargeArgumentException()
+        throw ExpArgumentTooLargeException()
     }
 
     return UnifiedValue.fromApproximateValue(
@@ -304,11 +304,11 @@ private fun UnifiedValue.toFactorialArgument(): Int {
     val integerArgument: Int = try {
         bigIntegerArgument.intValueExact()
     } catch (_: ArithmeticException) {
-        throw FactorialLargeArgumentException()
+        throw FactorialArgumentTooLargeException()
     }
 
     if (integerArgument > MAX_FACTORIAL_ARGUMENT) {
-        throw FactorialLargeArgumentException()
+        throw FactorialArgumentTooLargeException()
     }
 
     return integerArgument
@@ -399,10 +399,10 @@ private suspend fun BigInteger.powIntegerExponentOrNull(
     exponent: Int,
     mc: MathContext,
 ): UnifiedValue? {
-    val estimateBits: Long =
+    val estimatedBits: Long =
         bitLength().toLong() * abs(exponent.toLong())
 
-    if (estimateBits > MAX_DECIMAL_BITS) {
+    if (estimatedBits > MAX_DECIMAL_BITS) {
         return null
     }
 

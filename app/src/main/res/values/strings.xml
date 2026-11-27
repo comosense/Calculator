@@ -7,10 +7,10 @@
     <string name="app_view_model_error_expression_too_large">Expression is too long</string>
     <string name="app_view_model_error_expression_insertion_not_allowed">Cannot add to expression</string>
     <string name="app_view_model_error_history_not_found">History entry not found</string>
-    <string name="settings_repository_error_update_precision">Failed to update precision</string>
-    <string name="history_repository_error_add">Failed to save calculation</string>
-    <string name="history_repository_error_delete">Failed to delete history entry</string>
-    <string name="history_repository_error_delete_all">Failed to clear history</string>
+    <string name="settings_repository_error_precision_update_failed">Failed to update precision</string>
+    <string name="history_repository_error_add_failed">Failed to save calculation</string>
+    <string name="history_repository_error_delete_failed">Failed to delete history entry</string>
+    <string name="history_repository_error_delete_all_failed">Failed to clear history</string>
     <string name="history_repository_error_too_large">Calculation too large to save</string>
     <string name="history_repository_error_invalid_history">Cannot save this calculation</string>
     <string name="calculator_error_unsupported">Unsupported value</string>
@@ -18,9 +18,9 @@
     <string name="calculator_error_invalid_expression">Invalid expression</string>
     <string name="calculator_error_division_by_zero">Division by zero</string>
     <string name="calculator_error_factorial_invalid_argument">Factorial requires a non-negative integer</string>
-    <string name="calculator_error_factorial_large_argument">Factorial input too large</string>
+    <string name="calculator_error_factorial_argument_too_large">Factorial input too large</string>
     <string name="calculator_error_sqrt_invalid_argument">Square root requires a non-negative number</string>
-    <string name="calculator_error_exp_large_argument">Exponential input too large</string>
+    <string name="calculator_error_exp_argument_too_Large">Exponential input too large</string>
     <string name="calculator_error_pow_invalid_argument">Invalid exponent</string>
     <string name="calculator_error_pow_limit_exceeded">Exponent exceeds supported limit</string>
     <string name="calculator_error_log_invalid_argument">Logarithm requires a positive number</string>

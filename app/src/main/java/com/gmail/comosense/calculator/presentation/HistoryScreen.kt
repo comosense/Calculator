@@ -49,7 +49,7 @@ private sealed interface HistoryAction {
     data object DeleteAll : HistoryAction
 }
 
-private data class HistoryItemContent(
+private data class HistoryItemAppearance(
     val containerColor: Color,
     val contentColor: Color,
     val expressionColor: Color,
@@ -94,7 +94,7 @@ fun HistoryScreen(
 
             is HistoryAction.DeleteAll -> {
                 deleteMode = false
-                onAppAction(AppAction.DeleteHistoryAll)
+                onAppAction(AppAction.DeleteAllHistory)
             }
         }
     }
@@ -151,8 +151,8 @@ fun HistoryScreen(
             listState = listState,
             transformationSpec = transformationSpec,
             contentPadding = contentPadding,
-            historyItemContent = if (deleteMode) {
-                HistoryItemContent(
+            historyItemAppearance = if (deleteMode) {
+                HistoryItemAppearance(
                     containerColor = AppTheme.historyScreenColors.deleteContainer,
                     contentColor = AppTheme.historyScreenColors.deleteContent,
                     expressionColor = AppTheme.historyScreenColors.deleteExpression,
@@ -162,7 +162,7 @@ fun HistoryScreen(
                     iconColor = AppTheme.historyScreenColors.deleteIcon,
                 )
             } else {
-                HistoryItemContent(
+                HistoryItemAppearance(
                     containerColor = AppTheme.historyScreenColors.historyContainer,
                     contentColor = AppTheme.historyScreenColors.historyContent,
                     expressionColor = AppTheme.historyScreenColors.historyExpression,
@@ -181,7 +181,7 @@ private fun HistoryList(
     listState: TransformingLazyColumnState,
     transformationSpec: TransformationSpec,
     contentPadding: PaddingValues,
-    historyItemContent: HistoryItemContent,
+    historyItemAppearance: HistoryItemAppearance,
     onHistoryAction: (HistoryAction) -> Unit,
     histories: List<History>,
     symbolFormatter: SymbolFormatter,
@@ -210,7 +210,7 @@ private fun HistoryList(
                         .padding(horizontal = 8.dp),
                     transformation = SurfaceTransformation(transformationSpec),
                     history = history,
-                    historyItemContent = historyItemContent,
+                    historyItemAppearance = historyItemAppearance,
                     onHistoryAction = onHistoryAction,
                     symbolFormatter = symbolFormatter,
                 )
@@ -223,7 +223,7 @@ private fun HistoryList(
                 ) {
                     Text(
                         text = stringResource(R.string.history_screen_no_history),
-                        color = AppTheme.historyScreenColors.textContent,
+                        color = AppTheme.historyScreenColors.emptyStateText,
                         fontSize = AppTheme.historyScreenDimensions.textFontSize,
                     )
                 }
@@ -237,7 +237,7 @@ private fun HistoryItem(
     modifier: Modifier,
     transformation: SurfaceTransformation,
     history: History,
-    historyItemContent: HistoryItemContent,
+    historyItemAppearance: HistoryItemAppearance,
     onHistoryAction: (HistoryAction) -> Unit,
     symbolFormatter: SymbolFormatter,
 ) {
@@ -253,20 +253,20 @@ private fun HistoryItem(
         },
         modifier = modifier,
         colors = ButtonDefaults.buttonColors(
-            containerColor = historyItemContent.containerColor,
-            contentColor = historyItemContent.contentColor,
+            containerColor = historyItemAppearance.containerColor,
+            contentColor = historyItemAppearance.contentColor,
         ),
         transformation = transformation,
     ) {
         Box(
             modifier = Modifier.fillMaxWidth(),
         ) {
-            historyItemContent.icon?.let { painter ->
+            historyItemAppearance.icon?.let { painter ->
                 Icon(
                     painter = painter,
-                    contentDescription = historyItemContent.iconDescription,
+                    contentDescription = historyItemAppearance.iconDescription,
                     modifier = Modifier.align(Alignment.Center),
-                    tint = historyItemContent.iconColor,
+                    tint = historyItemAppearance.iconColor,
                 )
             }
             Column(
@@ -278,7 +278,7 @@ private fun HistoryItem(
                     modifier = Modifier
                         .fillMaxWidth()
                         .horizontalScroll(expressionScrollState),
-                    color = historyItemContent.expressionColor,
+                    color = historyItemAppearance.expressionColor,
                     fontSize = AppTheme.historyScreenDimensions.expressionFontSize,
                     softWrap = false,
                     maxLines = 1,
@@ -289,7 +289,7 @@ private fun HistoryItem(
                     modifier = Modifier
                         .fillMaxWidth()
                         .horizontalScroll(resultScrollState),
-                    color = historyItemContent.resultColor,
+                    color = historyItemAppearance.resultColor,
                     fontSize = AppTheme.historyScreenDimensions.resultFontSize,
                     textAlign = TextAlign.End,
                     softWrap = false,

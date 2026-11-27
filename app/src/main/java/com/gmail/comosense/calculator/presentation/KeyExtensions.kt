@@ -16,16 +16,16 @@ sealed interface Display {
     ) : Display
 
     data class Icon(
-        val painterResource: Int,
-        val stringResource: Int,
+        val iconResId: Int,
+        val contentDescriptionResId: Int,
     ) : Display
 }
 
-private val SYMBOLS_SQUARE: List<Symbol> = listOf(
+private val SQUARE_SYMBOLS: List<Symbol> = listOf(
     Symbol.Operator.Power,
     Symbol.Numeric.Digit(2),
 )
-private val SYMBOLS_POW10: List<Symbol> = listOf(
+private val POW10_SYMBOLS: List<Symbol> = listOf(
     Symbol.Numeric.Digit(1),
     Symbol.Numeric.Digit(0),
     Symbol.Operator.Power,
@@ -102,10 +102,10 @@ val Key.calculatorAction: CalculatorAction
             CalculatorAction.App(AppAction.Input(Symbol.FactorStart.Function.Tan))
 
         is Key.Square ->
-            CalculatorAction.App(AppAction.Inputs(SYMBOLS_SQUARE))
+            CalculatorAction.App(AppAction.InputMultiple(SQUARE_SYMBOLS))
 
         is Key.Pow10 ->
-            CalculatorAction.App(AppAction.Inputs(SYMBOLS_POW10))
+            CalculatorAction.App(AppAction.InputMultiple(POW10_SYMBOLS))
 
         is Key.Exp ->
             CalculatorAction.App(AppAction.Input(Symbol.FactorStart.Function.Exp))
@@ -188,14 +188,14 @@ fun Key.toDisplay(symbolFormatter: SymbolFormatter): Display =
     when (this) {
         is Key.Positive ->
             Display.Icon(
-                painterResource = R.drawable.ic_add,
-                stringResource = R.string.content_description_positive,
+                iconResId = R.drawable.ic_add,
+                contentDescriptionResId = R.string.content_description_positive,
             )
 
         is Key.Negative ->
             Display.Icon(
-                painterResource = R.drawable.ic_subtract,
-                stringResource = R.string.content_description_negative,
+                iconResId = R.drawable.ic_subtract,
+                contentDescriptionResId = R.string.content_description_negative,
             )
 
         is Key.Digit ->
@@ -210,56 +210,56 @@ fun Key.toDisplay(symbolFormatter: SymbolFormatter): Display =
 
         is Key.OpeningParenthesis ->
             Display.Icon(
-                painterResource = R.drawable.ic_opening_parenthesis,
-                stringResource = R.string.content_description_opening_parenthesis,
+                iconResId = R.drawable.ic_opening_parenthesis,
+                contentDescriptionResId = R.string.content_description_opening_parenthesis,
             )
 
         is Key.ClosingParenthesis ->
             Display.Icon(
-                painterResource = R.drawable.ic_closing_parenthesis,
-                stringResource = R.string.content_description_closing_parenthesis,
+                iconResId = R.drawable.ic_closing_parenthesis,
+                contentDescriptionResId = R.string.content_description_closing_parenthesis,
             )
 
         is Key.Add ->
             Display.Icon(
-                painterResource = R.drawable.ic_add,
-                stringResource = R.string.content_description_add,
+                iconResId = R.drawable.ic_add,
+                contentDescriptionResId = R.string.content_description_add,
             )
 
         is Key.Subtract ->
             Display.Icon(
-                painterResource = R.drawable.ic_subtract,
-                stringResource = R.string.content_description_subtract,
+                iconResId = R.drawable.ic_subtract,
+                contentDescriptionResId = R.string.content_description_subtract,
             )
 
         is Key.Multiply ->
             Display.Icon(
-                painterResource = R.drawable.ic_multiply,
-                stringResource = R.string.content_description_multiply,
+                iconResId = R.drawable.ic_multiply,
+                contentDescriptionResId = R.string.content_description_multiply,
             )
 
         is Key.Divide ->
             Display.Icon(
-                painterResource = R.drawable.ic_divide,
-                stringResource = R.string.content_description_divide,
+                iconResId = R.drawable.ic_divide,
+                contentDescriptionResId = R.string.content_description_divide,
             )
 
         is Key.Equal ->
             Display.Icon(
-                painterResource = R.drawable.ic_equal,
-                stringResource = R.string.content_description_equal,
+                iconResId = R.drawable.ic_equal,
+                contentDescriptionResId = R.string.content_description_equal,
             )
 
         is Key.Clear ->
             Display.Icon(
-                painterResource = R.drawable.ic_clear,
-                stringResource = R.string.content_description_clear,
+                iconResId = R.drawable.ic_clear,
+                contentDescriptionResId = R.string.content_description_clear,
             )
 
         is Key.Backspace ->
             Display.Icon(
-                painterResource = R.drawable.ic_backspace,
-                stringResource = R.string.content_description_backspace,
+                iconResId = R.drawable.ic_backspace,
+                contentDescriptionResId = R.string.content_description_backspace,
             )
 
         is Key.Euler ->
@@ -314,12 +314,12 @@ fun Key.toDisplay(symbolFormatter: SymbolFormatter): Display =
 
         is Key.Square ->
             Display.Text(
-                text = symbolFormatter.format(SYMBOLS_SQUARE),
+                text = symbolFormatter.format(SQUARE_SYMBOLS),
             )
 
         is Key.Pow10 ->
             Display.Text(
-                text = symbolFormatter.format(SYMBOLS_POW10),
+                text = symbolFormatter.format(POW10_SYMBOLS),
             )
 
         is Key.Exp ->
@@ -344,21 +344,21 @@ fun Key.toDisplay(symbolFormatter: SymbolFormatter): Display =
 
         is Key.FunctionMode ->
             Display.Icon(
-                painterResource = if (isInverseFunctionMode) {
+                iconResId = if (isInverseFunctionMode) {
                     R.drawable.ic_inverse_function
                 } else {
                     R.drawable.ic_function
                 },
-                stringResource = R.string.content_description_function_mode,
+                contentDescriptionResId = R.string.content_description_function_mode,
             )
 
         is Key.AngleMode ->
             Display.Icon(
-                painterResource = if (isRadians) {
+                iconResId = if (isRadians) {
                     R.drawable.ic_radians
                 } else {
                     R.drawable.ic_degrees
                 },
-                stringResource = R.string.content_description_angle_mode,
+                contentDescriptionResId = R.string.content_description_angle_mode,
             )
     }

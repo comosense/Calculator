@@ -9,12 +9,12 @@ enum class SymbolizerError {
 }
 
 fun BigDecimal.toSymbols(
-    maxSymbolSize: Long
+    maxLength: Long
 ): Result<List<Symbol>, SymbolizerError> {
-    require(maxSymbolSize >= 0L)
+    require(maxLength >= 0L)
 
     val plainString: String =
-        toDisplayStringOrNull(maxSymbolSize)
+        toDisplayStringOrNull(maxLength)
             ?: return Result.Err(SymbolizerError.TooLarge)
 
     val symbols: List<Symbol> = buildList {

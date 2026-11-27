@@ -10,9 +10,9 @@ import java.util.UUID
 import kotlin.coroutines.cancellation.CancellationException
 
 enum class HistoryRepositoryError {
-    Add,
-    Delete,
-    DeleteAll,
+    AddFailed,
+    DeleteFailed,
+    DeleteAllFailed,
     TooLarge,
     InvalidHistory,
 }
@@ -42,7 +42,7 @@ class HistoryRepository(
         }
 
         return updateData(
-            error = HistoryRepositoryError.Add,
+            error = HistoryRepositoryError.AddFailed,
             transform = { store ->
                 val newHistory = History(
                     id = UUID.randomUUID().toString(),
@@ -65,7 +65,7 @@ class HistoryRepository(
         id: String,
     ): Result<Unit, HistoryRepositoryError> =
         updateData(
-            error = HistoryRepositoryError.Delete,
+            error = HistoryRepositoryError.DeleteFailed,
             transform = { store ->
                 val index: Int = store.historiesList
                     .indexOfFirst { history -> history.id == id }
@@ -80,9 +80,9 @@ class HistoryRepository(
             },
         )
 
-    suspend fun deleteHistoryAll(): Result<Unit, HistoryRepositoryError> =
+    suspend fun deleteAllHistory(): Result<Unit, HistoryRepositoryError> =
         updateData(
-            error = HistoryRepositoryError.DeleteAll,
+            error = HistoryRepositoryError.DeleteAllFailed,
             transform = { store ->
                 store.toBuilder()
                     .clearHistories()
