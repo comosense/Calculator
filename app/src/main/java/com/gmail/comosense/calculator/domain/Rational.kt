@@ -73,7 +73,7 @@ class Rational private constructor(
             }
         }
 
-        private fun of(
+        fun of(
             numerator: BigInteger,
             denominator: BigInteger = BigInteger.ONE,
         ): Rational {

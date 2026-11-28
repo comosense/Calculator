@@ -30,6 +30,7 @@ private val BIG_DECIMAL_NEGATIVE_ONE: BigDecimal = BigDecimal.ONE.negate()
 private val BIG_DECIMAL_ZERO: BigDecimal = BigDecimal.ZERO
 private val BIG_DECIMAL_ONE: BigDecimal = BigDecimal.ONE
 private val BIG_DECIMAL_ONE_HUNDRED_EIGHTY: BigDecimal = 180.toBigDecimal()
+private val BIG_INTEGER_ONE: BigInteger = BigInteger.ONE
 private val RATIONAL_NEGATIVE_HALF: Rational = Rational.HALF.negate()
 private val RATIONAL_ZERO: Rational = Rational.ZERO
 private val RATIONAL_HALF: Rational = Rational.HALF
@@ -335,7 +336,6 @@ private suspend fun UnifiedValue.powIntegerExponent(
     toBigIntegerExactOrNull()?.let { base ->
         val result: UnifiedValue = base.powIntegerExponentOrNull(
             exponent = exponent,
-            mc = mc,
         ) ?: throw CalculationLimitExceededException()
 
         return result
@@ -386,7 +386,6 @@ private suspend fun UnifiedValue.powUnifiedValueExponent(
 
 private suspend fun BigInteger.powIntegerExponentOrNull(
     exponent: Int,
-    mc: MathContext,
 ): UnifiedValue? {
     val estimatedBits: Long = bitLength().toLong() * abs(exponent.toLong())
 
@@ -405,8 +404,10 @@ private suspend fun BigInteger.powIntegerExponentOrNull(
         )
     } else {
         UnifiedValue.fromApproximateValue(
-            approximateValue = BIG_DECIMAL_ONE
-                .divide(result.toBigDecimal(), mc),
+            approximateValue = Rational.of(
+                numerator = BIG_INTEGER_ONE,
+                denominator = result,
+            ),
         )
     }
 }

@@ -969,8 +969,8 @@ internal object BigDecimalMath {
         mc: MathContext,
     ): BigDecimal {
         val absValue: BigDecimal = value.abs()
-        val numerator: BigDecimal = ONE.subtract(absValue, mc)
-        val denominator: BigDecimal = ONE.add(absValue, mc)
+        val numerator: BigDecimal = ONE.subtract(absValue)
+        val denominator: BigDecimal = ONE.add(absValue)
         val ratio: BigDecimal = numerator.divide(denominator, mc)
         val root: BigDecimal = calculateSqrt(
             value = ratio,
