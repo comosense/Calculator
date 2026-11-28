@@ -19,28 +19,57 @@ class Rational private constructor(
     companion object {
         private const val MAX_DECIMAL_SCALE: Long = Constraints.MAX_DECIMAL_SCALE
         private const val MAX_DECIMAL_BITS: Long = Constraints.MAX_DECIMAL_BITS
+        private val BIG_INTEGER_NEGATIVE_ONE: BigInteger = BigInteger.ONE.negate()
+        private val BIG_INTEGER_ZERO: BigInteger = BigInteger.ZERO
+        private val BIG_INTEGER_ONE: BigInteger = BigInteger.ONE
+        private val BIG_INTEGER_TWO: BigInteger = 2.toBigInteger()
+        private val BIG_INTEGER_TEN: BigInteger = BigInteger.TEN
 
         val ZERO: Rational = Rational(
-            numerator = BigInteger.ZERO,
-            denominator = BigInteger.ONE,
+            numerator = BIG_INTEGER_ZERO,
+            denominator = BIG_INTEGER_ONE,
         )
         val HALF: Rational = Rational(
-            numerator = BigInteger.ONE,
-            denominator = 2.toBigInteger(),
+            numerator = BIG_INTEGER_ONE,
+            denominator = BIG_INTEGER_TWO,
         )
         val ONE: Rational = Rational(
-            numerator = BigInteger.ONE,
-            denominator = BigInteger.ONE,
+            numerator = BIG_INTEGER_ONE,
+            denominator = BIG_INTEGER_ONE,
         )
+
+        fun BigInteger.toRational(): Rational =
+            if (signum() == 0) {
+                ZERO
+            } else {
+                Rational(
+                    numerator = this,
+                    denominator = BIG_INTEGER_ONE,
+                )
+            }
+
+        fun BigInteger.toInverseRational(): Rational {
+            val signum: Int = signum()
+            require(signum != 0)
+
+            return if (signum > 0) {
+                Rational(
+                    numerator = BIG_INTEGER_ONE,
+                    denominator = this,
+                )
+            } else {
+                Rational(
+                    numerator = BIG_INTEGER_NEGATIVE_ONE,
+                    denominator = negate(),
+                )
+            }
+        }
 
         fun Int.toRational(): Rational =
             if (this == 0) {
                 ZERO
             } else {
-                Rational(
-                    numerator = toBigInteger(),
-                    denominator = BigInteger.ONE,
-                )
+                toBigInteger().toRational()
             }
 
         fun BigDecimal.toRational(): Rational {
@@ -60,22 +89,22 @@ class Rational private constructor(
                 of(
                     numerator = stripped
                         .unscaledValue(),
-                    denominator = BigInteger.TEN
+                    denominator = BIG_INTEGER_TEN
                         .pow(scale),
                 )
             } else {
                 of(
                     numerator = stripped
                         .unscaledValue()
-                        .multiply(BigInteger.TEN.pow(-scale)),
-                    denominator = BigInteger.ONE,
+                        .multiply(BIG_INTEGER_TEN.pow(-scale)),
+                    denominator = BIG_INTEGER_ONE,
                 )
             }
         }
 
-        fun of(
+        private fun of(
             numerator: BigInteger,
-            denominator: BigInteger = BigInteger.ONE,
+            denominator: BigInteger = BIG_INTEGER_ONE,
         ): Rational {
             require(denominator.signum() != 0)
 
@@ -83,7 +112,7 @@ class Rational private constructor(
                 return ZERO
             }
 
-            if (denominator == BigInteger.ONE) {
+            if (denominator == BIG_INTEGER_ONE) {
                 return Rational(
                     numerator = numerator,
                     denominator = denominator,
@@ -244,7 +273,7 @@ class Rational private constructor(
         numerator.signum() == 0
 
     fun isInteger(): Boolean =
-        denominator == BigInteger.ONE
+        denominator == BIG_INTEGER_ONE
 
     fun toBigDecimal(
         mc: MathContext,
@@ -323,7 +352,7 @@ class Rational private constructor(
             other.times(
                 of(
                     numerator = quotient,
-                    denominator = BigInteger.ONE,
+                    denominator = BIG_INTEGER_ONE,
                 ),
             ),
         )

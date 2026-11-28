@@ -1,6 +1,7 @@
 package com.gmail.comosense.calculator.domain
 
 import com.gmail.comosense.calculator.common.Constraints
+import com.gmail.comosense.calculator.domain.Rational.Companion.toInverseRational
 import com.gmail.comosense.calculator.domain.Rational.Companion.toRational
 import java.math.BigDecimal
 import java.math.BigInteger
@@ -30,7 +31,6 @@ private val BIG_DECIMAL_NEGATIVE_ONE: BigDecimal = BigDecimal.ONE.negate()
 private val BIG_DECIMAL_ZERO: BigDecimal = BigDecimal.ZERO
 private val BIG_DECIMAL_ONE: BigDecimal = BigDecimal.ONE
 private val BIG_DECIMAL_ONE_HUNDRED_EIGHTY: BigDecimal = 180.toBigDecimal()
-private val BIG_INTEGER_ONE: BigInteger = BigInteger.ONE
 private val RATIONAL_NEGATIVE_HALF: Rational = Rational.HALF.negate()
 private val RATIONAL_ZERO: Rational = Rational.ZERO
 private val RATIONAL_HALF: Rational = Rational.HALF
@@ -404,10 +404,7 @@ private suspend fun BigInteger.powIntegerExponentOrNull(
         )
     } else {
         UnifiedValue.fromApproximateValue(
-            approximateValue = Rational.of(
-                numerator = BIG_INTEGER_ONE,
-                denominator = result,
-            ),
+            approximateValue = result.toInverseRational(),
         )
     }
 }
