@@ -28,7 +28,6 @@ ui = { group = "androidx.compose.ui", name = "ui" }
 ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
 ui-text = { group = "androidx.compose.ui", name = "ui-text" }
 ui-unit = { group = "androidx.compose.ui", name = "ui-unit" }
-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 
 # AndroidX Compose Animation / Foundation / Runtime
@@ -50,16 +49,15 @@ lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lifecycle-ru
 # Wear Preview
 wear-tooling-preview = { group = "androidx.wear", name = "wear-tooling-preview", version.ref = "wearToolingPreview" }
 
-# DataStore
+# DataStore / Protobuf
 datastore = { group = "androidx.datastore", name = "datastore", version.ref = "datastore" }
 datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastorePreferences" }
-
-# Protobuf
 protobuf-kotlin-lite = { group = "com.google.protobuf", name = "protobuf-kotlin-lite", version.ref = "protobufKotlinLite" }
 
-# Test
-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
+# Test / Debug
 ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
+ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
+ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

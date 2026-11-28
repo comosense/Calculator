@@ -16,7 +16,7 @@ data class SettingsScreenColors(
 @Immutable
 data class HistoryScreenColors(
     val background: Color,
-    val emptyStateText: Color,
+    val emptyState: Color,
     val historyContainer: Color,
     val historyContent: Color,
     val historyExpression: Color,

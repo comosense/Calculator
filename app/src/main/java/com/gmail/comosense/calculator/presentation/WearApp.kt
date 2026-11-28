@@ -95,7 +95,7 @@ fun WearApp(
     }
 
     CompositionLocalProvider(
-        LocalLayoutDirection provides LayoutDirection.Ltr
+        LocalLayoutDirection provides LayoutDirection.Ltr,
     ) {
         AppScaffold {
             CalculatorScreen(

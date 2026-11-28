@@ -15,7 +15,7 @@ object HistorySerializer : Serializer<HistoryStore> {
         input: InputStream,
     ): HistoryStore =
         try {
-            return HistoryStore.parseFrom(input)
+            HistoryStore.parseFrom(input)
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {

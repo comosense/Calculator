@@ -65,8 +65,8 @@ class SymbolFormatter(
 
     fun format(
         symbols: List<Symbol>,
-    ): String {
-        return buildString {
+    ): String =
+        buildString {
             val numericBuffer: StringBuilder = StringBuilder()
 
             fun flushNumeric() {
@@ -94,7 +94,6 @@ class SymbolFormatter(
             }
             flushNumeric()
         }
-    }
 
     private fun Symbol.toFormatText(): String =
         when (this) {

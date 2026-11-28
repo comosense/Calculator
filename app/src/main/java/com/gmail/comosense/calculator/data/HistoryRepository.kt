@@ -95,10 +95,10 @@ class HistoryRepository(
     ): Result<Unit, HistoryRepositoryError> =
         try {
             dataStore.updateData(transform)
-            return Result.Ok(Unit)
+            Result.Ok(Unit)
         } catch (e: CancellationException) {
             throw e
         } catch (_: Exception) {
-            return Result.Err(error)
+            Result.Err(error)
         }
 }

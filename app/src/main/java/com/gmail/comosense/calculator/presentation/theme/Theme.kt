@@ -76,7 +76,7 @@ fun AppTheme(
         )
         val historyScreenColors = HistoryScreenColors(
             background = MaterialTheme.colorScheme.background,
-            emptyStateText = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
+            emptyState = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
             historyContainer = MaterialTheme.colorScheme.surfaceContainerLow,
             historyContent = MaterialTheme.colorScheme.onSurface,
             historyExpression = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
@@ -124,6 +124,7 @@ fun AppTheme(
             keyIconSize = 20.dp,
             keyIconSizeLarge = 26.dp,
         )
+
         CompositionLocalProvider(
             LocalSettingsScreenColors provides settingsScreenColors,
             LocalHistoryScreenColors provides historyScreenColors,

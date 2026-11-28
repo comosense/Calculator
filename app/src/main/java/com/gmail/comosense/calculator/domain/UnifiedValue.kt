@@ -97,7 +97,7 @@ class UnifiedValue private constructor(
     fun subtract(
         other: UnifiedValue,
     ): UnifiedValue =
-        add(other.negate())
+        add(other = other.negate())
 
     suspend fun multiply(
         other: UnifiedValue,

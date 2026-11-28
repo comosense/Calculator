@@ -9,7 +9,7 @@ enum class SymbolizerError {
 }
 
 fun BigDecimal.toSymbols(
-    maxLength: Long
+    maxLength: Long,
 ): Result<List<Symbol>, SymbolizerError> {
     require(maxLength >= 0L)
 

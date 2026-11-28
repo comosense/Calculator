@@ -200,7 +200,7 @@ private fun MainPanel(
                             appState = appState,
                         )
                     },
-                    arrangementSpace = 2.dp,
+                    itemSpacing = 2.dp,
                     modifier = Modifier.fillMaxSize(),
                     onCalculatorAction = onCalculatorAction,
                     symbolFormatter = symbolFormatter,
@@ -411,19 +411,19 @@ private fun ExpressionBox(
 @Composable
 private fun KeyGrid(
     keyGrid: List<List<Key?>>,
-    arrangementSpace: Dp,
+    itemSpacing: Dp,
     modifier: Modifier,
     onCalculatorAction: (CalculatorAction) -> Unit,
     symbolFormatter: SymbolFormatter,
 ) {
     Column(
         modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(arrangementSpace),
+        verticalArrangement = Arrangement.spacedBy(itemSpacing),
     ) {
         keyGrid.forEach { keys ->
             KeysRow(
                 keys = keys,
-                arrangementSpace = arrangementSpace,
+                itemSpacing = itemSpacing,
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f),
@@ -437,14 +437,14 @@ private fun KeyGrid(
 @Composable
 private fun KeysRow(
     keys: List<Key?>,
-    arrangementSpace: Dp,
+    itemSpacing: Dp,
     modifier: Modifier,
     onCalculatorAction: (CalculatorAction) -> Unit,
     symbolFormatter: SymbolFormatter,
 ) {
     Row(
         modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy(arrangementSpace),
+        horizontalArrangement = Arrangement.spacedBy(itemSpacing),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         keys.forEach { key ->

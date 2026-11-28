@@ -8,7 +8,7 @@ sealed interface AppStateUpdateResult {
     data object ExpressionTooLarge : AppStateUpdateResult
     data object InvalidSymbol : AppStateUpdateResult
     data object ExpressionInsertionNotAllowed : AppStateUpdateResult
-    object HistoryNotFound : AppStateUpdateResult
+    data object HistoryNotFound : AppStateUpdateResult
 }
 
 private const val MAX_EXPRESSION_SIZE: Int = Constraints.MAX_EXPRESSION_SIZE

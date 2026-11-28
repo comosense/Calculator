@@ -223,7 +223,7 @@ private fun HistoryList(
                 ) {
                     Text(
                         text = stringResource(R.string.history_screen_no_history),
-                        color = AppTheme.historyScreenColors.emptyStateText,
+                        color = AppTheme.historyScreenColors.emptyState,
                         fontSize = AppTheme.historyScreenDimensions.textFontSize,
                     )
                 }

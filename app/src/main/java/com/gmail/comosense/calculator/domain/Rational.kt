@@ -6,7 +6,7 @@ import java.math.BigInteger
 import java.math.MathContext
 import kotlin.math.abs
 
-class RationalLimitExceededException : ArithmeticException()
+internal class RationalLimitExceededException : ArithmeticException()
 
 class Rational private constructor(
     val numerator: BigInteger,

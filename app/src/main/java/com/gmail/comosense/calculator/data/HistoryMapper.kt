@@ -246,9 +246,11 @@ fun History.toProtoHistory(): ProtoHistory =
         .addAllExpression(
             expression.map { symbol ->
                 symbol.toProtoSymbol()
-            })
+            }
+        )
         .addAllResult(
             result.map { symbol ->
                 symbol.toProtoSymbol()
-            })
+            }
+        )
         .build()

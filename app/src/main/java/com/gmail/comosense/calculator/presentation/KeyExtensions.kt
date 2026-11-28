@@ -30,6 +30,7 @@ private val POW10_SYMBOLS: List<Symbol> = listOf(
     Symbol.Numeric.Digit(0),
     Symbol.Operator.Power,
 )
+
 val Key.calculatorAction: CalculatorAction
     get() = when (this) {
         is Key.Positive ->
@@ -341,26 +342,32 @@ fun Key.toDisplay(
 
         is Key.Arctan ->
             Display.Text(
-                symbolFormatter.text(Symbol.FactorStart.Function.Arctan),
+                text = symbolFormatter.text(Symbol.FactorStart.Function.Arctan),
             )
 
         is Key.FunctionMode ->
-            Display.Icon(
-                iconResId = if (isInverseFunctionMode) {
-                    R.drawable.ic_inverse_function
-                } else {
-                    R.drawable.ic_function
-                },
-                contentDescriptionResId = R.string.content_description_function_mode,
-            )
+            if (isInverseFunctionMode) {
+                Display.Icon(
+                    iconResId = R.drawable.ic_inverse_function,
+                    contentDescriptionResId = R.string.content_description_function_mode_inverse,
+                )
+            } else {
+                Display.Icon(
+                    iconResId = R.drawable.ic_function,
+                    contentDescriptionResId = R.string.content_description_function_mode_standard,
+                )
+            }
 
         is Key.AngleMode ->
-            Display.Icon(
-                iconResId = if (isRadians) {
-                    R.drawable.ic_radians
-                } else {
-                    R.drawable.ic_degrees
-                },
-                contentDescriptionResId = R.string.content_description_angle_mode,
-            )
+            if (isRadians) {
+                Display.Icon(
+                    iconResId = R.drawable.ic_radians,
+                    contentDescriptionResId = R.string.content_description_angle_mode_radians,
+                )
+            } else {
+                Display.Icon(
+                    iconResId = R.drawable.ic_degrees,
+                    contentDescriptionResId = R.string.content_description_angle_mode_degrees,
+                )
+            }
     }

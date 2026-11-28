@@ -28,6 +28,7 @@ enum class CalculatorError {
 
 private const val MAX_RESULT_SIZE: Long = Constraints.MAX_RESULT_SIZE.toLong()
 private const val EXTRA_PRECISION_FOR_WORKING: Int = 2
+
 suspend fun calculate(
     expression: List<Symbol>,
     isRadians: Boolean,

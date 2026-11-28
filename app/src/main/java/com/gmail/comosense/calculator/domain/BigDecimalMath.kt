@@ -88,13 +88,11 @@ internal object BigDecimalMath {
         private suspend fun map(
             mc: MathContext,
         ): Map<E, BigDecimal> {
-            cache
-                ?.takeIf { cached ->
-                    cached.mc.precision >=
-                            mc.precision + EXTRA_PRECISION_FOR_ROUNDING &&
-                            cached.mc.roundingMode == mc.roundingMode
-                }
-                ?.let { cached -> return cached.map }
+            cache?.takeIf { cached ->
+                cached.mc.precision.toLong() >=
+                        mc.precision.toLong() + EXTRA_PRECISION_FOR_ROUNDING &&
+                        cached.mc.roundingMode == mc.roundingMode
+            }?.let { cached -> return cached.map }
 
             val newMc: MathContext = mc.withExtraPrecision(EXTRA_PRECISION_FOR_CACHE)
             val map: EnumMap<E, BigDecimal> = calculateConstants(newMc)
@@ -363,7 +361,7 @@ internal object BigDecimalMath {
         val logValue: BigDecimal = lnValue.divide(
             lnCache.get(
                 constant = LnConstant.LN_TEN,
-                mc = calculationMc
+                mc = calculationMc,
             ),
             mc,
         )
@@ -711,32 +709,28 @@ internal object BigDecimalMath {
         }
 
         val absValue: BigDecimal = value.abs()
-        val result: BigDecimal =
-            if (absValue <= HALF) {
-                val valueSquared: BigDecimal =
-                    absValue.multiply(absValue, mc)
-                val denominator: BigDecimal =
-                    calculateSqrt(
-                        value = ONE.subtract(valueSquared, mc),
-                        mc = mc,
-                    )
+        val result: BigDecimal = if (absValue <= HALF) {
+            val valueSquared: BigDecimal = absValue.multiply(absValue, mc)
+            val denominator: BigDecimal = calculateSqrt(
+                value = ONE.subtract(valueSquared, mc),
+                mc = mc,
+            )
 
-                calculateArctan(
-                    value = absValue.divide(denominator, mc),
-                    mc = mc,
-                )
-            } else {
-                val acuteAngle: BigDecimal =
-                    calculateInverseTrigonometricAcuteAngle(
-                        value = value,
-                        mc = mc,
-                    )
+            calculateArctan(
+                value = absValue.divide(denominator, mc),
+                mc = mc,
+            )
+        } else {
+            val acuteAngle: BigDecimal = calculateInverseTrigonometricAcuteAngle(
+                value = value,
+                mc = mc,
+            )
 
-                piCache.get(
-                    constant = PiConstant.HALF,
-                    mc = mc,
-                ).subtract(acuteAngle, mc)
-            }
+            piCache.get(
+                constant = PiConstant.HALF,
+                mc = mc,
+            ).subtract(acuteAngle, mc)
+        }
 
         return if (value.signum() < 0) {
             result.negate()
