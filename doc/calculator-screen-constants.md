@@ -1,6 +1,6 @@
 # Constants in `CalculatorScreen.kt`
 
-This document explains the derivation of the following constants defined in `CalculatorScreen.kt` are derived:
+This document explains the derivation of the following constants defined in `CalculatorScreen.kt`:
 
 * `INSCRIBED_LENGTH_RATIO`
 * `PANEL_WIDTH_RATIO`
@@ -18,7 +18,7 @@ This document explains the derivation of the following constants defined in `Cal
 * Point $P$ is the foot of the perpendicular from $E$ to the horizontal line passing through the center $O$.
 * Quadrilateral $IJKL$ is a square and has vertices $J$ and $K$ on the circumference of the display circle.
 * Sides $IL$ and $BC$ lie on the same line.
-* Point $Q$ and $R$ are the feet of the perpendiculars from $I$ and $J$, respectively, to the horizontal line passing through the center $O$.
+* Points $Q$ and $R$ are the feet of the perpendiculars from $I$ and $J$, respectively, to the vertical line passing through the center $O$.
 
 `INSCRIBED_LENGTH_RATIO` is the ratio of the side length $AB$ of the inscribed square $ABCD$ to the diameter `d` of the display circle.
 
@@ -166,7 +166,7 @@ OQ &= \frac{ 1 }{ 2 } AB\\
 \end{aligned}
 $$
 
-Since $IJKL$ is a square, $IJ = JK$. Because $R$ is the projection of $J$ onto the center line and $Q$ is the projection of $I$, the horizontal distance $QR$ equals $IJ$, while $JR$ is half of $IJ$.
+Since $IJKL$ is a square, $IJ = JK$. Because $R$ is the projection of $J$ onto the center line and $Q$ is the projection of $I$, the vertical distance $QR$ equals $IJ$, while $JR$ is half of $IJ$.
 
 $$
 \begin{aligned}
