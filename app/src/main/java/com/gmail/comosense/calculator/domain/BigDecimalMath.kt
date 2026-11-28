@@ -45,6 +45,7 @@ internal object BigDecimalMath {
     }
 
     private enum class PiConstant {
+        QUARTER,
         HALF,
         ONE,
         THREE_HALVES,
@@ -132,6 +133,7 @@ internal object BigDecimalMath {
 
             return filledMap { constant ->
                 when (constant) {
+                    PiConstant.QUARTER -> pi.divide(FOUR)
                     PiConstant.HALF -> pi.divide(TWO)
                     PiConstant.ONE -> pi
                     PiConstant.THREE_HALVES -> pi.multiply(THREE_HALVES)
@@ -615,7 +617,7 @@ internal object BigDecimalMath {
         calculateTrigonometric(
             radians = radians,
             mc = mc,
-            taylor = ::sinTaylor,
+            useCosOnPrimary = false,
             isNegative = { quadrant ->
                 (quadrant == Quadrant.THIRD || quadrant == Quadrant.FOURTH) xor
                         (radians.signum() < 0)
@@ -629,7 +631,7 @@ internal object BigDecimalMath {
         calculateTrigonometric(
             radians = radians,
             mc = mc,
-            taylor = ::cosTaylor,
+            useCosOnPrimary = true,
             isNegative = { quadrant ->
                 quadrant == Quadrant.SECOND || quadrant == Quadrant.THIRD
             },
@@ -638,9 +640,13 @@ internal object BigDecimalMath {
     private suspend fun calculateTrigonometric(
         radians: BigDecimal,
         mc: MathContext,
-        taylor: suspend (BigDecimal, MathContext) -> BigDecimal,
+        useCosOnPrimary: Boolean,
         isNegative: (Quadrant) -> Boolean,
     ): BigDecimal {
+        val quarterPi: BigDecimal = piCache.get(
+            constant = PiConstant.QUARTER,
+            mc = mc,
+        )
         val pi: BigDecimal = piCache.get(
             constant = PiConstant.ONE,
             mc = mc,
@@ -664,16 +670,26 @@ internal object BigDecimalMath {
                 normalized to Quadrant.FIRST
 
             normalized <= pi ->
-                pi.subtract(normalized, mc) to Quadrant.SECOND
+                pi.subtract(normalized) to Quadrant.SECOND
 
             normalized <= threeHalvesPi ->
-                normalized.subtract(pi, mc) to Quadrant.THIRD
+                normalized.subtract(pi) to Quadrant.THIRD
 
             else ->
-                twoPi.subtract(normalized, mc) to Quadrant.FOURTH
+                twoPi.subtract(normalized) to Quadrant.FOURTH
         }
 
-        val result: BigDecimal = taylor(reduced, mc)
+        val (angle: BigDecimal, useCos: Boolean) = if (reduced <= quarterPi) {
+            reduced to useCosOnPrimary
+        } else {
+            halfPi.subtract(reduced).max(ZERO) to !useCosOnPrimary
+        }
+
+        val result: BigDecimal = if (useCos) {
+            cosTaylor(angle, mc)
+        } else {
+            sinTaylor(angle, mc)
+        }
 
         return if (isNegative(quadrant)) {
             result.negate()
@@ -809,16 +825,15 @@ internal object BigDecimalMath {
                 .divide(value.add(ONE), mc)
 
             return piCache.get(
-                constant = PiConstant.ONE,
+                constant = PiConstant.QUARTER,
                 mc = mc,
-            ).divide(FOUR)
-                .add(
-                    calculateArctan(
-                        value = reduced,
-                        mc = mc,
-                    ),
-                    mc,
-                )
+            ).add(
+                calculateArctan(
+                    value = reduced,
+                    mc = mc,
+                ),
+                mc,
+            )
         }
 
         return arctanTaylor(
